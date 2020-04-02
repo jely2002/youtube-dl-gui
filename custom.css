@@ -1,0 +1,140 @@
+body {
+    width: 100%;
+    height: 100%;
+    background-color: #212121;
+    color: #fff;
+}
+
+.container-fluid {
+    padding: 10px 30px;
+}
+
+.menubar {
+    display: none !important;
+}
+
+.main-input {
+    background-color: #303030;
+    padding: 30px;
+    margin-top: 20px;
+    border-radius: 3px;
+}
+
+#main_input label, .header {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+#main_input .form-group {
+    margin-bottom: 2rem;
+}
+
+.thumbnail {
+    border-radius: 3px;
+    width: 100%;
+    height: 21vw;
+    object-fit: cover;
+}
+
+.title, .channel, .duration {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.spinner-border {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 3rem;
+    height: 3rem;
+    margin: auto;
+}
+
+.bs-stepper {
+    width: 100%;
+}
+
+.bs-stepper .line {
+    min-height: 2px;
+    background-color: rgba(0,0,0,.25);
+}
+
+.active .bs-stepper-circle {
+    background-color: #5cb85c !important;
+}
+
+/* CUSTOM CHECKMARK SPINNER */
+.circle-loader {
+    margin-bottom: 3.5em;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-left-color: #5cb85c;
+    animation: loader-spin 1.2s infinite linear;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 50%;
+    width: 7em;
+    height: 7em;
+}
+.load-complete {
+    -webkit-animation: none;
+    animation: none;
+    border-color: #5cb85c;
+    transition: border 500ms ease-out;
+}
+.checkmark {
+    display: none;
+}
+.checkmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: checkmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+.checkmark:after {
+    opacity: 1;
+    height: 3.5em;
+    width: 1.75em;
+    transform-origin: left top;
+    border-right: 4px solid #5cb85c;
+    border-top: 4px solid #5cb85c;
+    content: '';
+    left: 1.65em;
+    top: 3.5em;
+    position: absolute;
+}
+@keyframes loader-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+@keyframes checkmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 0;
+        width: 1.75em;
+        opacity: 1;
+    }
+    40% {
+        height: 3.5em;
+        width: 1.75em;
+        opacity: 1;
+    }
+    100% {
+        height: 3.5em;
+        width: 1.75em;
+        opacity: 1;
+    }
+}
+

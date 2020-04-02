@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Youtube Downloader</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
+    <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="custom.css" crossorigin="anonymous">
+</head>
+<body>
+<div class="container-fluid text-center">
+    <div class="row">
+    <div class="col-md-12">
+    <div class="bs-stepper">
+        <div class="bs-stepper-header" role="tablist">
+            <div class="step" data-target="#url-part">
+                <button type="button" class="step-trigger" role="tab" aria-controls="url-part" id="url-part-trigger">
+                    <span class="bs-stepper-circle"><i class="fas fa-link"></i></span>
+                    <span class="bs-stepper-label">YouTube URL</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#settings-part">
+                <button type="button" class="step-trigger" role="tab" aria-controls="settings-part" id="settings-part-trigger">
+                    <span class="bs-stepper-circle"><i class="fas fa-cog"></i></span>
+                    <span class="bs-stepper-label">Settings</span>
+                </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#download-part">
+                <button type="button" class="step-trigger" role="tab" aria-controls="download-part" id="download-part-trigger">
+                    <span class="bs-stepper-circle"><i class="fas fa-download"></i></span>
+                    <span class="bs-stepper-label">Download</span>
+                </button>
+            </div>
+        </div>
+        <div class="bs-stepper-content">
+            <div id="url-part" class="content fade" role="tabpanel" aria-labelledby="url-part-trigger">
+                <form class="main-input">
+                <div class="form-group">
+                    <input type="text" oninput="url_entered($(this).val())" class="form-control" id="url" placeholder="YouTube link ex. youtube.com/watch?v=FtveSk1N7Uo" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid YouTube URL.
+                    </div>
+                </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="spinner-border text-dark" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <img src="bin/waiting-for-link.png" class="img-fluid thumbnail" alt="Thumbnail of the specified video">
+                        </div>
+                        <div class="col-md-6 text-left">
+                            <p class="title"><strong>Title:</strong> --</p>
+                            <p class="channel"><strong>Channel:</strong> --</p>
+                            <p class="duration"><strong>Duration:</strong> --</p>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="button" id="step-one-btn" onclick="settings()" class="btn btn-dark mt-2 mb-0" disabled>Next</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div id="settings-part" class="content fade" role="tabpanel" aria-labelledby="settings-part-trigger">
+                <form class="main-input">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="bin/waiting-for-link.png" class="img-fluid thumbnail" alt="Thumbnail of the specified video">
+                    </div>
+                    <div class="col-md-6 text-left">
+                        <div class="form-group">
+                            <form id="settings">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" id="video" onclick="setType('video')" value="video" name="type-select" class="custom-control-input">
+                                <label class="custom-control-label" for="video">Video</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" onclick="setType('audio')" id="audio" value="audio" name="type-select" class="custom-control-input">
+                                <label class="custom-control-label" for="audio">Audio</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="quality"></label>
+                                <select id="quality" class="custom-select" disabled>
+                                    <option selected>Select quality</option>
+                                </select>
+                            </div>
+                            </form>
+                        </div>
+                        <button type="button" onclick="stepper.reset()" class="btn btn-dark">Back</button>
+                        <button type="button" onclick="download()" class="btn btn-dark">Download</button>
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div id="download-part" class="content fade" role="tabpanel" aria-labelledby="download-part-trigger">
+                <div class="main-input">
+                    <div class="row justify-content-center">
+                    <div class="circle-loader">
+                        <div class="checkmark draw"></div>
+                    </div>
+                </div>
+                    <div class="row justify-content-center">
+                    <button type="button" id="reset-btn" onclick="resetSteps()" class="btn btn-dark mt-2 mb-0 col-md-4" disabled>Downloading...</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+</div>
+<script src="plugins.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/js/bs-stepper.min.js" integrity="sha256-INfYp5owpb0btFquNHGlhSxgGYrFlGYRU2oN/3jWGeM=" crossorigin="anonymous"></script>
+<script src="downloader.js"></script>
+</body>
+</html>
