@@ -8,10 +8,10 @@ let ffmpegLoc
 let timings
 
 if(process.platform === "darwin") {
-    youtubedl.setYtdlBinary("Contents/resources/youtube-dl-ml")
-    ffmpegLoc = "resources/ffmpeg-ml"
+    youtubedl.setYtdlBinary("Contents/Resources/youtube-dl-ml")
+    ffmpegLoc = "Contents/Resources/ffmpeg-ml"
 } else {
-    youtubedl.setYtdlBinary("Contents/resources/youtube-dl.exe")
+    youtubedl.setYtdlBinary("resources/youtube-dl.exe")
     ffmpegLoc = "resources/ffmpeg.exe"
 }
 
