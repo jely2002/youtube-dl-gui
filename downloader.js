@@ -1,10 +1,20 @@
+'use strict'
 const youtubedl = require('youtube-dl')
 const {remote} = require('electron')
 
 let selectedURL
 let availableFormats = []
+let ffmpegLoc
+let timings
 
-youtubedl.setYtdlBinary("resources/app.asar.unpacked/node_modules/youtube-dl/bin/youtube-dl.exe")
+if(process.platform === "darwin") {
+    youtubedl.setYtdlBinary("Contents/resources/youtube-dl.exe")
+    ffmpegLoc = "Contents/resources/ffmpeg.exe"
+} else {
+    youtubedl.setYtdlBinary("resources/youtube-dl.exe")
+    ffmpegLoc = "resources/ffmpeg.exe"
+}
+
 
 function settings() {
     stepper.next()
@@ -14,10 +24,12 @@ function settings() {
 function url_entered() {
     let url = $("#url").val()
     if(validate(url)) {
+        availableFormats = []
         showInfo(url)
         $('#url').addClass("is-valid").removeClass("is-invalid")
     } else {
         $('#url').addClass("is-invalid").removeClass("is-valid")
+        $('#step-one-btn').prop("disabled", true)
     }
 }
 
@@ -29,7 +41,7 @@ function validate(url) {
 function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
     youtubedl.getInfo(url, function(err, info) {
-        if (err) throw err
+        if (err) showError(err)
         $(".thumbnail").attr("src", info.thumbnail)
         $(".title").html("<strong>Title:</strong> " + info.title)
         $(".channel").html("<strong>Channel:</strong> " + info.uploader)
@@ -39,20 +51,20 @@ function showInfo(url) {
     });
     selectedURL = url
     youtubedl.exec(selectedURL, ['-F','--skip-download'], {}, function(err, output) {
-        if (err) throw err
+        if (err) showError(err)
         output.splice(0,3)
         console.log(output)
         output.forEach(function(entry) {
-            if(!(entry.includes('mp4'))) return
-            if(entry.includes('4320p') && !availableFormats.includes('4320p')) availableFormats.push('4320p')
-            if(entry.includes('2160p') && !availableFormats.includes('2160p')) availableFormats.push('2160p')
-            if(entry.includes('1440p') && !availableFormats.includes('1440p')) availableFormats.push('1440p')
-            if(entry.includes('1080p') && !availableFormats.includes('1080p')) availableFormats.push('1080p')
-            if(entry.includes('720p') && !availableFormats.includes('720p')) availableFormats.push('720p')
-            if(entry.includes('480p') && !availableFormats.includes('480p')) availableFormats.push('480p')
-            if(entry.includes('360p') && !availableFormats.includes('360p')) availableFormats.push('360p')
-            if(entry.includes('240p') && !availableFormats.includes('240p')) availableFormats.push('240p')
-            if(entry.includes('144p') && !availableFormats.includes('144p')) availableFormats.push('144p')
+            if(!(entry.includes('mp4') || entry.includes('webm'))) return
+            if(entry.includes('4320p')) addFormat("4320p", entry)
+            if(entry.includes('2160p')) addFormat("2160p", entry)
+            if(entry.includes('1440p')) addFormat("1440p", entry)
+            if(entry.includes('1080p')) addFormat("1080p", entry)
+            if(entry.includes('720p')) addFormat("720p", entry)
+            if(entry.includes('480p')) addFormat("480p", entry)
+            if(entry.includes('360p')) addFormat("360p", entry)
+            if(entry.includes('240p')) addFormat("240p", entry)
+            if(entry.includes('144p')) addFormat("144p", entry)
             })
     })
 }
@@ -60,27 +72,43 @@ function showInfo(url) {
 function downloadAudio(quality) {
     const options = [
         '-f', quality + 'audio[ext=m4a]',
-        '--ffmpeg-location', 'bin/ffmpeg.exe', '--hls-prefer-ffmpeg',
+        '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
         '-o', remote.app.getPath('music').replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
     ]
-
     youtubedl.exec(selectedURL, options, {}, function(err, output) {
-        if (err) throw err
+        if (err) showError(err)
         downloadFinished()
         console.log(output)
     })
 }
 
 function downloadVideo(quality) {
+    let downloadSubs = $('#subtitles').prop('checked')
+    let fps = quality.substr(-2)
+    let qualityOption
+    let height
+    if(fps === "60" || fps === "50") {
+        height = quality.slice(0,-3);
+        qualityOption = 'bestvideo[height<='+ height + '][fps=' + fps + ']+bestaudio[ext=m4a]/best[height<=' + height + '][fps=' + fps + ']'
+    } else {
+        height = quality.slice(0,-1);
+        qualityOption = 'bestvideo[height<='+ height + '][fps<50]+bestaudio[ext=m4a]/best[height<=' + height + '][fps<50]'
+    }
     const options = [
-        '-f', 'bestvideo[height<='+ quality + ',ext=mp4]+bestaudio[ext=m4a]/best[height<=' + quality + ']',
-        '--ffmpeg-location', 'ffmpeg.exe', '--hls-prefer-ffmpeg',
+        '-f', qualityOption,
+        '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
         '--merge-output-format', 'mp4',
         '-o', remote.app.getPath('videos').replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
     ]
-
+    if(downloadSubs) {
+        options.push("--all-subs")
+        options.push("--embed-subs")
+        options.push("--convert-subs")
+        options.push("srt")
+    }
+    console.log(options)
     youtubedl.exec(selectedURL, options, {}, function(err, output) {
-        if (err) throw err
+        if (err) showError(err)
         downloadFinished()
         console.log(output)
     })
@@ -88,6 +116,7 @@ function downloadVideo(quality) {
 
 function download() {
     let quality = $('#quality').val()
+    timings = setTimeout(showWarning, 60000)
     stepper.next()
     if($('input[name=type-select]:checked').val() === "video") {
         downloadVideo(quality)
@@ -97,9 +126,20 @@ function download() {
 }
 
 function downloadFinished() {
+    clearTimeout(timings)
     $('.circle-loader').toggleClass('load-complete')
     $('.checkmark').toggle()
     $('#reset-btn').html("Download another video").prop("disabled", false)
+}
+
+function addFormat(quality, entry) {
+    if(entry.includes(quality + "60")) {
+        if(!availableFormats.includes(quality + "60")) availableFormats.push(quality + "60")
+    } else if(entry.includes(quality + "50")) {
+        if(!availableFormats.includes(quality + "50")) availableFormats.push(quality + "50")
+    } else {
+        if(!availableFormats.includes(quality)) availableFormats.push(quality)
+    }
 }
 
 function resetSteps() {
@@ -114,6 +154,27 @@ function resetSteps() {
     $('.circle-loader').toggleClass('load-complete')
     $('.checkmark').toggle()
     $('#reset-btn').html("Downloading...").prop("disabled", true)
+    $('#step-one-btn').prop("disabled", true)
+    $('#subtitles').prop("disabled", true).prop("checked", false)
     $('#quality').empty().append(new Option("Select quality", "quality")).prop("disabled", true).val("quality")
+    $("#download-btn").prop("disabled", true)
     stepper.reset()
+}
+
+function resetBack() {
+    stepper.reset()
+    $('#video').prop("checked", false)
+    $('#audio').prop("checked", false)
+    $('#subtitles').prop("disabled", true).prop("checked", false)
+    $('#quality').empty().append(new Option("Select quality", "quality")).prop("disabled", true).val("quality")
+    $("#download-btn").prop("disabled", true)
+}
+
+function showWarning() {
+    $('#warning').toast('show')
+}
+
+function showError(err) {
+    $('.error-body').html(err.toString())
+    $('#error').toast('show')
 }
