@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "Jelle Glebbeek",
-  "license": "MIT",
+  "license": "GPL-3.0-only",
   "devDependencies": {
     "electron": "^8.2.0",
     "electron-builder": "^22.4.1"
@@ -25,15 +25,27 @@
   },
   "repository": {
     "type": "git",
-    "url": "yt-dl-gui"
+    "url": "git://github.com/jely2002/youtube-dl-gui.git"
   },
   "build": {
     "appId": "com.jelleglebbeek.youtube-dl-gui",
     "productName": "YouTube Downloader GUI",
     "copyright": "Copyright © 2020 Jelle Glebbeek",
+    "extraResources": [
+      "youtube-dl.exe",
+      "ffmpeg.exe"
+    ],
     "win": {
       "target": "portable",
       "icon": "build/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns",
+      "category": "public.app-category.utilities"
+    },
+    "linux": {
+      "target": "AppImage"
     }
   }
 }
