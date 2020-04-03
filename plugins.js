@@ -10,7 +10,7 @@ new customTitlebar.Titlebar({
     shadow: true,
     titleHorizontalAlignment: "left",
     enableMnemonics: false,
-    icon: "bin/icon-light.png"
+    icon: "img/icon-light.png"
 })
 
 $(document).ready(function () {

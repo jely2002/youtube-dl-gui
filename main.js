@@ -10,7 +10,7 @@ function createWindow () {
         height: 500, //550
         resizable: false,
         frame: false,
-        icon: "bin/icon-light.png",
+        icon: "img/icon-light.png",
         webPreferences: {
             nodeIntegration: true
         }
