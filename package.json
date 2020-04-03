@@ -31,6 +31,9 @@
     "appId": "com.jelleglebbeek.youtube-dl-gui",
     "productName": "YouTube Downloader GUI",
     "copyright": "Copyright © 2020 Jelle Glebbeek",
+    "asar": {
+      "smartUnpack": "false"
+    },
     "extraResources": [
       {
         "from": "resources",
