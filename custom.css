@@ -67,6 +67,21 @@ body {
     background-color: #5cb85c !important;
 }
 
+.toast-header {
+    border-bottom: none;
+    color: #fff;
+}
+
+.toast {
+    position: fixed;
+    bottom: 0;
+    left: 10px;
+}
+
+.toast-body {
+    background-color: #424242;
+}
+
 /* CUSTOM CHECKMARK SPINNER */
 .circle-loader {
     margin-bottom: 3.5em;
