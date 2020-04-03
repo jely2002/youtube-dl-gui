@@ -32,8 +32,10 @@
     "productName": "YouTube Downloader GUI",
     "copyright": "Copyright © 2020 Jelle Glebbeek",
     "extraResources": [
-      "youtube-dl.exe",
-      "ffmpeg.exe"
+      {
+        "from": "resources",
+        "to": "./"
+      }
     ],
     "win": {
       "target": "portable",
