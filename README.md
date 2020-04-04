@@ -16,3 +16,5 @@ Oh no! Please open up an issue [right here](https://github.com/jely2002/youtube-
 - Automatically keep playlists up-to-date
 - Embed thumbnail in .mp3
 - Set path to download videos to
+- Add metrics
+- Add auto updating binaries
