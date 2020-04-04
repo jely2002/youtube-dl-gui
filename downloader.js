@@ -8,8 +8,9 @@ let ffmpegLoc
 let timings
 
 if(process.platform === "darwin") {
-    youtubedl.setYtdlBinary("Contents/Resources/youtube-dl-ml")
-    ffmpegLoc = "Contents/Resources/ffmpeg-ml"
+    let appPath = remote.app.getAppPath().slice(0, -8)
+    youtubedl.setYtdlBinary(appPath + "youtube-dl")
+    ffmpegLoc = appPath + "ffmpeg"
 } else {
     youtubedl.setYtdlBinary("resources/youtube-dl.exe")
     ffmpegLoc = "resources/ffmpeg.exe"
