@@ -14,6 +14,9 @@ if(process.platform === "darwin") {
     let appPath = remote.app.getAppPath().slice(0, -8)
     youtubedl.setYtdlBinary(appPath + "youtube-dl-darwin")
     ffmpegLoc = appPath + "ffmpeg-darwin"
+    fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
+        if(err) console.log(err)
+    })
 } else {
     youtubedl.setYtdlBinary("resources/youtube-dl.exe")
     ffmpegLoc = "resources/ffmpeg.exe"

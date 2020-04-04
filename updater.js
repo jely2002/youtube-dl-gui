@@ -60,6 +60,13 @@ function update() {
                     }),
                     'utf8'
                 )
+                if(process.platform === "darwin") {
+                    console.log("Adding chmod permissions")
+                    fs.chmod(filePath, 0o755, function(err){
+                        if(err) console.log(err)
+                        console.log("chmod 0755 added")
+                    })
+                }
             })
         }
     })
