@@ -12,7 +12,7 @@ function createWindow () {
             resizable: false,
             maximizable: false,
             titleBarStyle: "hidden",
-            icon: "img/icon-light.png",
+            icon: "web-resources/icon-light.png",
             webPreferences: {
                 nodeIntegration: true
             }
@@ -25,7 +25,7 @@ function createWindow () {
             resizable: false,
             maximizable: false,
             frame: false,
-            icon: "img/icon-light.png",
+            icon: "web-resources/icon-light.png",
             webPreferences: {
                 nodeIntegration: true
             }
@@ -33,7 +33,9 @@ function createWindow () {
     }
 
     win.removeMenu()
-    //win.webContents.openDevTools()
+    if(process.argv[2] === '--dev') {
+        win.webContents.openDevTools()
+    }
     win.loadFile('index.html')
     win.on('closed', () => {
         win = null

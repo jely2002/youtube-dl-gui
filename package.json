@@ -4,7 +4,7 @@
   "description": "A GUI for the YouTube-dl library",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron . --dev",
     "dist": "electron-builder"
   },
   "keywords": [],
@@ -12,7 +12,8 @@
   "license": "GPL-3.0-only",
   "devDependencies": {
     "electron": "^8.2.0",
-    "electron-builder": "^22.4.1"
+    "electron-builder": "^22.4.1",
+    "request": "^2.88.2"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
@@ -20,6 +21,7 @@
     "custom-electron-titlebar": "^3.2.2-hotfix62",
     "fs": "0.0.1-security",
     "jquery": "^3.4.1",
+    "mkdirp": "^1.0.4",
     "popper.js": "^1.16.1",
     "youtube-dl": "^3.0.2"
   },
@@ -41,7 +43,10 @@
         {
           "from": "resources",
           "to": "./",
-          "filter": ["ffmpeg.exe", "youtube-dl.exe"]
+          "filter": [
+            "ffmpeg.exe",
+            "youtube-dl.exe"
+          ]
         }
       ]
     },
@@ -53,12 +58,12 @@
         {
           "from": "resources",
           "to": "./",
-          "filter": ["ffmpeg", "youtube-dl"]
+          "filter": [
+            "ffmpeg",
+            "youtube-dl"
+          ]
         }
       ]
-    },
-    "linux": {
-      "target": "AppImage"
     }
   }
 }
