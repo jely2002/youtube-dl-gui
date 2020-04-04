@@ -4,14 +4,25 @@ const customTitlebar = require('custom-electron-titlebar')
 
 let stepper
 
-new customTitlebar.Titlebar({
-    backgroundColor: customTitlebar.Color.fromHex('#000000'),
-    maximizable: false,
-    shadow: true,
-    titleHorizontalAlignment: "left",
-    enableMnemonics: false,
-    icon: "img/icon-light.png"
-})
+if(process.platform === "darwin") {
+    new customTitlebar.Titlebar({
+        backgroundColor: customTitlebar.Color.fromHex('#000000'),
+        maximizable: false,
+        shadow: true,
+        titleHorizontalAlignment: "center",
+        enableMnemonics: false,
+        icon: "img/icon-light.png"
+    })
+} else {
+    new customTitlebar.Titlebar({
+        backgroundColor: customTitlebar.Color.fromHex('#000000'),
+        maximizable: false,
+        shadow: true,
+        titleHorizontalAlignment: "left",
+        enableMnemonics: false,
+        icon: "img/icon-light.png"
+    })
+}
 
 $(document).ready(function () {
     stepper = new Stepper($('.bs-stepper')[0], {
