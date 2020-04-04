@@ -1,6 +1,7 @@
 'use strict'
 const youtubedl = require('youtube-dl')
 const {remote} = require('electron')
+const fs = require('fs')
 
 let selectedURL
 let availableFormats = []
@@ -13,8 +14,11 @@ let timings
 if(process.platform === "darwin") {
     let appPath = remote.app.getAppPath().slice(0, -8)
     youtubedl.setYtdlBinary(appPath + "youtube-dl-darwin")
-    ffmpegLoc = appPath + "ffmpeg-darwin"
+    ffmpegLoc = appPath + "ffmpeg"
     fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
+        if(err) console.log(err)
+    })
+    fs.chmod(appPath + "ffmpeg", 0o755, function(err){
         if(err) console.log(err)
     })
 } else {
