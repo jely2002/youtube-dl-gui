@@ -4,17 +4,33 @@ let win
 function createWindow () {
     app.allowRendererProcessReuse = true
 
-    win = new BrowserWindow({
-        show: false,
-        width: 800, //850
-        height: 500, //550
-        resizable: false,
-        frame: false,
-        icon: "img/icon-light.png",
-        webPreferences: {
-            nodeIntegration: true
-        }
-    })
+    if(process.platform === "darwin") {
+        win = new BrowserWindow({
+            show: false,
+            width: 800, //850
+            height: 500, //550
+            resizable: false,
+            maximizable: false,
+            titleBarStyle: "hidden",
+            icon: "img/icon-light.png",
+            webPreferences: {
+                nodeIntegration: true
+            }
+        })
+    } else {
+        win = new BrowserWindow({
+            show: false,
+            width: 800, //850
+            height: 500, //550
+            resizable: false,
+            maximizable: false,
+            frame: false,
+            icon: "img/icon-light.png",
+            webPreferences: {
+                nodeIntegration: true
+            }
+        })
+    }
 
     win.removeMenu()
     //win.webContents.openDevTools()
