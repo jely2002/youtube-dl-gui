@@ -1,5 +1,4 @@
 const os = require('os')
-const fs = require('fs')
 
 let Platform = process.platform
 let Version = remote.app.getVersion()
