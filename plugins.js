@@ -1,6 +1,7 @@
 'use strict'
 window.$ = window.jQuery = require('jquery')
 const customTitlebar = require('custom-electron-titlebar')
+const Menu = remote.Menu;
 
 let stepper
 let downloadPath = remote.app.getPath('downloads');
@@ -84,3 +85,35 @@ function setType(type) {
         $('.size').html('<b>Download size: </b>' + formatSizes[index])
     }
 }
+
+const InputMenu = Menu.buildFromTemplate([{
+    label: 'Cut',
+    role: 'cut',
+}, {
+    label: 'Copy',
+    role: 'copy',
+}, {
+    label: 'Paste',
+    role: 'paste',
+}, {
+    type: 'separator',
+}, {
+    label: 'Select all',
+    role: 'selectall',
+},
+]);
+
+document.body.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let node = e.target;
+
+    while (node) {
+        if (node.nodeName.match(/^(input|textarea)$/i) || node.isContentEditable) {
+            InputMenu.popup(remote.getCurrentWindow());
+            break;
+        }
+        node = node.parentNode;
+    }
+});
