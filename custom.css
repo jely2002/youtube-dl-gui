@@ -36,7 +36,14 @@ body {
     object-fit: cover;
 }
 
-.title, .channel, .duration {
+.thumbnail-settings {
+    border-radius: 3px;
+    width: 100%;
+    height: 18vw;
+    object-fit: cover;
+}
+
+.title, .channel, .duration, .size, #directoryInputLabel {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -80,6 +87,10 @@ body {
 
 .toast-body {
     background-color: #424242;
+}
+
+#directoryInput {
+    cursor: default;
 }
 
 /* CUSTOM CHECKMARK SPINNER */

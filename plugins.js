@@ -3,15 +3,17 @@ window.$ = window.jQuery = require('jquery')
 const customTitlebar = require('custom-electron-titlebar')
 
 let stepper
+let downloadPath = remote.app.getPath('downloads');
+let downloadMode
 
 if(process.platform === "darwin") {
     new customTitlebar.Titlebar({
-        backgroundColor: customTitlebar.Color.fromHex('#000000'),
+        backgroundColor: customTitlebar.Color.fromHex('#212121'),
         maximizable: false,
-        shadow: true,
+        shadow: false,
         titleHorizontalAlignment: "center",
         enableMnemonics: false,
-        icon: "img/icon-light.png"
+        icon: "web-resources/icon-light.png"
     })
 } else {
     new customTitlebar.Titlebar({
@@ -20,7 +22,7 @@ if(process.platform === "darwin") {
         shadow: true,
         titleHorizontalAlignment: "left",
         enableMnemonics: false,
-        icon: "img/icon-light.png"
+        icon: "web-resources/icon-light.png"
     })
 }
 
@@ -37,18 +39,48 @@ $(document).ready(function () {
         autohide: false,
         animation: true
     })
+    $('#connection').toast({
+        autohide: false,
+        animation: true
+    })
+    $("#directoryInputLabel").html(remote.app.getPath('downloads'))
+    $("#quality").on('change', function() {
+        if(downloadMode === "audio") return
+        let index = availableFormats.indexOf(document.getElementById("quality").options[document.getElementById("quality").selectedIndex].text)
+        $('.size').html('<b>Download size: </b>' + formatSizes[index])
+    })
 })
+
+function setDirectory() {
+    $('#directoryInput').blur();
+    let path = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+        defaultPath: downloadPath,
+        properties: [
+            'openDirectory',
+            'createDirectory'
+        ]
+    }).then(result => {
+        $('#directoryInputLabel').html(result.filePaths[0])
+        downloadPath = result.filePaths[0]
+    })
+}
 
 function setType(type) {
     $("#download-btn").prop("disabled", false)
+    $("#directoryInput").prop("disabled", false)
     if(type === "audio") {
+        downloadMode = "audio"
         $('#quality').empty().append(new Option("Best", "best")).append(new Option("Worst", "worst")).prop("disabled", false).val("best")
+        $('.size').html('<b>Download size: </b>' + audioSize)
     } else if(type === "video") {
+        downloadMode = "video"
         $('#quality').empty()
         availableFormats.forEach(function(quality) {
-            $('#quality').append(new Option(quality, quality)).prop("disabled", false)
+            $('#quality').append(new Option(quality, availableFormatCodes[availableFormats.indexOf(quality)])).prop("disabled", false)
             $('#subtitles').prop("disabled", false)
         })
-        $('#quality').val(availableFormats[availableFormats.length-1])
+        $('#quality').val(availableFormatCodes[availableFormatCodes.length-1])
+        let index = availableFormats.indexOf(document.getElementById("quality").options[document.getElementById("quality").selectedIndex].text)
+        $('.size').html('<b>Download size: </b>' + formatSizes[index])
     }
 }

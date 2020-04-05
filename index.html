@@ -49,7 +49,7 @@
                                     <div class="spinner-border text-dark" role="status">
                                         <span class="sr-only">Loading...</span>
                                     </div>
-                                    <img src="img/waiting-for-link.png" class="img-fluid thumbnail" alt="Thumbnail of the specified video">
+                                    <img src="web-resources/waiting-for-link.png" class="img-fluid thumbnail" alt="Thumbnail of the specified video">
                                 </div>
                                 <div class="col-md-6 text-left">
                                     <p class="title"><strong>Title:</strong> --</p>
@@ -67,10 +67,12 @@
                     <div id="settings-part" class="content fade" role="tabpanel" aria-labelledby="settings-part-trigger">
                         <form class="main-input">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <img src="img/waiting-for-link.png" class="img-fluid thumbnail" alt="Thumbnail of the specified video">
+                                <div class="col-md-5 text-left">
+                                    <img src="web-resources/waiting-for-link.png" class="img-fluid thumbnail-settings" alt="Thumbnail of the specified video">
+                                        <p class="size mt-3"><strong>Download size:</strong> --</p>
+                                        <p class="duration mb-0"><strong>Duration:</strong> --</p>
                                 </div>
-                                <div class="col-md-6 text-left">
+                                <div class="col-md-7 text-left">
                                     <div class="form-group">
                                         <form id="settings">
                                             <div class="custom-control custom-radio custom-control-inline">
@@ -92,6 +94,12 @@
                                                 <input type="checkbox" class="custom-control-input" id="subtitles" disabled>
                                                 <label class="custom-control-label" for="subtitles">Add subtitles (if available)</label>
                                             </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="custom-file">
+                                                    <input type="text" onclick="setDirectory()" class="custom-file-input" id="directoryInput" disabled>
+                                                    <label class="custom-file-label" id="directoryInputLabel" for="directoryInput">Choose download directory</label>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
@@ -130,6 +138,15 @@
         An error has occured, please report this to the author.
     </div>
 </div>
+<div class="toast" id="connection" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-danger">
+        <i class="fas mr-3 fa-wifi"></i>
+        <strong class="mr-auto">No internet connection found!</strong>
+    </div>
+    <div class="toast-body">
+        Please connect to the internet and restart the app. This app will not work without an internet connection.
+    </div>
+</div>
 <div class="toast warning-toast" id="warning" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header bg-warning">
         <i class="fas mr-3 fa-exclamation-triangle"></i>
@@ -139,12 +156,14 @@
         </button>
     </div>
     <div class="toast-body">
-        The download is taking longer than usual, this might be because you are downloading a large file. Otherwise please restart the program.
+        The download is taking longer than usual, this might be because you're downloading a large file, have a slow connection, or are downloading subtitles. Otherwise please restart the program.
     </div>
 </div>
+<script src="downloader.js"></script>
 <script src="plugins.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/js/bs-stepper.min.js" integrity="sha256-INfYp5owpb0btFquNHGlhSxgGYrFlGYRU2oN/3jWGeM=" crossorigin="anonymous"></script>
-<script src="downloader.js"></script>
+<script src="metrics.js"></script>
+<script src="updater.js"></script>
 </body>
 </html>
