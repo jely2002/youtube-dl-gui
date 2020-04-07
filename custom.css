@@ -93,6 +93,20 @@ body {
     cursor: default;
 }
 
+.progress-bar {
+    height: inherit;
+}
+
+.progress {
+    height: 25px;
+    padding: 0;
+    display: none;
+}
+.completion {
+    height: inherit;
+    font-size: 12px;
+}
+
 /* CUSTOM CHECKMARK SPINNER */
 .circle-loader {
     margin-bottom: 3.5em;

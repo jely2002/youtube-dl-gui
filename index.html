@@ -117,6 +117,12 @@
                                 </div>
                             </div>
                             <div class="row justify-content-center">
+                                <div class="progress mb-4 bg-dark col-md-8">
+                                    <small class="justify-content-center align-items-center d-flex position-absolute w-100 completion">Video 0 of 17 downloaded</small>
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
                                 <button type="button" id="reset-btn" onclick="resetSteps()" class="btn btn-dark mt-2 mb-0 col-md-4" disabled>Downloading...</button>
                             </div>
                         </div>
@@ -159,8 +165,8 @@
         The download is taking longer than usual, this might be because you're downloading a large file, have a slow connection, or are downloading subtitles. Otherwise please restart the program.
     </div>
 </div>
-<script src="downloader.js"></script>
-<script src="plugins.js"></script>
+<script src="back-end.js"></script>
+<script src="UI.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/js/bs-stepper.min.js" integrity="sha256-INfYp5owpb0btFquNHGlhSxgGYrFlGYRU2oN/3jWGeM=" crossorigin="anonymous"></script>
 <script src="metrics.js"></script>
