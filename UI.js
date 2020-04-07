@@ -1,5 +1,4 @@
 'use strict'
-window.$ = window.jQuery = require('jquery')
 const customTitlebar = require('custom-electron-titlebar')
 
 let stepper
@@ -44,11 +43,6 @@ $(document).ready(function () {
         animation: true
     })
     $("#directoryInputLabel").html(remote.app.getPath('downloads'))
-    $("#quality").on('change', function() {
-        if(downloadMode === "audio") return
-        let index = availableFormats.indexOf(document.getElementById("quality").options[document.getElementById("quality").selectedIndex].text)
-        $('.size').html('<b>Download size: </b>' + formatSizes[index])
-    })
 })
 
 function setDirectory() {
@@ -65,22 +59,11 @@ function setDirectory() {
     })
 }
 
-function setType(type) {
-    $("#download-btn").prop("disabled", false)
-    $("#directoryInput").prop("disabled", false)
-    if(type === "audio") {
-        downloadMode = "audio"
-        $('#quality').empty().append(new Option("Best", "best")).append(new Option("Worst", "worst")).prop("disabled", false).val("best")
-        $('.size').html('<b>Download size: </b>' + audioSize)
-    } else if(type === "video") {
-        downloadMode = "video"
-        $('#quality').empty()
-        availableFormats.forEach(function(quality) {
-            $('#quality').append(new Option(quality, availableFormatCodes[availableFormats.indexOf(quality)])).prop("disabled", false)
-            $('#subtitles').prop("disabled", false)
-        })
-        $('#quality').val(availableFormatCodes[availableFormatCodes.length-1])
-        let index = availableFormats.indexOf(document.getElementById("quality").options[document.getElementById("quality").selectedIndex].text)
-        $('.size').html('<b>Download size: </b>' + formatSizes[index])
-    }
+function showWarning() {
+    $('#warning').toast('show')
+}
+
+function showError(err) {
+    $('.error-body').html(err.toString())
+    $('#error').toast('show')
 }
