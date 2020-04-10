@@ -3,7 +3,6 @@ const customTitlebar = require('custom-electron-titlebar')
 
 let stepper
 let downloadPath = remote.app.getPath('downloads');
-let downloadMode
 
 if(process.platform === "darwin") {
     new customTitlebar.Titlebar({
@@ -43,6 +42,22 @@ $(document).ready(function () {
         animation: true
     })
     $("#directoryInputLabel").html(remote.app.getPath('downloads'))
+    $("#max,#min").keydown(function () {
+        if (!$(this).val() || (parseInt($(this).val()) <= parseInt($(this).attr("max")) && parseInt($(this).val()) > 0)) $(this).data("old", $(this).val())
+    })
+    $("#max,#min").keyup(function () {
+        if (!(!$(this).val() || (parseInt($(this).val()) <= parseInt($(this).attr("max")) && parseInt($(this).val()) > 0))) $(this).val($(this).data("old"))
+    })
+    $("#max, #min").on('input', function() {
+        if($("#max").val() === "" || $("#min").val() === "") return
+        applyRange()
+        updateAvailableFormats()
+        if($('input[name=type-select]:checked').val() === "video") {
+            $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
+        } else {
+            $('.size').html('<b>Download size: </b> ~' + getTotalSize())
+        }
+    });
 })
 
 function setDirectory() {
