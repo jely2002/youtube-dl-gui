@@ -1,6 +1,6 @@
 {
   "name": "youtube-dl-gui",
-  "version": "1.3.2",
+  "version": "1.4.1",
   "description": "A GUI for the YouTube-dl library",
   "main": "main.js",
   "scripts": {
