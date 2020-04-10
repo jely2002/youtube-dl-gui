@@ -93,6 +93,14 @@ body {
     cursor: default;
 }
 
+#min, #max {
+    width: 75px;
+}
+
+.video-range {
+    display: none;
+}
+
 .progress-bar {
     height: inherit;
 }

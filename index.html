@@ -62,6 +62,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row justify-content-center">
+                                <div class="progress metadata mt-4 bg-dark col-md-11">
+                                    <small class="justify-content-center metadata align-items-center d-flex position-absolute w-100 completion">Got video metadata 1 of 0</small>
+                                    <div class="progress-bar bg-success metadata" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div id="settings-part" class="content fade" role="tabpanel" aria-labelledby="settings-part-trigger">
@@ -82,6 +88,14 @@
                                             <div class="custom-control custom-radio custom-control-inline">
                                                 <input type="radio" onclick="setType('audio')" id="audio" value="audio" name="type-select" class="custom-control-input">
                                                 <label class="custom-control-label" for="audio">Audio only</label>
+                                            </div>
+                                            <div class="form-inline video-range">
+                                                <div class="form-group mt-4">
+                                                        <label for="min">Download video</label>
+                                                        <input id="min" type="number" class="form-control mx-2" min="1" value="1" disabled>
+                                                        <label for="max">till</label>
+                                                        <input id="max" type="number" class="form-control mx-2" min="1" disabled>
+                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="quality"></label>
@@ -117,9 +131,9 @@
                                 </div>
                             </div>
                             <div class="row justify-content-center">
-                                <div class="progress mb-4 bg-dark col-md-8">
-                                    <small class="justify-content-center align-items-center d-flex position-absolute w-100 completion">Video 0 of 17 downloaded</small>
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress download mb-4 bg-dark col-md-8">
+                                    <small class="justify-content-center align-items-center download d-flex position-absolute w-100 completion">Video 0 of 17 downloaded</small>
+                                    <div class="progress-bar download bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
                             <div class="row justify-content-center">
@@ -165,8 +179,10 @@
         The download is taking longer than usual, this might be because you're downloading a large file, have a slow connection, or are downloading subtitles. Otherwise please restart the program.
     </div>
 </div>
-<script src="back-end.js"></script>
+<script src="controller.js"></script>
 <script src="UI.js"></script>
+<script src="video.js"></script>
+<script src="playlist.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/js/bs-stepper.min.js" integrity="sha256-INfYp5owpb0btFquNHGlhSxgGYrFlGYRU2oN/3jWGeM=" crossorigin="anonymous"></script>
 <script src="metrics.js"></script>
