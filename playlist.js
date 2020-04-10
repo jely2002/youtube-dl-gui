@@ -10,9 +10,12 @@ function showPlaylistInfo(url) {
     function getVideoMetadata(item, cb) {
         youtubedl.exec(item, ['-J', '--skip-download'], {}, function (err, output) {
             if(output == null) {
-                --amountToDownload
-                $(".duration").html("<strong>Playlist size:</strong> " + amountToDownload + " videos")
-                $('#max').val(amountToDownload)
+                ++metadataDownloaded
+                playlistVideos.push({removed: "yes", playlist_index: 0, webpage_url: item})
+                let percentage = ((metadataDownloaded / amountToDownload) * 100) + "%"
+                $('.progress-bar.metadata').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
+                $('.completion.metadata').html("Fetching video metadata (" + metadataDownloaded + " of " + amountToDownload + ")")
+                console.log(output)
                 cb()
                 return
             }
@@ -29,6 +32,13 @@ function showPlaylistInfo(url) {
 
     let playlistmetadata = new Promise((resolve, reject) => {
         youtubedl.exec(selectedURL, ['-J', '--flat-playlist'], {}, function (err, output) {
+            if(output == null) {
+                $('.invalid-feedback').html("This playlist does not exist, is private or is blocked")
+                $('#url').addClass("is-invalid").removeClass("is-valid")
+                $(".spinner-border").css("display", "none")
+                $(".progress.metadata").css("display", "none");
+                return
+            }
             if (err) showError(err)
             let metadata = JSON.parse(output)
             amountToDownload = metadata.entries.length
@@ -40,6 +50,7 @@ function showPlaylistInfo(url) {
                 videoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
             })
             $('.completion.metadata').html("Fetching video metadata (" + metadataDownloaded + " of " + amountToDownload + ")")
+            console.log(videoURLS)
             resolve()
         })
     })
@@ -59,7 +70,7 @@ function showPlaylistInfo(url) {
             if (!(firstSideResolved && secondSideResolved && thirdSideResolved && fourthSideResolved)) return
             videoURLS.forEach(function(url) {
                 playlistVideos.forEach(function(video) {
-                    if(video.webpage_url === url) video.playlist_index = videoURLS.indexOf(url) + 1
+                    if(video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url)) video.playlist_index = videoURLS.indexOf(url) + 1
                 })
             })
             playlistVideos.sort(function(a, b) {
@@ -72,6 +83,7 @@ function showPlaylistInfo(url) {
             $('#step-one-btn').prop("disabled", false)
             $('.video-range').css("display", "initial")
             playlistVideos.forEach(function (video) {
+                if(video.removed === "yes") return
                 video.formats.forEach(function (format) {
                     if (format.format_note !== "tiny") {
                         let alreadyIncludes
@@ -159,6 +171,15 @@ function downloadPlaylist(quality) {
     let videosDownloaded = 0
 
     function downloadVideo(item, format_id, queue, cb) {
+        if(item.removed === "yes") {
+            ++videosDownloaded
+            queue++
+            let percentage = ((videosDownloaded / amountToDownload) * 100) + "%"
+            $('.progress-bar.download').css("width", percentage).attr("aria-valuenow", percentage.slice(0,-1))
+            $('.completion.download').html("Video " + videosDownloaded + " of " + amountToDownload + " downloaded")
+            cb()
+            return
+        }
         let options
         if($('input[name=type-select]:checked').val() === "audio") {
             let realQuality = 0

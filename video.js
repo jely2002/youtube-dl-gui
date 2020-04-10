@@ -2,6 +2,12 @@ function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
     selectedURL = url
     youtubedl.exec(selectedURL, ['-J','--skip-download'], {}, function(err, output) {
+        if(output == null) {
+            $('.invalid-feedback').html("This video does not exist, is private or is blocked")
+            $('#url').addClass("is-invalid").removeClass("is-valid")
+            $(".spinner-border").css("display", "none")
+            return
+        }
         if (err) showError(err)
         let video = JSON.parse(output)
         let date = new Date(video.duration * 1000)

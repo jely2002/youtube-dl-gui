@@ -16,7 +16,6 @@ let audioFormat
 let mediaMode
 
 // ***BINARY/PATH METHODS*** //
-
 if(process.platform === "darwin") {
     let appPath = remote.app.getAppPath().slice(0, -8)
     youtubedl.setYtdlBinary(appPath + "youtube-dl-darwin")
@@ -52,6 +51,7 @@ function url_entered() {
         showPlaylistInfo(url)
         $('#url').addClass("is-valid").removeClass("is-invalid")
     } else {
+        $('.invalid-feedback').html("Please enter a valid YouTube URL")
         $('#url').addClass("is-invalid").removeClass("is-valid")
         $('#step-one-btn').prop("disabled", true)
     }
@@ -134,6 +134,10 @@ function getTotalSize(videoQuality) {
         if(mediaMode === "video") {
             let sum = 0
             filteredPlaylistVideos.forEach(function (video) {
+                if(video.removed === "yes") {
+                    playlistFormatIDs.push("0")
+                    return
+                }
                 let filteredFormats = []
                 video.formats.forEach(function (format) {
                     let includes
@@ -173,6 +177,7 @@ function getTotalSize(videoQuality) {
         } else {
             let sum = 0
             filteredPlaylistVideos.forEach(function (video) {
+                if(video.removed === "yes") return
                 video.formats.forEach(function (format) {
                     if (format.ext === "m4a") {
                         sum += format.filesize
@@ -234,6 +239,9 @@ function applyRange() {
 function updateAvailableFormats() {
     availableVideoFormats = []
     filteredPlaylistVideos.forEach(function(video) {
+        if(video.removed === "yes") {
+            return
+        }
         video.formats.forEach(function (format) {
             if (format.format_note !== "tiny") {
                 let alreadyIncludes
