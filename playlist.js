@@ -208,7 +208,7 @@ function downloadPlaylist(quality) {
             options.push("srt")
         }
         queue++
-        youtubedl.exec(item, options, {}, function(err, output) {
+        youtubedl.exec(item.webpage_url, options, {}, function(err, output) {
             if (err) showError(err)
             ++videosDownloaded
             let percentage = ((videosDownloaded / amountToDownload) * 100) + "%"
@@ -226,25 +226,25 @@ function downloadPlaylist(quality) {
 
     let videometadata1 = halfSlice1.reduce((promiseChain, item) => {
         return promiseChain.then(() => new Promise((resolve) => {
-            downloadVideo(item.webpage_url, formatSlice1, procOneQueue, resolve)
+            downloadVideo(item, formatSlice1, procOneQueue, resolve)
         }))
     }, Promise.resolve())
 
     let videometadata2 = halfSlice2.reduce((promiseChain, item) => {
         return promiseChain.then(() => new Promise((resolve) => {
-            downloadVideo(item.webpage_url, formatSlice2, procTwoQueue, resolve)
+            downloadVideo(item, formatSlice2, procTwoQueue, resolve)
         }))
     }, Promise.resolve())
 
     let videometadata3 = quarterSlice1.reduce((promiseChain, item) => {
         return promiseChain.then(() => new Promise((resolve) => {
-            downloadVideo(item.webpage_url, formatSlice3, procThreeQueue, resolve)
+            downloadVideo(item, formatSlice3, procThreeQueue, resolve)
         }))
     }, Promise.resolve())
 
     let videometadata4 = quarterSlice2.reduce((promiseChain, item) => {
         return promiseChain.then(() => new Promise((resolve) => {
-            downloadVideo(item.webpage_url, formatSlice4, procFourQueue, resolve)
+            downloadVideo(item, formatSlice4, procFourQueue, resolve)
         }))
     }, Promise.resolve())
 
