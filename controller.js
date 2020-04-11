@@ -1,9 +1,11 @@
 'use strict'
-const youtubedl = require('youtube-dl')
 const {remote} = require('electron')
 window.$ = window.jQuery = require('jquery')
 const fs = require('fs')
+const universalify = require('universalify')
+const execa = universalify.fromPromise(require('execa'))
 
+let ytdlBinary
 let selectedURL
 let ffmpegLoc
 let timings
@@ -18,7 +20,7 @@ let mediaMode
 // ***BINARY/PATH METHODS*** //
 if(process.platform === "darwin") {
     let appPath = remote.app.getAppPath().slice(0, -8)
-    youtubedl.setYtdlBinary(appPath + "youtube-dl-darwin")
+    ytdlBinary = appPath + "youtube-dl-darwin"
     ffmpegLoc = appPath + "ffmpeg"
     fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
         if(err) showError(err)
@@ -27,8 +29,26 @@ if(process.platform === "darwin") {
         if(err) showError(err)
     })
 } else {
-    youtubedl.setYtdlBinary("resources/youtube-dl.exe")
+    ytdlBinary = "resources/youtube-dl.exe"
     ffmpegLoc = "resources/ffmpeg.exe"
+}
+
+function callYTDL (url, args, options = {}, cb) {
+    if (process.platform === "win32") {
+        args.push('--encoding')
+        args.push('utf8')
+    }
+    let singleRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi
+    if(singleRegex.test(url)) {
+        args.push("https://www." + url.match(singleRegex)[0])
+    } else {
+        args.push(url)
+    }
+    args.push('--youtube-skip-dash-manifest')
+    return execa(ytdlBinary, args, options, function done(err, output) {
+        if (err) return cb(err)
+        return cb(null, output.stdout.trim().split(/\r?\n/))
+    })
 }
 
 // ***URL METHODS*** //
