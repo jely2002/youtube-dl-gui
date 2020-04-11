@@ -1,7 +1,7 @@
 function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
     selectedURL = url
-    youtubedl.exec(selectedURL, ['-J','--skip-download'], {}, function(err, output) {
+    callYTDL(selectedURL, ['-J','--skip-download'], {}, function(err, output) {
         if(output == null) {
             $('.invalid-feedback').html("This video does not exist, is private or is blocked")
             $('#url').addClass("is-invalid").removeClass("is-valid")
@@ -48,7 +48,7 @@ function downloadAudio(quality) {
         '--embed-thumbnail',
         '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
     ]
-    youtubedl.exec(selectedURL, options, {}, function(err, output) {
+    callYTDL(selectedURL, options, {}, function(err, output) {
         if (err) showError(err)
         downloadFinished()
     })
@@ -68,7 +68,7 @@ function downloadVideo(format_id) {
         options.push("--convert-subs")
         options.push("srt")
     }
-    youtubedl.exec(selectedURL, options, {}, function(err, output) {
+    callYTDL(selectedURL, options, {}, function(err, output) {
         if (err) showError(err)
         downloadFinished()
     })

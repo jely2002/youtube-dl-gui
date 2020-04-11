@@ -8,7 +8,7 @@ function showPlaylistInfo(url) {
     let metadataDownloaded = 0
 
     function getVideoMetadata(item, cb) {
-        youtubedl.exec(item, ['-J', '--skip-download'], {}, function (err, output) {
+        callYTDL(item, ['-J', '--skip-download'], {}, function (err, output) {
             if(output == null) {
                 ++metadataDownloaded
                 playlistVideos.push({removed: "yes", playlist_index: 0, webpage_url: item})
@@ -31,7 +31,7 @@ function showPlaylistInfo(url) {
     }
 
     let playlistmetadata = new Promise((resolve, reject) => {
-        youtubedl.exec(selectedURL, ['-J', '--flat-playlist'], {}, function (err, output) {
+        callYTDL(selectedURL, ['-J', '--flat-playlist'], {}, function (err, output) {
             if(output == null) {
                 $('.invalid-feedback').html("This playlist does not exist, is private or is blocked")
                 $('#url').addClass("is-invalid").removeClass("is-valid")
@@ -208,7 +208,7 @@ function downloadPlaylist(quality) {
             options.push("srt")
         }
         queue++
-        youtubedl.exec(item.webpage_url, options, {}, function(err, output) {
+        callYTDL(item.webpage_url, options, {}, function(err, output) {
             if (err) showError(err)
             ++videosDownloaded
             let percentage = ((videosDownloaded / amountToDownload) * 100) + "%"
