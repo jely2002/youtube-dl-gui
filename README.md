@@ -19,4 +19,4 @@ Oh no! Please open up an issue [right here](https://github.com/jely2002/youtube-
 
 ## Planned features
 - Auto-update the app when a new version is released
-- Migrate away from [node-youtube-dl](https://github.com/przemyslawpluta/node-youtube-dl)
+- Fix DASH video downloads
