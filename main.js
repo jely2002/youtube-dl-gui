@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron')
+const { autoUpdater } = require("electron-updater")
 let win
 
 function createWindow () {
@@ -18,17 +19,19 @@ function createWindow () {
             }
         })
     } else {
-        win = new BrowserWindow({
-            show: false,
-            width: 800, //850
-            height: 530, //550
-            resizable: false,
-            maximizable: false,
-            frame: false,
-            icon: "web-resources/icon-light.png",
-            webPreferences: {
-                nodeIntegration: true
-            }
+        autoUpdater.checkForUpdatesAndNotify().then(() => {
+            win = new BrowserWindow({
+                show: false,
+                width: 800, //850
+                height: 530, //550
+                resizable: false,
+                maximizable: false,
+                frame: false,
+                icon: "web-resources/icon-light.png",
+                webPreferences: {
+                    nodeIntegration: true
+                }
+            })
         })
     }
 
@@ -46,7 +49,11 @@ function createWindow () {
     })
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+    autoUpdater.checkForUpdatesAndNotify();
+    createWindow()
+
+})
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {

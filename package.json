@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron . --dev",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "release": "electron-builder --win -p always"
   },
   "keywords": [],
   "author": "Jelle Glebbeek",
@@ -17,16 +18,17 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "custom-electron-titlebar": "^3.2.2-hotfix62",
+    "electron-updater": "^4.2.5",
     "execa": "^4.0.0",
     "fs": "0.0.1-security",
     "jquery": "^3.4.1",
     "popper.js": "^1.16.1",
-    "universalify": "^1.0.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "universalify": "^1.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/jely2002/youtube-dl-gui.git"
+    "url": "https://github.com/jely2002/youtube-dl-gui.git"
   },
   "build": {
     "appId": "com.jelleglebbeek.youtube-dl-gui",
@@ -36,7 +38,7 @@
       "smartUnpack": "false"
     },
     "win": {
-      "target": "portable",
+      "target": "nsis",
       "icon": "build/icon.ico",
       "extraResources": [
         {
