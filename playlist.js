@@ -26,6 +26,7 @@ function showPlaylistInfo(url) {
             let percentage = ((metadataDownloaded / amountToDownload) * 100) + "%"
             $('.progress-bar.metadata').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
             $('.completion.metadata').html("Fetching video metadata (" + metadataDownloaded + " of " + amountToDownload + ")")
+            remote.getCurrentWindow().setProgressBar(metadataDownloaded / amountToDownload)
             cb()
         })
     }
@@ -77,6 +78,7 @@ function showPlaylistInfo(url) {
                 return a.playlist_index - b.playlist_index;
             });
             $('.completion.metadata').html("Fetched all metadata!")
+            remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
             $(".thumbnail").attr("src", playlistVideos[0].thumbnail)
             $(".thumbnail-settings").attr("src", playlistVideos[0].thumbnail)
             $(".spinner-border").css("display", "none")
@@ -214,6 +216,7 @@ function downloadPlaylist(quality) {
             let percentage = ((videosDownloaded / amountToDownload) * 100) + "%"
             $('.progress-bar.download').css("width", percentage).attr("aria-valuenow", percentage.slice(0,-1))
             $('.completion.download').html("Video " + videosDownloaded + " of " + amountToDownload + " downloaded")
+            remote.getCurrentWindow().setProgressBar(videosDownloaded / amountToDownload)
             cb()
         })
     }

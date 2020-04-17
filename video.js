@@ -1,5 +1,6 @@
 function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
+    remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
     selectedURL = url
     callYTDL(selectedURL, ['-J','--skip-download'], {}, function(err, output) {
         if(output == null) {
@@ -19,6 +20,7 @@ function showInfo(url) {
         $(".duration").html("<strong>Duration:</strong> " + duration.replace(/(0d\s00:)|(0d\s)/g,""))
         $(".spinner-border").css("display", "none")
         $('#step-one-btn').prop("disabled", false)
+        remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
         video.formats.forEach(function(format) {
             if(format.fps !== null) {
                 let alreadyIncludes
@@ -36,6 +38,7 @@ function showInfo(url) {
 }
 
 function downloadAudio(quality) {
+    remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
     console.log("downloading audio: " + selectedURL)
     let realQuality = 0
     if(quality === "worst") {
@@ -55,6 +58,7 @@ function downloadAudio(quality) {
 }
 
 function downloadVideo(format_id) {
+    remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
     console.log("downloading video: " + selectedURL)
     const options = [
         '-f', format_id + "+bestaudio[ext=m4a]/best",

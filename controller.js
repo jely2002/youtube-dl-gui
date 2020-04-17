@@ -113,6 +113,7 @@ function downloadFinished() {
     $('.circle-loader').toggleClass('load-complete')
     $('.checkmark').toggle()
     $('#reset-btn').html("Download another video").prop("disabled", false)
+    remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
 }
 
 // ***SETTINGS METHODS*** //
