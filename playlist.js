@@ -88,6 +88,8 @@ function showPlaylistInfo(url) {
             playlistVideos.forEach(function (video) {
                 if(video.removed === "yes") return
                 video.formats.forEach(function (format) {
+                    if(format.format_note === "DASH audio") return
+                    if(format.format_note === "DASH video") return
                     if (format.format_note !== "tiny") {
                         let alreadyIncludes
                         availableVideoFormats.forEach(function (savedFormat) {
@@ -97,6 +99,7 @@ function showPlaylistInfo(url) {
                             availableVideoFormats.push(format)
                         }
                     }
+
                 })
             })
         }

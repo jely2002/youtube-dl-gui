@@ -128,8 +128,11 @@ function setType(type) {
         if(type === "video") {
             $('#quality').empty()
             availableVideoFormats.forEach(function (format) {
-                $('#quality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
-                $('#subtitles').prop("disabled", false)
+                if(format.format_note !== "DASH video") {
+                    $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
+                    $('#quality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
+                    $('#subtitles').prop("disabled", false)
+                }
             })
             $('#quality').val(availableVideoFormats[availableVideoFormats.length - 1].format_id)
             $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
