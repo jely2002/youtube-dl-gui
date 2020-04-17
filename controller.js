@@ -47,7 +47,6 @@ function callYTDL (url, args, options = {}, cb) {
     } else {
         args.push(url)
     }
-    args.push('--youtube-skip-dash-manifest')
     return execa(ytdlBinary, args, options, function done(err, output) {
         if (err) return cb(err)
         return cb(null, output.stdout.trim().split(/\r?\n/))
@@ -141,14 +140,30 @@ function setType(type) {
     } else if (type === "video") {
         $('#quality').empty()
         availableVideoFormats.forEach(function (format) {
-            $('#quality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
+            if(format.format_note === "DASH video") {
+                let note
+                if(format.fps === 30 || format.fps === 24|| format.fps === 29) {
+                   note = format.height + "p"
+                } else {
+                    note = format.height + "p" + format.fps
+                }
+                $('#quality').append(new Option(note, format.format_id)).prop("disabled", false)
+                $('.size').html('<b>Download size: </b>' + "DASH")
+            } else {
+                $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
+                $('#quality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
+            }
             $('#subtitles').prop("disabled", false)
         })
         $('#quality').val(availableVideoFormats[availableVideoFormats.length - 1].format_id)
-        $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
     } else {
-            $('#quality').empty().append(new Option("Best", "best")).append(new Option("Worst", "worst")).prop("disabled", false).val("best")
+        if(audioFormat.format_note === "DASH audio") {
+            $('.size').html('<b>Download size: </b>DASH')
+        } else {
             $('.size').html('<b>Download size: </b>' + '~' + getTotalSize())
+        }
+        $('#quality').empty().append(new Option("Best", "best")).append(new Option("Worst", "worst")).prop("disabled", false).val("best")
+
     }
 }
 
@@ -231,7 +246,9 @@ $(document).ready(function () {
         if (mediaMode === "audio") return
         let selected = document.getElementById("quality").options[document.getElementById("quality").selectedIndex].text
         applyRange()
-        $('.size').html('<b>Download size: </b>' + getTotalSize(selected))
+        if($('.size').html() !== '<b>Download size: </b>DASH') {
+            $('.size').html('<b>Download size: </b>' + getTotalSize(selected))
+        }
     })
 })
 

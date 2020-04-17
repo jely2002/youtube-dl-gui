@@ -1,3 +1,4 @@
+'use strict'
 function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
     remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
@@ -22,16 +23,27 @@ function showInfo(url) {
         $('#step-one-btn').prop("disabled", false)
         remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
         video.formats.forEach(function(format) {
-            if(format.fps !== null) {
+            console.log(format)
+            if(format.format_note === "DASH video") {
                 let alreadyIncludes
-                availableVideoFormats.forEach(function(savedFormat) {
-                    if(savedFormat.format_note === format.format_note) alreadyIncludes = true
+                availableVideoFormats.forEach(function (savedFormat) {
+                    if (savedFormat.height === format.height && savedFormat.fps === format.fps) alreadyIncludes = true
                 })
-                if(!alreadyIncludes) {
+                if (!alreadyIncludes) {
                     availableVideoFormats.push(format)
                 }
-            } else if(format.ext === "m4a") {
-                audioFormat = format
+            } else {
+                if (format.fps !== null) {
+                    let alreadyIncludes
+                    availableVideoFormats.forEach(function (savedFormat) {
+                        if (savedFormat.format_note === format.format_note) alreadyIncludes = true
+                    })
+                    if (!alreadyIncludes) {
+                        availableVideoFormats.push(format)
+                    }
+                } else if (format.ext === "m4a") {
+                    audioFormat = format
+                }
             }
         })
     })
