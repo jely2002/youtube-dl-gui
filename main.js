@@ -19,7 +19,7 @@ function createWindow () {
             }
         })
     } else {
-        autoUpdater.checkForUpdatesAndNotify().then(() => {
+        autoUpdater.checkForUpdatesAndNotify();
             win = new BrowserWindow({
                 show: false,
                 width: 800, //850
@@ -32,7 +32,6 @@ function createWindow () {
                     nodeIntegration: true
                 }
             })
-        })
     }
 
     win.removeMenu()
@@ -50,10 +49,8 @@ function createWindow () {
 }
 
 app.on('ready', () => {
-    autoUpdater.checkForUpdatesAndNotify();
     createWindow()
-
-})
+ })
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
