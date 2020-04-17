@@ -1,6 +1,6 @@
 {
   "name": "youtube-dl-gui",
-  "version": "1.4.2",
+  "version": "1.4.5",
   "description": "A GUI for the YouTube-dl library",
   "main": "main.js",
   "scripts": {
@@ -47,7 +47,9 @@
           "filter": [
             "ffmpeg.exe",
             "youtube-dl.exe",
-            "details"
+            "details",
+            "downloading-icon.png",
+            "done-icon.png"
           ]
         }
       ]
@@ -63,7 +65,9 @@
           "filter": [
             "ffmpeg",
             "youtube-dl-darwin",
-            "details"
+            "details",
+            "downloading-icon.png",
+            "done-icon.png"
           ]
         }
       ]

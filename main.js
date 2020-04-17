@@ -1,5 +1,17 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain, nativeImage } = require('electron')
 const { autoUpdater } = require("electron-updater")
+
+let doneIcon
+let downloadingIcon
+
+if(process.platform === "darwin") {
+    doneIcon = nativeImage.createFromPath(remote.app.getAppPath().slice(0, -8) + 'done-icon.png')
+    downloadingIcon = nativeImage.createFromPath(remote.app.getAppPath().slice(0, -8) + 'downloading-icon.png')
+} else {
+    doneIcon = nativeImage.createFromPath('resources/done-icon.png')
+    downloadingIcon = nativeImage.createFromPath('resources/downloading-icon.png')
+}
+
 let win
 
 function createWindow () {
@@ -38,6 +50,7 @@ function createWindow () {
     if(process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
+    win.webContents.openDevTools()
     win.loadFile('index.html')
     win.on('closed', () => {
         win = null
@@ -63,3 +76,13 @@ app.on('activate', () => {
         createWindow()
     }
 });
+
+ipcMain.on('request-mainprocess-action', (event, arg) => {
+    if(arg.mode === "hide") {
+        win.setOverlayIcon(null, "")
+    } else if(arg.mode === "downloading") {
+        win.setOverlayIcon(downloadingIcon, "downloading")
+    } else if(arg.mode === "done") {
+        win.setOverlayIcon(doneIcon, "done")
+    }
+})

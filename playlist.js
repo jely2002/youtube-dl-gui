@@ -174,7 +174,7 @@ function downloadPlaylist(quality) {
     console.log("downloading playlist: " + selectedURL)
     let amountToDownload = filteredPlaylistVideos.length
     $('.completion.download').html("Video 0 of " + amountToDownload + " downloaded")
-    if(process.platform === "win32") remote.getCurrentWindow().setOverlayIcon(downloadingIcon, "downloading")
+    if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "downloading"})
     let videosDownloaded = 0
 
     function downloadVideo(item, format_id, queue, cb) {

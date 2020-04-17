@@ -1,12 +1,9 @@
 'use strict'
-const {remote} = require('electron')
+const {remote, ipcRenderer} = require('electron')
 window.$ = window.jQuery = require('jquery')
 const fs = require('fs')
 const universalify = require('universalify')
 const execa = universalify.fromPromise(require('execa'))
-
-const doneIcon = remote.nativeImage.createFromPath('web-resources/done-icon.png')
-const downloadingIcon = remote.nativeImage.createFromPath('web-resources/downloading-icon.png')
 
 let ytdlBinary
 let selectedURL
@@ -116,7 +113,7 @@ function downloadFinished() {
     $('.checkmark').toggle()
     $('#reset-btn').html("Download another video").prop("disabled", false)
     remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
-    if(process.platform === "win32") remote.getCurrentWindow().setOverlayIcon(doneIcon, "done")
+    if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "done"})
 }
 
 // ***SETTINGS METHODS*** //
