@@ -39,6 +39,7 @@ function showInfo(url) {
 
 function downloadAudio(quality) {
     remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
+    if(process.platform === "win32") remote.getCurrentWindow().setOverlayIcon(downloadingIcon, "downloading")
     console.log("downloading audio: " + selectedURL)
     let realQuality = 0
     if(quality === "worst") {
@@ -59,6 +60,7 @@ function downloadAudio(quality) {
 
 function downloadVideo(format_id) {
     remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
+    if(process.platform === "win32") remote.getCurrentWindow().setOverlayIcon(downloadingIcon, "downloading")
     console.log("downloading video: " + selectedURL)
     const options = [
         '-f', format_id + "+bestaudio[ext=m4a]/best",

@@ -5,6 +5,9 @@ const fs = require('fs')
 const universalify = require('universalify')
 const execa = universalify.fromPromise(require('execa'))
 
+const doneIcon = remote.nativeImage.createFromPath('web-resources/done-icon.png')
+const downloadingIcon = remote.nativeImage.createFromPath('web-resources/downloading-icon.png')
+
 let ytdlBinary
 let selectedURL
 let ffmpegLoc
@@ -114,6 +117,7 @@ function downloadFinished() {
     $('.checkmark').toggle()
     $('#reset-btn').html("Download another video").prop("disabled", false)
     remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+    if(process.platform === "win32") remote.getCurrentWindow().setOverlayIcon(doneIcon, "done")
 }
 
 // ***SETTINGS METHODS*** //
@@ -310,6 +314,7 @@ function resetSteps() {
     $('.progress-bar').css("width", "0%").attr("aria-valuenow", "0")
     $('.progress').css("display", "none")
     $('.video-range').css("display", "none")
+    if(process.platform === "win32") remote.getCurrentWindow().setOverlayIcon(null, "")
     stepper.reset()
 }
 
