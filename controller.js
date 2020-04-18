@@ -40,7 +40,7 @@ function callYTDL (url, args, options = {}, cb) {
     }
     let singleRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi
     if(singleRegex.test(url)) {
-        args.push("https://www." + url.match(singleRegex)[0])
+        args.push("https://" + url.match(singleRegex)[0])
     } else {
         args.push(url)
     }
