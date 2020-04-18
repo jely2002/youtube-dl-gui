@@ -1,4 +1,17 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain, nativeImage } = require('electron')
+const { autoUpdater } = require("electron-updater")
+
+let doneIcon
+let downloadingIcon
+
+if(process.platform === "darwin") {
+    doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'done-icon.png')
+    downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'downloading-icon.png')
+} else {
+    doneIcon = nativeImage.createFromPath('resources/done-icon.png')
+    downloadingIcon = nativeImage.createFromPath('resources/downloading-icon.png')
+}
+
 let win
 
 function createWindow () {
@@ -18,18 +31,19 @@ function createWindow () {
             }
         })
     } else {
-        win = new BrowserWindow({
-            show: false,
-            width: 800, //850
-            height: 500, //550
-            resizable: false,
-            maximizable: false,
-            frame: false,
-            icon: "web-resources/icon-light.png",
-            webPreferences: {
-                nodeIntegration: true
-            }
-        })
+        autoUpdater.checkForUpdatesAndNotify();
+            win = new BrowserWindow({
+                show: false,
+                width: 800, //850
+                height: 530, //550
+                resizable: false,
+                maximizable: false,
+                frame: false,
+                icon: "web-resources/icon-light.png",
+                webPreferences: {
+                    nodeIntegration: true
+                }
+            })
     }
 
     win.removeMenu()
@@ -46,7 +60,9 @@ function createWindow () {
     })
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+    createWindow()
+ })
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -59,3 +75,13 @@ app.on('activate', () => {
         createWindow()
     }
 });
+
+ipcMain.on('request-mainprocess-action', (event, arg) => {
+    if(arg.mode === "hide") {
+        win.setOverlayIcon(null, "")
+    } else if(arg.mode === "downloading") {
+        win.setOverlayIcon(downloadingIcon, "downloading")
+    } else if(arg.mode === "done") {
+        win.setOverlayIcon(doneIcon, "done")
+    }
+})

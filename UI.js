@@ -1,11 +1,9 @@
 'use strict'
-window.$ = window.jQuery = require('jquery')
 const customTitlebar = require('custom-electron-titlebar')
 const Menu = remote.Menu;
 
 let stepper
 let downloadPath = remote.app.getPath('downloads');
-let downloadMode
 
 if(process.platform === "darwin") {
     new customTitlebar.Titlebar({
@@ -45,11 +43,22 @@ $(document).ready(function () {
         animation: true
     })
     $("#directoryInputLabel").html(remote.app.getPath('downloads'))
-    $("#quality").on('change', function() {
-        if(downloadMode === "audio") return
-        let index = availableFormats.indexOf(document.getElementById("quality").options[document.getElementById("quality").selectedIndex].text)
-        $('.size').html('<b>Download size: </b>' + formatSizes[index])
+    $("#max,#min").keydown(function () {
+        if (!$(this).val() || (parseInt($(this).val()) <= parseInt($(this).attr("max")) && parseInt($(this).val()) > 0)) $(this).data("old", $(this).val())
     })
+    $("#max,#min").keyup(function () {
+        if (!(!$(this).val() || (parseInt($(this).val()) <= parseInt($(this).attr("max")) && parseInt($(this).val()) > 0))) $(this).val($(this).data("old"))
+    })
+    $("#max, #min").on('input', function() {
+        if($("#max").val() === "" || $("#min").val() === "") return
+        applyRange()
+        updateAvailableFormats()
+        if($('input[name=type-select]:checked').val() === "video") {
+            $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
+        } else {
+            $('.size').html('<b>Download size: </b> ~' + getTotalSize())
+        }
+    });
 })
 
 function setDirectory() {
@@ -66,24 +75,13 @@ function setDirectory() {
     })
 }
 
-function setType(type) {
-    $("#download-btn").prop("disabled", false)
-    $("#directoryInput").prop("disabled", false)
-    if(type === "audio") {
-        downloadMode = "audio"
-        $('#quality').empty().append(new Option("Best", "best")).append(new Option("Worst", "worst")).prop("disabled", false).val("best")
-        $('.size').html('<b>Download size: </b>' + audioSize)
-    } else if(type === "video") {
-        downloadMode = "video"
-        $('#quality').empty()
-        availableFormats.forEach(function(quality) {
-            $('#quality').append(new Option(quality, availableFormatCodes[availableFormats.indexOf(quality)])).prop("disabled", false)
-            $('#subtitles').prop("disabled", false)
-        })
-        $('#quality').val(availableFormatCodes[availableFormatCodes.length-1])
-        let index = availableFormats.indexOf(document.getElementById("quality").options[document.getElementById("quality").selectedIndex].text)
-        $('.size').html('<b>Download size: </b>' + formatSizes[index])
-    }
+function showWarning() {
+    $('#warning').toast('show')
+}
+
+function showError(err) {
+    $('.error-body').html(err.toString())
+    $('#error').toast('show')
 }
 
 const InputMenu = Menu.buildFromTemplate([{

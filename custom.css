@@ -93,6 +93,34 @@ body {
     cursor: default;
 }
 
+#min, #max {
+    width: 75px;
+}
+
+.video-range {
+    display: none;
+}
+
+.progress-bar {
+    height: inherit;
+}
+
+.progress {
+    height: 25px;
+    padding: 0;
+    display: none;
+}
+.completion {
+    height: inherit;
+    font-size: 12px;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    opacity: .3;
+    margin-bottom: -1px;
+    filter: brightness(0);
+}
+
 /* CUSTOM CHECKMARK SPINNER */
 .circle-loader {
     margin-bottom: 3.5em;
