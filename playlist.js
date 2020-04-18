@@ -196,6 +196,7 @@ function downloadPlaylist(quality) {
             options = [
                 '--extract-audio', '--audio-quality', realQuality,
                 '--audio-format', 'mp3',
+                '--no-cache-dir',
                 '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
                 '--embed-thumbnail',
                 '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
@@ -204,6 +205,7 @@ function downloadPlaylist(quality) {
             options = [
                 '-f', format_id[queue] + "+bestaudio[ext=m4a]/best+bestaudio[ext=m4a]",
                 '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
+                '--no-cache-dir',
                 '--merge-output-format', 'mp4',
                 '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s-(%(height)sp%(fps)s).%(ext)s'
             ]
