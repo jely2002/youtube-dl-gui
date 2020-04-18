@@ -5,8 +5,8 @@ let doneIcon
 let downloadingIcon
 
 if(process.platform === "darwin") {
-    doneIcon = nativeImage.createFromPath(remote.app.getAppPath().slice(0, -8) + 'done-icon.png')
-    downloadingIcon = nativeImage.createFromPath(remote.app.getAppPath().slice(0, -8) + 'downloading-icon.png')
+    doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'done-icon.png')
+    downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'downloading-icon.png')
 } else {
     doneIcon = nativeImage.createFromPath('resources/done-icon.png')
     downloadingIcon = nativeImage.createFromPath('resources/downloading-icon.png')
