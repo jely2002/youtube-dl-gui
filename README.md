@@ -22,6 +22,3 @@ Oh no! Please open up an issue [right here](https://github.com/jely2002/youtube-
 - Cache playlist metadata
 
 Feel free to create an issue to request a feature.
-- Add the option to download playlists
-- Automatically keep playlists up-to-date
-
