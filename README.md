@@ -19,7 +19,7 @@ The default download location is your downloads folder, although this can easily
 Oh no! Please open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues) and describe the problem you're facing, I'll try to help you as soon as possible. 
 
 ## Planned features
-- None planned
+- Cache playlist metadata
 
 Feel free to create an issue to request a feature.
 - Add the option to download playlists
