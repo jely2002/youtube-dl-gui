@@ -7,7 +7,7 @@ A cross-platform GUI for youtube-dl made in Electron and node.js
 - Download parts of playlists
 - Download only mp3 files
 - Shows an estimated download size before downloading the videos
-- The app will always be up-to-date (auto-updating)
+- The app will always be up-to-date (Windows only)
 
 ## How to use
 Download the .exe if you are on Windows or the .dmg if you are on macOSX, then just open them and you're good to go!
