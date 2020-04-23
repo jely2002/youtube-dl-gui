@@ -1,13 +1,15 @@
 'use strict'
+let videoURLS = []
+let filteredVideoURLS = []
+let metaVideos = []
 function showPlaylistInfo(url) {
     $(".spinner-border").css("display", "inherit");
     selectedURL = url
     $('.completion.metadata').html("Fetching playlist metadata...")
     $(".progress.metadata").css("display", "initial");
-    let videoURLS = []
+
     let amountToDownload = 0
     let metadataDownloaded = 0
-
     function getVideoMetadata(item, cb) {
         callYTDL(item, ['-J', '--skip-download'], {}, function (err, output) {
             if(output == null) {
@@ -22,7 +24,7 @@ function showPlaylistInfo(url) {
             }
             if (err) showError(err)
             let video = JSON.parse(output)
-            playlistVideos.push(video)
+            metaVideos.push(video)
             ++metadataDownloaded
             let percentage = ((metadataDownloaded / amountToDownload) * 100) + "%"
             $('.progress-bar.metadata').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
@@ -35,6 +37,7 @@ function showPlaylistInfo(url) {
     let playlistmetadata = new Promise((resolve, reject) => {
         callYTDL(selectedURL, ['-J', '--flat-playlist'], {}, function (err, output) {
             if(output == null) {
+                if(err) console.log(err)
                 $('.invalid-feedback').html("This playlist does not exist, is private or is blocked")
                 $('#url').addClass("is-invalid").removeClass("is-valid")
                 $(".spinner-border").css("display", "none")
@@ -50,6 +53,7 @@ function showPlaylistInfo(url) {
             $('#max').val(amountToDownload)
             metadata.entries.forEach(function (entry) {
                 videoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
+                filteredVideoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
             })
             $('.completion.metadata').html("Fetching video metadata (" + metadataDownloaded + " of " + amountToDownload + ")")
             console.log(videoURLS)
@@ -58,24 +62,42 @@ function showPlaylistInfo(url) {
     })
 
     playlistmetadata.then(() => {
-        let halfSlice1 = videoURLS.slice(0)
-        let halfSlice2 = halfSlice1.splice(0, Math.floor(halfSlice1.length / 2))
-        let quarterSlice1 = halfSlice1.splice(0, Math.floor(halfSlice1.length / 2))
-        let quarterSlice2 = halfSlice2.splice(0, Math.floor(halfSlice2.length / 2))
-
         let firstSideResolved = false
         let secondSideResolved = false
         let thirdSideResolved = false
         let fourthSideResolved = false
 
+        if(cacheAvailable(selectedURL)) {
+            removeVideosFromCache(selectedURL, function () {
+                if (isCacheUpToDate(selectedURL)) {
+                    $('.completion.metadata').html("Up-to-date cache found!")
+                    playlistVideos = getCachedPlaylist(selectedURL)
+                    firstSideResolved = true
+                    secondSideResolved = true
+                    thirdSideResolved = true
+                    fourthSideResolved = true
+                    $('.progress-bar.metadata').css("width", "100%").attr("aria-valuenow", "100")
+                    done()
+                } else {
+                    filteredVideoURLS = getCacheDifference(selectedURL)
+                    amountToDownload = filteredVideoURLS.length
+                    $('.completion.metadata').html("Updating metadata cache (" + metadataDownloaded + " of " + amountToDownload + ")")
+                    continueDownload()
+                }
+            })
+        } else {
+            continueDownload()
+        }
+
         function done() {
             if (!(firstSideResolved && secondSideResolved && thirdSideResolved && fourthSideResolved)) return
-            videoURLS.forEach(function(url) {
-                playlistVideos.forEach(function(video) {
-                    if(video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url)) video.playlist_index = videoURLS.indexOf(url) + 1
+            addCachedPlaylist(selectedURL, metaVideos)
+            videoURLS.forEach(function (url) {
+                playlistVideos.forEach(function (video) {
+                    if (video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url)) video.playlist_index = videoURLS.indexOf(url) + 1
                 })
             })
-            playlistVideos.sort(function(a, b) {
+            playlistVideos.sort(function (a, b) {
                 return a.playlist_index - b.playlist_index;
             });
             $('.completion.metadata').html("Fetched all metadata!")
@@ -86,10 +108,10 @@ function showPlaylistInfo(url) {
             $('#step-one-btn').prop("disabled", false)
             $('.video-range').css("display", "initial")
             playlistVideos.forEach(function (video) {
-                if(video.removed === "yes") return
+                if (video.removed === "yes") return
                 video.formats.forEach(function (format) {
-                    if(format.format_note === "DASH audio") return
-                    if(format.format_note === "DASH video") return
+                    if (format.format_note === "DASH audio") return
+                    if (format.format_note === "DASH video") return
                     if (format.format_note !== "tiny") {
                         let alreadyIncludes
                         availableVideoFormats.forEach(function (savedFormat) {
@@ -104,49 +126,56 @@ function showPlaylistInfo(url) {
             })
         }
 
-        let videometadata1 = halfSlice1.reduce((promiseChain, item) => {
-            return promiseChain.then(() => new Promise((resolve) => {
-                getVideoMetadata(item, resolve)
-            }))
-        }, Promise.resolve())
+        function continueDownload() {
+            let halfSlice1 = filteredVideoURLS.slice(0)
+            let halfSlice2 = halfSlice1.splice(0, Math.floor(halfSlice1.length / 2))
+            let quarterSlice1 = halfSlice1.splice(0, Math.floor(halfSlice1.length / 2))
+            let quarterSlice2 = halfSlice2.splice(0, Math.floor(halfSlice2.length / 2))
 
-        let videometadata2 = halfSlice2.reduce((promiseChain, item) => {
-            return promiseChain.then(() => new Promise((resolve) => {
-                getVideoMetadata(item, resolve)
-            }))
-        }, Promise.resolve())
+            let videometadata1 = halfSlice1.reduce((promiseChain, item) => {
+                return promiseChain.then(() => new Promise((resolve) => {
+                    getVideoMetadata(item, resolve)
+                }))
+            }, Promise.resolve())
 
-        let videometadata3 = quarterSlice1.reduce((promiseChain, item) => {
-            return promiseChain.then(() => new Promise((resolve) => {
-                getVideoMetadata(item, resolve)
-            }))
-        }, Promise.resolve())
+            let videometadata2 = halfSlice2.reduce((promiseChain, item) => {
+                return promiseChain.then(() => new Promise((resolve) => {
+                    getVideoMetadata(item, resolve)
+                }))
+            }, Promise.resolve())
 
-        let videometadata4 = quarterSlice2.reduce((promiseChain, item) => {
-            return promiseChain.then(() => new Promise((resolve) => {
-                getVideoMetadata(item, resolve)
-            }))
-        }, Promise.resolve())
+            let videometadata3 = quarterSlice1.reduce((promiseChain, item) => {
+                return promiseChain.then(() => new Promise((resolve) => {
+                    getVideoMetadata(item, resolve)
+                }))
+            }, Promise.resolve())
 
-        videometadata1.then(() => {
-            firstSideResolved = true
-            done()
-        })
+            let videometadata4 = quarterSlice2.reduce((promiseChain, item) => {
+                return promiseChain.then(() => new Promise((resolve) => {
+                    getVideoMetadata(item, resolve)
+                }))
+            }, Promise.resolve())
 
-        videometadata2.then(() => {
-            secondSideResolved = true
-            done()
-        })
+            videometadata1.then(() => {
+                firstSideResolved = true
+                done()
+            })
 
-        videometadata3.then(() => {
-            thirdSideResolved = true
-            done()
-        })
+            videometadata2.then(() => {
+                secondSideResolved = true
+                done()
+            })
 
-        videometadata4.then(() => {
-            fourthSideResolved = true
-            done()
-        })
+            videometadata3.then(() => {
+                thirdSideResolved = true
+                done()
+            })
+
+            videometadata4.then(() => {
+                fourthSideResolved = true
+                done()
+            })
+        }
     })
 }
 
@@ -196,7 +225,6 @@ function downloadPlaylist(quality) {
             options = [
                 '--extract-audio', '--audio-quality', realQuality,
                 '--audio-format', 'mp3',
-                '--no-cache-dir',
                 '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
                 '--embed-thumbnail',
                 '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
@@ -205,7 +233,6 @@ function downloadPlaylist(quality) {
             options = [
                 '-f', format_id[queue] + "+bestaudio[ext=m4a]/best+bestaudio[ext=m4a]",
                 '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
-                '--no-cache-dir',
                 '--merge-output-format', 'mp4',
                 '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s-(%(height)sp%(fps)s).%(ext)s'
             ]
