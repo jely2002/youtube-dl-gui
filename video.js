@@ -60,7 +60,6 @@ function downloadAudio(quality) {
     const options = [
         '--extract-audio', '--audio-quality', realQuality,
         '--audio-format', 'mp3',
-        '--no-cache-dir',
         '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
         '--embed-thumbnail',
         '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
@@ -79,7 +78,6 @@ function downloadVideo(format_id) {
         '-f', format_id + "+bestaudio[ext=m4a]/best",
         '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
         '--merge-output-format', 'mp4',
-        '--no-cache-dir',
         '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s-(%(height)sp%(fps)s).%(ext)s'
     ]
     if($('#subtitles').prop('checked')) {

@@ -44,6 +44,7 @@ function callYTDL (url, args, options = {}, cb) {
     } else {
         args.push(url)
     }
+    args.push("--no-cache-dir")
     return execa(ytdlBinary, args, options, function done(err, output) {
         if (err) return cb(err)
         return cb(null, output.stdout.trim().split(/\r?\n/))
@@ -56,6 +57,9 @@ function url_entered() {
     if(validate(url) === "single") {
         availableVideoFormats = []
         playlistVideos = []
+        videoURLS = []
+        filteredVideoURLS = []
+        metaVideos = []
         playlistFormatIDs = []
         filteredPlaylistVideos = []
         isPlaylist = false
@@ -63,6 +67,9 @@ function url_entered() {
         $('#url').addClass("is-valid").removeClass("is-invalid")
     } else if(validate(url) === "playlist") {
         availableVideoFormats = []
+        videoURLS = []
+        filteredVideoURLS = []
+        metaVideos = []
         playlistVideos = []
         filteredPlaylistVideos = []
         playlistFormatIDs = []
@@ -70,6 +77,11 @@ function url_entered() {
         showPlaylistInfo(url)
         $('#url').addClass("is-valid").removeClass("is-invalid")
     } else {
+        $('.progress-bar.metadata').css("display", "none")
+        videoURLS = []
+        filteredVideoURLS = []
+        metaVideos = []
+        playlistVideos = []
         $('.invalid-feedback').html("Please enter a valid YouTube URL")
         $('#url').addClass("is-invalid").removeClass("is-valid")
         $('#step-one-btn').prop("disabled", true)
@@ -221,7 +233,6 @@ function getTotalSize(videoQuality) {
                 video.formats.forEach(function (format) {
                     if (format.ext === "m4a") {
                         sum += format.filesize
-                        console.log("audio size direct m4a match " + format.filesize)
                     }
                 })
             })
@@ -312,6 +323,9 @@ function resetSteps() {
     playlistFormatIDs = []
     playlistVideos = []
     filteredPlaylistVideos = []
+    videoURLS = []
+    filteredVideoURLS = []
+    metaVideos = []
     isPlaylist = false
     audioFormat = ""
     mediaMode = ""
