@@ -77,7 +77,8 @@ function url_entered() {
         showPlaylistInfo(url)
         $('#url').addClass("is-valid").removeClass("is-invalid")
     } else {
-        $('.progress-bar.metadata').css("display", "none")
+        $('.progress.metadata').css("display", "none")
+        $('.progress-bar.metadata').css("width", "0%").attr("aria-valuenow", "0")
         videoURLS = []
         filteredVideoURLS = []
         metaVideos = []

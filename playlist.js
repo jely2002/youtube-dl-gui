@@ -6,7 +6,7 @@ function showPlaylistInfo(url) {
     $(".spinner-border").css("display", "inherit");
     selectedURL = url
     $('.completion.metadata').html("Fetching playlist metadata...")
-    $(".progress.metadata").css("display", "initial");
+    $(".progress.metadata").css("display", "inherit");
 
     let amountToDownload = 0
     let metadataDownloaded = 0
@@ -14,7 +14,7 @@ function showPlaylistInfo(url) {
         callYTDL(item, ['-J', '--skip-download'], {}, function (err, output) {
             if(output == null) {
                 ++metadataDownloaded
-                playlistVideos.push({removed: "yes", playlist_index: 0, webpage_url: item})
+                metaVideos.push({removed: "yes", playlist_index: 0, webpage_url: item})
                 let percentage = ((metadataDownloaded / amountToDownload) * 100) + "%"
                 $('.progress-bar.metadata').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
                 $('.completion.metadata').html("Fetching video metadata (" + metadataDownloaded + " of " + amountToDownload + ")")
@@ -92,6 +92,7 @@ function showPlaylistInfo(url) {
         function done() {
             if (!(firstSideResolved && secondSideResolved && thirdSideResolved && fourthSideResolved)) return
             addCachedPlaylist(selectedURL, metaVideos)
+            console.log(playlistVideos)
             videoURLS.forEach(function (url) {
                 playlistVideos.forEach(function (video) {
                     if (video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url)) video.playlist_index = videoURLS.indexOf(url) + 1
