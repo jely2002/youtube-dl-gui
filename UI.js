@@ -61,6 +61,10 @@ $(document).ready(function () {
     });
 })
 
+$(document).on('click','.close',function (e) {
+    $(this).closest('.toast').css('visibility','hidden')
+});
+
 function setDirectory() {
     $('#directoryInput').blur();
     let path = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
@@ -77,11 +81,13 @@ function setDirectory() {
 
 function showWarning() {
     $('#warning').toast('show')
+    $('#warning').css('visibility','visible')
 }
 
 function showError(err) {
     $('.error-body').html(err.toString())
     $('#error').toast('show')
+    $('#error').css('visibility','visible')
 }
 
 const InputMenu = Menu.buildFromTemplate([{

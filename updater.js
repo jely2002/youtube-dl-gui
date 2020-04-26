@@ -24,6 +24,7 @@ function update() {
             console.log(err)
             if(err.toString().includes('ENOTFOUND')) {
                 $('#connection').toast('show')
+                $('#connection').css('visibility','visible')
                 $('#url').prop("disabled", true).attr("placeholder", "Please connect to the internet and restart this app")
             }
             return

@@ -83,6 +83,7 @@ body {
     position: fixed;
     bottom: 0;
     left: 10px;
+    visibility: hidden;
 }
 
 .toast-body {
