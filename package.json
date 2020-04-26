@@ -1,6 +1,6 @@
 {
   "name": "youtube-dl-gui",
-  "version": "1.4.5",
+  "version": "1.5.1",
   "description": "A GUI for the YouTube-dl library",
   "main": "main.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "dist": "electron-builder",
     "release": "electron-builder --win -p always"
   },
-  "keywords": [],
+  "keywords": ["youtube-dl", "electron", "download", "youtube", "gui", "interface"],
   "author": "Jelle Glebbeek",
   "license": "GPL-3.0-only",
   "devDependencies": {
@@ -20,7 +20,6 @@
     "custom-electron-titlebar": "^3.2.2-hotfix62",
     "electron-updater": "^4.2.5",
     "execa": "^4.0.0",
-    "fs": "0.0.1-security",
     "jquery": "^3.4.1",
     "popper.js": "^1.16.1",
     "request": "^2.88.2",
@@ -34,9 +33,6 @@
     "appId": "com.jelleglebbeek.youtube-dl-gui",
     "productName": "YouTube Downloader GUI",
     "copyright": "Copyright © 2020 Jelle Glebbeek",
-    "asar": {
-      "smartUnpack": "false"
-    },
     "win": {
       "target": "nsis",
       "icon": "build/icon.ico",
