@@ -121,3 +121,76 @@ document.body.addEventListener('contextmenu', (e) => {
         node = node.parentNode;
     }
 });
+
+function setProgressBarText(isMetadata, text, downloaded, toDownload) {
+    if(isMetadata) {
+        if(downloaded != null && toDownload != null) {
+            let transformedText = text.replace('%1', downloaded).replace('%2', downloaded)
+            $('.completion.metadata').html(transformedText)
+        } else {
+            $('.completion.metadata').html(text)
+        }
+    } else {
+        if(downloaded != null && toDownload != null) {
+            let transformedText = text.replace('%1', downloaded).replace('%2', downloaded)
+            $('.completion.download').html(transformedText)
+        } else {
+            $('.completion.download').html(text)
+        }
+    }
+}
+
+function setProgressBarProgress(isMetadata, downloaded, toDownload) {
+    let percentage = ((downloaded/toDownload)*100) + "%"
+    if(isMetadata) {
+        $('.progress-bar.metadata').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
+        if(percentage === 100) {
+            remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+        } else {
+            remote.getCurrentWindow().setProgressBar(downloaded / toDownload)
+        }
+    } else {
+        $('.progress-bar.download').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
+        if(percentage === 100) {
+            remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+        } else {
+            remote.getCurrentWindow().setProgressBar(downloaded / toDownload)
+        }
+    }
+}
+
+function setPlaylistAdvancedData(playlistVideo) {
+    $(".thumbnail").attr("src", playlistVideo.thumbnail)
+    $(".thumbnail-settings").attr("src", playlistVideo.thumbnail)
+    $(".spinner-border").css("display", "none")
+    $('#step-one-btn').prop("disabled", false)
+    $('.video-range').css("display", "initial")
+}
+
+function setPlaylistData(metadata, toDownload) {
+    $(".title").html("<strong>Playlist name:</strong> " + metadata.title)
+    $(".channel").html("<strong>Channel:</strong> " + metadata.uploader)
+    $(".duration").html("<strong>Playlist size:</strong> " + toDownload + " videos")
+    $('#max').val(toDownload)
+}
+
+function setInvalidPlaylist() {
+    $('.invalid-feedback').html("This playlist does not exist, is private or is blocked")
+    $('#url').addClass("is-invalid").removeClass("is-valid")
+    $(".spinner-border").css("display", "none")
+    $(".progress.metadata").css("display", "none");
+}
+
+function setFetchingPlaylist() {
+    $(".spinner-border").css("display", "inherit");
+    $('.completion.metadata').html("Fetching playlist metadata...")
+    $(".progress.metadata").css("display", "inherit");
+}
+
+function isAudio() {
+    return $('input[name=type-select]:checked').val() === "audio"
+}
+
+function isSubtitleChecked() {
+    return $('#subtitles').prop('checked')
+}

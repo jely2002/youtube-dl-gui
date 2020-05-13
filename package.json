@@ -8,7 +8,14 @@
     "dist": "electron-builder",
     "release": "electron-builder --win -p always"
   },
-  "keywords": ["youtube-dl", "electron", "download", "youtube", "gui", "interface"],
+  "keywords": [
+    "youtube-dl",
+    "electron",
+    "download",
+    "youtube",
+    "gui",
+    "interface"
+  ],
   "author": "Jelle Glebbeek",
   "license": "GPL-3.0-only",
   "devDependencies": {
