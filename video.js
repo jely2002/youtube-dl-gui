@@ -1,4 +1,6 @@
 'use strict'
+let audioOutputName
+let videoOutputName
 function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
     remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
@@ -21,6 +23,8 @@ function showInfo(url) {
         $(".duration").html("<strong>Duration:</strong> " + duration.replace(/(0d\s00:)|(0d\s)/g,""))
         $(".spinner-border").css("display", "none")
         $('#step-one-btn').prop("disabled", false)
+        audioOutputName = video.title + "." + video.ext
+        videoOutputName = video.title + "-(" + video.height + "p" + video.fps + ")." + video.ext
         remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
         video.formats.forEach(function(format) {
             console.log(format)

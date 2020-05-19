@@ -194,3 +194,16 @@ function isAudio() {
 function isSubtitleChecked() {
     return $('#subtitles').prop('checked')
 }
+
+function openDownloadedFile() {
+    if(isPlaylist) {
+        shell.openItem(downloadPath)
+    } else {
+        if(mediaMode === "audio") {
+            shell.showItemInFolder(downloadPath + '\\' + audioOutputName)
+        } else {
+            shell.showItemInFolder(downloadPath + '\\' + videoOutputName)
+        }
+    }
+
+}

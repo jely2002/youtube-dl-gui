@@ -1,5 +1,5 @@
 'use strict'
-const {remote, ipcRenderer} = require('electron')
+const {remote, ipcRenderer, shell} = require('electron')
 window.$ = window.jQuery = require('jquery')
 const fs = require('fs')
 const universalify = require('universalify')
@@ -110,6 +110,7 @@ function download() {
     if(isPlaylist) {
         downloadPlaylist(quality)
         clearTimeout(timings)
+        $('#open-btn').html("Open playlist")
         $('.progress').css("display", "initial")
     } else {
         if (mediaMode === "video") {
@@ -125,6 +126,7 @@ function downloadFinished() {
     $('.circle-loader').toggleClass('load-complete')
     $('.checkmark').toggle()
     $('#reset-btn').html("Download another video").prop("disabled", false)
+    $('#open-btn').prop("disabled", false)
     remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
     if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "done"})
 }
@@ -340,12 +342,14 @@ function resetSteps() {
     $('.circle-loader').toggleClass('load-complete')
     $('.checkmark').toggle()
     $('#reset-btn').html("Downloading...").prop("disabled", true)
+    $('#open-btn').prop("disabled", true)
     $('#subtitles').prop("disabled", true).prop("checked", false)
     $('#quality').empty().append(new Option("Select quality", "quality")).prop("disabled", true).val("quality")
     $("#directoryInput,#download-btn,#min,#max,#step-one-btn").prop("disabled", true)
     $('.progress-bar').css("width", "0%").attr("aria-valuenow", "0")
     $('.progress').css("display", "none")
     $('.video-range').css("display", "none")
+    $('#open-btn').html("Open file")
     if(process.platform === "win32") remote.getCurrentWindow().setOverlayIcon(null, "")
     stepper.reset()
 }
