@@ -200,10 +200,11 @@ function openDownloadedFile() {
         shell.openItem(downloadPath)
     } else {
         if(mediaMode === "audio") {
-            shell.showItemInFolder(downloadPath + '\\' + audioOutputName)
+            shell.showItemInFolder(downloadPath + '\\' + audioOutputName.replace(/[/\\?%*:|"<>]/g, '-'))
         } else {
-            shell.showItemInFolder(downloadPath + '\\' + videoOutputName)
+            shell.showItemInFolder(downloadPath + '\\' + videoOutputName.replace(/[/\\?%*:|"<>]/g, '-'))
         }
+        //TODO test with MacOS and fix if needed
     }
 
 }
