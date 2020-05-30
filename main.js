@@ -4,6 +4,7 @@ const { autoUpdater } = require("electron-updater")
 let doneIcon
 let downloadingIcon
 
+//Set icon file paths depending on the platform
 if(process.platform === "darwin") {
     doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'done-icon.png')
     downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'downloading-icon.png')
@@ -14,9 +15,9 @@ if(process.platform === "darwin") {
 
 let win
 
+//Create the window for the renderer process
 function createWindow () {
     app.allowRendererProcessReuse = true
-
     if(process.platform === "darwin") {
         win = new BrowserWindow({
             show: false,
@@ -45,7 +46,6 @@ function createWindow () {
                 }
             })
     }
-
     win.removeMenu()
     if(process.argv[2] === '--dev') {
         win.webContents.openDevTools()
@@ -61,21 +61,40 @@ function createWindow () {
 }
 
 app.on('ready', () => {
+    /*app.setLoginItemSettings({         TODO Sync playlists on startup
+        openAtLogin: false,
+        openAsHidden: true,
+        args: [
+            '--startup'
+        ]
+    })
+
+    if(process.argv.includes('startup')) {
+        startUpdate(() => {
+            app.quit()
+        })
+    } else {
+        createWindow()
+    }*/
     createWindow()
  })
 
+//Quit the application when all windows are closed, except for darwin
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
 });
 
+//Create a window when there is none, but the app is still active (darwin)
 app.on('activate', () => {
-    if (win === null) {
+    if (win === null /*&& !process.argv.includes('startup') TODO Sync playlists on startup*/) {
         createWindow()
     }
 });
 
+
+//Event handler to process icon updates from the renderer process
 ipcMain.on('request-mainprocess-action', (event, arg) => {
     if(arg.mode === "hide") {
         win.setOverlayIcon(null, "")

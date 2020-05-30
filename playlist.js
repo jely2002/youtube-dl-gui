@@ -1,7 +1,10 @@
 'use strict'
+
 let videoURLS = []
 let filteredVideoURLS = []
 let metaVideos = []
+
+//Gets the playlist metadata (URL's and later one video formats) from YouTube or the local cache, and keeps the user updated during the process
 function showPlaylistInfo(url) {
     setFetchingPlaylist()
     selectedURL = url
@@ -162,6 +165,7 @@ function showPlaylistInfo(url) {
     })
 }
 
+//Downloads the videos in filteredPlaylistVideos from YouTube, and keeps the user updated during the process.
 function downloadPlaylist(quality) {
     let halfSlice1 = filteredPlaylistVideos.slice(0)
     let halfSlice2 = halfSlice1.splice(0, Math.floor(halfSlice1.length / 2))

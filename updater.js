@@ -1,3 +1,4 @@
+//updater.js manages the installed instance of youtube-dl
 'use strict'
 const request = require('request')
 
@@ -6,6 +7,7 @@ let defaultPath;
 let filePath
 let url = 'https://yt-dl.org/downloads/latest/youtube-dl'
 
+//Sets the appropriate file paths depending on platform
 if(process.platform === "darwin") {
     defaultBin = remote.app.getAppPath().slice(0, -8)
     defaultPath = defaultBin + 'details'
@@ -16,8 +18,10 @@ if(process.platform === "darwin") {
     url = "https://yt-dl.org/downloads/latest/youtube-dl.exe"
 }
 
+//Calls for an update
 update()
 
+//Probes youtube-dl for new updates, and downloads them when needed.
 function update() {
     request.get(url, { followRedirect: false }, function (err, res) {
         if (err) {
@@ -73,8 +77,9 @@ function update() {
     })
 }
 
+//Shows the currently downloaded version of youtube-dl
 function getCurrentVersion() {
-   let details = JSON.parse(fs.readFileSync(defaultPath, 'utf-8'))
+    let details = JSON.parse(fs.readFileSync(defaultPath, 'utf-8'))
     console.log("Current version: " + details.version)
     return details.version;
 

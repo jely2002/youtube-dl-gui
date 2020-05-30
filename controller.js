@@ -17,7 +17,7 @@ let isPlaylist = false
 let audioFormat
 let mediaMode
 
-// ***BINARY/PATH METHODS*** //
+//Sets all paths to the included binaries depending on the platform
 if(process.platform === "darwin") {
     let appPath = remote.app.getAppPath().slice(0, -8)
     ytdlBinary = appPath + "youtube-dl-darwin"
@@ -33,6 +33,7 @@ if(process.platform === "darwin") {
     ffmpegLoc = "resources/ffmpeg.exe"
 }
 
+//Calls the youtube-dl binary included with this application
 function callYTDL (url, args, options = {}, cb) {
     if (process.platform === "win32") {
         args.push('--encoding')
@@ -51,7 +52,7 @@ function callYTDL (url, args, options = {}, cb) {
     })
 }
 
-// ***URL METHODS*** //
+//Resets UI elements when a URL gets entered, and verifies the URL
 function url_entered() {
     let url = $("#url").val()
     if(validate(url) === "single") {
@@ -89,6 +90,7 @@ function url_entered() {
     }
 }
 
+//Validates the entered URL, and returns whether it's a playlist or video link
 function validate(url) {
     const singleRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi
     const playlistRegex = /^.*(youtu.be\/|list=)([^#\&\?]*)[a-zA-Z0-9_-]{34}/;
@@ -101,7 +103,7 @@ function validate(url) {
     }
 }
 
-// ***DOWNLOAD METHODS*** //
+//Starts download with the selected options, starts error timing
 function download() {
     applyRange()
     let quality = $('#quality').val()
@@ -121,6 +123,7 @@ function download() {
     }
 }
 
+//Clears error timing and sets the UI to the 'download finished' state.
 function downloadFinished() {
     clearTimeout(timings)
     $('.circle-loader').toggleClass('load-complete')
@@ -131,7 +134,7 @@ function downloadFinished() {
     if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "done"})
 }
 
-// ***SETTINGS METHODS*** //
+//Sets the selected download type (playlist, single video), and configures UI elements accordingly.
 function setType(type) {
     $("#directoryInput,#download-btn,#min,#max").prop("disabled", false)
     mediaMode = type
@@ -182,7 +185,7 @@ function setType(type) {
     }
 }
 
-// ***HELPER METHODS*** //
+//Calculates the total download size for the selected video formats and range
 function getTotalSize(videoQuality) {
     playlistFormatIDs = []
     if(isPlaylist) {
@@ -255,6 +258,7 @@ function getTotalSize(videoQuality) {
     }
 }
 
+//Refreshes the UI and filtredPlaylistVideos when the quality gets changed
 $(document).ready(function () {
     $("#quality").on('change', function () {
         if (mediaMode === "audio") return
@@ -266,6 +270,7 @@ $(document).ready(function () {
     })
 })
 
+//Moves the stepper to the settings step
 function settings() {
     stepper.next()
     selectedURL = $("#url").val()
@@ -274,6 +279,7 @@ function settings() {
     if(isPlaylist) $('.video-range').css("display", "initial")
 }
 
+//Applies the selected range to playlistVideos, and outputs the results to filteredPlaylistVideos
 function applyRange() {
    let max = parseInt($('#max').val())
    let min = parseInt($('#min').val())
@@ -292,6 +298,7 @@ function applyRange() {
     }
 }
 
+//Updates the available video formats for all videos in filteredPlaylistVideos
 function updateAvailableFormats() {
     availableVideoFormats = []
     filteredPlaylistVideos.forEach(function(video) {
@@ -319,7 +326,7 @@ function updateAvailableFormats() {
     }
 }
 
-// ***RESET METHODS*** //
+//Resets all the variables and UI elements
 function resetSteps() {
     selectedURL = ""
     availableVideoFormats = []
