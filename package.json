@@ -19,15 +19,16 @@
   "author": "Jelle Glebbeek",
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "electron": "^8.4.0",
-    "electron-builder": "^22.7.0"
+    "electron": ">=8.2.4",
+    "electron-builder": "^22.4.1"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.1",
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "custom-electron-titlebar": "^3.2.2-hotfix62",
-    "electron-updater": "^4.3.1",
-    "execa": "^4.0.3",
-    "jquery": "^3.5.1",
+    "electron-updater": "^4.2.5",
+    "execa": "^4.0.0",
+    "jquery": "^3.5.0",
+    "mkdirp": "^1.0.4",
     "popper.js": "^1.16.1",
     "request": "^2.88.2",
     "universalify": "^1.0.0"
@@ -78,4 +79,3 @@
     }
   }
 }
-
