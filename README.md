@@ -11,10 +11,10 @@ A cross-platform GUI for youtube-dl made in Electron and node.js
 - Download only mp3 files
 - Lightning fast download speeds
 - Shows an estimated download size before downloading the videos
-- The app will always be up-to-date (Windows only)
+- The app will always be up-to-date (Windows & Linux only)
 
 ## How to use
-Download the .exe if you are on Windows or the .dmg if you are on macOSX, then just open them and you're good to go!
+Download the .exe if you are on Windows, .dmg if you are on macOSX or the .AppImage on Linux, then just open them and you're good to go!
 The releases can be found [here](https://github.com/jely2002/youtube-dl-gui/releases).
 
 The default download location is your downloads folder, although this can easily be changed.
@@ -23,6 +23,6 @@ The default download location is your downloads folder, although this can easily
 Oh no! Please open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues) and describe the problem you're facing, I'll try to help you as soon as possible. 
 
 ## Planned features
-- There are currently no planned features.
+- Single video download status bar
 
 Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/issues).
