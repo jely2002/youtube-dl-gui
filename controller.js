@@ -23,10 +23,20 @@ if(process.platform === "darwin") {
     ytdlBinary = appPath + "youtube-dl-darwin"
     ffmpegLoc = appPath + "ffmpeg"
     fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
-        if(err) showError(err)
+        if(err) console.log(err)
     })
     fs.chmod(appPath + "ffmpeg", 0o755, function(err){
-        if(err) showError(err)
+        if(err) console.log(err)
+    })
+} else if(process.platform === "linux") {
+    let appPath = remote.app.getPath("home") + "/.youtube-dl-gui/"
+    ytdlBinary = appPath + "youtube-dl-darwin"
+    ffmpegLoc = appPath + "ffmpeg"
+    fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
+        if(err) console.log(err)
+    })
+    fs.chmod(appPath + "ffmpeg", 0o755, function(err){
+        if(err) console.log(err)
     })
 } else {
     ytdlBinary = "resources/youtube-dl.exe"

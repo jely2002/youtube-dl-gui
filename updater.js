@@ -5,17 +5,21 @@ const request = require('request')
 let defaultBin;
 let defaultPath;
 let filePath
-let url = 'https://yt-dl.org/downloads/latest/youtube-dl'
+let url = 'http://yt-dl.org/downloads/latest/youtube-dl'
 
 //Sets the appropriate file paths depending on platform
 if(process.platform === "darwin") {
     defaultBin = remote.app.getAppPath().slice(0, -8)
     defaultPath = defaultBin + 'details'
     filePath = defaultBin + "youtube-dl-darwin"
+} else if(process.platform === "linux") {
+    defaultBin = remote.app.getPath("home") + "/.youtube-dl-gui/"
+    defaultPath = defaultBin + 'details'
+    filePath = defaultBin + "youtube-dl-darwin"
 } else {
     defaultPath = "resources/details"
     filePath =  "resources/youtube-dl.exe"
-    url = "https://yt-dl.org/downloads/latest/youtube-dl.exe"
+    url = "http://yt-dl.org/downloads/latest/youtube-dl.exe"
 }
 
 //Calls for an update

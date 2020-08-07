@@ -1,5 +1,7 @@
 const { app, BrowserWindow, ipcMain, nativeImage } = require('electron')
 const { autoUpdater } = require("electron-updater")
+const fs = require('fs')
+const mkdirp = require('mkdirp')
 
 let doneIcon
 let downloadingIcon
@@ -12,6 +14,28 @@ if(process.platform === "darwin") {
     doneIcon = nativeImage.createFromPath('resources/done-icon.png')
     downloadingIcon = nativeImage.createFromPath('resources/downloading-icon.png')
 }
+
+if(process.platform === "linux") {
+    let readonlyResources = app.getAppPath().slice(0, -8)
+    let destination = app.getPath("home") + "/.youtube-dl-gui/"
+    mkdirp(app.getPath("home") + "/.youtube-dl-gui/").then(made => {
+        if(made !== null) {
+            fs.copyFile(readonlyResources + "youtube-dl-darwin", destination + "youtube-dl-darwin", (err) => {
+                if (err) throw err
+                console.log('youtube-dl-darwin copied to home data')
+            })
+            fs.copyFile(readonlyResources + "ffmpeg-linux", destination + "ffmpeg", (err) => {
+                if (err) throw err
+                console.log('ffmpeg copied to home data')
+            })
+            fs.copyFile(readonlyResources + "details", destination + "details", (err) => {
+                if (err) throw err
+                console.log('details copied to home data')
+            })
+        }
+    })
+}
+
 
 let win
 

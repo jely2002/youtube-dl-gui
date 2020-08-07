@@ -19,6 +19,8 @@ startMetrics()
 function startMetrics() {
     if(process.platform === "darwin") {
         appTrimPath = remote.app.getAppPath().slice(0, -8)
+    } else if(process.platform === "linux") {
+        appTrimPath = remote.app.getPath("home") + "/.youtube-dl-gui/"
     } else {
         appTrimPath = "resources/"
     }
