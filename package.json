@@ -76,6 +76,31 @@
           ]
         }
       ]
+    },
+    "linux": {
+      "target": "AppImage",
+      "executableName": "youtube-dl-gui",
+      "icon": "build/",
+      "synopsis": "A cross-platform GUI for youtube-dl",
+      "category": "utility",
+      "desktop": {
+        "Name": "YouTube-dl-GUI",
+        "Icon": "build/",
+        "Comment": "A cross-platform GUI for youtube-dl"
+      },
+      "extraResources": [
+        {
+          "from": "resources",
+          "to": "./",
+          "filter": [
+            "ffmpeg-linux",
+            "youtube-dl-darwin",
+            "details",
+            "downloading-icon.png",
+            "done-icon.png"
+          ]
+        }
+      ]
     }
   }
 }
