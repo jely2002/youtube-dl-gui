@@ -1,6 +1,6 @@
 {
   "name": "youtube-dl-gui",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "A GUI for the YouTube-dl library",
   "main": "main.js",
   "scripts": {
@@ -8,7 +8,14 @@
     "dist": "electron-builder",
     "release": "electron-builder --win -p always"
   },
-  "keywords": ["youtube-dl", "electron", "download", "youtube", "gui", "interface"],
+  "keywords": [
+    "youtube-dl",
+    "electron",
+    "download",
+    "youtube",
+    "gui",
+    "interface"
+  ],
   "author": "Jelle Glebbeek",
   "license": "GPL-3.0-only",
   "devDependencies": {
@@ -21,6 +28,7 @@
     "electron-updater": "^4.2.5",
     "execa": "^4.0.0",
     "jquery": "^3.5.0",
+    "mkdirp": "^1.0.4",
     "popper.js": "^1.16.1",
     "request": "^2.88.2",
     "universalify": "^1.0.0"
@@ -61,6 +69,31 @@
           "to": "./",
           "filter": [
             "ffmpeg",
+            "youtube-dl-darwin",
+            "details",
+            "downloading-icon.png",
+            "done-icon.png"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "target": "AppImage",
+      "executableName": "youtube-dl-gui",
+      "icon": "build/",
+      "synopsis": "A cross-platform GUI for youtube-dl",
+      "category": "utility",
+      "desktop": {
+        "Name": "YouTube-dl-GUI",
+        "Icon": "build/",
+        "Comment": "A cross-platform GUI for youtube-dl"
+      },
+      "extraResources": [
+        {
+          "from": "resources",
+          "to": "./",
+          "filter": [
+            "ffmpeg-linux",
             "youtube-dl-darwin",
             "details",
             "downloading-icon.png",

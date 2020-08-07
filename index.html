@@ -39,7 +39,7 @@
                     <div id="url-part" class="content fade" role="tabpanel" aria-labelledby="url-part-trigger">
                         <form class="main-input">
                             <div class="form-group">
-                                <input type="search" oninput="url_entered($(this).val())" class="form-control" id="url" placeholder="YouTube link ex. youtube.com/watch?v=FtveSk1N7Uo" required>
+                                <input type="search" oninput="url_entered($(this).val())" class="form-control" id="url" placeholder="YouTube link ex. youtube.com/watch?v=dQw4w9WgXcQ" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid YouTube URL.
                                 </div>
@@ -138,6 +138,7 @@
                             </div>
                             <div class="row justify-content-center">
                                 <button type="button" id="reset-btn" onclick="resetSteps()" class="btn btn-dark mt-2 mb-0 col-md-4" disabled>Downloading...</button>
+                                <button type="button" id="open-btn" onclick="openDownloadedFile()" class="btn btn-dark mt-2 mb-0 mx-4 col-md4" disabled>Open file</button>
                             </div>
                         </div>
                     </div>

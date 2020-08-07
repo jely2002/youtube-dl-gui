@@ -1,9 +1,12 @@
 let cachePath
 initCaching()
 
+//Create caching directory if it does not exist yet, and set the path to it
 async function initCaching() {
     if(process.platform === "win32") {
         cachePath = 'resources/cached/'
+    } else if(process.platform === "linux") {
+        cachePath = remote.app.getPath("home") + "/.youtube-dl-gui/cached/"
     } else {
         cachePath = remote.app.getAppPath().slice(0, -8) + 'cached/'
     }
@@ -16,6 +19,7 @@ async function initCaching() {
     }
 }
 
+//Check if a cache is available for the given playlist url, and return the cache if found.
 function cacheAvailable(url) {
     let id = urlToId(url)
     let foundCache = false
@@ -28,6 +32,7 @@ function cacheAvailable(url) {
     return foundCache
 }
 
+//Check if cache is up-to-date with the videos currently in the online playlist
 function isCacheUpToDate(url) {
     let id = urlToId(url)
     let cachedURLS = []
@@ -53,6 +58,7 @@ function isCacheUpToDate(url) {
     }
 }
 
+//Get the difference between the local cache and the online playlist, and return the video URL's
 function getCacheDifference(url) {
     let id = urlToId(url)
     let cachedURLS = []
@@ -73,6 +79,7 @@ function getCacheDifference(url) {
     }
 }
 
+//Get cached information about a playlist using the URL
 function getCachedPlaylist(url) {
     let id = urlToId(url)
     if (cacheAvailable(url)) {
@@ -81,6 +88,7 @@ function getCachedPlaylist(url) {
     }
 }
 
+//Add a playlist to the cache with the URL and the video data
 function addCachedPlaylist(url, data) {
     let id = urlToId(url)
     if(cacheAvailable(url)) {
@@ -93,6 +101,7 @@ function addCachedPlaylist(url, data) {
     }
 }
 
+//Remove videos from cache using the playlist URL
 function removeVideosFromCache(url, cb) {
     let id = urlToId(url)
     let cachedURLS = []
@@ -119,6 +128,7 @@ function removeVideosFromCache(url, cb) {
     })
 }
 
+//Update an already cached playlist with newly added videos
 function updateCachedPlaylist(url) {
     if(isCacheUpToDate(url)) return
     let id = urlToId(url)
@@ -135,6 +145,7 @@ function updateCachedPlaylist(url) {
     })
 }
 
+//Transforms a video URL into a video ID
 function urlToId(url) {
     return /\?(?:v|list)=(\w*)/g.exec(url)[1]
 }
