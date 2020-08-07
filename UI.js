@@ -222,11 +222,18 @@ function openDownloadedFile() {
         shell.openItem(downloadPath)
     } else {
         if(mediaMode === "audio") {
-            shell.showItemInFolder(downloadPath + '\\' + audioOutputName.replace(/[/\\?%*:|"<>]/g, '-'))
+            if(process.platform === "darwin") {
+                shell.showItemInFolder(downloadPath + '/' + audioOutputName.replace(/[//?%*:|"<>]/g, '-'))
+            } else {
+                shell.showItemInFolder(downloadPath + '\\' + audioOutputName.replace(/[/\\?%*:|"<>]/g, '-'))
+            }
         } else {
-            shell.showItemInFolder(downloadPath + '\\' + videoOutputName.replace(/[/\\?%*:|"<>]/g, '-'))
+            if(process.platform === "darwin") {
+                shell.showItemInFolder(downloadPath + '/' + videoOutputName.replace(/[//?%*:|"<>]/g, '-'))
+            } else {
+                shell.showItemInFolder(downloadPath + '\\' + videoOutputName.replace(/[/\\?%*:|"<>]/g, '-'))
+            }
         }
-        //TODO test with MacOS and fix if needed
     }
 
 }
