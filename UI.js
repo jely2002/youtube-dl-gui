@@ -139,14 +139,14 @@ document.body.addEventListener('contextmenu', (e) => {
 function setProgressBarText(isMetadata, text, downloaded, toDownload) {
     if(isMetadata) {
         if(downloaded != null && toDownload != null) {
-            let transformedText = text.replace('%1', downloaded).replace('%2', downloaded)
+            let transformedText = text.replace('%1', downloaded).replace('%2', toDownload)
             $('.completion.metadata').html(transformedText)
         } else {
             $('.completion.metadata').html(text)
         }
     } else {
         if(downloaded != null && toDownload != null) {
-            let transformedText = text.replace('%1', downloaded).replace('%2', downloaded)
+            let transformedText = text.replace('%1', downloaded).replace('%2', toDownload)
             $('.completion.download').html(transformedText)
         } else {
             $('.completion.download').html(text)
