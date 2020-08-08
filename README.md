@@ -24,9 +24,17 @@ The releases can be found [here](https://github.com/jely2002/youtube-dl-gui/rele
 The default download location is your downloads folder, although this can easily be changed.
 
 ## I have an issue!
-Oh no! Please open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues) and describe the problem you're facing, I'll try to help you as soon as possible. 
+Please see if the answer is in the frequently answered questions.
+#### FAQ
+##### 1.  I can't open a video I downloaded
+Sometimes a video gets downloaded in a format that isn't supported by all media players. This can be fixed by watching the video in VLC media player, or by transcoding it to another format.
+##### 2.  The download appears to be stuck on 'Merging audio and video...'
+The progress bar shows the amount of data that is downloaded from YouTube. The audio and video gets downloaded seperately and then merged together, this can take a considerable amount of time with large files. So please be patient.
+
+##### Didn't find an answer in the FAQ? 
+Please open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues) and describe the problem you're facing, I'll try to help you as soon as possible. 
 
 ## Planned features
-- Single video download status bar
+- Single video download status bar (v1.6.4)
 
 Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/issues).
