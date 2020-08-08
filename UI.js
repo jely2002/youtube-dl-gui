@@ -216,6 +216,15 @@ function isSubtitleChecked() {
     return $('#subtitles').prop('checked')
 }
 
+//Blocks the url box when binary is being updated
+function binaryUpdating(isBusy) {
+    if(isBusy) {
+        $('#url').prop("disabled", true).attr('placeholder', 'The youtube-dl binary is being updated, please wait...')
+    } else {
+        $('#url').prop('disabled', false).attr('placeholder', 'YouTube link ex. youtube.com/watch?v=dQw4w9WgXcQ');
+    }
+}
+
 //Opens the downloaded file specified in downloadPath
 function openDownloadedFile() {
     if(isPlaylist) {

@@ -27,6 +27,7 @@ update()
 
 //Probes youtube-dl for new updates, and downloads them when needed.
 function update() {
+    binaryUpdating(true)
     request.get(url, { followRedirect: false }, function (err, res) {
         if (err) {
             console.log(err)
@@ -44,6 +45,7 @@ function update() {
         const newVersion = /yt-dl\.org\/downloads\/(\d{4}\.\d\d\.\d\d(\.\d)?)\/youtube-dl/.exec(newUrl)[1]
         console.log("Latest release: " + newVersion)
         if(newVersion === getCurrentVersion()) {
+            binaryUpdating(false)
             console.log("Binaries were already up-to-date!")
         } else {
             console.log("New version found! Updating...")
@@ -59,6 +61,7 @@ function update() {
                 console.log(err)
             })
             downloadFile.on('end', function end() {
+                binaryUpdating(false)
                 console.log("New youtube-dl version downloaded: " + newVersion)
                 console.log("Writing version data...")
                 fs.writeFileSync(
@@ -69,7 +72,7 @@ function update() {
                     }),
                     'utf8'
                 )
-                if(process.platform === "darwin") {
+                if(process.platform === "darwin" || process.platform === "linux") {
                     console.log("Adding chmod permissions")
                     fs.chmod(filePath, 0o755, function(err){
                         if(err) console.log(err)
