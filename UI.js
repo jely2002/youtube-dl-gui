@@ -231,13 +231,13 @@ function openDownloadedFile() {
         shell.openItem(downloadPath)
     } else {
         if(mediaMode === "audio") {
-            if(process.platform === "darwin") {
+            if(process.platform === "darwin" || process.platform === "linux") {
                 shell.showItemInFolder(downloadPath + '/' + audioOutputName.replace(/[//?%*:|"<>]/g, '-'))
             } else {
                 shell.showItemInFolder(downloadPath + '\\' + audioOutputName.replace(/[/\\?%*:|"<>]/g, '-'))
             }
         } else {
-            if(process.platform === "darwin") {
+            if(process.platform === "darwin" || process.platform === "linux") {
                 shell.showItemInFolder(downloadPath + '/' + videoOutputName.replace(/[//?%*:|"<>]/g, '-'))
             } else {
                 shell.showItemInFolder(downloadPath + '\\' + videoOutputName.replace(/[/\\?%*:|"<>]/g, '-'))

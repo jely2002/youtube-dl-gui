@@ -1,6 +1,8 @@
 'use strict'
 let audioOutputName
 let videoOutputName
+let videoFPS
+let videoTitle
 function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
     remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
@@ -23,8 +25,9 @@ function showInfo(url) {
         $(".duration").html("<strong>Duration:</strong> " + duration.replace(/(0d\s00:)|(0d\s)/g,""))
         $(".spinner-border").css("display", "none")
         $('#step-one-btn').prop("disabled", false)
-        audioOutputName = video.title + "." + video.ext
-        videoOutputName = video.title + "-(" + video.height + "p" + video.fps + ")." + video.ext
+        audioOutputName = video.title + ".mp3"
+        videoFPS = video.fps
+        videoTitle = video.title
         remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
         video.formats.forEach(function(format) {
             console.log(format)
@@ -75,8 +78,10 @@ function downloadAudio(quality) {
 }
 
 function downloadVideo(format_id) {
+    let format = $("#quality option:selected" ).text()
     remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
     if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "downloading"})
+    videoOutputName = videoTitle + "-(" + format.substr(0, format.indexOf("p")) + "p" + videoFPS + ").mp4"
     console.log("downloading video: " + selectedURL)
     const options = [
         '-f', format_id + "+bestaudio[ext=m4a]/best",
