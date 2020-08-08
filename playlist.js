@@ -11,7 +11,7 @@ function showPlaylistInfo(url) {
     let amountToDownload = 0
     let metadataDownloaded = 0
     function getVideoMetadata(item, cb) {
-        callYTDL(item, ['-J', '--skip-download'], {}, function (err, output) {
+        callYTDL(item, ['-J', '--skip-download'], {}, true, function (err, output) {
             if(output == null) {
                 ++metadataDownloaded
                 metaVideos.push({removed: "yes", playlist_index: 0, webpage_url: item})
@@ -31,7 +31,7 @@ function showPlaylistInfo(url) {
     }
 
     let playlistmetadata = new Promise((resolve, reject) => {
-        callYTDL(selectedURL, ['-J', '--flat-playlist'], {}, function (err, output) {
+        callYTDL(selectedURL, ['-J', '--flat-playlist'], {}, true, function (err, output) {
             if(output == null) {
                 if(err) console.log(err)
                 setInvalidPlaylist()
@@ -46,7 +46,6 @@ function showPlaylistInfo(url) {
                 filteredVideoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
             })
             setProgressBarText(true, "Fetching video metadata (%1 of %2)", metadataDownloaded, amountToDownload)
-            console.log(videoURLS)
             resolve()
         })
     })
@@ -82,7 +81,6 @@ function showPlaylistInfo(url) {
         function done() {
             if (!(firstSideResolved && secondSideResolved && thirdSideResolved && fourthSideResolved)) return
             addCachedPlaylist(selectedURL, metaVideos)
-            console.log(playlistVideos)
             videoURLS.forEach(function (url) {
                 playlistVideos.forEach(function (video) {
                     if (video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url)) video.playlist_index = videoURLS.indexOf(url) + 1
@@ -230,7 +228,7 @@ function downloadPlaylist(quality) {
             options.push("srt")
         }
         queue++
-        callYTDL(item.webpage_url, options, {}, function(err, output) {
+        callYTDL(item.webpage_url, options, {}, false, function(err, output) {
             if (err) showError(err)
             ++videosDownloaded
             let percentage = ((videosDownloaded / amountToDownload) * 100) + "%"
@@ -272,25 +270,21 @@ function downloadPlaylist(quality) {
 
     videometadata1.then(() => {
         firstSideResolved = true
-        console.log('first resolved')
         done()
     })
 
     videometadata2.then(() => {
         secondSideResolved = true
-        console.log('second resolved')
         done()
     })
 
     videometadata3.then(() => {
         thirdSideResolved = true
-        console.log('third resolved')
         done()
     })
 
     videometadata4.then(() => {
         fourthSideResolved = true
-        console.log('fourth resolved')
         done()
     })
 }
