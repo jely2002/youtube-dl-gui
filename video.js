@@ -65,7 +65,7 @@ function downloadAudio(quality) {
         '--extract-audio', '--audio-quality', realQuality,
         '--audio-format', 'mp3',
         '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
-        '--embed-thumbnail',
+        /*'--embed-thumbnail',*/
         '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
     ]
     callYTDL(selectedURL, options, {}, function(err, output) {
