@@ -15,6 +15,7 @@ function showInfo(url) {
             return
         }
         if (err) showError(err)
+        console.log(output)
         let video = JSON.parse(output)
         let date = new Date(video.duration * 1000)
         let duration = parseInt(date / 86400000) + "d " + date.toISOString().substr(11, 8)

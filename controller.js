@@ -58,9 +58,10 @@ function callYTDL (url, args, options = {}, isMetadata, cb) {
     args.push("--no-cache-dir")
     if(!isPlaylist) startSingleVideoStatus()
     const executable = execa(ytdlBinary, args, options)
+    let metadata = "";
     executable.stdout.on('data', (data) => {
         if(isMetadata) {
-            return cb(null, data.toString().trim().split(/\r?\n/))
+            metadata += data.toString().trim().split(/\r?\n/)
         } else if(!isPlaylist) {
             updateSingleVideoStatus(data.toString().trim().split(/\r?\n/))
         }
@@ -69,6 +70,8 @@ function callYTDL (url, args, options = {}, isMetadata, cb) {
         if(!isMetadata) {
             stopSingleVideoStatus()
             return cb(null, null)
+        } else {
+            return cb(null, metadata)
         }
     })
 }
