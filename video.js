@@ -78,6 +78,7 @@ function downloadAudio(quality) {
 
 function downloadVideo(format_id) {
     let format = $("#quality option:selected" ).text()
+    if(format.substr(format.indexOf('p') + 1) !== "") videoFPS = format.substr(format.indexOf('p') + 1)
     remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
     if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "downloading"})
     videoOutputName = videoTitle + "-(" + format.substr(0, format.indexOf("p")) + "p" + videoFPS + ").mp4"
