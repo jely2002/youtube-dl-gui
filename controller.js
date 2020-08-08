@@ -38,13 +38,13 @@ if(process.platform === "darwin") {
     fs.chmod(appPath + "ffmpeg", 0o755, function(err){
         if(err) console.log(err)
     })
-} else {
+} else if(process.platform === "win32") {
     ytdlBinary = "resources/youtube-dl.exe"
     ffmpegLoc = "resources/ffmpeg.exe"
 }
 
 //Calls the youtube-dl binary included with this application
-function callYTDL (url, args, options = {}, cb) {
+function callYTDL (url, args, options = {}, isMetadata, cb) {
     if (process.platform === "win32") {
         args.push('--encoding')
         args.push('utf8')
@@ -56,9 +56,20 @@ function callYTDL (url, args, options = {}, cb) {
         args.push(url)
     }
     args.push("--no-cache-dir")
-    return execa(ytdlBinary, args, options, function done(err, output) {
-        if (err) return cb(err)
-        return cb(null, output.stdout.trim().split(/\r?\n/))
+    if(!isPlaylist) startSingleVideoStatus()
+    const executable = execa(ytdlBinary, args, options)
+    executable.stdout.on('data', (data) => {
+        if(isMetadata) {
+            return cb(null, data.toString().trim().split(/\r?\n/))
+        } else if(!isPlaylist) {
+            updateSingleVideoStatus(data.toString().trim().split(/\r?\n/))
+        }
+    })
+    executable.on('exit', () => {
+        if(!isMetadata) {
+            stopSingleVideoStatus()
+            return cb(null, null)
+        }
     })
 }
 

@@ -1,10 +1,12 @@
 //UI.js manages all Jquery and UI related tasks
 'use strict'
 const customTitlebar = require('custom-electron-titlebar')
+const Mousetrap = require('mousetrap')
 const Menu = remote.Menu;
 
 let stepper
 let downloadPath = remote.app.getPath('downloads');
+let isConverting = false
 
 //Sets the custom titlebar per platform
 if(process.platform === "darwin") {
@@ -244,5 +246,43 @@ function openDownloadedFile() {
             }
         }
     }
-
 }
+
+//Stop/hide the progress bar for single videos
+function stopSingleVideoStatus() {
+    $('.completion.download').html("Video downloaded")
+}
+
+//Start the progress bar for single videos
+function startSingleVideoStatus() {
+    $('.completion.download').html("0.0%")
+    $('.progress.download').css("display", "initial")
+    isConverting = false
+}
+
+//Update the statusbar with live data from stdout
+function updateSingleVideoStatus(stdout) {
+    if(!stdout[0].includes('%') || stdout[0].includes('Destination')) return
+    if(stdout[0].includes('100.0%') || stdout[0].includes('100%')) {
+        remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+        $('.progress-bar.download').css("width", "100%").attr("aria-valuenow", "100")
+        if(mediaMode === "video") {
+            $('.completion.download').html("Merging audio and video...")
+        } else {
+            $('.completion.download').html("Extracting audio...")
+        }
+        isConverting = true
+        return
+    }
+    if(isConverting) return
+    let percentage = stdout[0].substr(0, stdout[0].indexOf('%')).substr(stdout[0].indexOf(' ') + 2) + '%'
+    $('.progress-bar.download').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
+    $('.completion.download').html(percentage)
+    remote.getCurrentWindow().setProgressBar(parseInt(percentage.slice(0, -1)) / 100)
+}
+
+// Open dev tools for debugging in production
+Mousetrap.bind(['command+shift+d', 'ctrl+shift+d'], () => {
+    remote.getCurrentWindow().webContents.openDevTools();
+    return false
+})

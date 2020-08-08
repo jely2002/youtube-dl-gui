@@ -7,7 +7,7 @@ function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
     remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
     selectedURL = url
-    callYTDL(selectedURL, ['-J','--skip-download'], {}, function(err, output) {
+    callYTDL(selectedURL, ['-J','--skip-download'], {}, true, function(err, output) {
         if(output == null) {
             $('.invalid-feedback').html("This video does not exist, is private or is blocked")
             $('#url').addClass("is-invalid").removeClass("is-valid")
@@ -30,7 +30,6 @@ function showInfo(url) {
         videoTitle = video.title
         remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
         video.formats.forEach(function(format) {
-            console.log(format)
             if(format.format_note === "DASH video") {
                 let alreadyIncludes
                 availableVideoFormats.forEach(function (savedFormat) {
@@ -71,7 +70,7 @@ function downloadAudio(quality) {
         /*'--embed-thumbnail',*/
         '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
     ]
-    callYTDL(selectedURL, options, {}, function(err, output) {
+    callYTDL(selectedURL, options, {}, false, function(err, output) {
         if (err) showError(err)
         downloadFinished()
     })
@@ -95,7 +94,7 @@ function downloadVideo(format_id) {
         options.push("--convert-subs")
         options.push("srt")
     }
-    callYTDL(selectedURL, options, {}, function(err, output) {
+    callYTDL(selectedURL, options, {}, false, function(err, output) {
         if (err) showError(err)
         downloadFinished()
     })
