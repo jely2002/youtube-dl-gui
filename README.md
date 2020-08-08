@@ -35,6 +35,6 @@ The progress bar shows the amount of data that is downloaded from YouTube. The a
 Please open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues) and describe the problem you're facing, I'll try to help you as soon as possible. 
 
 ## Planned features
-- Single video download status bar (v1.6.4)
+- No features planned at this time
 
 Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/issues).
