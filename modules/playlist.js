@@ -4,6 +4,15 @@ let videoURLS = []
 let filteredVideoURLS = []
 let metaVideos = []
 
+function playlistIsPrivate() {
+    $('.invalid-feedback').html("This playlist is private, <a class='credentials' data-toggle='modal' data-target='#credentialsModal'>add credentials</a> or add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download a private playlist.")
+    $('#url').addClass("is-invalid").removeClass("is-valid")
+    $(".spinner-border").css("display", "none")
+    $('.authenticated').css('display','none')
+    $('.progress-bar').css("width", "0%").attr("aria-valuenow", "0")
+    $('.progress').css("display", "none")
+}
+
 //Gets the playlist metadata (URL's and later one video formats) from YouTube or the local cache, and keeps the user updated during the process
 function showPlaylistInfo(url) {
     setFetchingPlaylist()
@@ -11,8 +20,22 @@ function showPlaylistInfo(url) {
     let amountToDownload = 0
     let metadataDownloaded = 0
     function getVideoMetadata(item, cb) {
-        callYTDL(item, ['-J', '--skip-download'], {}, true, function (err, output) {
-            if(output == null) {
+        let options = [
+            '-J',
+            '--skip-download'
+        ]
+        if(credentialsFilled) {
+            options.push('-u')
+            options.push(username)
+            options.push('-p')
+            options.push(password)
+        }
+        if(cookies) {
+            options.push('--cookies')
+            options.push(cookiePath)
+        }
+        callYTDL(item, options, {}, true, function (err, output) {
+            if(output == null || output === "") {
                 ++metadataDownloaded
                 metaVideos.push({removed: "yes", playlist_index: 0, webpage_url: item})
                 setProgressBarProgress(true, metadataDownloaded, amountToDownload)
@@ -31,16 +54,40 @@ function showPlaylistInfo(url) {
     }
 
     let playlistmetadata = new Promise((resolve, reject) => {
-        callYTDL(selectedURL, ['-J', '--flat-playlist'], {}, true, function (err, output) {
+        let options = [
+            '-J',
+            '--flat-playlist'
+        ]
+        if(credentialsFilled) {
+            options.push('-u')
+            options.push(username)
+            options.push('-p')
+            options.push(password)
+        }
+        if(cookies) {
+            options.push('--cookies')
+            options.push(cookiePath)
+        }
+        callYTDL(selectedURL, options, {}, true, function (err, output) {
             if(output == null) {
                 if(err) console.log(err)
                 setInvalidPlaylist()
+                return
+            }
+            if(output === "") {
+                console.log('possible private playplist')
+                playlistIsPrivate()
                 return
             }
             if (err) showError(err)
             let metadata = JSON.parse(output)
             amountToDownload = metadata.entries.length
             setPlaylistData(metadata, amountToDownload)
+            if(credentialsFilled || cookies) {
+                $('.authenticated').css('display','initial')
+                $('#url').addClass("is-valid").removeClass("is-invalid")
+                $('.invalid-feedback').css('display','none')
+            }
             metadata.entries.forEach(function (entry) {
                 videoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
                 filteredVideoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
@@ -226,6 +273,16 @@ function downloadPlaylist(quality) {
             options.push("--embed-subs")
             options.push("--convert-subs")
             options.push("srt")
+        }
+        if(credentialsFilled) {
+            options.push('-u')
+            options.push(username)
+            options.push('-p')
+            options.push(password)
+        }
+        if(cookies) {
+            options.push('--cookies')
+            options.push(cookiePath)
         }
         queue++
         callYTDL(item.webpage_url, options, {}, false, function(err, output) {
