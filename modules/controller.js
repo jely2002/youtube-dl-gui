@@ -380,6 +380,7 @@ function resetSteps() {
     $('.progress-bar').css("width", "0%").attr("aria-valuenow", "0")
     $('.progress').css("display", "none")
     $('.video-range').css("display", "none")
+    $('.authenticated').css('display','none')
     $('#open-btn').html("Open file")
     if(process.platform === "win32") remote.getCurrentWindow().setOverlayIcon(null, "")
     stepper.reset()
@@ -392,5 +393,6 @@ function resetBack() {
     $('#quality').empty().append(new Option("Select quality", "quality")).prop("disabled", true).val("quality")
     $("#directoryInput,#download-btn,#min,#max").prop("disabled", false)
     $('.video-range').css("display", "none")
+    $('.authenticated').css('display','none')
     $(".size").html("<strong>Download size:</strong> --")
 }
