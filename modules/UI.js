@@ -281,8 +281,46 @@ function updateSingleVideoStatus(stdout) {
     remote.getCurrentWindow().setProgressBar(parseInt(percentage.slice(0, -1)) / 100)
 }
 
-// Open dev tools for debugging in production
-Mousetrap.bind(['command+shift+d', 'ctrl+shift+d'], () => {
-    remote.getCurrentWindow().webContents.openDevTools();
-    return false
+//Credentials modal
+$('.addBtn').on('click', (element) => {
+    if($('#credentialsForm').get(0).reportValidity()) {
+        $('#credentialsModal').modal('hide')
+        password = $("#passwordInput").val()
+        username = $("#emailInput").val()
+        credentialsFilled = true
+        cookies = false
+        if(isPlaylist) {
+            showPlaylistInfo($('#url').val())
+        } else {
+            showInfo($('#url').val())
+        }
+    }
+})
+
+//Cookies modal
+function setCookies() {
+    $('#cookiesInput').blur();
+    let path = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+        defaultPath: cookiePath,
+        properties: [
+            'openFile',
+            'createDirectory'
+        ]
+    }).then(result => {
+        $('#cookiesInputLabel').html(result.filePaths[0])
+        cookiePath = result.filePaths[0]
+    })
+}
+
+$('.addCookiesBtn').on('click', (element) => {
+    if($('#cookiesForm').get(0).reportValidity()) {
+        $('#cookiesModal').modal('hide')
+        cookies = true
+        credentialsFilled = false
+        if(isPlaylist) {
+            showPlaylistInfo($('#url').val())
+        } else {
+            showInfo($('#url').val())
+        }
+    }
 })
