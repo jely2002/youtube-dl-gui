@@ -324,3 +324,21 @@ $('.addCookiesBtn').on('click', (element) => {
         }
     }
 })
+
+function logOut() {
+    cookies = false
+    credentialsFilled = false
+    cookiePath = ""
+    username = ""
+    password = ""
+    $('#url').addClass("is-invalid").removeClass("is-valid")
+    $('.authenticated').css('display', 'none')
+    $(".spinner-border").css("display", "none")
+    $(".thumbnail").attr("src", "https://via.placeholder.com/640x360?text=%20")
+    $(".title").html("<strong>Title:</strong> --")
+    $(".channel").html("<strong>Channel:</strong> --")
+    $(".duration").html("<strong>Duration:</strong> --")
+    $(".size").html("<strong>Download size:</strong> --")
+    $('.invalid-feedback').html("This video is private, <a class='credentials' data-toggle='modal' data-target='#credentialsModal'>add credentials</a> or add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.").css("display", "initial")
+    $("#directoryInput,#download-btn,#min,#max,#step-one-btn").prop("disabled", true)
+}
