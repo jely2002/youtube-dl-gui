@@ -16,7 +16,7 @@ A cross-platform GUI for youtube-dl made in Electron and node.js
 - Download private videos
 - Lightning fast download speeds
 - Shows an estimated download size before downloading the videos
-- The app will always be up-to-date (Windows & Linux only)
+- The app will always be up-to-date (not on macOS 😔)
 
 ## How to use
 Download the .exe if you are on Windows, .dmg if you are on macOSX or the .AppImage on Linux, then just open them and you're good to go!
