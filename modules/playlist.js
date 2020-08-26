@@ -5,7 +5,7 @@ let filteredVideoURLS = []
 let metaVideos = []
 
 function playlistIsPrivate() {
-    $('.invalid-feedback').html("This playlist is private, <a class='credentials' data-toggle='modal' data-target='#credentialsModal'>add credentials</a> or add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download a private playlist.")
+    $('.invalid-feedback').html("This playlist is private, add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download a private playlist.")
     $('#url').addClass("is-invalid").removeClass("is-valid")
     $(".spinner-border").css("display", "none")
     $('.authenticated').css('display','none')
@@ -75,7 +75,7 @@ function showPlaylistInfo(url) {
                 return
             }
             if(output === "") {
-                console.log('possible private playplist')
+                console.log('possible private playlist')
                 playlistIsPrivate()
                 return
             }

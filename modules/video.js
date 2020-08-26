@@ -36,7 +36,8 @@ function showInfo(url) {
         }
         if(output === "") {
             console.log('possible private video')
-            $('.invalid-feedback').html("This video is private, <a class='credentials' data-toggle='modal' data-target='#credentialsModal'>add credentials</a> or add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.")
+            //$('.invalid-feedback').html("This video is private, <a class='credentials' data-toggle='modal' data-target='#credentialsModal'>add credentials</a> or add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.")
+            $('.invalid-feedback').html("This video is private, add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.")
             $('#url').addClass("is-invalid").removeClass("is-valid")
             $(".spinner-border").css("display", "none")
             $('.authenticated').css('display','none')
