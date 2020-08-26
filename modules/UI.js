@@ -346,3 +346,8 @@ function logOut() {
     }
     $("#directoryInput,#download-btn,#min,#max,#step-one-btn").prop("disabled", true)
 }
+
+$(document).on("submit", "form", function(e){
+    e.preventDefault();
+    return false;
+});
