@@ -43,6 +43,9 @@
                                 <div class="invalid-feedback">
                                     Please enter a valid YouTube URL.
                                 </div>
+                                <div class="authenticated">
+                                    Succesfully authenticated with YouTube! (<a class='credentials' onclick="logOut()">log out</a>)
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -178,6 +181,64 @@
     </div>
     <div class="toast-body">
         The download is taking longer than usual, this might be because you're downloading a large file, have a slow connection, or are downloading subtitles. Otherwise please restart the program.
+    </div>
+</div>
+<div class="modal fade" id="cookiesModal" tabindex="-1" role="dialog" aria-labelledby="cookiesModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cookiesModalLabel">Add cookies.txt</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="cookiesForm">
+                    <div class="form-group">
+                        <div class="custom-file">
+                            <input type="text" onclick="setCookies()" class="custom-file-input" id="cookiesInput">
+                            <label class="custom-file-label" id="cookiesInputLabel" for="directoryInput">Select cookies.txt</label>
+                        </div>
+                    </div>
+                    <small class="form-text text-muted">Please use the <a class="credentials" onclick="shell.openExternal('https://chrome.google.com/webstore/detail/cookiestxt/njabckikapfpffapmjgojcnbfjonfjfg?hl=nl')">cookies.txt chrome/firefox extension</a> to extract your YouTube cookies while logged in, then select the file path of cookies.txt.</small>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn addCookiesBtn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="credentialsModal" tabindex="-1" role="dialog" aria-labelledby="credentialsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="credentialsModalLabel">Add credentials</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="credentialsForm">
+                    <div class="form-group">
+                        <label for="emailInput">Email address</label>
+                        <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="E-mail" required>
+                        <small id="emailHelp" class="form-text text-muted">Enter the e-mail adress associated with your YouTube account.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordInput">Password</label>
+                        <input type="password" class="form-control" aria-describedby="passwordHelp" id="passwordInput" placeholder="Password" required>
+                        <small id="passwordHelp" class="form-text text-muted">Enter the password associated with your YouTube account.</small>
+                    </div>
+                    <small class="form-text text-muted">Your credentials will temporarily be stored until the app gets closed.</small>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn addBtn">Add</button>
+            </div>
+        </div>
     </div>
 </div>
 <script src="modules/controller.js"></script>

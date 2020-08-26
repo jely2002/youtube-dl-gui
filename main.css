@@ -193,3 +193,37 @@ input[type="search"]::-webkit-search-cancel-button {
     }
 }
 
+.credentials {
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+
+.modal-content {
+    background-color: #303030 !important;
+    color: #fff !important;
+}
+
+.modal-header {
+    border-bottom: 1px solid #212121 !important;
+}
+
+.modal-footer {
+    border-top: 1px solid #212121 !important;
+}
+
+.addBtn, .addCookiesBtn {
+    background-color: #5cb85c !important;
+    color: #fff !important;
+}
+
+.close {
+    color: #fff !important;
+}
+
+.authenticated {
+    color: #5cb85c !important;
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    display: none;
+}

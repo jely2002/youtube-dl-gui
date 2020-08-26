@@ -281,8 +281,68 @@ function updateSingleVideoStatus(stdout) {
     remote.getCurrentWindow().setProgressBar(parseInt(percentage.slice(0, -1)) / 100)
 }
 
-// Open dev tools for debugging in production
-Mousetrap.bind(['command+shift+d', 'ctrl+shift+d'], () => {
-    remote.getCurrentWindow().webContents.openDevTools();
-    return false
+//Credentials modal
+$('.addBtn').on('click', (element) => {
+    if($('#credentialsForm').get(0).reportValidity()) {
+        $('#credentialsModal').modal('hide')
+        password = $("#passwordInput").val()
+        username = $("#emailInput").val()
+        credentialsFilled = true
+        cookies = false
+        if(isPlaylist) {
+            showPlaylistInfo($('#url').val())
+        } else {
+            showInfo($('#url').val())
+        }
+    }
 })
+
+//Cookies modal
+function setCookies() {
+    $('#cookiesInput').blur();
+    let path = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+        defaultPath: cookiePath,
+        properties: [
+            'openFile',
+            'createDirectory'
+        ]
+    }).then(result => {
+        $('#cookiesInputLabel').html(result.filePaths[0])
+        cookiePath = result.filePaths[0]
+    })
+}
+
+$('.addCookiesBtn').on('click', (element) => {
+    if($('#cookiesForm').get(0).reportValidity()) {
+        $('#cookiesModal').modal('hide')
+        cookies = true
+        credentialsFilled = false
+        if(isPlaylist) {
+            showPlaylistInfo($('#url').val())
+        } else {
+            showInfo($('#url').val())
+        }
+    }
+})
+
+function logOut() {
+    cookies = false
+    credentialsFilled = false
+    cookiePath = ""
+    username = ""
+    password = ""
+    $('.authenticated').css('display', 'none')
+    $(".spinner-border").css("display", "none")
+    $(".thumbnail").attr("src", "https://via.placeholder.com/640x360?text=%20")
+    $(".title").html("<strong>Title:</strong> --")
+    $(".channel").html("<strong>Channel:</strong> --")
+    $(".duration").html("<strong>Duration:</strong> --")
+    $(".size").html("<strong>Download size:</strong> --")
+    if($('#url').val().length !== 0) {
+        $('#url').addClass("is-invalid").removeClass("is-valid")
+        $('.invalid-feedback').html("This video is private, <a class='credentials' data-toggle='modal' data-target='#credentialsModal'>add credentials</a> or add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.").css("display", "initial")
+    } else {
+        $('#url').removeClass("is-invalid").removeClass("is-valid")
+    }
+    $("#directoryInput,#download-btn,#min,#max,#step-one-btn").prop("disabled", true)
+}
