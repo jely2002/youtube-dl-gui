@@ -5,7 +5,11 @@ let filteredVideoURLS = []
 let metaVideos = []
 
 function playlistIsPrivate() {
-    $('.invalid-feedback').html("This playlist is private, add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download a private playlist.")
+    if(cookies || credentialsFilled) {
+        $('.invalid-feedback').html("This cookies.txt file does not appear to be working, add a working <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download a private playlist.")
+    } else {
+        $('.invalid-feedback').html("This playlist is private, add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download a private playlist.")
+    }
     $('#url').addClass("is-invalid").removeClass("is-valid")
     $(".spinner-border").css("display", "none")
     $('.authenticated').css('display','none')
@@ -68,7 +72,7 @@ function showPlaylistInfo(url) {
             options.push('--cookies')
             options.push(cookiePath)
         }
-        callYTDL(selectedURL, options, {}, true, function (err, output) {
+        callYTDL(selectedURL, options, {}, true, async function (err, output) {
             if(output == null) {
                 if(err) console.log(err)
                 setInvalidPlaylist()
@@ -84,9 +88,13 @@ function showPlaylistInfo(url) {
             amountToDownload = metadata.entries.length
             setPlaylistData(metadata, amountToDownload)
             if(credentialsFilled || cookies) {
-                $('.authenticated').css('display','initial')
-                $('#url').addClass("is-valid").removeClass("is-invalid")
-                $('.invalid-feedback').css('display','none')
+                if(await isPublicPlaylist(url)) {
+                    $('.authenticated').css('display','none')
+                } else {
+                    $('.authenticated').css('display','initial')
+                    $('#url').addClass("is-valid").removeClass("is-invalid")
+                    $('.invalid-feedback').css('display','none')
+                }
             }
             metadata.entries.forEach(function (entry) {
                 videoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
@@ -208,6 +216,23 @@ function showPlaylistInfo(url) {
             })
         }
     })
+}
+
+async function isPublicPlaylist(url) {
+    let options = [
+        '-J',
+        '--flat-playlist'
+    ]
+    const call = new Promise((resolve, reject) => {
+        callYTDL(url, options, {}, true, function(err, output) {
+            if(output === "") {
+                resolve(false)
+            } else {
+                resolve(true)
+            }
+        })
+    })
+    return await call
 }
 
 //Downloads the videos in filteredPlaylistVideos from YouTube, and keeps the user updated during the process.
