@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeImage } = require('electron')
+const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu} = require('electron')
 const { autoUpdater } = require("electron-updater")
 const fs = require('fs')
 const mkdirp = require('mkdirp')
@@ -86,21 +86,6 @@ function createWindow () {
 }
 
 app.on('ready', () => {
-    /*app.setLoginItemSettings({         TODO Sync playlists on startup
-        openAtLogin: false,
-        openAsHidden: true,
-        args: [
-            '--startup'
-        ]
-    })
-
-    if(process.argv.includes('startup')) {
-        startUpdate(() => {
-            app.quit()
-        })
-    } else {
-        createWindow()
-    }*/
     createWindow()
     if(process.platform === "darwin") {
         autoUpdater.checkForUpdates().then((result) => {

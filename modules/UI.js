@@ -50,7 +50,7 @@ $(document).ready(function () {
         animation: true
     })
     //Set the default directory for the download location input
-    $("#directoryInputLabel").html(remote.app.getPath('downloads'))
+    $("#directoryInputLabel").html(downloadPath)
 
     //Limits the playlist video selector to the size of the playlist and above 0.
     $("#max,#min").keydown(function () {
