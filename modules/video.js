@@ -6,11 +6,18 @@ let videoTitle
 let username
 let password
 let cookies
-let cookiePath = remote.app.getPath('downloads')
+let cookiePath
+let downloadPath
 let credentialsFilled = false
+
+ipcRenderer.invoke('getPath', 'downloads').then((result) => {
+    downloadPath = result
+    cookiePath = result
+})
+
 function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
-    remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
+    ipcRenderer.invoke('updateProgressBar', 'indeterminate')
     selectedURL = url
     let options = [
         '-J',
@@ -62,7 +69,7 @@ function showInfo(url) {
         audioOutputName = video.title + ".mp3"
         videoFPS = video.fps
         videoTitle = video.title
-        remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+        ipcRenderer.invoke('updateProgressBar', 'hide')
         video.formats.forEach(function(format) {
             if(format.format_note === "DASH video") {
                 let alreadyIncludes
@@ -90,8 +97,8 @@ function showInfo(url) {
 }
 
 function downloadAudio(quality) {
-    remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
-    if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "downloading"})
+    ipcRenderer.invoke('updateProgressBar', 'indeterminate')
+    if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
     console.log("downloading audio: " + selectedURL)
     let realQuality = 0
     if(quality === "worst") {
@@ -123,8 +130,7 @@ function downloadAudio(quality) {
 function downloadVideo(format_id) {
     let format = $("#quality option:selected" ).text()
     if(format.substr(format.indexOf('p') + 1) !== "") videoFPS = format.substr(format.indexOf('p') + 1)
-    remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
-    if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "downloading"})
+    if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
     videoOutputName = videoTitle + "-(" + format.substr(0, format.indexOf("p")) + "p" + videoFPS + ").mp4"
     console.log("downloading video: " + selectedURL)
     const options = [

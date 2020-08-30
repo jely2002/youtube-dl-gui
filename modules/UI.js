@@ -89,6 +89,10 @@ function setDirectory() {
         downloadPath = result.filePaths[0]
     })
 }
+ipcRenderer.on('directorySelected', (event, path) => {
+    $('#directoryInputLabel').html(path)
+    downloadPath = path
+})
 
 //Shows a warning toast, no customisable message
 function showWarning() {
@@ -103,24 +107,6 @@ function showError(err) {
     $('#error').css('visibility','visible')
 }
 
-//Creates the input menu to show on right click
-const InputMenu = Menu.buildFromTemplate([{
-    label: 'Cut',
-    role: 'cut',
-}, {
-    label: 'Copy',
-    role: 'copy',
-}, {
-    label: 'Paste',
-    role: 'paste',
-}, {
-    type: 'separator',
-}, {
-    label: 'Select all',
-    role: 'selectall',
-},
-]);
-
 //Enable right click menu on input/textarea
 document.body.addEventListener('contextmenu', (e) => {
     e.preventDefault();
@@ -130,7 +116,7 @@ document.body.addEventListener('contextmenu', (e) => {
 
     while (node) {
         if (node.nodeName.match(/^(input|textarea)$/i) || node.isContentEditable) {
-            InputMenu.popup(remote.getCurrentWindow());
+            ipcRenderer.invoke('openInputMenu')
             break;
         }
         node = node.parentNode;
@@ -162,16 +148,16 @@ function setProgressBarProgress(isMetadata, downloaded, toDownload) {
     if(isMetadata) {
         $('.progress-bar.metadata').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
         if(percentage === 100) {
-            remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+            ipcRenderer.invoke('updateProgressBar', 'hide')
         } else {
-            remote.getCurrentWindow().setProgressBar(downloaded / toDownload)
+            ipcRenderer.invoke('updateProgressBar', downloaded / toDownload)
         }
     } else {
         $('.progress-bar.download').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
         if(percentage === 100) {
-            remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+            ipcRenderer.invoke('updateProgressBar', 'hide')
         } else {
-            remote.getCurrentWindow().setProgressBar(downloaded / toDownload)
+            ipcRenderer.invoke('updateProgressBar', downloaded / toDownload)
         }
     }
 }
@@ -264,7 +250,7 @@ function startSingleVideoStatus() {
 function updateSingleVideoStatus(stdout) {
     if(!stdout[0].includes('%') || stdout[0].includes('Destination')) return
     if(stdout[0].includes('100.0%') || stdout[0].includes('100%')) {
-        remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+        ipcRenderer.invoke('updateProgressBar', 'hide')
         $('.progress-bar.download').css("width", "100%").attr("aria-valuenow", "100")
         if(mediaMode === "video") {
             $('.completion.download').html("Merging audio and video...")
@@ -278,7 +264,7 @@ function updateSingleVideoStatus(stdout) {
     let percentage = stdout[0].substr(0, stdout[0].indexOf('%')).substr(stdout[0].indexOf(' ') + 2) + '%'
     $('.progress-bar.download').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
     $('.completion.download').html(percentage)
-    remote.getCurrentWindow().setProgressBar(parseInt(percentage.slice(0, -1)) / 100)
+    ipcRenderer.invoke('updateProgressBar', parseInt(percentage.slice(0, -1)) / 100)
 }
 
 //Credentials modal
@@ -300,17 +286,13 @@ $('.addBtn').on('click', (element) => {
 //Cookies modal
 function setCookies() {
     $('#cookiesInput').blur();
-    let path = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
-        defaultPath: cookiePath,
-        properties: [
-            'openFile',
-            'createDirectory'
-        ]
-    }).then(result => {
-        $('#cookiesInputLabel').html(result.filePaths[0])
-        cookiePath = result.filePaths[0]
-    })
+    ipcRenderer.send('openFileDialog', cookiePath)
 }
+
+ipcRenderer.on('fileSelected', (event, path) => {
+    $('#cookiesInputLabel').html(path)
+    cookiePath = path;
+})
 
 $('.addCookiesBtn').on('click', (element) => {
     if($('#cookiesForm').get(0).reportValidity()) {

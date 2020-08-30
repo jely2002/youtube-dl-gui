@@ -6,9 +6,9 @@ async function initCaching() {
     if(process.platform === "win32") {
         cachePath = 'resources/cached/'
     } else if(process.platform === "linux") {
-        cachePath = remote.app.getPath("home") + "/.youtube-dl-gui/cached/"
+        cachePath = ipcRenderer.invoke('getPath', 'home')+ "/.youtube-dl-gui/cached/"
     } else {
-        cachePath = remote.app.getAppPath().slice(0, -8) + 'cached/'
+        cachePath = ipcRenderer.invoke('getPath', 'appPath').slice(0, -8) + 'cached/'
     }
     try {
         await fs.promises.access(cachePath);

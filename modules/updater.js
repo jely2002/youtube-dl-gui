@@ -9,11 +9,11 @@ let url = 'http://yt-dl.org/downloads/latest/youtube-dl'
 
 //Sets the appropriate file paths depending on platform
 if(process.platform === "darwin") {
-    defaultBin = remote.app.getAppPath().slice(0, -8)
+    defaultBin = ipcRenderer.invoke('getPath', 'appPath').slice(0, -8)
     defaultPath = defaultBin + 'details'
     filePath = defaultBin + "youtube-dl-darwin"
 } else if(process.platform === "linux") {
-    defaultBin = remote.app.getPath("home") + "/.youtube-dl-gui/"
+    defaultBin = ipcRenderer.invoke('getPath', 'home') + "/.youtube-dl-gui/"
     defaultPath = defaultBin + 'details'
     filePath = defaultBin + "youtube-dl-darwin"
 } else {

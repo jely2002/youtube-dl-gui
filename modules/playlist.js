@@ -235,7 +235,7 @@ function downloadPlaylist(quality) {
     let amountToDownload = filteredPlaylistVideos.length
     let videosDownloaded = 0
     setProgressBarText(false, "Video %1 of %2 downloaded", videosDownloaded, amountToDownload)
-    if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "downloading"})
+    if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
 
     function downloadVideo(item, format_id, queue, cb) {
         if(item.removed === "yes") {
