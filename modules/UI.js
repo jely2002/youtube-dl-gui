@@ -174,7 +174,7 @@ function setPlaylistData(metadata, toDownload) {
 
 //Shows error when an invalid playlist link has been given
 function setInvalidPlaylist() {
-    $('.invalid-feedback').html("This playlist does not exist, is private or is blocked")
+    $('.invalid-feedback').html("This playlist does not exist, or is blocked in your country.")
     $('#url').addClass("is-invalid").removeClass("is-valid")
     $(".spinner-border").css("display", "none")
     $(".progress.metadata").css("display", "none");
