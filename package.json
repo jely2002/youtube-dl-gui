@@ -23,16 +23,15 @@
     "electron-builder": "^22.8.0"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.13.0",
-    "custom-electron-titlebar": "^3.2.2-hotfix62",
-    "electron-updater": "^4.2.5",
+    "@fortawesome/fontawesome-free": "^5.14.0",
+    "electron-updater": "^4.3.4",
     "execa": "^4.0.0",
-    "jquery": "^3.5.0",
+    "jquery": "^3.5.1",
     "mkdirp": "^1.0.4",
-    "mousetrap": "^1.6.5",
     "popper.js": "^1.16.1",
     "request": "^2.88.2",
-    "universalify": "^1.0.0"
+    "universalify": "^1.0.0",
+    "windowbar": "^1.7.4"
   },
   "repository": {
     "type": "git",
