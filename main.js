@@ -102,6 +102,12 @@ app.on('ready', () => {
         createWindow()
     }*/
     createWindow()
+    if(process.platform === "darwin") {
+        autoUpdater.checkForUpdates().then((result) => {
+            result.currentVersion = app.getVersion();
+            win.webContents.send('mac-update', result)
+        })
+    }
  })
 
 //Quit the application when all windows are closed, except for darwin

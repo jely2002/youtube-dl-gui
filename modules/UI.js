@@ -2,7 +2,6 @@
 'use strict'
 const windowbar = require('windowbar')
 let stepper
-let downloadPath = remote.app.getPath('downloads');
 let isConverting = false
 
 //Sets the custom titlebar per platform
@@ -43,6 +42,10 @@ $(document).ready(function () {
         animation: true
     })
     $('#connection').toast({
+        autohide: false,
+        animation: true
+    })
+    $('#update').toast({
         autohide: false,
         animation: true
     })
@@ -323,3 +326,10 @@ $(document).on("submit", "form", function(e){
     e.preventDefault();
     return false;
 });
+
+ipcRenderer.on('mac-update', (event, update) => {
+    if(update.currentVersion !== update.updateInfo.version) {
+        $('#update .toast-body').html("Update " + update.updateInfo.releaseName + " is now out. <u style='cursor: pointer;'>Click here</u> to download the latest version on GitHub.")
+        $('#update').toast('show').css('visibility', 'visible')
+    }
+})
