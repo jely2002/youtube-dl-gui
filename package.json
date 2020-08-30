@@ -19,8 +19,8 @@
   "author": "Jelle Glebbeek",
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "electron": ">=8.2.4",
-    "electron-builder": "^22.4.1"
+    "electron": ">=10.1.0",
+    "electron-builder": "^22.8.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
