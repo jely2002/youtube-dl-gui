@@ -61,7 +61,7 @@ function createWindow () {
             win = new BrowserWindow({
                 show: false,
                 width: 800, //850
-                height: 530, //550
+                height: 540, //550
                 resizable: false,
                 maximizable: false,
                 frame: false,
@@ -80,7 +80,6 @@ function createWindow () {
     win.on('closed', () => {
         win = null
     })
-
     win.once('ready-to-show', () => {
         win.show()
     })
@@ -114,7 +113,7 @@ app.on('window-all-closed', () => {
 
 //Create a window when there is none, but the app is still active (darwin)
 app.on('activate', () => {
-    if (win === null /*&& !process.argv.includes('startup') TODO Sync playlists on startup*/) {
+    if (win === null) {
         createWindow()
     }
 });

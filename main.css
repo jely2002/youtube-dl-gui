@@ -9,10 +9,6 @@ body {
     padding: 10px 30px;
 }
 
-.menubar {
-    display: none !important;
-}
-
 .main-input {
     background-color: #303030;
     padding: 30px;
@@ -63,6 +59,7 @@ body {
 
 .bs-stepper {
     width: 100%;
+    margin-top: 40px !important;
 }
 
 .bs-stepper .line {
@@ -226,4 +223,39 @@ input[type="search"]::-webkit-search-cancel-button {
     margin-top: .25rem;
     font-size: 80%;
     display: none;
+}
+
+.windowbar.fixed {
+    top: 0 !important;
+    width: 100% !important;
+    background-color: black !important;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.windowbar-title {
+    font-size: 13px !important;
+    line-height: 14px;
+    left: 45px !important;
+}
+
+.windowbar-icon {
+    position: relative;
+    max-width: 25px;
+    margin-left: 10px;
+    margin-bottom: -2px;
+}
+
+.windowbar-maximize:hover {
+    background-color: black !important;
+}
+
+svg.maximize-svg path {
+    fill: rgba(255,255,255,0.2) !important;
+}
+
+svg.unmaximize-svg {
+    display: none !important;
 }

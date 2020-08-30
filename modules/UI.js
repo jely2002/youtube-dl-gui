@@ -1,33 +1,31 @@
 //UI.js manages all Jquery and UI related tasks
 'use strict'
-const customTitlebar = require('custom-electron-titlebar')
-const Mousetrap = require('mousetrap')
-const Menu = remote.Menu;
-
+const windowbar = require('windowbar')
 let stepper
 let downloadPath = remote.app.getPath('downloads');
 let isConverting = false
 
 //Sets the custom titlebar per platform
 if(process.platform === "darwin") {
-    new customTitlebar.Titlebar({
-        backgroundColor: customTitlebar.Color.fromHex('#212121'),
-        maximizable: false,
-        shadow: false,
-        titleHorizontalAlignment: "center",
-        enableMnemonics: false,
-        icon: "web-resources/icon-light.png"
-    })
+    let titlebar = new windowbar({'style':'mac', 'dblClickable':false, 'fixed':true, 'title':'YouTube Downloader','dark':true})
+        .appendTo(document.body)
 } else {
-    new customTitlebar.Titlebar({
-        backgroundColor: customTitlebar.Color.fromHex('#000000'),
-        maximizable: false,
-        shadow: true,
-        titleHorizontalAlignment: "left",
-        enableMnemonics: false,
-        icon: "web-resources/icon-light.png"
-    })
+    let titlebar = new windowbar({'style':'win', 'dblClickable':false, 'fixed':true, 'title':'YouTube Downloader','dark':true})
+        .appendTo(document.body)
 }
+$('.windowbar').prepend("<img src='web-resources/icon-light.png' alt='youtube-dl-gui icon' class='windowbar-icon'>")
+$('.windowbar-minimize').on('click', (event) => {
+    ipcRenderer.invoke('titlebarClick', 'minimize')
+})
+$('.windowbar-close').on('click', (event) => {
+    ipcRenderer.invoke('titlebarClick', 'close')
+})
+$('.windowbar-maximize').on('click', (event) => {
+    event.stopPropagation()
+    event.stopImmediatePropagation()
+    event.preventDefault()
+    $('.windowbar').removeClass('fullscreen')
+})
 
 $(document).ready(function () {
     //Initiates the stepper (main UI)
@@ -78,16 +76,8 @@ $(document).on('click','.close',function (e) {
 //Sets the download directory to the directory selected in the input
 function setDirectory() {
     $('#directoryInput').blur();
-    let path = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
-        defaultPath: downloadPath,
-        properties: [
-            'openDirectory',
-            'createDirectory'
-        ]
-    }).then(result => {
-        $('#directoryInputLabel').html(result.filePaths[0])
-        downloadPath = result.filePaths[0]
-    })
+    ipcRenderer.send('openFolderDialog', downloadPath)
+
 }
 ipcRenderer.on('directorySelected', (event, path) => {
     $('#directoryInputLabel').html(path)
