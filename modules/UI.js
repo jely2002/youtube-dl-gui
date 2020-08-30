@@ -209,7 +209,7 @@ function binaryUpdating(isBusy) {
 //Opens the downloaded file specified in downloadPath
 function openDownloadedFile() {
     if(isPlaylist) {
-        shell.openItem(downloadPath)
+        shell.openPath(downloadPath)
     } else {
         if(mediaMode === "audio") {
             if(process.platform === "darwin" || process.platform === "linux") {
