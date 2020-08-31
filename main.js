@@ -53,7 +53,8 @@ function createWindow () {
             icon: "web-resources/icon-light.png",
             webPreferences: {
                 nodeIntegration: true,
-                enableRemoteModule: false
+                enableRemoteModule: false,
+                worldSafeExecuteJavaScript: true
             }
         })
     } else {
@@ -68,7 +69,8 @@ function createWindow () {
                 icon: "web-resources/icon-light.png",
                 webPreferences: {
                     nodeIntegration: true,
-                    enableRemoteModule: false
+                    enableRemoteModule: false,
+                    worldSafeExecuteJavaScript: true
                 }
             })
     }
