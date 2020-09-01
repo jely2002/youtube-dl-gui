@@ -66,10 +66,8 @@ async function getCurrentVersion() {
         fs.readFile(defaultPath, (err, data) => {
             if (err) {
                 console.error(err)
-                if (err.code === "ENOENT") {
-                    resolve(null)
-                    return
-                }
+                resolve(null)
+                return
             }
             let detailsData
             try {
