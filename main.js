@@ -77,7 +77,6 @@ function createWindow () {
     if(process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
-    win.webContents.openDevTools()
     win.loadFile('main.html')
     win.on('closed', () => {
         win = null
