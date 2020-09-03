@@ -36,7 +36,6 @@ if(process.platform === "linux") {
     })
 }
 
-
 let win
 
 //Create the window for the renderer process
@@ -78,6 +77,7 @@ function createWindow () {
     if(process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
+    win.webContents.openDevTools()
     win.loadFile('main.html')
     win.on('closed', () => {
         win = null
@@ -161,7 +161,6 @@ ipcMain.handle('updateProgressBar', async (event, arg) => {
 
 //Show a dialog to select a folder, and return the selected value.
 ipcMain.on('openFolderDialog', async (event, selectedPath) => {
-    console.log(selectedPath)
     await dialog.showOpenDialog(win, {
         defaultPath: selectedPath,
         properties: [

@@ -26,7 +26,8 @@ function showPlaylistInfo(url) {
     function getVideoMetadata(item, cb) {
         let options = [
             '-J',
-            '--skip-download'
+            '--skip-download',
+            '--no-mtime' //TODO Add --no-mtime to audio if required
         ]
         if(credentialsFilled) {
             options.push('-u')

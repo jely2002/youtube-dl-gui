@@ -10,18 +10,14 @@ let cookiePath
 let downloadPath
 let credentialsFilled = false
 
-ipcRenderer.invoke('getPath', 'downloads').then((result) => {
-    downloadPath = result
-    cookiePath = result
-})
-
 function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
     ipcRenderer.invoke('updateProgressBar', 'indeterminate')
     selectedURL = url
     let options = [
         '-J',
-        '--skip-download'
+        '--skip-download',
+        '--no-mtime'
         ]
     if(credentialsFilled) {
         options.push('-u')

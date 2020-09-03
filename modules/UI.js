@@ -52,8 +52,12 @@ $(document).ready(function () {
         autohide: false,
         animation: true
     })
+
     //Set the default directory for the download location input
-    $("#directoryInputLabel").html(downloadPath)
+    ipcRenderer.invoke('getPath', 'downloads').then((result) => {
+        downloadPath = result
+        $("#directoryInputLabel").html(result)
+    })
 
     //Limits the playlist video selector to the size of the playlist and above 0.
     $("#max,#min").keydown(function () {
