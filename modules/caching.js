@@ -6,7 +6,9 @@ async function initCaching() {
     if(process.platform === "win32") {
         cachePath = 'resources/cached/'
     } else if(process.platform === "linux") {
-        cachePath = ipcRenderer.invoke('getPath', 'home')+ "/.youtube-dl-gui/cached/"
+        ipcRenderer.invoke('getPath', 'home').then((result) => {
+            cachePath = result + + "/.youtube-dl-gui/cached/"
+        })
     } else {
         let cachePathUncut = await ipcRenderer.invoke('getPath', 'appPath')
         cachePath = cachePathUncut.slice(0, -8) + 'cached/'
