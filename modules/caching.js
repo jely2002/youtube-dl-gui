@@ -4,15 +4,22 @@ let cachePath
 async function initCaching() {
     if(process.platform === "win32") {
         cachePath = 'resources/cached/'
+	createPath()
     } else if(process.platform === "linux") {
         ipcRenderer.invoke('getPath', 'home').then((result) => {
             cachePath = result + "/.youtube-dl-gui/cached/"
+            createPath()
         })
     } else {
-        let cachePathUncut = await ipcRenderer.invoke('getPath', 'appPath')
-        cachePath = cachePathUncut.slice(0, -8) + 'cached/'
+        ipcRenderer.invoke('getPath', 'appPath').then((result) => {
+	    cachePath = result.slice(0, -8) + 'cached/'
+            createPath()
+	})
     }
-    try {
+}
+
+async function createPath() {
+  try {
         await fs.promises.access(cachePath);
         console.log('Cached directory exists')
     } catch (error) {
