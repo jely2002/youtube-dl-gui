@@ -19,8 +19,8 @@ let mediaMode
 
 //Sets all paths to the included binaries depending on the platform
 if(process.platform === "darwin") {
-    let appPathUncut = ipcRenderer.invoke('getPath', 'appPath').then(() => {
-        let appPath = appPathUncut.slice(0,-8)
+    ipcRenderer.invoke('getPath', 'appPath').then((result) => {
+        let appPath = result.slice(0,-8)
         ytdlBinary = appPath + "youtube-dl-darwin"
         ffmpegLoc = appPath + "ffmpeg"
         fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
