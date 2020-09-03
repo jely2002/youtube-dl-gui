@@ -1,5 +1,4 @@
 let cachePath
-initCaching()
 
 //Create caching directory if it does not exist yet, and set the path to it
 async function initCaching() {
@@ -7,7 +6,7 @@ async function initCaching() {
         cachePath = 'resources/cached/'
     } else if(process.platform === "linux") {
         ipcRenderer.invoke('getPath', 'home').then((result) => {
-            cachePath = result + + "/.youtube-dl-gui/cached/"
+            cachePath = result + "/.youtube-dl-gui/cached/"
         })
     } else {
         let cachePathUncut = await ipcRenderer.invoke('getPath', 'appPath')

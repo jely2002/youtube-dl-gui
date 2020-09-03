@@ -29,10 +29,11 @@ if(process.platform === "darwin") {
         fs.chmod(appPath + "ffmpeg", 0o755, function(err){
             if(err) console.log(err)
         })
+        initCaching()
     })
 } else if(process.platform === "linux") {
     ipcRenderer.invoke('getPath', 'home').then((result) => {
-        let appPath = result + + "/.youtube-dl-gui/"
+        let appPath = result + "/.youtube-dl-gui/"
         ytdlBinary = appPath + "youtube-dl-darwin"
         ffmpegLoc = appPath + "ffmpeg"
         fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
@@ -41,11 +42,12 @@ if(process.platform === "darwin") {
         fs.chmod(appPath + "ffmpeg", 0o755, function(err){
             if(err) console.log(err)
         })
+        initCaching()
     })
-
 } else if(process.platform === "win32") {
     ytdlBinary = "resources/youtube-dl.exe"
     ffmpegLoc = "resources/ffmpeg.exe"
+    initCaching()
 }
 
 //Calls the youtube-dl binary included with this application
