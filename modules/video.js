@@ -6,15 +6,18 @@ let videoTitle
 let username
 let password
 let cookies
-let cookiePath = remote.app.getPath('downloads')
+let cookiePath
+let downloadPath
 let credentialsFilled = false
+
 function showInfo(url) {
     $(".spinner-border").css("display", "inherit");
-    remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
+    ipcRenderer.invoke('updateProgressBar', 'indeterminate')
     selectedURL = url
     let options = [
         '-J',
-        '--skip-download'
+        '--skip-download',
+        '--no-mtime'
         ]
     if(credentialsFilled) {
         options.push('-u')
@@ -26,7 +29,7 @@ function showInfo(url) {
         options.push('--cookies')
         options.push(cookiePath)
     }
-    callYTDL(selectedURL, options, {}, true, function(err, output) {
+    callYTDL(selectedURL, options, {}, true, async function(err, output) {
         if(output == null) {
             $('.invalid-feedback').html("This video does not exist or is blocked in your country.")
             $('#url').addClass("is-invalid").removeClass("is-valid")
@@ -36,8 +39,12 @@ function showInfo(url) {
         }
         if(output === "") {
             console.log('possible private video')
-            //$('.invalid-feedback').html("This video is private, <a class='credentials' data-toggle='modal' data-target='#credentialsModal'>add credentials</a> or add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.")
-            $('.invalid-feedback').html("This video is private, add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.")
+            if(cookies || credentialsFilled) {
+                $('.invalid-feedback').html("This cookies.txt file does not appear to be working, add a working <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.")
+            } else {
+                //$('.invalid-feedback').html("This video is private, <a class='credentials' data-toggle='modal' data-target='#credentialsModal'>add credentials</a> or add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.")
+                $('.invalid-feedback').html("This video is private, add a <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download private video&#39;s.")
+            }
             $('#url').addClass("is-invalid").removeClass("is-valid")
             $(".spinner-border").css("display", "none")
             $('.authenticated').css('display','none')
@@ -54,15 +61,19 @@ function showInfo(url) {
         $(".duration").html("<strong>Duration:</strong> " + duration.replace(/(0d\s00:)|(0d\s)/g,""))
         $(".spinner-border").css("display", "none")
         if(credentialsFilled || cookies) {
-            $('.authenticated').css('display','initial')
-            $('#url').addClass("is-valid").removeClass("is-invalid")
-            $('.invalid-feedback').css('display','none')
+            if(await isPublicVideo(url)) {
+                $('.authenticated').css('display','none')
+            } else {
+                $('.authenticated').css('display','initial')
+                $('#url').addClass("is-valid").removeClass("is-invalid")
+                $('.invalid-feedback').css('display','none')
+            }
         }
         $('#step-one-btn').prop("disabled", false)
         audioOutputName = video.title + ".mp3"
         videoFPS = video.fps
         videoTitle = video.title
-        remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+        ipcRenderer.invoke('updateProgressBar', 'hide')
         video.formats.forEach(function(format) {
             if(format.format_note === "DASH video") {
                 let alreadyIncludes
@@ -89,9 +100,26 @@ function showInfo(url) {
     })
 }
 
+async function isPublicVideo(url) {
+    let options = [
+        '-J',
+        '--skip-download'
+    ]
+    const call = new Promise((resolve, reject) => {
+        callYTDL(url, options, {}, true, function(err, output) {
+            if(output === "") {
+                resolve(false)
+            } else {
+                resolve(true)
+            }
+        })
+    })
+    return await call
+}
+
 function downloadAudio(quality) {
-    remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
-    if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "downloading"})
+    ipcRenderer.invoke('updateProgressBar', 'indeterminate')
+    if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
     console.log("downloading audio: " + selectedURL)
     let realQuality = 0
     if(quality === "worst") {
@@ -123,8 +151,7 @@ function downloadAudio(quality) {
 function downloadVideo(format_id) {
     let format = $("#quality option:selected" ).text()
     if(format.substr(format.indexOf('p') + 1) !== "") videoFPS = format.substr(format.indexOf('p') + 1)
-    remote.getCurrentWindow().setProgressBar(2, {mode: "indeterminate"})
-    if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "downloading"})
+    if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
     videoOutputName = videoTitle + "-(" + format.substr(0, format.indexOf("p")) + "p" + videoFPS + ").mp4"
     console.log("downloading video: " + selectedURL)
     const options = [

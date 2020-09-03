@@ -4,11 +4,11 @@ const os = require('os')
 
 //Collect all the data
 let Platform = process.platform
-let Version = remote.app.getVersion()
+let Version = ipcRenderer.invoke('appInfo', 'version')
 let ram = (process.getSystemMemoryInfo().total / 1.074e+6).toFixed(0)
 let cpuModel = os.cpus()[0].model
 let cpuCores = os.cpus().length
-let country = remote.app.getLocaleCountryCode()
+let country = ipcRenderer.invoke('appInfo', 'country')
 
 let metricsID;
 let appTrimPath
@@ -16,11 +16,12 @@ let appTrimPath
 startMetrics()
 
 //Create the unique MetricID's if they do not yet exist, and call sendInitialMetrics if the unique ID is not there.
-function startMetrics() {
+async function startMetrics() {
     if(process.platform === "darwin") {
-        appTrimPath = remote.app.getAppPath().slice(0, -8)
+        let appTrimPathUncut = await ipcRenderer.invoke('getPath', 'appPath')
+        appTrimPath = appTrimPathUncut.slice(0,-8)
     } else if(process.platform === "linux") {
-        appTrimPath = remote.app.getPath("home") + "/.youtube-dl-gui/"
+        appTrimPath = await ipcRenderer.invoke('getPath', 'home') + "/.youtube-dl-gui/"
     } else {
         appTrimPath = "resources/"
     }

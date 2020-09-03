@@ -1,33 +1,33 @@
 //UI.js manages all Jquery and UI related tasks
 'use strict'
-const customTitlebar = require('custom-electron-titlebar')
-const Mousetrap = require('mousetrap')
-const Menu = remote.Menu;
-
+const windowbar = require('windowbar')
 let stepper
-let downloadPath = remote.app.getPath('downloads');
 let isConverting = false
 
 //Sets the custom titlebar per platform
 if(process.platform === "darwin") {
-    new customTitlebar.Titlebar({
-        backgroundColor: customTitlebar.Color.fromHex('#212121'),
-        maximizable: false,
-        shadow: false,
-        titleHorizontalAlignment: "center",
-        enableMnemonics: false,
-        icon: "web-resources/icon-light.png"
-    })
+    let titlebar = new windowbar({'style':'mac', 'dblClickable':false, 'fixed':true, 'title':'YouTube Downloader','dark':true})
+        .appendTo(document.body)
+    $('.windowbar-title').css("left", "50%")
+    $('.windowbar-controls').css("display","none")
 } else {
-    new customTitlebar.Titlebar({
-        backgroundColor: customTitlebar.Color.fromHex('#000000'),
-        maximizable: false,
-        shadow: true,
-        titleHorizontalAlignment: "left",
-        enableMnemonics: false,
-        icon: "web-resources/icon-light.png"
-    })
+    let titlebar = new windowbar({'style':'win', 'dblClickable':false, 'fixed':true, 'title':'YouTube Downloader','dark':true})
+        .appendTo(document.body)
+    $('.windowbar').prepend("<img src='web-resources/icon-light.png' alt='youtube-dl-gui icon' class='windowbar-icon'>")
+    $('.windowbar-title').css("left", "45px")
 }
+$('.windowbar-minimize').on('click', (event) => {
+    ipcRenderer.invoke('titlebarClick', 'minimize')
+})
+$('.windowbar-close').on('click', (event) => {
+    ipcRenderer.invoke('titlebarClick', 'close')
+})
+$('.windowbar-maximize').on('click', (event) => {
+    event.stopPropagation()
+    event.stopImmediatePropagation()
+    event.preventDefault()
+    $('.windowbar').removeClass('fullscreen')
+})
 
 $(document).ready(function () {
     //Initiates the stepper (main UI)
@@ -48,8 +48,16 @@ $(document).ready(function () {
         autohide: false,
         animation: true
     })
+    $('#update').toast({
+        autohide: false,
+        animation: true
+    })
+
     //Set the default directory for the download location input
-    $("#directoryInputLabel").html(remote.app.getPath('downloads'))
+    ipcRenderer.invoke('getPath', 'downloads').then((result) => {
+        downloadPath = result
+        $("#directoryInputLabel").html(result)
+    })
 
     //Limits the playlist video selector to the size of the playlist and above 0.
     $("#max,#min").keydown(function () {
@@ -78,17 +86,13 @@ $(document).on('click','.close',function (e) {
 //Sets the download directory to the directory selected in the input
 function setDirectory() {
     $('#directoryInput').blur();
-    let path = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
-        defaultPath: downloadPath,
-        properties: [
-            'openDirectory',
-            'createDirectory'
-        ]
-    }).then(result => {
-        $('#directoryInputLabel').html(result.filePaths[0])
-        downloadPath = result.filePaths[0]
-    })
+    ipcRenderer.send('openFolderDialog', downloadPath)
+
 }
+ipcRenderer.on('directorySelected', (event, path) => {
+    $('#directoryInputLabel').html(path)
+    downloadPath = path
+})
 
 //Shows a warning toast, no customisable message
 function showWarning() {
@@ -103,24 +107,6 @@ function showError(err) {
     $('#error').css('visibility','visible')
 }
 
-//Creates the input menu to show on right click
-const InputMenu = Menu.buildFromTemplate([{
-    label: 'Cut',
-    role: 'cut',
-}, {
-    label: 'Copy',
-    role: 'copy',
-}, {
-    label: 'Paste',
-    role: 'paste',
-}, {
-    type: 'separator',
-}, {
-    label: 'Select all',
-    role: 'selectall',
-},
-]);
-
 //Enable right click menu on input/textarea
 document.body.addEventListener('contextmenu', (e) => {
     e.preventDefault();
@@ -130,7 +116,7 @@ document.body.addEventListener('contextmenu', (e) => {
 
     while (node) {
         if (node.nodeName.match(/^(input|textarea)$/i) || node.isContentEditable) {
-            InputMenu.popup(remote.getCurrentWindow());
+            ipcRenderer.invoke('openInputMenu')
             break;
         }
         node = node.parentNode;
@@ -162,16 +148,16 @@ function setProgressBarProgress(isMetadata, downloaded, toDownload) {
     if(isMetadata) {
         $('.progress-bar.metadata').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
         if(percentage === 100) {
-            remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+            ipcRenderer.invoke('updateProgressBar', 'hide')
         } else {
-            remote.getCurrentWindow().setProgressBar(downloaded / toDownload)
+            ipcRenderer.invoke('updateProgressBar', downloaded / toDownload)
         }
     } else {
         $('.progress-bar.download').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
         if(percentage === 100) {
-            remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+            ipcRenderer.invoke('updateProgressBar', 'hide')
         } else {
-            remote.getCurrentWindow().setProgressBar(downloaded / toDownload)
+            ipcRenderer.invoke('updateProgressBar', downloaded / toDownload)
         }
     }
 }
@@ -195,7 +181,7 @@ function setPlaylistData(metadata, toDownload) {
 
 //Shows error when an invalid playlist link has been given
 function setInvalidPlaylist() {
-    $('.invalid-feedback').html("This playlist does not exist, is private or is blocked")
+    $('.invalid-feedback').html("This playlist does not exist, or is blocked in your country.")
     $('#url').addClass("is-invalid").removeClass("is-valid")
     $(".spinner-border").css("display", "none")
     $(".progress.metadata").css("display", "none");
@@ -230,7 +216,7 @@ function binaryUpdating(isBusy) {
 //Opens the downloaded file specified in downloadPath
 function openDownloadedFile() {
     if(isPlaylist) {
-        shell.openItem(downloadPath)
+        shell.openPath(downloadPath)
     } else {
         if(mediaMode === "audio") {
             if(process.platform === "darwin" || process.platform === "linux") {
@@ -264,7 +250,7 @@ function startSingleVideoStatus() {
 function updateSingleVideoStatus(stdout) {
     if(!stdout[0].includes('%') || stdout[0].includes('Destination')) return
     if(stdout[0].includes('100.0%') || stdout[0].includes('100%')) {
-        remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
+        ipcRenderer.invoke('updateProgressBar', 'hide')
         $('.progress-bar.download').css("width", "100%").attr("aria-valuenow", "100")
         if(mediaMode === "video") {
             $('.completion.download').html("Merging audio and video...")
@@ -278,7 +264,7 @@ function updateSingleVideoStatus(stdout) {
     let percentage = stdout[0].substr(0, stdout[0].indexOf('%')).substr(stdout[0].indexOf(' ') + 2) + '%'
     $('.progress-bar.download').css("width", percentage).attr("aria-valuenow", percentage.slice(0, -1))
     $('.completion.download').html(percentage)
-    remote.getCurrentWindow().setProgressBar(parseInt(percentage.slice(0, -1)) / 100)
+    ipcRenderer.invoke('updateProgressBar', parseInt(percentage.slice(0, -1)) / 100)
 }
 
 //Credentials modal
@@ -300,17 +286,13 @@ $('.addBtn').on('click', (element) => {
 //Cookies modal
 function setCookies() {
     $('#cookiesInput').blur();
-    let path = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
-        defaultPath: cookiePath,
-        properties: [
-            'openFile',
-            'createDirectory'
-        ]
-    }).then(result => {
-        $('#cookiesInputLabel').html(result.filePaths[0])
-        cookiePath = result.filePaths[0]
-    })
+    ipcRenderer.send('openFileDialog', cookiePath)
 }
+
+ipcRenderer.on('fileSelected', (event, path) => {
+    $('#cookiesInputLabel').html(path)
+    cookiePath = path;
+})
 
 $('.addCookiesBtn').on('click', (element) => {
     if($('#cookiesForm').get(0).reportValidity()) {
@@ -346,3 +328,15 @@ function logOut() {
     }
     $("#directoryInput,#download-btn,#min,#max,#step-one-btn").prop("disabled", true)
 }
+
+$(document).on("submit", "form", function(e){
+    e.preventDefault();
+    return false;
+});
+
+ipcRenderer.on('mac-update', (event, update) => {
+    if(update.currentVersion !== update.updateInfo.version) {
+        $('#update .toast-body').html("Update " + update.updateInfo.releaseName + " is now out. <u style='cursor: pointer;'>Click here</u> to download the latest version on GitHub.")
+        $('#update').toast('show').css('visibility', 'visible')
+    }
+})

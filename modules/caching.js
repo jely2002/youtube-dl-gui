@@ -1,16 +1,25 @@
 let cachePath
-initCaching()
 
 //Create caching directory if it does not exist yet, and set the path to it
 async function initCaching() {
     if(process.platform === "win32") {
         cachePath = 'resources/cached/'
+	createPath()
     } else if(process.platform === "linux") {
-        cachePath = remote.app.getPath("home") + "/.youtube-dl-gui/cached/"
+        ipcRenderer.invoke('getPath', 'home').then((result) => {
+            cachePath = result + "/.youtube-dl-gui/cached/"
+            createPath()
+        })
     } else {
-        cachePath = remote.app.getAppPath().slice(0, -8) + 'cached/'
+        ipcRenderer.invoke('getPath', 'appPath').then((result) => {
+	    cachePath = result.slice(0, -8) + 'cached/'
+            createPath()
+	})
     }
-    try {
+}
+
+async function createPath() {
+  try {
         await fs.promises.access(cachePath);
         console.log('Cached directory exists')
     } catch (error) {

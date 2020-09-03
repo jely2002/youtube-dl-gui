@@ -1,5 +1,5 @@
 'use strict'
-const {remote, ipcRenderer, shell} = require('electron')
+const {ipcRenderer, shell} = require('electron')
 window.$ = window.jQuery = require('jquery')
 const fs = require('fs')
 const universalify = require('universalify')
@@ -19,28 +19,35 @@ let mediaMode
 
 //Sets all paths to the included binaries depending on the platform
 if(process.platform === "darwin") {
-    let appPath = remote.app.getAppPath().slice(0, -8)
-    ytdlBinary = appPath + "youtube-dl-darwin"
-    ffmpegLoc = appPath + "ffmpeg"
-    fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
-        if(err) console.log(err)
-    })
-    fs.chmod(appPath + "ffmpeg", 0o755, function(err){
-        if(err) console.log(err)
+    ipcRenderer.invoke('getPath', 'appPath').then((result) => {
+        let appPath = result.slice(0,-8)
+        ytdlBinary = appPath + "youtube-dl-darwin"
+        ffmpegLoc = appPath + "ffmpeg"
+        fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
+            if(err) console.log(err)
+        })
+        fs.chmod(appPath + "ffmpeg", 0o755, function(err){
+            if(err) console.log(err)
+        })
+        initCaching()
     })
 } else if(process.platform === "linux") {
-    let appPath = remote.app.getPath("home") + "/.youtube-dl-gui/"
-    ytdlBinary = appPath + "youtube-dl-darwin"
-    ffmpegLoc = appPath + "ffmpeg"
-    fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
-        if(err) console.log(err)
-    })
-    fs.chmod(appPath + "ffmpeg", 0o755, function(err){
-        if(err) console.log(err)
+    ipcRenderer.invoke('getPath', 'home').then((result) => {
+        let appPath = result + "/.youtube-dl-gui/"
+        ytdlBinary = appPath + "youtube-dl-darwin"
+        ffmpegLoc = appPath + "ffmpeg"
+        fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
+            if(err) console.log(err)
+        })
+        fs.chmod(appPath + "ffmpeg", 0o755, function(err){
+            if(err) console.log(err)
+        })
+        initCaching()
     })
 } else if(process.platform === "win32") {
     ytdlBinary = "resources/youtube-dl.exe"
     ffmpegLoc = "resources/ffmpeg.exe"
+    initCaching()
 }
 
 //Calls the youtube-dl binary included with this application
@@ -154,8 +161,8 @@ function downloadFinished() {
     $('.checkmark').toggle()
     $('#reset-btn').html("Download another video").prop("disabled", false)
     $('#open-btn').prop("disabled", false)
-    remote.getCurrentWindow().setProgressBar(-1, {mode: "none"})
-    if(process.platform === "win32") ipcRenderer.send('request-mainprocess-action', {mode: "done"})
+    ipcRenderer.invoke('updateProgressBar', 'hide')
+    if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "done"})
 }
 
 //Sets the selected download type (playlist, single video), and configures UI elements accordingly.
@@ -381,7 +388,7 @@ function resetSteps() {
     $('.progress').css("display", "none")
     $('.video-range').css("display", "none")
     $('#open-btn').html("Open file")
-    if(process.platform === "win32") remote.getCurrentWindow().setOverlayIcon(null, "")
+    if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "hide"})
     stepper.reset()
 }
 
