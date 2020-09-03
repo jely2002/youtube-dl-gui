@@ -46,7 +46,7 @@ function createWindow () {
         win = new BrowserWindow({
             show: false,
             width: 800, //850
-            height: 500, //550
+            height: 510, //550
             resizable: false,
             maximizable: false,
             titleBarStyle: "hidden",
@@ -89,7 +89,7 @@ function createWindow () {
 
 app.on('ready', () => {
     createWindow()
-    if(process.platform === "darwin") {
+    if(process.platform === "darwin" && process.argv[2] !== '--dev') {
         autoUpdater.checkForUpdates().then((result) => {
             result.currentVersion = app.getVersion();
             win.webContents.send('mac-update', result)

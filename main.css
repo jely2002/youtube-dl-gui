@@ -238,7 +238,6 @@ input[type="search"]::-webkit-search-cancel-button {
 .windowbar-title {
     font-size: 13px !important;
     line-height: 14px;
-    left: 45px !important;
 }
 
 .windowbar-icon {
