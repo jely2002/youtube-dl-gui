@@ -8,11 +8,14 @@ let isConverting = false
 if(process.platform === "darwin") {
     let titlebar = new windowbar({'style':'mac', 'dblClickable':false, 'fixed':true, 'title':'YouTube Downloader','dark':true})
         .appendTo(document.body)
+    $('.windowbar-title').css("left", "50%")
+    $('.windowbar-controls').css("display","none")
 } else {
     let titlebar = new windowbar({'style':'win', 'dblClickable':false, 'fixed':true, 'title':'YouTube Downloader','dark':true})
         .appendTo(document.body)
+    $('.windowbar').prepend("<img src='web-resources/icon-light.png' alt='youtube-dl-gui icon' class='windowbar-icon'>")
+    $('.windowbar-title').css("left", "45px")
 }
-$('.windowbar').prepend("<img src='web-resources/icon-light.png' alt='youtube-dl-gui icon' class='windowbar-icon'>")
 $('.windowbar-minimize').on('click', (event) => {
     ipcRenderer.invoke('titlebarClick', 'minimize')
 })
