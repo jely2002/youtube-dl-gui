@@ -16,11 +16,12 @@ let appTrimPath
 startMetrics()
 
 //Create the unique MetricID's if they do not yet exist, and call sendInitialMetrics if the unique ID is not there.
-function startMetrics() {
+async function startMetrics() {
     if(process.platform === "darwin") {
-        appTrimPath = ipcRenderer.invoke('getPath', 'appPath').slice(0, -8)
+        let appTrimPathUncut = await ipcRenderer.invoke('getPath', 'appPath')
+        appTrimPath = appTrimPathUncut.slice(0,-8)
     } else if(process.platform === "linux") {
-        appTrimPath = ipcRenderer.invoke('getPath', 'home') + "/.youtube-dl-gui/"
+        appTrimPath = await ipcRenderer.invoke('getPath', 'home') + "/.youtube-dl-gui/"
     } else {
         appTrimPath = "resources/"
     }

@@ -8,7 +8,8 @@ async function initCaching() {
     } else if(process.platform === "linux") {
         cachePath = ipcRenderer.invoke('getPath', 'home')+ "/.youtube-dl-gui/cached/"
     } else {
-        cachePath = ipcRenderer.invoke('getPath', 'appPath').slice(0, -8) + 'cached/'
+        let cachePathUncut = await ipcRenderer.invoke('getPath', 'appPath')
+        cachePath = cachePathUncut.slice(0, -8) + 'cached/'
     }
     try {
         await fs.promises.access(cachePath);
