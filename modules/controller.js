@@ -31,15 +31,18 @@ if(process.platform === "darwin") {
         })
     })
 } else if(process.platform === "linux") {
-    let appPath = ipcRenderer.invoke('getPath', 'home') + "/.youtube-dl-gui/"
-    ytdlBinary = appPath + "youtube-dl-darwin"
-    ffmpegLoc = appPath + "ffmpeg"
-    fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
-        if(err) console.log(err)
+    ipcRenderer.invoke('getPath', 'home').then((result) => {
+        let appPath = result + + "/.youtube-dl-gui/"
+        ytdlBinary = appPath + "youtube-dl-darwin"
+        ffmpegLoc = appPath + "ffmpeg"
+        fs.chmod(appPath + "youtube-dl-darwin", 0o755, function(err){
+            if(err) console.log(err)
+        })
+        fs.chmod(appPath + "ffmpeg", 0o755, function(err){
+            if(err) console.log(err)
+        })
     })
-    fs.chmod(appPath + "ffmpeg", 0o755, function(err){
-        if(err) console.log(err)
-    })
+
 } else if(process.platform === "win32") {
     ytdlBinary = "resources/youtube-dl.exe"
     ffmpegLoc = "resources/ffmpeg.exe"
