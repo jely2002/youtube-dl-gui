@@ -9,10 +9,11 @@ let url = 'http://yt-dl.org/downloads/latest/youtube-dl'
 
 //Sets the appropriate file paths depending on platform
 if(process.platform === "darwin") {
-    let defaultBinUncut = await ipcRenderer.invoke('getPath', 'appPath').slice(0, -8)
-    defaultBin = defaultBinUncut.slice(0,-8)
-    defaultPath = defaultBin + 'details'
-    filePath = defaultBin + "youtube-dl-darwin"
+    let defaultBinUncut = ipcRenderer.invoke('getPath', 'appPath').then(() => {
+        defaultBin = defaultBinUncut.slice(0,-8)
+        defaultPath = defaultBin + 'details'
+        filePath = defaultBin + "youtube-dl-darwin"
+    })
 } else if(process.platform === "linux") {
     defaultBin = await ipcRenderer.invoke('getPath', 'home') + "/.youtube-dl-gui/"
     defaultPath = defaultBin + 'details'
