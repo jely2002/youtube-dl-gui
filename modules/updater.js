@@ -15,9 +15,11 @@ if(process.platform === "darwin") {
         filePath = defaultBin + "youtube-dl-darwin"
     })
 } else if(process.platform === "linux") {
-    defaultBin = await ipcRenderer.invoke('getPath', 'home') + "/.youtube-dl-gui/"
-    defaultPath = defaultBin + 'details'
-    filePath = defaultBin + "youtube-dl-darwin"
+    defaultBin = ipcRenderer.invoke('getPath', 'home').then(() => {
+        defaultBin += "/.youtube-dl-gui/"
+        defaultPath = defaultBin + 'details'
+        filePath = defaultBin + "youtube-dl-darwin"
+    })
 } else {
     defaultPath = "resources/details"
     filePath =  "resources/youtube-dl.exe"
