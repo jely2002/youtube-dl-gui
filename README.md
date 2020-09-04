@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/master/web-resources/icon.png" alt="logo" width="60" height="56" align="left"/>
+<img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/master/web-resources/icon.png" alt="logo" width="55" height="50" align="left"/>
 
 # youtube-dl-gui
 A cross-platform GUI for youtube-dl made in Electron and node.js
