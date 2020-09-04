@@ -2,11 +2,12 @@
 
 # youtube-dl-gui
 
+<img src="ytdlgui_demo.gif" alt="demo" width="500"/>
+
 A cross-platform GUI for youtube-dl made in Electron and node.js
 
 ##### **NOTICE: Due to an expired certificate the youtube-dl binaries did not auto-update.**
 ##### **This is fixed in release 1.6, please update if the app is no longer working.**
-
 
 **Features:**
 - Download videos in all qualities up to 8K (if available)
