@@ -315,7 +315,7 @@ function logOut() {
     password = ""
     $('.authenticated').css('display', 'none')
     $(".spinner-border").css("display", "none")
-    $(".thumbnail").attr("src", "https://via.placeholder.com/640x360?text=%20")
+    $(".thumbnail").attr("src", "./web-resources/waiting-for-link.png")
     $(".title").html("<strong>Title:</strong> --")
     $(".channel").html("<strong>Channel:</strong> --")
     $(".duration").html("<strong>Duration:</strong> --")
