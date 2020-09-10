@@ -10,6 +10,7 @@ A cross-platform GUI for youtube-dl made in Electron and node.js
 - Download (parts of) playlists
 - Download and extract audio (mp3)
 - Download private videos
+- Lightning fast download speeds (cache & multiple processes)
 - Shows an estimated download size before downloading the videos
 - The app wil automatically update to the latest version. (macOS only has an update notification)
 
