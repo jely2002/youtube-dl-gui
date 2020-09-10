@@ -4,11 +4,11 @@ const os = require('os')
 
 //Collect all the data
 let Platform = process.platform
-let Version = ipcRenderer.invoke('appInfo', 'version')
+let Version
 let ram = (process.getSystemMemoryInfo().total / 1.074e+6).toFixed(0)
 let cpuModel = os.cpus()[0].model
 let cpuCores = os.cpus().length
-let country = ipcRenderer.invoke('appInfo', 'country')
+let country
 
 let metricsID;
 let appTrimPath
@@ -17,6 +17,8 @@ startMetrics()
 
 //Create the unique MetricID's if they do not yet exist, and call sendInitialMetrics if the unique ID is not there.
 async function startMetrics() {
+    country = await ipcRenderer.invoke('appInfo', 'country')
+    Version = await ipcRenderer.invoke('appInfo', 'version')
     if(process.platform === "darwin") {
         let appTrimPathUncut = await ipcRenderer.invoke('getPath', 'appPath')
         appTrimPath = appTrimPathUncut.slice(0,-8)

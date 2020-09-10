@@ -7,13 +7,12 @@ A cross-platform GUI for youtube-dl made in Electron and node.js
 
 **Features:**
 - Download videos in all qualities up to 8K (if available)
-- Download whole playlists in bulk
-- Download parts of playlists
-- Download only mp3 files
+- Download (parts of) playlists
+- Download and extract audio (mp3)
 - Download private videos
-- Lightning fast download speeds
+- Lightning fast download speeds (cache & multiple processes)
 - Shows an estimated download size before downloading the videos
-- The app will always be up-to-date (not on macOS 😔)
+- The app wil automatically update to the latest version. (macOS only has an update notification)
 
 ## How to use
 Download the .exe if you are on Windows, .dmg if you are on macOSX or the .AppImage on Linux, then just open them and you're good to go!
