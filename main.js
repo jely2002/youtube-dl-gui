@@ -53,7 +53,8 @@ function createWindow () {
             webPreferences: {
                 nodeIntegration: true,
                 enableRemoteModule: false,
-                worldSafeExecuteJavaScript: true
+                worldSafeExecuteJavaScript: true,
+                spellcheck: false
             }
         })
     } else {
@@ -69,7 +70,8 @@ function createWindow () {
                 webPreferences: {
                     nodeIntegration: true,
                     enableRemoteModule: false,
-                    worldSafeExecuteJavaScript: true
+                    worldSafeExecuteJavaScript: true,
+                    spellcheck: false
                 }
             })
     }
