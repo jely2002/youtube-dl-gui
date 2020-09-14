@@ -6,7 +6,6 @@
   "scripts": {
     "start": "electron . --dev",
     "dist": "electron-builder",
-    "release": "electron-builder --win -p always"
   },
   "keywords": [
     "youtube-dl",
