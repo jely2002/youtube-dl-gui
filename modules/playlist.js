@@ -26,8 +26,7 @@ function showPlaylistInfo(url) {
     function getVideoMetadata(item, cb) {
         let options = [
             '-J',
-            '--skip-download',
-            '--no-mtime' //TODO Add --no-mtime to audio if required
+            '--skip-download'
         ]
         if(credentialsFilled) {
             options.push('-u')
@@ -282,14 +281,14 @@ function downloadPlaylist(quality) {
             options = [
                 '--extract-audio', '--audio-quality', realQuality,
                 '--audio-format', 'mp3',
-                '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
+                '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg', '--no-mtime',
                 /*'--embed-thumbnail',*/
                 '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
             ]
         } else {
             options = [
                 '-f', format_id[queue] + "+bestaudio[ext=m4a]/best+bestaudio[ext=m4a]",
-                '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
+                '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg', '--no-mtime',
                 '--merge-output-format', 'mp4',
                 '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s-(%(height)sp%(fps)s).%(ext)s'
             ]
