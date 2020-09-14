@@ -1,11 +1,11 @@
 {
   "name": "youtube-dl-gui",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "description": "A GUI for the YouTube-dl library",
   "main": "main.js",
   "scripts": {
     "start": "electron . --dev",
-    "dist": "electron-builder",
+    "dist": "electron-builder"
   },
   "keywords": [
     "youtube-dl",
