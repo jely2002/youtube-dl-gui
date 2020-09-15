@@ -1,5 +1,5 @@
 let cachePath
-
+const { ipcRenderer } = require('electron')
 //Create caching directory if it does not exist yet, and set the path to it
 async function initCaching() {
     if(process.platform === "win32") {
@@ -16,6 +16,17 @@ async function initCaching() {
             createPath()
 	})
     }
+}
+
+ipcRenderer.on('flushCache', () => flushCache())
+
+function flushCache() {
+    let files = fs.readdirSync(cachePath)
+    files.forEach(file => {
+       fs.unlinkSync(cachePath + file)
+    });
+    console.log('Cache flushed succesfully')
+    alert('Cache flushed succesfully')
 }
 
 async function createPath() {

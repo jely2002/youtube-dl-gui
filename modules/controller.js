@@ -1,5 +1,4 @@
 'use strict'
-const {ipcRenderer, shell} = require('electron')
 window.$ = window.jQuery = require('jquery')
 const fs = require('fs')
 const universalify = require('universalify')
