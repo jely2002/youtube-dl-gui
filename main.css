@@ -67,6 +67,15 @@ body {
     background-color: rgba(0,0,0,.25);
 }
 
+.bs-stepper .step-trigger {
+    cursor: default !important;
+    background-color: unset !important;
+}
+
+.bs-stepper-label {
+    color: #6c757d !important;
+}
+
 .active .bs-stepper-circle {
     background-color: #5cb85c !important;
 }
