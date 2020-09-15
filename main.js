@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu} = require('electron')
+const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut} = require('electron')
 const { autoUpdater } = require("electron-updater")
 const fs = require('fs')
 const mkdirp = require('mkdirp')
@@ -142,6 +142,16 @@ const InputMenu = Menu.buildFromTemplate(
     role: 'selectall',
 },
 ]);
+
+//Registers shortcuts
+app.whenReady().then(() => {
+    globalShortcut.register('CommandOrControl+Shift+D', () => {
+        win.webContents.openDevTools()
+    })
+    globalShortcut.register('CommandOrControl+Shift+F', () => {
+        win.webContents.send('flushCache')
+    })
+})
 
 //Opens the input menu when ordered from renderer process
 ipcMain.handle('openInputMenu', () => {
