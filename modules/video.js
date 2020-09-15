@@ -16,8 +16,7 @@ function showInfo(url) {
     selectedURL = url
     let options = [
         '-J',
-        '--skip-download',
-        '--no-mtime'
+        '--skip-download'
         ]
     if(credentialsFilled) {
         options.push('-u')
@@ -127,9 +126,9 @@ function downloadAudio(quality) {
     }
     const options = [
         '--extract-audio', '--audio-quality', realQuality,
-        '--audio-format', 'mp3',
+        '--audio-format', 'mp3', '--no-mtime',
         '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
-        /*'--embed-thumbnail',*/
+        '--embed-thumbnail',
         '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s.%(ext)s'
     ]
     if(credentialsFilled) {
@@ -157,7 +156,7 @@ function downloadVideo(format_id) {
     const options = [
         '-f', format_id + "+bestaudio[ext=m4a]/best",
         '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
-        '--merge-output-format', 'mp4',
+        '--merge-output-format', 'mp4', '--no-mtime',
         '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s-(%(height)sp%(fps)s).%(ext)s'
     ]
     if($('#subtitles').prop('checked')) {
