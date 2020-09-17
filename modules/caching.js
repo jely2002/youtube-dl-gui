@@ -18,6 +18,7 @@ async function initCaching() {
     }
 }
 
+//Receives IPC event to flush the cache
 ipcRenderer.on('flushCache', () => flushCache())
 
 function flushCache() {
