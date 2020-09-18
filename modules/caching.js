@@ -21,6 +21,7 @@ async function initCaching() {
 //Receives IPC event to flush the cache
 ipcRenderer.on('flushCache', () => flushCache())
 
+//Flushes the cache by deleting all files in /cached
 function flushCache() {
     let files = fs.readdirSync(cachePath)
     files.forEach(file => {
