@@ -58,7 +58,6 @@ function createWindow () {
             }
         })
     } else {
-        autoUpdater.checkForUpdatesAndNotify();
             win = new BrowserWindow({
                 show: false,
                 width: 800, //850
@@ -90,11 +89,17 @@ function createWindow () {
 
 app.on('ready', () => {
     createWindow()
-    if(process.platform === "darwin" && process.argv[2] !== '--dev') {
-        autoUpdater.checkForUpdates().then((result) => {
-            result.currentVersion = app.getVersion();
-            win.webContents.send('mac-update', result)
-        })
+    let update = isUpdateEnabled()
+    console.log(update)
+    if(update) {
+        if (process.platform === "darwin" && process.argv[2] !== '--dev') {
+            autoUpdater.checkForUpdates().then((result) => {
+                result.currentVersion = app.getVersion();
+                win.webContents.send('mac-update', result)
+            })
+        } else if (process.plaform === "win32" && process.argv[2] !== '--dev') {
+            autoUpdater.checkForUpdatesAndNotify()
+        }
     }
  })
 
@@ -219,3 +224,22 @@ ipcMain.handle('titlebarClick', (event, arg) => {
         win.minimize()
     }
 })
+
+//Check if user has enabled auto-updating the app
+function isUpdateEnabled() {
+    let settingsPath
+    if(process.platform === "darwin") {
+            settingsPath = app.getAppPath().slice(0,-8) + 'settings'
+    } else if(process.platform === "linux") {
+            settingsPath = app.getPath('home') + "/.youtube-dl-gui/" + 'settings'
+    } else {
+        settingsPath = "resources/settings"
+    }
+    let settingsData
+    try {
+        settingsData = fs.readFileSync(settingsPath);
+        return JSON.parse(settingsData)['update_app']
+    } catch (err) {
+        return true
+    }
+}
