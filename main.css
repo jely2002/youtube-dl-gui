@@ -217,7 +217,7 @@ input[type="search"]::-webkit-search-cancel-button {
     border-top: 1px solid #212121 !important;
 }
 
-.addBtn, .addCookiesBtn {
+.addBtn, .addCookiesBtn, .saveSettingsBtn {
     background-color: #5cb85c !important;
     color: #fff !important;
 }
@@ -266,4 +266,13 @@ svg.maximize-svg path {
 
 svg.unmaximize-svg {
     display: none !important;
+}
+
+.settingsIcon {
+    position: absolute;
+    color: #303030 !important;
+    font-size: 25px;
+    right: 25px;
+    bottom: 20px;
+    cursor: pointer;
 }
