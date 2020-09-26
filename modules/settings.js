@@ -14,13 +14,12 @@ $('.settingsIcon').on('click', (element) => {
 async function getSettingPaths() {
     //Sets the appropriate file paths depending on platform
     if(process.platform === "darwin") {
-        ipcRenderer.invoke('getPath', 'appPath').then((result) => {
-            return result.slice(0,-8) + 'settings'
-        })
+        let result = await ipcRenderer.invoke('getPath', 'appPath')
+        return result.slice(0,-8) + 'settings'
+
     } else if(process.platform === "linux") {
-        ipcRenderer.invoke('getPath', 'home').then((result) => {
-            return result + "/.youtube-dl-gui/" + 'settings'
-        })
+        let result = await ipcRenderer.invoke('getPath', 'home')
+        return result + "/.youtube-dl-gui/" + 'settings'
     } else {
         return "resources/settings"
     }
