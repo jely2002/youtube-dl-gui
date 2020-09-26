@@ -11,20 +11,24 @@ $('.settingsIcon').on('click', (element) => {
     $('#settingsModal').modal()
 })
 
-//Sets the appropriate file paths depending on platform
-if(process.platform === "darwin") {
-    ipcRenderer.invoke('getPath', 'appPath').then((result) => {
-        settingsPath = result.slice(0,-8) + 'settings'
-    })
-} else if(process.platform === "linux") {
-    ipcRenderer.invoke('getPath', 'home').then((result) => {
-        settingsPath = result + "/.youtube-dl-gui/" + 'settings'
-    })
-} else {
-    settingsPath = "resources/settings"
+async function getSettingPaths() {
+    //Sets the appropriate file paths depending on platform
+    if(process.platform === "darwin") {
+        ipcRenderer.invoke('getPath', 'appPath').then((result) => {
+            return result.slice(0,-8) + 'settings'
+        })
+    } else if(process.platform === "linux") {
+        ipcRenderer.invoke('getPath', 'home').then((result) => {
+            return result + "/.youtube-dl-gui/" + 'settings'
+        })
+    } else {
+        return "resources/settings"
+    }
 }
 
+
 async function initializeSettings() {
+    settingsPath = await getSettingPaths()
     const call = new Promise((resolve, reject) => {
         fs.readFile(settingsPath, (err, data) => {
             if (err) {
