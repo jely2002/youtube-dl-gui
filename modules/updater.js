@@ -30,7 +30,9 @@ if(process.platform === "darwin") {
 update()
 
 //Probes youtube-dl for new updates, and downloads them when needed.
-function update() {
+async function update() {
+    await initializeSettings()
+    if(!getSetting('update_binary')) return
     binaryUpdating(true)
     request.get(url, { followRedirect: false }, async function (err, res) {
         if (err) {
