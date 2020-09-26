@@ -89,9 +89,7 @@ function createWindow () {
 
 app.on('ready', () => {
     createWindow()
-    let update = isUpdateEnabled()
-    console.log(update)
-    if(update) {
+    if(isUpdateEnabled()) {
         if (process.platform === "darwin" && process.argv[2] !== '--dev') {
             autoUpdater.checkForUpdates().then((result) => {
                 result.currentVersion = app.getVersion();
