@@ -237,6 +237,7 @@ function openDownloadedFile() {
 //Stop/hide the progress bar for single videos
 function stopSingleVideoStatus() {
     $('.completion.download').html("Video downloaded")
+    $('.progress-bar.download').css("width", "100%").attr("aria-valuenow", "100")
 }
 
 //Start the progress bar for single videos
