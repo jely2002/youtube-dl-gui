@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut} = require('electron')
+const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut, shell} = require('electron')
 const { autoUpdater } = require("electron-updater")
 const fs = require('fs')
 const mkdirp = require('mkdirp')
@@ -221,6 +221,10 @@ ipcMain.handle('titlebarClick', (event, arg) => {
     } else if(arg === "minimize") {
         win.minimize()
     }
+})
+
+ipcMain.handle('showItemInFolder', (event, arg) => {
+    shell.showItemInFolder(arg)
 })
 
 //Check if user has enabled auto-updating the app
