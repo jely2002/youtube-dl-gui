@@ -34,6 +34,6 @@ Please take a look at the tutorial on this subject. It can be found in the [wiki
 Please open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues) and describe the problem you're facing, I'll try to help you as soon as possible. 
 
 ## Planned features
-- Settings menu (milestone 1.8.0)
+- None at this time
 
 Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/issues).
