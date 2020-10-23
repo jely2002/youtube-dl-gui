@@ -1,6 +1,6 @@
 {
   "name": "youtube-dl-gui",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "A GUI for the YouTube-dl library",
   "main": "main.js",
   "scripts": {
@@ -19,7 +19,7 @@
   "license": "GPL-3.0-only",
   "devDependencies": {
     "electron": ">=10.1.0",
-    "electron-builder": "^22.8.0"
+    "electron-builder": "^22.9.1"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",

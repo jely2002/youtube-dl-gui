@@ -8,15 +8,15 @@ let downloadingIcon
 
 //Set icon file paths depending on the platform
 if(process.platform === "darwin") {
-    doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'done-icon.png')
-    downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'downloading-icon.png')
+    doneIcon = nativeImage.createFromPath( app.getAppPath() + '/resources/done-icon.png')
+    downloadingIcon = nativeImage.createFromPath(app.getAppPath() + '/resources/downloading-icon.png')
 } else {
     doneIcon = nativeImage.createFromPath('resources/done-icon.png')
     downloadingIcon = nativeImage.createFromPath('resources/downloading-icon.png')
 }
 
 if(process.platform === "linux") {
-    let readonlyResources = app.getAppPath().slice(0, -8)
+    let readonlyResources = app.getAppPath() + "/resources/"
     let destination = app.getPath("home") + "/.youtube-dl-gui/"
     mkdirp(app.getPath("home") + "/.youtube-dl-gui/").then(made => {
         if(made !== null) {
