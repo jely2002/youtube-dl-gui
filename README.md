@@ -40,4 +40,4 @@ Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/
 
 ## Liablity & Copyright notice
 Youtube-dl-gui and its maintainers cannot be held liable for misuse of this application, as stated in the [GPL-3.0 license (section 16)](https://github.com/jely2002/youtube-dl-gui/blob/a5308119a1a2352ec54e95d69cb60dcc3fee80d1/LICENSE#L600).
-The maintainers of Youtube-dl-gui do not in any way condone the use of this application in practices that violate local laws such as but not limited to the DMCA. The maintainers of this application call upon the personal responsibility of its users to use this application in a fair way, as it is intended to be used.
+The maintainers of youtube-dl-gui do not in any way condone the use of this application in practices that violate local laws such as but not limited to the DMCA. The maintainers of this application call upon the personal responsibility of its users to use this application in a fair way, as it is intended to be used.
