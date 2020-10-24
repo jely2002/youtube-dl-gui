@@ -209,7 +209,7 @@ function binaryUpdating(isBusy) {
     if(isBusy) {
         $('#url').prop("disabled", true).attr('placeholder', 'The youtube-dl binary is being updated, please wait...')
     } else {
-        $('#url').prop('disabled', false).attr('placeholder', 'YouTube link ex. youtube.com/watch?v=dQw4w9WgXcQ');
+        $('#url').prop('disabled', false).attr('placeholder', 'YouTube link ex. youtube.com/watch?v=K4DyBUG242c');
     }
 }
 
