@@ -28,7 +28,7 @@ Sometimes a video gets downloaded in a format that isn't supported by all media 
 ##### 2.  The download appears to be stuck on 'Merging audio and video...'
 The progress bar shows the amount of data that is downloaded from YouTube. The audio and video gets downloaded seperately and then merged together, this can take a considerable amount of time with large files. So please be patient.
 ##### 3. How do I download private videos?
-Please take a look at the tutorial on this subject. It can be found in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/Tutorial:-Private-videos-&-playlists)
+Please take a look at the tutorial on this subject. It can be found in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/Tutorial:-Private-videos-&-playlists).
 
 ##### Didn't find an answer in the FAQ? 
 Please open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues) and describe the problem you're facing, I'll try to help you as soon as possible. 
