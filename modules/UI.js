@@ -107,6 +107,29 @@ function showError(err) {
     $('#error').css('visibility','visible')
 }
 
+//Update the UI colors
+function updateColors(theme) {
+    let colors = getColors(theme)
+    console.log(colors)
+    for(let desc in colors) {
+        if(colors.hasOwnProperty(desc)) {
+            $(":root").css(desc, colors[desc])
+        }
+    }
+}
+
+function getColors(theme) {
+    let colors
+    if(theme === "1") {
+        colors = {"--bg-color": "#212121", "--fg-color": "#303030", "--toast-bg-color": "#424242", "--settings-icon": "#303030", "--font-input": "#fff", "--bs-stepper-label": "#6c757d", "--highlight-color": "#5cb85c", "--windowbar": "#000000", "--button": "#343a40"}
+    } else if(theme === "2") {
+        colors = {"--bg-color": "#061528", "--fg-color": "#122139", "--toast-bg-color": "#31374a", "--settings-icon": "#1e375f", "--font-input": "#fff", "--bs-stepper-label": "#767D92", "--highlight-color": "#4175b3", "--windowbar": "#040D18", "--button": "#4175b3"}
+    } else if(theme === "3") {
+        colors = {"--bg-color": "#8ab3da", "--fg-color": "#ACCBE1", "--toast-bg-color": "#ACCBE1", "--settings-icon": "#ACCBE1", "--font-input": "#4E5659", "--bs-stepper-label": "#4E5659", "--highlight-color": "#4184B4", "--windowbar": "#4184B4", "--button": "#4184B4", "--progress-font": "#fff"}
+    }
+    return colors
+}
+
 //Enable right click menu on input/textarea
 document.body.addEventListener('contextmenu', (e) => {
     e.preventDefault();
@@ -228,6 +251,7 @@ function openDownloadedFile() {
             if(process.platform === "darwin" || process.platform === "linux") {
                 ipcRenderer.invoke('showItemInFolder', downloadPath + '/' + videoOutputName.replace(/[//?%*:|"<>]/g, '_'))
             } else {
+                console.log(downloadPath + '\\' + videoOutputName.replace(/[/\\?%*:|"<>]/g, '_'))
                 ipcRenderer.invoke('showItemInFolder', downloadPath + '\\' + videoOutputName.replace(/[/\\?%*:|"<>]/g, '_'))
             }
         }

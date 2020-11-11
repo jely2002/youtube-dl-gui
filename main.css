@@ -1,16 +1,42 @@
+:root {
+    --bg-color: #212121;
+    --fg-color: #303030;
+    --toast-bg-color: #424242;
+    --settings-icon: #303030;
+    --font-input: #fff;
+    --bs-stepper-label: #6c757d;
+    --highlight-color: #5cb85c;
+    --windowbar: #000000;
+    --button: #343a40;
+    --progress-font: #fff
+}
+
 body {
     width: 100%;
     height: 100%;
-    background-color: #212121;
-    color: #fff;
+    background-color: var(--bg-color);
+    color: var(--font-input);
 }
 
 .container-fluid {
     padding: 10px 30px;
 }
 
+.bg-dark {
+    background-color: var(--bg-color) !important;
+}
+
+.btn-dark {
+    background-color: var(--button) !important;
+    border-color: var(--button) !important;
+}
+
+.bg-success {
+    background-color: var(--highlight-color) !important;
+}
+
 .main-input {
-    background-color: #303030;
+    background-color: var(--fg-color);
     padding: 30px;
     margin-top: 20px;
     border-radius: 3px;
@@ -72,17 +98,25 @@ body {
     background-color: unset !important;
 }
 
+.bs-stepper-circle i {
+    color: #fff !important;
+}
+
+.bs-stepper-circle {
+    background-color: var(--bs-stepper-label) !important;
+}
+
 .bs-stepper-label {
-    color: #6c757d !important;
+    color: var(--bs-stepper-label) !important;
 }
 
 .active .bs-stepper-circle {
-    background-color: #5cb85c !important;
+    background-color: var(--highlight-color) !important;
 }
 
 .toast-header {
     border-bottom: none;
-    color: #fff;
+    color: var(--font-input);
 }
 
 .toast {
@@ -93,7 +127,7 @@ body {
 }
 
 .toast-body {
-    background-color: #424242;
+    background-color: var(--toast-bg-color)
 }
 
 #directoryInput {
@@ -120,6 +154,7 @@ body {
 .completion {
     height: inherit;
     font-size: 12px;
+    color: var(--progress-font) !important;
 }
 
 input[type="search"]::-webkit-search-cancel-button {
@@ -132,7 +167,7 @@ input[type="search"]::-webkit-search-cancel-button {
 .circle-loader {
     margin-bottom: 3.5em;
     border: 2px solid rgba(0, 0, 0, 0.2);
-    border-left-color: #5cb85c;
+    border-left-color: var(--highlight-color);
     animation: loader-spin 1.2s infinite linear;
     position: relative;
     display: inline-block;
@@ -144,7 +179,7 @@ input[type="search"]::-webkit-search-cancel-button {
 .load-complete {
     -webkit-animation: none;
     animation: none;
-    border-color: #5cb85c;
+    border-color: var(--highlight-color);
     transition: border 500ms ease-out;
 }
 .checkmark {
@@ -161,8 +196,8 @@ input[type="search"]::-webkit-search-cancel-button {
     height: 3.5em;
     width: 1.75em;
     transform-origin: left top;
-    border-right: 4px solid #5cb85c;
-    border-top: 4px solid #5cb85c;
+    border-right: 4px solid var(--highlight-color);
+    border-top: 4px solid var(--highlight-color);
     content: '';
     left: 1.65em;
     top: 3.5em;
@@ -205,29 +240,29 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 .modal-content {
-    background-color: #303030 !important;
-    color: #fff !important;
+    background-color: var(--fg-color) !important;
+    color: var(--font-input) !important;
 }
 
 .modal-header {
-    border-bottom: 1px solid #212121 !important;
+    border-bottom: 1px solid var(--bg-color) !important;
 }
 
 .modal-footer {
-    border-top: 1px solid #212121 !important;
+    border-top: 1px solid var(--bg-color) !important;
 }
 
 .addBtn, .addCookiesBtn, .saveSettingsBtn {
-    background-color: #5cb85c !important;
-    color: #fff !important;
+    background-color: var(--highlight-color) !important;
+    color: var(--font-input) !important;
 }
 
 .close {
-    color: #fff !important;
+    color: var(--font-input) !important;
 }
 
 .authenticated {
-    color: #5cb85c !important;
+    color: var(--highlight-color) !important;
     width: 100%;
     margin-top: .25rem;
     font-size: 80%;
@@ -237,7 +272,7 @@ input[type="search"]::-webkit-search-cancel-button {
 .windowbar.fixed {
     top: 0 !important;
     width: 100% !important;
-    background-color: black !important;
+    background-color: var(--windowbar) !important;
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
@@ -270,7 +305,7 @@ svg.unmaximize-svg {
 
 .settingsIcon {
     position: absolute;
-    color: #303030 !important;
+    color: var(--settings-icon) !important;
     font-size: 25px;
     right: 25px;
     bottom: 20px;

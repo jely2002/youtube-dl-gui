@@ -25,7 +25,6 @@ async function getSettingPaths() {
     }
 }
 
-
 async function initializeSettings() {
     settingsPath = await getSettingPaths()
     const call = new Promise((resolve, reject) => {
@@ -51,6 +50,8 @@ async function initializeSettings() {
         createSettings()
     } else {
         currentSettings = settings
+        console.log(currentSettings['theme'])
+        updateColors(currentSettings['theme'])
         console.log("Settings loaded from file")
     }
 }
@@ -66,6 +67,9 @@ function saveSettings() {
         newSettings[$(this).attr('json')] = $(this).prop('checked')
         currentSettings[$(this).attr('json')] = $(this).prop('checked')
     })
+    newSettings["theme"] = $("#themeSelect :selected").val()
+    currentSettings["theme"] = $("#themeSelect :selected").val()
+    updateColors(currentSettings['theme'])
     fs.writeFile(settingsPath, JSON.stringify(newSettings), (err) => {
         if(err) {
             console.log(err)
@@ -77,13 +81,15 @@ function loadSettings() {
     $(".checkboxSetting").each(function() {
         $(this).prop('checked',currentSettings[$(this).attr('json')])
     })
+    $("#themeSelect option[value=" + currentSettings["theme"] + "]").attr('selected', 'selected')
 }
 
 function createSettings() {
     console.log('Creating new settings file')
     currentSettings = {
         "update_app": true,
-        "update_binary": true
+        "update_binary": true,
+        "theme": 1
     }
     fs.writeFile(settingsPath, JSON.stringify(currentSettings), (err) => {
         if(err) {
