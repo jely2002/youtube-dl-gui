@@ -89,13 +89,13 @@ function createWindow () {
 
 app.on('ready', () => {
     createWindow()
-    if(isUpdateEnabled()) {
-        if (process.platform === "darwin" && process.argv[2] !== '--dev') {
+    if(isUpdateEnabled() && process.argv[2] !== '--dev') {
+        if (process.platform === "darwin") {
             autoUpdater.checkForUpdates().then((result) => {
                 result.currentVersion = app.getVersion();
                 win.webContents.send('mac-update', result)
             })
-        } else if (process.plaform === "win32" && process.argv[2] !== '--dev') {
+        } else if (process.platform === "win32") {
             autoUpdater.checkForUpdatesAndNotify()
         }
     }
