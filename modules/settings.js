@@ -50,7 +50,6 @@ async function initializeSettings() {
         createSettings()
     } else {
         currentSettings = settings
-        console.log(currentSettings['theme'])
         updateColors(currentSettings['theme'])
         console.log("Settings loaded from file")
     }

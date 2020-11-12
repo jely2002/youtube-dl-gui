@@ -110,7 +110,6 @@ function showError(err) {
 //Update the UI colors
 function updateColors(theme) {
     let colors = getColors(theme)
-    console.log(colors)
     for(let desc in colors) {
         if(colors.hasOwnProperty(desc)) {
             $(":root").css(desc, colors[desc])
