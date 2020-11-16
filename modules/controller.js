@@ -136,19 +136,20 @@ function validate(url) {
 //Starts download with the selected options, starts error timing
 function download() {
     applyRange()
-    let quality = $('#quality').val()
+    let videoQuality = $('#videoquality').val()
+    let audioQuality = $('#audioquality').val()
     timings = setTimeout(showWarning, 90000)
     stepper.next()
     if(isPlaylist) {
-        downloadPlaylist(quality)
+        downloadPlaylist(audioQuality)
         clearTimeout(timings)
         $('#open-btn').html("Open playlist")
         $('.progress').css("display", "initial")
     } else {
         if (mediaMode === "video") {
-            downloadVideo(quality)
+            downloadVideo(videoQuality, audioQuality)
         } else {
-            downloadAudio(quality)
+            downloadAudio(audioQuality)
         }
     }
 }
@@ -171,22 +172,26 @@ function setType(type) {
     if(isPlaylist) {
         applyRange()
         if(type === "video") {
-            $('#quality').empty()
+            $('#videoquality').empty()
+            $('#videoquality').css("display", "initial");
             availableVideoFormats.forEach(function (format) {
                 if(format.format_note !== "DASH video") {
                     $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
-                    $('#quality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
+                    $('#videoquality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
                     $('#subtitles').prop("disabled", false)
                 }
             })
-            $('#quality').val(availableVideoFormats[availableVideoFormats.length - 1].format_id)
+            $('#videoquality').val(availableVideoFormats[availableVideoFormats.length - 1].format_id)
+            $('#audioquality').empty().append(new Option("Best audio", "best")).append(new Option("Worst audio", "worst")).prop("disabled", false).val("best")
             $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
         } else {
-            $('#quality').empty().append(new Option("Best audio", "best")).append(new Option("Worst audio", "worst")).prop("disabled", false).val("best")
+            $('#audioquality').empty().append(new Option("Best audio", "best")).append(new Option("Worst audio", "worst")).prop("disabled", false).val("best")
+            $('#videoquality').css("display", "none");
             $('.size').html('<b>Download size: </b>' + '~' + getTotalSize())
         }
     } else if (type === "video") {
-        $('#quality').empty()
+        $('#videoquality').empty()
+        $('#videoquality').css("display", "initial");
         availableVideoFormats.forEach(function (format) {
             if(format.format_note === "DASH video") {
                 let note
@@ -195,23 +200,24 @@ function setType(type) {
                 } else {
                     note = format.height + "p" + format.fps
                 }
-                $('#quality').append(new Option(note, format.format_id)).prop("disabled", false)
+                $('#videoquality').append(new Option(note, format.format_id)).prop("disabled", false)
                 $('.size').html('<b>Download size: </b>' + "DASH")
             } else {
                 $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
-                $('#quality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
+                $('#videoquality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
             }
             $('#subtitles').prop("disabled", false)
         })
-        $('#quality').val(availableVideoFormats[availableVideoFormats.length - 1].format_id)
+        $('#videoquality').val(availableVideoFormats[availableVideoFormats.length - 1].format_id)
+        $('#audioquality').empty().append(new Option("Best audio", "best")).append(new Option("Worst audio", "worst")).prop("disabled", false).val("best")
     } else {
         if(audioFormat.format_note === "DASH audio") {
             $('.size').html('<b>Download size: </b>DASH')
         } else {
             $('.size').html('<b>Download size: </b>' + '~' + getTotalSize())
         }
-        $('#quality').empty().append(new Option("Best audio", "best")).append(new Option("Worst audio", "worst")).prop("disabled", false).val("best")
-
+        $('#audioquality').empty().append(new Option("Best audio", "best")).append(new Option("Worst audio", "worst")).prop("disabled", false).val("best")
+        $('#videoquality').css("display", "none");
     }
 }
 
@@ -290,9 +296,9 @@ function getTotalSize(videoQuality) {
 
 //Refreshes the UI and filtredPlaylistVideos when the quality gets changed
 $(document).ready(function () {
-    $("#quality").on('change', function () {
+    $("#videoquality").on('change', function () {
         if (mediaMode === "audio") return
-        let selected = document.getElementById("quality").options[document.getElementById("quality").selectedIndex].text
+        let selected = document.getElementById("videoquality").options[document.getElementById("videoquality").selectedIndex].text
         applyRange()
         if($('.size').html() !== '<b>Download size: </b>DASH') {
             $('.size').html('<b>Download size: </b>' + getTotalSize(selected))
@@ -348,11 +354,11 @@ function updateAvailableFormats() {
         })
     })
     if(mediaMode !== "audio") {
-        $('#quality').empty()
+        $('#videoquality').empty()
         availableVideoFormats.forEach(function (format) {
-            $('#quality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
+            $('#videoquality').append(new Option(format.format_note, format.format_id)).prop("disabled", false)
         })
-        $('#quality').val(availableVideoFormats[availableVideoFormats.length - 1].format_id)
+        $('#videoquality').val(availableVideoFormats[availableVideoFormats.length - 1].format_id)
     }
 }
 
@@ -381,7 +387,8 @@ function resetSteps() {
     $('#reset-btn').html("Downloading...").prop("disabled", true)
     $('#open-btn').prop("disabled", true)
     $('#subtitles').prop("disabled", true).prop("checked", false)
-    $('#quality').empty().append(new Option("Select quality", "quality")).prop("disabled", true).val("quality")
+    $('#videoquality').empty().append(new Option("Select video quality", "quality")).prop("disabled", true).val("quality")
+    $('#audioquality').empty().append(new Option("Select audio quality", "quality")).prop("disabled", true).val("quality")
     $("#directoryInput,#download-btn,#min,#max,#step-one-btn").prop("disabled", true)
     $('.progress-bar').css("width", "0%").attr("aria-valuenow", "0")
     $('.progress').css("display", "none")
@@ -395,7 +402,7 @@ function resetBack() {
     stepper.reset()
     $('#video,#audio').prop("checked", false)
     $('#subtitles').prop("disabled", true).prop("checked", false)
-    $('#quality').empty().append(new Option("Select quality", "quality")).prop("disabled", true).val("quality")
+    $('#videoquality').empty().append(new Option("Select video quality", "quality")).prop("disabled", true).val("quality")
     $("#directoryInput,#download-btn,#min,#max").prop("disabled", false)
     $('.video-range').css("display", "none")
     $(".size").html("<strong>Download size:</strong> --")

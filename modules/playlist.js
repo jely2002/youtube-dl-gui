@@ -236,7 +236,7 @@ async function isPublicPlaylist(url) {
 }
 
 //Downloads the videos in filteredPlaylistVideos from YouTube, and keeps the user updated during the process.
-function downloadPlaylist(quality) {
+function downloadPlaylist(audioQuality) {
     let halfSlice1 = filteredPlaylistVideos.slice(0)
     let halfSlice2 = halfSlice1.splice(0, Math.floor(halfSlice1.length / 2))
     let quarterSlice1 = halfSlice1.splice(0, Math.floor(halfSlice1.length / 2))
@@ -275,7 +275,7 @@ function downloadPlaylist(quality) {
         let options
         if(isAudio()) {
             let realQuality = 0
-            if(quality === "worst") {
+            if(audioQuality === "worst") {
                 realQuality = '9'
             }
             options = [
@@ -287,7 +287,7 @@ function downloadPlaylist(quality) {
             ]
         } else {
             options = [
-                '-f', format_id[queue] + "+bestaudio[ext=m4a]/best+bestaudio[ext=m4a]",
+                '-f', format_id[queue] + "+" + audioQuality + "audio[ext=m4a]/best+" + audioQuality + "audio[ext=m4a]",
                 '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg', '--no-mtime',
                 '--merge-output-format', 'mp4',
                 '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s-(%(height)sp%(fps)s).%(ext)s'
