@@ -227,6 +227,10 @@ ipcMain.handle('showItemInFolder', (event, arg) => {
     shell.showItemInFolder(arg)
 })
 
+ipcMain.handle('showFolder', (event, arg) => {
+    shell.openPath(arg)
+})
+
 //Check if user has enabled auto-updating the app
 function isUpdateEnabled() {
     let settingsPath
