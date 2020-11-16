@@ -312,7 +312,11 @@ function settings() {
     selectedURL = $("#url").val()
     $('#max').attr("max", playlistVideos.length).val(playlistVideos.length)
     $('#min').attr("max", playlistVideos.length)
-    if(isPlaylist) $('.video-range').css("display", "initial")
+    if(isPlaylist) {
+        $('.video-range').css("display", "initial")
+    } else {
+        $('.video-range').css("display", "none")
+    }
 }
 
 //Applies the selected range to playlistVideos, and outputs the results to filteredPlaylistVideos
