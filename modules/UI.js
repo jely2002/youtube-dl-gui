@@ -204,7 +204,6 @@ function setPlaylistAdvancedData(playlistVideo) {
 
 //Sets initial playlist data (when URL is entered)
 function setPlaylistData(metadata, toDownload) {
-    console.log(metadata)
     $(".title").css("display", "none") //Remove title, data no longer acessable through youtube-dl
     $(".channel").css("display", "none") //Remove channel, data no longer acessable through youtube-dl
     $(".duration").html("<strong>Playlist size:</strong> " + toDownload + " videos")

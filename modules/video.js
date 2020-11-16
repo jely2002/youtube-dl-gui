@@ -148,8 +148,6 @@ function downloadAudio(quality) {
 }
 
 function downloadVideo(format_id, audioQuality) {
-    console.log(format_id)
-    console.log(audioQuality)
     let format = $("#videoquality option:selected" ).text()
     if(format.substr(format.indexOf('p') + 1) !== "") videoFPS = format.substr(format.indexOf('p') + 1)
     if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
@@ -161,7 +159,6 @@ function downloadVideo(format_id, audioQuality) {
         '--merge-output-format', 'mp4', '--no-mtime',
         '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s-(%(height)sp%(fps)s).%(ext)s'
     ]
-    console.log(options)
     if($('#subtitles').prop('checked')) {
         options.push("--all-subs")
         options.push("--embed-subs")
