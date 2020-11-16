@@ -377,8 +377,8 @@ function resetSteps() {
     mediaMode = ""
     $('#url').removeClass("is-valid").removeClass("is-invalid")
     $(".thumbnail").attr("src", "./web-resources/waiting-for-link.png")
-    $(".title").html("<strong>Title:</strong> --")
-    $(".channel").html("<strong>Channel:</strong> --")
+    $(".title").html("<strong>Title:</strong> --").css("display", "block")
+    $(".channel").html("<strong>Channel:</strong> --").css("display", "block")
     $(".duration").html("<strong>Duration:</strong> --")
     $(".size").html("<strong>Download size:</strong> --")
     $('.main-input').trigger('reset')

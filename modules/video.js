@@ -55,8 +55,8 @@ function showInfo(url) {
         let duration = parseInt(date / 86400000) + "d " + date.toISOString().substr(11, 8)
         $(".thumbnail").attr("src", video.thumbnail)
         $(".thumbnail-settings").attr("src", video.thumbnail)
-        $(".title").html("<strong>Title:</strong> " + video.title)
-        $(".channel").html("<strong>Channel:</strong> " + video.uploader)
+        $(".title").html("<strong>Title:</strong> " + video.title).css("display", "block")
+        $(".channel").html("<strong>Channel:</strong> " + video.uploader).css("display", "block")
         $(".duration").html("<strong>Duration:</strong> " + duration.replace(/(0d\s00:)|(0d\s)/g,""))
         $(".spinner-border").css("display", "none")
         if(credentialsFilled || cookies) {

@@ -195,8 +195,9 @@ function setPlaylistAdvancedData(playlistVideo) {
 
 //Sets initial playlist data (when URL is entered)
 function setPlaylistData(metadata, toDownload) {
-    $(".title").html("<strong>Playlist name:</strong> " + metadata.title)
-    $(".channel").html("<strong>Channel:</strong> " + metadata.uploader)
+    console.log(metadata)
+    $(".title").css("display", "none") //Remove title, data no longer acessable through youtube-dl
+    $(".channel").css("display", "none") //Remove channel, data no longer acessable through youtube-dl
     $(".duration").html("<strong>Playlist size:</strong> " + toDownload + " videos")
     $('#max').val(toDownload)
 }
@@ -340,8 +341,8 @@ function logOut() {
     $('.authenticated').css('display', 'none')
     $(".spinner-border").css("display", "none")
     $(".thumbnail").attr("src", "./web-resources/waiting-for-link.png")
-    $(".title").html("<strong>Title:</strong> --")
-    $(".channel").html("<strong>Channel:</strong> --")
+    $(".title").html("<strong>Title:</strong> --").css("display", "block")
+    $(".channel").html("<strong>Channel:</strong> --").css("display", "block")
     $(".duration").html("<strong>Duration:</strong> --")
     $(".size").html("<strong>Download size:</strong> --")
     if($('#url').val().length !== 0) {
