@@ -236,7 +236,7 @@ async function isPublicPlaylist(url) {
 }
 
 //Downloads the videos in filteredPlaylistVideos from YouTube, and keeps the user updated during the process.
-function downloadPlaylist(quality) {
+function downloadPlaylist(audioQuality) {
     let halfSlice1 = filteredPlaylistVideos.slice(0)
     let halfSlice2 = halfSlice1.splice(0, Math.floor(halfSlice1.length / 2))
     let quarterSlice1 = halfSlice1.splice(0, Math.floor(halfSlice1.length / 2))
@@ -262,10 +262,10 @@ function downloadPlaylist(quality) {
     setProgressBarText(false, "Video %1 of %2 downloaded", videosDownloaded, amountToDownload)
     if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
 
-    function downloadVideo(item, format_id, queue, cb) {
+    function downloadVideo(item, format_id, queue, number, cb) {
         if(item.removed === "yes") {
             ++videosDownloaded
-            queue++
+            increaseQueue(number)
             let percentage = ((videosDownloaded / amountToDownload) * 100) + "%"
             setProgressBarProgress(false, videosDownloaded, amountToDownload)
             setProgressBarText(false, "Video %1 of %2 downloaded", videosDownloaded, amountToDownload)
@@ -275,7 +275,7 @@ function downloadPlaylist(quality) {
         let options
         if(isAudio()) {
             let realQuality = 0
-            if(quality === "worst") {
+            if(audioQuality === "worst") {
                 realQuality = '9'
             }
             options = [
@@ -287,7 +287,7 @@ function downloadPlaylist(quality) {
             ]
         } else {
             options = [
-                '-f', format_id[queue] + "+bestaudio[ext=m4a]/best+bestaudio[ext=m4a]",
+                '-f', format_id[queue] + "+" + audioQuality + "audio[ext=m4a]/best+" + audioQuality + "audio[ext=m4a]",
                 '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg', '--no-mtime',
                 '--merge-output-format', 'mp4',
                 '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s-(%(height)sp%(fps)s).%(ext)s'
@@ -309,7 +309,7 @@ function downloadPlaylist(quality) {
             options.push('--cookies')
             options.push(cookiePath)
         }
-        queue++
+        increaseQueue(number)
         callYTDL(item.webpage_url, options, {}, false, function(err, output) {
             if (err) showError(err)
             ++videosDownloaded
@@ -328,25 +328,25 @@ function downloadPlaylist(quality) {
 
     let videometadata1 = halfSlice1.reduce((promiseChain, item) => {
         return promiseChain.then(() => new Promise((resolve) => {
-            downloadVideo(item, formatSlice1, procOneQueue, resolve)
+            downloadVideo(item, formatSlice1, procOneQueue, 1, resolve)
         }))
     }, Promise.resolve())
 
     let videometadata2 = halfSlice2.reduce((promiseChain, item) => {
         return promiseChain.then(() => new Promise((resolve) => {
-            downloadVideo(item, formatSlice2, procTwoQueue, resolve)
+            downloadVideo(item, formatSlice2, procTwoQueue, 2, resolve)
         }))
     }, Promise.resolve())
 
     let videometadata3 = quarterSlice1.reduce((promiseChain, item) => {
         return promiseChain.then(() => new Promise((resolve) => {
-            downloadVideo(item, formatSlice3, procThreeQueue, resolve)
+            downloadVideo(item, formatSlice3, procThreeQueue, 3, resolve)
         }))
     }, Promise.resolve())
 
     let videometadata4 = quarterSlice2.reduce((promiseChain, item) => {
         return promiseChain.then(() => new Promise((resolve) => {
-            downloadVideo(item, formatSlice4, procFourQueue, resolve)
+            downloadVideo(item, formatSlice4, procFourQueue, 4, resolve)
         }))
     }, Promise.resolve())
 
@@ -369,4 +369,16 @@ function downloadPlaylist(quality) {
         fourthSideResolved = true
         done()
     })
+
+    function increaseQueue(number) {
+        if(number === 1) {
+            procOneQueue++
+        } else if(number === 2) {
+            procTwoQueue++
+        } else if(number === 3) {
+            procThreeQueue++
+        } else if(number === 4) {
+            procFourQueue++
+        }
+    }
 }
