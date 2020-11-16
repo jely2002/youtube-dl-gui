@@ -53,6 +53,9 @@ $(document).ready(function () {
         animation: true
     })
 
+    //Set the version in settings modal
+    setVersion()
+
     //Set the default directory for the download location input
     ipcRenderer.invoke('getPath', 'downloads').then((result) => {
         downloadPath = result
@@ -77,6 +80,12 @@ $(document).ready(function () {
         }
     });
 })
+
+//Set the version in settings modal
+async function setVersion()  {
+    let version = await ipcRenderer.invoke('appInfo', 'version')
+    $(".version").html("<strong>Version: </strong>" + version)
+}
 
 //Closes toasts when the close button is clicked
 $(document).on('click','.close',function (e) {

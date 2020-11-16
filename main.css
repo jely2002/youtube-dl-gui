@@ -311,3 +311,7 @@ svg.unmaximize-svg {
     bottom: 10px;
     cursor: pointer;
 }
+
+.version {
+    margin-right: 225px;
+}
