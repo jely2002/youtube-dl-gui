@@ -182,7 +182,7 @@ function setType(type) {
             $('#quality').val(availableVideoFormats[availableVideoFormats.length - 1].format_id)
             $('.size').html('<b>Download size: </b>' + getTotalSize(availableVideoFormats[availableVideoFormats.length - 1].format_note))
         } else {
-            $('#quality').empty().append(new Option("Best", "best")).append(new Option("Worst", "worst")).prop("disabled", false).val("best")
+            $('#quality').empty().append(new Option("Best audio", "best")).append(new Option("Worst audio", "worst")).prop("disabled", false).val("best")
             $('.size').html('<b>Download size: </b>' + '~' + getTotalSize())
         }
     } else if (type === "video") {
@@ -210,7 +210,7 @@ function setType(type) {
         } else {
             $('.size').html('<b>Download size: </b>' + '~' + getTotalSize())
         }
-        $('#quality').empty().append(new Option("Best", "best")).append(new Option("Worst", "worst")).prop("disabled", false).val("best")
+        $('#quality').empty().append(new Option("Best audio", "best")).append(new Option("Worst audio", "worst")).prop("disabled", false).val("best")
 
     }
 }
