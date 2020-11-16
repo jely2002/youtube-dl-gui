@@ -45,7 +45,7 @@ function createWindow () {
         win = new BrowserWindow({
             show: false,
             width: 800, //850
-            height: 510, //550
+            height: 520, //550
             resizable: false,
             maximizable: false,
             titleBarStyle: "hidden",
@@ -61,7 +61,7 @@ function createWindow () {
             win = new BrowserWindow({
                 show: false,
                 width: 800, //850
-                height: 540, //550
+                height: 550, //550
                 resizable: false,
                 maximizable: false,
                 frame: false,
