@@ -6,7 +6,7 @@ A cross-platform GUI for youtube-dl made in Electron and node.js
 <img src="ytdlgui_demo.gif" alt="demo" width="500"/>
 
 **Features:**
-- Download videos in all qualities up to 8K (if available)
+- Download video & audio in all qualities up to 8K (if available)
 - Download (parts of) playlists
 - Download and extract audio (mp3)
 - Download private videos
