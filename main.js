@@ -95,7 +95,7 @@ app.on('ready', () => {
                 result.currentVersion = app.getVersion();
                 win.webContents.send('mac-update', result)
             })
-        } else if (process.platform === "win32") {
+        } else if (process.platform === "win32" || process.platform === "linux") {
             autoUpdater.checkForUpdatesAndNotify()
         }
     }
