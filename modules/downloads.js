@@ -9,6 +9,8 @@ start()
 
 //Create the unique ID if it does not exist, and call sendDownload() if the ID is not there.
 async function start() {
+    let isDev = await ipcRenderer.invoke('isDev')
+    if(isDev) return
     Version = await ipcRenderer.invoke('appInfo', 'version')
     if(process.platform === "darwin") {
         let appTrimPathUncut = await ipcRenderer.invoke('getPath', 'appPath')

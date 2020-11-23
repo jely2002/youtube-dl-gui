@@ -207,6 +207,10 @@ ipcMain.handle('getPath', (event, arg) => {
     }
 })
 
+ipcMain.handle('isDev', (event) => {
+    return process.argv[2] === '--dev'
+})
+
 ipcMain.handle('appInfo', async (event, arg) => {
     if(arg === "version") {
         return app.getVersion()

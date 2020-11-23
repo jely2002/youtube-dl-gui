@@ -83,7 +83,7 @@ function callYTDL (url, args, options = {}, isMetadata, cb) {
 }
 
 //Resets UI elements when a URL gets entered, and verifies the URL
-function url_entered() {
+async function url_entered() {
     let url = $("#url").val()
     if(validate(url) === "single") {
         availableVideoFormats = []
@@ -107,6 +107,17 @@ function url_entered() {
         isPlaylist = true
         showPlaylistInfo(url)
         $('#url').addClass("is-valid").removeClass("is-invalid")
+    } else if(validate(url) === "channel") {
+        availableVideoFormats = []
+        videoURLS = []
+        filteredVideoURLS = []
+        metaVideos = []
+        playlistVideos = []
+        filteredPlaylistVideos = []
+        playlistFormatIDs = []
+        isPlaylist = true
+        showPlaylistInfo(await getChannelVideoPlaylist(url), true)
+        $('#url').addClass("is-valid").removeClass("is-invalid")
     } else {
         $('.progress.metadata').css("display", "none")
         $('.progress-bar.metadata').css("width", "0%").attr("aria-valuenow", "0")
@@ -124,10 +135,13 @@ function url_entered() {
 function validate(url) {
     const singleRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi
     const playlistRegex = /^.*(youtu.be\/|list=)([^#\&\?]*)[a-zA-Z0-9_-]{34}/;
+    const channelRegex = /((http|https):\/\/)?(www\.)?youtube\.com\/(channel|user)\/[a-zA-Z0-9\-]+/g
     if(singleRegex.test(url)) {
         return "single"
     } else if(playlistRegex.test(url)) {
         return "playlist"
+    } else if(channelRegex.test(url)) {
+        return "channel"
     } else {
         return "none"
     }

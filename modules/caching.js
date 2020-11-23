@@ -43,6 +43,8 @@ async function createPath() {
 
 //Check if a cache is available for the given playlist url, and return the cache if found.
 function cacheAvailable(url) {
+    const channelRegex = /((http|https):\/\/)?(www\.)?youtube\.com\/(channel|user)\/[a-zA-Z0-9\-]+/g
+    if(channelRegex.test(url)) return false
     let id = urlToId(url)
     let foundCache = false
     let files = fs.readdirSync(cachePath)

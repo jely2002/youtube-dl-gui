@@ -4,6 +4,28 @@ let videoURLS = []
 let filteredVideoURLS = []
 let metaVideos = []
 
+async function getChannelVideoPlaylist(url) {
+    let options = [
+        '-J',
+        '--flat-playlist'
+    ]
+    let getData = new Promise((resolve, reject) => {
+        callYTDL(url, options, {}, true, function (err, output) {
+            if(output == null || output === "") {
+                // Show error
+                showError("Output is null")
+                return
+            }
+            if (err) showError(err)
+            let data = JSON.parse(output)
+            console.log(data)
+            console.log(data.entries[0].url)
+            resolve(data.entries[0].url)
+        })
+    })
+    return await getData;
+}
+
 function playlistIsPrivate() {
     if(cookies || credentialsFilled) {
         $('.invalid-feedback').html("This cookies.txt file does not appear to be working, add a working <a class='credentials' data-toggle='modal' data-target='#cookiesModal'>cookies.txt</a> file to download a private playlist.")
@@ -18,7 +40,7 @@ function playlistIsPrivate() {
 }
 
 //Gets the playlist metadata (URL's and later one video formats) from YouTube or the local cache, and keeps the user updated during the process
-function showPlaylistInfo(url) {
+function showPlaylistInfo(url, isChannel) {
     setFetchingPlaylist()
     selectedURL = url
     let amountToDownload = 0
@@ -49,6 +71,7 @@ function showPlaylistInfo(url) {
             }
             if (err) showError(err)
             let video = JSON.parse(output)
+            console.log(video)
             metaVideos.push(video)
             ++metadataDownloaded
             setProgressBarProgress(true, metadataDownloaded, amountToDownload)
@@ -100,6 +123,7 @@ function showPlaylistInfo(url) {
                 videoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
                 filteredVideoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
             })
+            console.log(videoURLS)
             setProgressBarText(true, "Fetching video metadata (%1 of %2)", metadataDownloaded, amountToDownload)
             resolve()
         })
@@ -134,10 +158,14 @@ function showPlaylistInfo(url) {
         }
 
         function done() {
+            if(isChannel) {
+                playlistVideos = metaVideos
+            }
             if (!(firstSideResolved && secondSideResolved && thirdSideResolved && fourthSideResolved)) return
-            addCachedPlaylist(selectedURL, metaVideos)
+            if(!isChannel) addCachedPlaylist(selectedURL, metaVideos)
             videoURLS.forEach(function (url) {
                 playlistVideos.forEach(function (video) {
+                    console.log(video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url))
                     if (video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url)) video.playlist_index = videoURLS.indexOf(url) + 1
                 })
             })
@@ -145,6 +173,8 @@ function showPlaylistInfo(url) {
                 return a.playlist_index - b.playlist_index;
             });
             setProgressBarText(true, "Fetched all metadata!")
+            console.log(playlistVideos)
+            console.log(playlistVideos[0])
             setPlaylistAdvancedData(playlistVideos[0])
             playlistVideos.forEach(function (video) {
                 if (video.removed === "yes") return
