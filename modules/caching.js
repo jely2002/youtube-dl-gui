@@ -171,7 +171,6 @@ function updateCachedPlaylist(url) {
 function urlToId(url) {
     const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)?([a-zA-Z0-9\-]{1,})/
     if(channelRegex.test(url)) {
-        console.log(channelRegex.exec(url))
         return channelRegex.exec(url)[1]
     } else {
         return /\?(?:v|list)=(\w*)/g.exec(url)[1]
