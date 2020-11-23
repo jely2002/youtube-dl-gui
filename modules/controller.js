@@ -137,7 +137,7 @@ async function url_entered() {
 function validate(url) {
     const singleRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi
     const playlistRegex = /^.*(youtu.be\/|list=)([^#\&\?]*)[a-zA-Z0-9_-]{34}/;
-    const channelRegex = /^(?:http|https):\/\/[a-zA-Z-]*\.{0,1}[a-zA-Z-]{3,}\.[a-z]{2,}\/channel\/([a-zA-Z0-9_\-]{3,24})/g
+    const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)?([a-zA-Z0-9\-]{1,})/
     if(singleRegex.test(url)) {
         return "single"
     } else if(playlistRegex.test(url)) {
