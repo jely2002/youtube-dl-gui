@@ -18,8 +18,6 @@ async function getChannelVideoPlaylist(url) {
             }
             if (err) showError(err)
             let data = JSON.parse(output)
-            console.log(data)
-            console.log(data.entries[0].url)
             resolve(data.entries[0].url)
         })
     })
@@ -71,7 +69,6 @@ function getPlaylistMetadata(url, isChannel) {
             }
             if (err) showError(err)
             let video = JSON.parse(output)
-            console.log(video)
             metaVideos.push(video)
             ++metadataDownloaded
             setProgressBarProgress(true, metadataDownloaded, amountToDownload)
@@ -123,7 +120,6 @@ function getPlaylistMetadata(url, isChannel) {
                 videoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
                 filteredVideoURLS.push("https://www.youtube.com/watch?v=" + entry.id)
             })
-            console.log(videoURLS)
             setProgressBarText(true, "Fetching video metadata (%1 of %2)", metadataDownloaded, amountToDownload)
             resolve()
         })
@@ -165,7 +161,6 @@ function getPlaylistMetadata(url, isChannel) {
             addCachedPlaylist(selectedURL, metaVideos)
             videoURLS.forEach(function (url) {
                 playlistVideos.forEach(function (video) {
-                    console.log(video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url))
                     if (video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url)) video.playlist_index = videoURLS.indexOf(url) + 1
                 })
             })
@@ -173,8 +168,6 @@ function getPlaylistMetadata(url, isChannel) {
                 return a.playlist_index - b.playlist_index;
             });
             setProgressBarText(true, "Fetched all metadata!")
-            console.log(playlistVideos)
-            console.log(playlistVideos[0])
             setPlaylistAdvancedData(playlistVideos[0])
             playlistVideos.forEach(function (video) {
                 if (video.removed === "yes") return
