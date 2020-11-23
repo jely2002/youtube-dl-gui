@@ -8,6 +8,7 @@ A cross-platform GUI for youtube-dl made in Electron and node.js
 **Features:**
 - Download video & audio in all qualities up to 8K (if available)
 - Download (parts of) playlists
+- Download (parts of) channels
 - Download and extract audio (mp3)
 - Download private videos
 - Lightning fast download speeds (cache & multiple processes)
@@ -31,7 +32,7 @@ The progress bar shows the amount of data that is downloaded from YouTube. The a
 Please take a look at the tutorial on this subject. It can be found in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/Tutorial:-Private-videos-&-playlists).
 
 ##### Didn't find an answer in the FAQ? 
-Please open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues) and describe the problem you're facing, I'll try to help you as soon as possible. 
+Please open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues) and describe the problem you're facing, please visit [this article](https://github.com/jely2002/youtube-dl-gui/wiki/Something-isn't-working,-what-do-I-do%3F) before opening up an issue. 
 
 ## Planned features
 - None at this time
