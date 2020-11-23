@@ -318,9 +318,9 @@ $('.addBtn').on('click', (element) => {
         credentialsFilled = true
         cookies = false
         if(isPlaylist) {
-            showPlaylistInfo($('#url').val())
+            getPlaylistMetadata($('#url').val())
         } else {
-            showInfo($('#url').val())
+            getMetadata($('#url').val())
         }
     }
 })

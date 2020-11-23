@@ -77,75 +77,45 @@ function callYTDL (url, args, options = {}, isMetadata, cb) {
             stopSingleVideoStatus()
             return cb(null, null)
         } else {
-            return cb(null, metadata)
+            resolve(metadata)
         }
     })
 }
 
-//Resets UI elements when a URL gets entered, and verifies the URL
-async function url_entered() {
-    let url = $("#url").val()
-    if(validate(url) === "single") {
-        availableVideoFormats = []
-        playlistVideos = []
-        videoURLS = []
-        filteredVideoURLS = []
-        metaVideos = []
-        playlistFormatIDs = []
-        filteredPlaylistVideos = []
-        isPlaylist = false
-        showInfo(url)
-        $('#url').addClass("is-valid").removeClass("is-invalid")
-    } else if(validate(url) === "playlist") {
-        availableVideoFormats = []
-        videoURLS = []
-        filteredVideoURLS = []
-        metaVideos = []
-        playlistVideos = []
-        filteredPlaylistVideos = []
-        playlistFormatIDs = []
-        isPlaylist = true
-        showPlaylistInfo(url)
-        $('#url').addClass("is-valid").removeClass("is-invalid")
-    } else if(validate(url) === "channel") {
-        availableVideoFormats = []
-        videoURLS = []
-        filteredVideoURLS = []
-        metaVideos = []
-        playlistVideos = []
-        filteredPlaylistVideos = []
-        playlistFormatIDs = []
-        isPlaylist = true
-        $('#url').addClass("is-valid").removeClass("is-invalid")
-        $('.channelInfo').css("display", "initial")
-        showPlaylistInfo(await getChannelVideoPlaylist(url), true)
-        $('.channelInfo').css("display", "none")
-    } else {
-        $('.progress.metadata').css("display", "none")
-        $('.progress-bar.metadata').css("width", "0%").attr("aria-valuenow", "0")
-        videoURLS = []
-        filteredVideoURLS = []
-        metaVideos = []
-        playlistVideos = []
-        $('.invalid-feedback').html("Please enter a valid YouTube URL")
-        $('#url').addClass("is-invalid").removeClass("is-valid")
-        $('#step-one-btn').prop("disabled", true)
-    }
-}
-
-//Validates the entered URL, and returns whether it's a playlist or video link
-function validate(url) {
+//Resets UI elements when a URL gets entered, verifies the URL and sends the url on its way.
+async function validateLink(url) {
     const singleRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi
     const playlistRegex = /^.*(youtu.be\/|list=)([^#\&\?]*)[a-zA-Z0-9_-]{34}/;
     const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)?([a-zA-Z0-9\-]{1,})/
+
+    availableVideoFormats = []
+    playlistVideos = []
+    videoURLS = []
+    filteredVideoURLS = []
+    metaVideos = []
+    playlistFormatIDs = []
+    filteredPlaylistVideos = []
+
     if(singleRegex.test(url)) {
-        return "single"
+        $('#url').addClass("is-valid").removeClass("is-invalid")
+        isPlaylist = false
+        getMetadata(url)
     } else if(playlistRegex.test(url)) {
-        return "playlist"
+        $('#url').addClass("is-valid").removeClass("is-invalid")
+        isPlaylist = true
+        getPlaylistMetadata(url, false)
     } else if(channelRegex.test(url)) {
-        return "channel"
+        $('#url').addClass("is-valid").removeClass("is-invalid")
+        $('.channelInfo').css("display", "initial")
+        getPlaylistMetadata(await getChannelVideoPlaylist(url), true)
+        $('.channelInfo').css("display", "none")
+        isPlaylist = true
     } else {
-        return "none"
+        $('.invalid-feedback').html("Please enter a valid YouTube URL")
+        $('#url').addClass("is-invalid").removeClass("is-valid")
+        $('#step-one-btn').prop("disabled", true)
+        $('.progress.metadata').css("display", "none")
+        $('.progress-bar.metadata').css("width", "0%").attr("aria-valuenow", "0")
     }
 }
 

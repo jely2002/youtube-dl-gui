@@ -10,7 +10,7 @@ let cookiePath
 let downloadPath
 let credentialsFilled = false
 
-function showInfo(url) {
+function getMetadata(url) {
     $(".spinner-border").css("display", "inherit");
     ipcRenderer.invoke('updateProgressBar', 'indeterminate')
     selectedURL = url
@@ -28,7 +28,7 @@ function showInfo(url) {
         options.push('--cookies')
         options.push(cookiePath)
     }
-    callYTDL(selectedURL, options, {}, true, async function(err, output) {
+    callYTDL(url, options, {}, true, async function(err, output) {
         if(output == null) {
             $('.invalid-feedback').html("This video does not exist or is blocked in your country.")
             $('#url').addClass("is-invalid").removeClass("is-valid")

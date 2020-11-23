@@ -40,7 +40,7 @@ function playlistIsPrivate() {
 }
 
 //Gets the playlist metadata (URL's and later one video formats) from YouTube or the local cache, and keeps the user updated during the process
-function showPlaylistInfo(url, isChannel) {
+function getPlaylistMetadata(url, isChannel) {
     setFetchingPlaylist(isChannel)
     selectedURL = url
     let amountToDownload = 0

@@ -40,7 +40,7 @@
                     <div id="url-part" class="content fade" role="tabpanel" aria-labelledby="url-part-trigger">
                         <form class="main-input">
                             <div class="form-group">
-                                <input type="search" oninput="url_entered($(this).val())" class="form-control" id="url" placeholder="YouTube link ex. youtube.com/watch?v=K4DyBUG242c" required>
+                                <input type="search" oninput="validateLink($(this).val())" class="form-control" id="url" placeholder="YouTube link ex. youtube.com/watch?v=K4DyBUG242c" required>
                                 <div class="invalid-feedback">
                                     Please enter a valid YouTube URL.
                                 </div>
