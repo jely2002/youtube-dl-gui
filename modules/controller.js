@@ -116,8 +116,10 @@ async function url_entered() {
         filteredPlaylistVideos = []
         playlistFormatIDs = []
         isPlaylist = true
-        showPlaylistInfo(await getChannelVideoPlaylist(url), true)
         $('#url').addClass("is-valid").removeClass("is-invalid")
+        $('.channelInfo').css("display", "initial")
+        showPlaylistInfo(await getChannelVideoPlaylist(url), true)
+        $('.channelInfo').css("display", "none")
     } else {
         $('.progress.metadata').css("display", "none")
         $('.progress-bar.metadata').css("width", "0%").attr("aria-valuenow", "0")
@@ -135,7 +137,7 @@ async function url_entered() {
 function validate(url) {
     const singleRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi
     const playlistRegex = /^.*(youtu.be\/|list=)([^#\&\?]*)[a-zA-Z0-9_-]{34}/;
-    const channelRegex = /((http|https):\/\/)?(www\.)?youtube\.com\/(channel|user)\/[a-zA-Z0-9\-]+/g
+    const channelRegex = /^(?:http|https):\/\/[a-zA-Z-]*\.{0,1}[a-zA-Z-]{3,}\.[a-z]{2,}\/channel\/([a-zA-Z0-9_\-]{3,24})/g
     if(singleRegex.test(url)) {
         return "single"
     } else if(playlistRegex.test(url)) {

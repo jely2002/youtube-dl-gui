@@ -203,11 +203,16 @@ function setPlaylistAdvancedData(playlistVideo) {
 }
 
 //Sets initial playlist data (when URL is entered)
-function setPlaylistData(metadata, toDownload) {
+function setPlaylistData(metadata, toDownload, isChannel) {
     $(".title").css("display", "none") //Remove title, data no longer acessable through youtube-dl
     $(".channel").css("display", "none") //Remove channel, data no longer acessable through youtube-dl
-    $(".duration").html("<strong>Playlist size:</strong> " + toDownload + " videos")
     $('#max').val(toDownload)
+    if(isChannel) {
+        $(".channel").css("display", "block").html("<strong> Channel: </strong>" + metadata.title.split("- Videos")[0])
+        $(".duration").html("<strong>Channel size:</strong> " + toDownload + " videos")
+    } else {
+        $(".duration").html("<strong>Playlist size:</strong> " + toDownload + " videos")
+    }
 }
 
 //Shows error when an invalid playlist link has been given
@@ -219,9 +224,13 @@ function setInvalidPlaylist() {
 }
 
 //Sets progress bar to "Fetching playlist metadata..."
-function setFetchingPlaylist() {
+function setFetchingPlaylist(isChannel) {
     $(".spinner-border").css("display", "inherit");
-    $('.completion.metadata').html("Fetching playlist metadata...")
+    if(isChannel) {
+        $('.completion.metadata').html("Fetching channel metadata...")
+    } else {
+        $('.completion.metadata').html("Fetching playlist metadata...")
+    }
     $(".progress.metadata").css("display", "inherit");
 }
 
