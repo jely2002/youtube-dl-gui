@@ -41,7 +41,7 @@ function playlistIsPrivate() {
 
 //Gets the playlist metadata (URL's and later one video formats) from YouTube or the local cache, and keeps the user updated during the process
 function showPlaylistInfo(url, isChannel) {
-    setFetchingPlaylist()
+    setFetchingPlaylist(isChannel)
     selectedURL = url
     let amountToDownload = 0
     let metadataDownloaded = 0
@@ -109,7 +109,7 @@ function showPlaylistInfo(url, isChannel) {
             if (err) showError(err)
             let metadata = JSON.parse(output)
             amountToDownload = metadata.entries.length
-            setPlaylistData(metadata, amountToDownload)
+            setPlaylistData(metadata, amountToDownload, isChannel)
             if(credentialsFilled || cookies) {
                 if(await isPublicPlaylist(url)) {
                     $('.authenticated').css('display','none')
@@ -158,11 +158,11 @@ function showPlaylistInfo(url, isChannel) {
         }
 
         function done() {
-            if(isChannel) {
+            if(isChannel && playlistVideos === []) {
                 playlistVideos = metaVideos
             }
             if (!(firstSideResolved && secondSideResolved && thirdSideResolved && fourthSideResolved)) return
-            if(!isChannel) addCachedPlaylist(selectedURL, metaVideos)
+            addCachedPlaylist(selectedURL, metaVideos)
             videoURLS.forEach(function (url) {
                 playlistVideos.forEach(function (video) {
                     console.log(video.webpage_url === url || (video.removed === "yes" && video.webpage_url === url))

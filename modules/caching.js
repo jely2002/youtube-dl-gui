@@ -43,8 +43,6 @@ async function createPath() {
 
 //Check if a cache is available for the given playlist url, and return the cache if found.
 function cacheAvailable(url) {
-    const channelRegex = /((http|https):\/\/)?(www\.)?youtube\.com\/(channel|user)\/[a-zA-Z0-9\-]+/g
-    if(channelRegex.test(url)) return false
     let id = urlToId(url)
     let foundCache = false
     let files = fs.readdirSync(cachePath)
@@ -57,7 +55,7 @@ function cacheAvailable(url) {
 }
 
 //Check if cache is up-to-date with the videos currently in the online playlist
-function isCacheUpToDate(url) {
+function isCacheUpToDate(url, isChannel) {
     let id = urlToId(url)
     let cachedURLS = []
     let data = JSON.parse(fs.readFileSync(cachePath + id, 'utf8'))
@@ -171,5 +169,11 @@ function updateCachedPlaylist(url) {
 
 //Transforms a video URL into a video ID
 function urlToId(url) {
-    return /\?(?:v|list)=(\w*)/g.exec(url)[1]
+    const channelRegex = /^(?:http|https):\/\/[a-zA-Z-]*\.{0,1}[a-zA-Z-]{3,}\.[a-z]{2,}\/channel\/([a-zA-Z0-9_\-]{3,24})/g
+    if(channelRegex.test(url)) {
+        console.log(channelRegex.exec(url))
+        return channelRegex.exec(url)[1]
+    } else {
+        return /\?(?:v|list)=(\w*)/g.exec(url)[1]
+    }
 }
