@@ -77,7 +77,7 @@ function callYTDL (url, args, options = {}, isMetadata, cb) {
             stopSingleVideoStatus()
             return cb(null, null)
         } else {
-            resolve(metadata)
+            return cb(null, metadata)
         }
     })
 }
