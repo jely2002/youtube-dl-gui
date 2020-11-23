@@ -79,8 +79,8 @@
                             <div class="row">
                                 <div class="col-md-5 text-left">
                                     <img src="web-resources/waiting-for-link.png" class="img-fluid thumbnail-settings" alt="Thumbnail of the specified video">
-                                        <p class="size mt-3"><strong>Download size:</strong> --</p>
-                                        <p class="duration mb-0"><strong>Duration:</strong> --</p>
+                                    <p class="size mt-3"><strong>Download size:</strong> --</p>
+                                    <p class="duration mb-0"><strong>Duration:</strong> --</p>
                                 </div>
                                 <div class="col-md-7 text-left">
                                     <div class="form-group">
@@ -95,23 +95,29 @@
                                             </div>
                                             <div class="form-inline video-range">
                                                 <div class="form-group mt-4">
-                                                        <label for="min">Download video</label>
-                                                        <input id="min" type="number" class="form-control mx-2" min="1" value="1" disabled>
-                                                        <label for="max">till</label>
-                                                        <input id="max" type="number" class="form-control mx-2" min="1" disabled>
+                                                    <label for="min">Download video</label>
+                                                    <input id="min" type="number" class="form-control mx-2" min="1" value="1" disabled>
+                                                    <label for="max">till</label>
+                                                    <input id="max" type="number" class="form-control mx-2" min="1" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="form-inline">
+                                                <div class="form-group my-4">
+                                                    <label for="videoquality"></label>
+                                                    <select id="videoquality" class="mr-2 custom-select" disabled>
+                                                        <option selected>Select video quality</option>
+                                                    </select>
+                                                    <label for="audioquality"></label>
+                                                    <select id="audioquality" class="custom-select" disabled>
+                                                        <option selected>Select audio quality</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="quality"></label>
-                                                <select id="quality" class="custom-select" disabled>
-                                                    <option selected>Select quality</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="subtitles" disabled>
-                                                <label class="custom-control-label" for="subtitles">Add subtitles (if available)</label>
-                                            </div>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="subtitles" disabled>
+                                                    <label class="custom-control-label" for="subtitles">Add subtitles (if available)</label>
+                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <div class="custom-file">
@@ -287,6 +293,7 @@
                 </form>
             </div>
             <div class="modal-footer">
+                <p class="version mr-auto">Version: x.x.x</p>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn saveSettingsBtn">Save</button>
             </div>

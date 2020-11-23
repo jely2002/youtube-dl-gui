@@ -53,6 +53,9 @@ $(document).ready(function () {
         animation: true
     })
 
+    //Set the version in settings modal
+    setVersion()
+
     //Set the default directory for the download location input
     ipcRenderer.invoke('getPath', 'downloads').then((result) => {
         downloadPath = result
@@ -77,6 +80,12 @@ $(document).ready(function () {
         }
     });
 })
+
+//Set the version in settings modal
+async function setVersion()  {
+    let version = await ipcRenderer.invoke('appInfo', 'version')
+    $(".version").html("<strong>Version: </strong>" + version)
+}
 
 //Closes toasts when the close button is clicked
 $(document).on('click','.close',function (e) {
@@ -195,8 +204,8 @@ function setPlaylistAdvancedData(playlistVideo) {
 
 //Sets initial playlist data (when URL is entered)
 function setPlaylistData(metadata, toDownload) {
-    $(".title").html("<strong>Playlist name:</strong> " + metadata.title)
-    $(".channel").html("<strong>Channel:</strong> " + metadata.uploader)
+    $(".title").css("display", "none") //Remove title, data no longer acessable through youtube-dl
+    $(".channel").css("display", "none") //Remove channel, data no longer acessable through youtube-dl
     $(".duration").html("<strong>Playlist size:</strong> " + toDownload + " videos")
     $('#max').val(toDownload)
 }
@@ -238,7 +247,7 @@ function binaryUpdating(isBusy) {
 //Opens the downloaded file specified in downloadPath
 function openDownloadedFile() {
     if(isPlaylist) {
-        shell.openPath(downloadPath)
+        ipcRenderer.invoke('showFolder', downloadPath)
     } else {
         if(mediaMode === "audio") {
             if(process.platform === "darwin" || process.platform === "linux") {
@@ -340,8 +349,8 @@ function logOut() {
     $('.authenticated').css('display', 'none')
     $(".spinner-border").css("display", "none")
     $(".thumbnail").attr("src", "./web-resources/waiting-for-link.png")
-    $(".title").html("<strong>Title:</strong> --")
-    $(".channel").html("<strong>Channel:</strong> --")
+    $(".title").html("<strong>Title:</strong> --").css("display", "block")
+    $(".channel").html("<strong>Channel:</strong> --").css("display", "block")
     $(".duration").html("<strong>Duration:</strong> --")
     $(".size").html("<strong>Download size:</strong> --")
     if($('#url').val().length !== 0) {

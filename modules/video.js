@@ -55,8 +55,8 @@ function showInfo(url) {
         let duration = parseInt(date / 86400000) + "d " + date.toISOString().substr(11, 8)
         $(".thumbnail").attr("src", video.thumbnail)
         $(".thumbnail-settings").attr("src", video.thumbnail)
-        $(".title").html("<strong>Title:</strong> " + video.title)
-        $(".channel").html("<strong>Channel:</strong> " + video.uploader)
+        $(".title").html("<strong>Title:</strong> " + video.title).css("display", "block")
+        $(".channel").html("<strong>Channel:</strong> " + video.uploader).css("display", "block")
         $(".duration").html("<strong>Duration:</strong> " + duration.replace(/(0d\s00:)|(0d\s)/g,""))
         $(".spinner-border").css("display", "none")
         if(credentialsFilled || cookies) {
@@ -147,14 +147,14 @@ function downloadAudio(quality) {
     })
 }
 
-function downloadVideo(format_id) {
-    let format = $("#quality option:selected" ).text()
+function downloadVideo(format_id, audioQuality) {
+    let format = $("#videoquality option:selected" ).text()
     if(format.substr(format.indexOf('p') + 1) !== "") videoFPS = format.substr(format.indexOf('p') + 1)
     if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
     videoOutputName = videoTitle + "-(" + format.substr(0, format.indexOf("p")) + "p" + videoFPS + ").mp4"
     console.log("downloading video: " + selectedURL)
     const options = [
-        '-f', format_id + "+bestaudio[ext=m4a]/best",
+        '-f', format_id + "+" + audioQuality + "audio[ext=m4a]/best",
         '--ffmpeg-location', ffmpegLoc, '--hls-prefer-ffmpeg',
         '--merge-output-format', 'mp4', '--no-mtime',
         '-o', downloadPath.replace(/\\/g, "/") + '/' + '%(title)s-(%(height)sp%(fps)s).%(ext)s'
