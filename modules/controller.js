@@ -15,6 +15,7 @@ let playlistFormatIDs = []
 let isPlaylist = false
 let audioFormat
 let mediaMode
+let channelSearchBusy = false
 
 //Sets all paths to the included binaries depending on the platform
 if(process.platform === "darwin") {
@@ -86,7 +87,7 @@ function callYTDL (url, args, options = {}, isMetadata, cb) {
 async function validateLink(url) {
     const singleRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi
     const playlistRegex = /^.*(youtu.be\/|list=)([^#\&\?]*)[a-zA-Z0-9_-]{34}/;
-    const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)?([a-zA-Z0-9\-]{1,})/
+    const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)([a-zA-Z0-9\-]{1,})/
 
     availableVideoFormats = []
     playlistVideos = []
@@ -105,9 +106,15 @@ async function validateLink(url) {
         isPlaylist = true
         getPlaylistMetadata(url, false)
     } else if(channelRegex.test(url)) {
+        if(channelSearchBusy) return
         $('#url').addClass("is-valid").removeClass("is-invalid")
         $('.channelInfo').css("display", "initial")
-        getPlaylistMetadata(await getChannelVideoPlaylist(url), true)
+        channelSearchBusy = true
+        let videoPlaylist = await getChannelVideoPlaylist(url)
+        if(videoPlaylist) {
+            getPlaylistMetadata(videoPlaylist, true)
+        }
+        channelSearchBusy = false
         $('.channelInfo').css("display", "none")
         isPlaylist = true
     } else {
