@@ -12,8 +12,7 @@ async function getChannelVideoPlaylist(url) {
     let getData = new Promise((resolve, reject) => {
         callYTDL(url, options, {}, true, function (err, output) {
             if(output == null || output === "") {
-                // Show error
-                showError("Output is null")
+                showError("This channel does not exist!")
                 return
             }
             if (err) showError(err)
