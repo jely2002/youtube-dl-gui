@@ -169,7 +169,7 @@ function updateCachedPlaylist(url) {
 
 //Transforms a video URL into a video ID
 function urlToId(url) {
-    const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)?([a-zA-Z0-9\-]{1,})/
+    const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)([a-zA-Z0-9\-]{1,})/
     if(channelRegex.test(url)) {
         return channelRegex.exec(url)[1]
     } else {
