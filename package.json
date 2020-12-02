@@ -15,7 +15,10 @@
     "gui",
     "interface"
   ],
-  "author": "Jelle Glebbeek",
+  "author": {
+    "name": "Jelle Glebbeek",
+    "email": "contact@jelleglebbeek.com"
+  },
   "license": "GPL-3.0-only",
   "devDependencies": {
     "electron": ">=10.1.0",
