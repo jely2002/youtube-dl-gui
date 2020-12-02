@@ -1,7 +1,7 @@
-import escapeStringRegexp from "escape-string-regexp";
-import fs from "fs";
-import mkdirp from "mkdirp";
-import path from "path";
+const escapeStringRegexp = require("escape-string-regexp");
+const fs = require("fs");
+const mkdirp = require("mkdirp");
+const path = require("path");
 const universalify = require('universalify')
 const execa = universalify.fromPromise(require('execa'))
 
