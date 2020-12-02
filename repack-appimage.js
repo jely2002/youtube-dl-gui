@@ -5,21 +5,25 @@ const path = require("path");
 const universalify = require('universalify')
 const execa = universalify.fromPromise(require('execa'))
 
-
-// TODO pass destination directory instead of hardcoding it ("--appimage-extract" doesn't support destination parameter at the moment)
 const extractedImageFolderName = "squashfs-root";
 
 exports.default = async function(context) {
-    console.log(context.outDir)
-    console.log(context.packager[0].executableName)
-    await postProcess(context.outDir, context.packager[0].executableName)
+    if(context.platformToTargets.values().next().value.values().next().value.name == "appImage") {
+        await postProcess(context.outDir, path.basename(context.artifactPaths[0]))
+    } else {
+        console.log("Non appImage build, repack not needed.")
+    }
 }
 
 async function postProcess(packageFile, binary_name) {
-    const packageDir = await unpack({packageFile});
+    console.log("Unpacking intial AppImage")
+    const packageDir = await unpack(path.join(packageFile, binary_name));
+    console.log("Patching AppImage")
     disableSandbox(packageDir);
-    ensureFileHasNoSuidBit(path.join(packageDir, binary_name));
-    await packAndCleanup(packageDir, packageFile);
+    ensureFileHasNoSuidBit(path.join(packageFile, binary_name));
+    console.log("Packaging new AppImage")
+    await packAndCleanup(packageDir, packageFile, binary_name);
+    console.log("Repackaging completed")
 }
 
 function disableSandbox(packageDir) {
@@ -56,25 +60,26 @@ async function unpack(packageFile){
     return packageDir;
 }
 
-async function packAndCleanup(packageDir, packageFile) {
-    const appImageTool = await resolveAppImageTool({packageFile});
-
-    await execShell("rm", ["--force", packageFile]);
-    await execShell(appImageTool, ["-n", "--comp", "xz", packageDir, packageFile]);
-    await execShell("npx", ["rimraf", packageDir]);
-}
-
-async function resolveAppImageTool(packageFile) {
+async function packAndCleanup(packageDir, packageFile, binary_name) {
     const appImageFile = path.join(
         path.join(path.dirname(packageFile), "./appimagetool"),
         "./appimagetool-x86_64.AppImage",
     );
+    const appImageTool = await resolveAppImageTool(packageFile, appImageFile);
+
+    await execShell("rm", ["--force", appImageFile]);
+    await execShell(appImageTool, ["-n", "--comp", "xz", packageDir, path.join(packageFile, binary_name)]);
+    await execShell("npx", ["rimraf", packageDir]);
+    await execShell("npx", ["rimraf", path.join(packageFile, "/appimagetool")]);
+}
+
+async function resolveAppImageTool(packageFile, appImageFile) {
+
     const cwd = path.dirname(appImageFile);
 
     mkdirp.sync(cwd);
 
-    // TODO cache the "appimagetool"
-    await execShell([
+    await execShell(
         "curl",
         [
             "--fail",
@@ -82,20 +87,15 @@ async function resolveAppImageTool(packageFile) {
             "--output", appImageFile,
             `https://github.com/AppImage/AppImageKit/releases/download/continuous/${path.basename(appImageFile)}`,
         ],
-    ]);
+    );
 
     await execShell("chmod", ["+x", appImageFile]);
-
-    // unpacking the image in order to prevent the following error: AppImages require FUSE to run
-    // https://docs.appimage.org/user-guide/run-appimages.html?highlight=fuse#the-appimage-tells-me-it-needs-fuse-to-run
     await execShell(appImageFile, ["--appimage-extract"], {"cwd": cwd});
 
-    return {
-        appImageTool: path.join(
-            path.dirname(appImageFile),
-            path.join(extractedImageFolderName, "AppRun"),
-        ),
-    };
+    return path.join(
+        path.dirname(appImageFile),
+        path.join(extractedImageFolderName, "AppRun"),
+    )
 }
 
 function ensureFileHasNoSuidBit(file) {
@@ -117,8 +117,5 @@ function ensureFileHasNoSuidBit(file) {
 }
 
 async function execShell(command, args, options) {
-    const executable = execa(command, args, options)
-    executable.stdout.on('data', (data) => {
-      console.log(data)
-    })
+    const exec = await execa(command, args, options)
 }

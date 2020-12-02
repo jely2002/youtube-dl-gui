@@ -41,7 +41,7 @@
     "url": "https://github.com/jely2002/youtube-dl-gui.git"
   },
   "build": {
-    "afterPack": "./repack-appimage.js",
+    "afterAllArtifactBuild": "./repack-appimage.js",
     "appId": "com.jelleglebbeek.youtube-dl-gui",
     "productName": "YouTube Downloader GUI",
     "copyright": "Copyright © 2020 Jelle Glebbeek",
@@ -84,12 +84,12 @@
     "linux": {
       "target": "AppImage",
       "executableName": "youtube-dl-gui",
-      "icon": "build/",
+      "icon": "build/youtube-dl-gui.png",
       "synopsis": "A cross-platform GUI for youtube-dl",
-      "category": "utility",
+      "category": "X-utility",
       "desktop": {
         "Name": "YouTube-dl-GUI",
-        "Icon": "build/",
+        "Icon": "youtube-dl-gui",
         "Comment": "A cross-platform GUI for youtube-dl"
       },
       "extraResources": [
