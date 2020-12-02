@@ -27,6 +27,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
     "electron-updater": "^4.3.4",
+    "escape-string-regexp": "^4.0.0",
     "execa": "^4.0.0",
     "jquery": "^3.5.1",
     "mkdirp": "^1.0.4",
