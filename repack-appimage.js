@@ -130,9 +130,11 @@ async function publish(distDir, appImage) {
         githubToken = fs.readFileSync(path.join(distDir, '..', 'gh_token.txt'))
     } catch (err) {
         console.log("No GitHub token specified, skipping publish.")
+        return
     }
     if(githubToken === "") {
         console.log("No GitHub token specified, skipping publish.")
+        return
     }
     let gh = new GitHub({
         username: 'jely2002',
