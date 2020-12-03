@@ -29,12 +29,14 @@
     "electron-updater": "^4.3.4",
     "escape-string-regexp": "^4.0.0",
     "execa": "^4.0.0",
+    "github-api": "^3.3.0",
     "jquery": "^3.5.1",
     "mkdirp": "^1.0.4",
     "popper.js": "^1.16.1",
     "request": "^2.88.2",
     "universalify": "^1.0.0",
-    "windowbar": "^1.7.4"
+    "windowbar": "^1.7.4",
+    "yaml": "^1.10.0"
   },
   "repository": {
     "type": "git",

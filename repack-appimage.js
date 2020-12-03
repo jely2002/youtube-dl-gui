@@ -4,14 +4,14 @@ const mkdirp = require("mkdirp");
 const path = require("path");
 const universalify = require('universalify')
 const execa = universalify.fromPromise(require('execa'))
+const GitHub = require('github-api')
+const yaml = require('yaml')
 
 const extractedImageFolderName = "squashfs-root";
 
 exports.default = async function(context) {
-    if(context.platformToTargets.values().next().value.values().next().value.name == "appImage") {
+    if(context.platformToTargets.values().next().value.values().next().value.name === "appImage") {
         await postProcess(context.outDir, path.basename(context.artifactPaths[0]))
-    } else {
-        console.log("Non appImage build, repack not needed.")
     }
 }
 
@@ -23,7 +23,8 @@ async function postProcess(packageFile, binary_name) {
     ensureFileHasNoSuidBit(path.join(packageFile, binary_name));
     console.log("Packaging new AppImage")
     await packAndCleanup(packageDir, packageFile, binary_name);
-    console.log("Repackaging completed")
+    console.log("Publishing artifacts to GitHub")
+    await publish(packageFile, binary_name)
 }
 
 function disableSandbox(packageDir) {
@@ -54,8 +55,8 @@ async function unpack(packageFile){
         extractedImageFolderName,
     );
 
-    await execShell("npx", ["rimraf", packageDir]);
-    await execShell(packageFile, ["--appimage-extract"], {"cwd": cwd});
+    await execShell("npx", ["rimraf", packageDir], false);
+    await execShell(packageFile, ["--appimage-extract"], {"cwd": cwd}, false);
 
     return packageDir;
 }
@@ -67,10 +68,10 @@ async function packAndCleanup(packageDir, packageFile, binary_name) {
     );
     const appImageTool = await resolveAppImageTool(packageFile, appImageFile);
 
-    await execShell("rm", ["--force", appImageFile]);
-    await execShell(appImageTool, ["-n", "--comp", "xz", packageDir, path.join(packageFile, binary_name)]);
-    await execShell("npx", ["rimraf", packageDir]);
-    await execShell("npx", ["rimraf", path.join(packageFile, "/appimagetool")]);
+    await execShell("rm", ["--force", appImageFile], false);
+    await execShell(appImageTool, ["-n", "--comp", "xz", packageDir, path.join(packageFile, binary_name)], false);
+    await execShell("npx", ["rimraf", packageDir], false);
+    await execShell("npx", ["rimraf", path.join(packageFile, "/appimagetool")], false);
 }
 
 async function resolveAppImageTool(packageFile, appImageFile) {
@@ -86,11 +87,11 @@ async function resolveAppImageTool(packageFile, appImageFile) {
             "--location",
             "--output", appImageFile,
             `https://github.com/AppImage/AppImageKit/releases/download/continuous/${path.basename(appImageFile)}`,
-        ],
+        ], false
     );
 
-    await execShell("chmod", ["+x", appImageFile]);
-    await execShell(appImageFile, ["--appimage-extract"], {"cwd": cwd});
+    await execShell("chmod", ["+x", appImageFile], false);
+    await execShell(appImageFile, ["--appimage-extract"], {"cwd": cwd}, false);
 
     return path.join(
         path.dirname(appImageFile),
@@ -116,6 +117,64 @@ function ensureFileHasNoSuidBit(file) {
     }
 }
 
-async function execShell(command, args, options) {
-    const exec = await execa(command, args, options)
+async function execShell(command, args, options, getOutput) {
+    const {stdout} = await execa(command, args, options)
+    if(getOutput) {
+        return stdout
+    }
+}
+
+async function publish(distDir, appImage) {
+    let githubToken
+    try {
+        githubToken = fs.readFileSync(path.join(distDir, '..', 'gh_token.txt'))
+    } catch (err) {
+        console.log("No GitHub token specified, skipping publish.")
+    }
+    if(githubToken === "") {
+        console.log("No GitHub token specified, skipping publish.")
+    }
+    let gh = new GitHub({
+        username: 'jely2002',
+        token: githubToken
+    })
+    const pkg = require(path.join(distDir, '..', 'package.json'))
+    const repo = await gh.getRepo('jely2002', 'youtube-dl-gui')
+    const releases = await repo.listReleases()
+    const result = await repo.createRelease({
+        "tag_name": 'v' + pkg.version,
+        "target_commitish": "master",
+        "name": pkg.version,
+        "body": "Draft release",
+        "draft": true,
+        "prerelease": false
+    })
+    const upload_url = result.data.upload_url.replace('{?name,label}', '')
+
+    let ymlData = yaml.parse(fs.readFileSync(path.join(distDir, 'latest-linux.yml')).toString())
+    ymlData.sha512 = await sha512sum(path.join(distDir, 'latest-linux.yml'));
+    ymlData = yaml.stringify(ymlData)
+    fs.writeFileSync(path.join(distDir, 'latest-linux.yml'), ymlData)
+
+    const args_linux = [
+        "--request POST",
+        "--data-binary @" + path.join(distDir, 'latest-linux.yml'),
+        '-H "Authorization: token ' + githubToken + '"',
+        '-H "Content-Type: application/octet-stream"',
+        upload_url + "?name=latest-linux.yml"
+    ]
+    const args_appimage = [
+        "--request POST",
+        "--data-binary @" + path.join(distDir, appImage),
+        '-H "Authorization: token ' + githubToken + '"',
+        '-H "Content-Type: application/octet-stream"',
+        upload_url + "?name=" + appImage
+    ]
+    await execShell('curl', args_linux, {}, false)
+    await execShell('curl', args_appimage, {}, false)
+}
+
+async function sha512sum(filename) {
+    let output = execShell('sha512sum', [filename, "| cut -f1 | xxd -r -p | base64"], true)
+    return output.toString().split('\n').join('').trim()
 }
