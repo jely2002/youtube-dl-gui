@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
     <title>Youtube Downloader</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" integrity="sha384-qMhYxsMd/tIFRNt3QjOFfDoDdMUCWR5v2sCzrB3MPbZqs5Osdq41JCmLJJPURa+o" crossorigin="anonymous">
+    <link rel="stylesheet" href="web-resources/bootstrap.min.css">
+    <link rel="stylesheet" href="web-resources/bs-stepper.min.css">
     <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="main.css" crossorigin="anonymous">
 </head>
@@ -163,7 +163,7 @@
 <div class="toast" id="error" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header bg-danger">
         <i class="fas mr-3 fa-skull-crossbones"></i>
-        <strong class="mr-auto">An error has occured, please report this!</strong>
+        <strong class="mr-auto error-title">An error has occured, please report this!</strong>
         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -178,30 +178,30 @@
         <strong class="mr-auto">No internet connection found!</strong>
     </div>
     <div class="toast-body">
-        Please connect to the internet and restart the app. This app will not work without an internet connection.
+        Please connect to the internet and restart the app. This app requires a working internet connection.
     </div>
 </div>
 <div class="toast warning-toast" id="warning" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header bg-warning">
         <i class="fas mr-3 fa-exclamation-triangle"></i>
-        <strong class="mr-auto">This is taking longer than usual..</strong>
+        <strong class="mr-auto warning-title">This is taking longer than usual..</strong>
         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="toast-body">
+    <div class="toast-body warning-body">
         The download is taking longer than usual, this might be because you're downloading a large file, have a slow connection, or are downloading subtitles. Otherwise please restart the program.
     </div>
 </div>
 <div class="toast warning-toast" id="update" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header bg-success">
         <i class="fas mr-3 fa-download"></i>
-        <strong class="mr-auto">There is an update available!</strong>
+        <strong class="mr-auto update-title">There is an update available!</strong>
         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="toast-body" onclick="shell.openExternal('https://github.com/jely2002/youtube-dl-gui/releases/latest')"></div>
+    <div class="toast-body update-body" onclick="shell.openExternal('https://github.com/jely2002/youtube-dl-gui/releases/latest')"></div>
 </div>
 <div class="modal fade" id="cookiesModal" tabindex="-1" role="dialog" aria-labelledby="cookiesModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -304,15 +304,21 @@
     </div>
 </div>
 <a class="settingsIcon"><i class="fas fa-cog"></i></a>
-<script src="modules/caching.js"></script>
+<!--<script src="modules/caching.js"></script>
 <script src="modules/controller.js"></script>
 <script src="modules/UI.js"></script>
 <script src="modules/settings.js"></script>
 <script src="modules/video.js"></script>
 <script src="modules/playlist.js"></script>
+-->
+<script src="web-resources/jquery.min.js"></script>
 <script src="web-resources/bootstrap.min.js"></script>
 <script src="web-resources/bs-stepper.min.js"></script>
+<script src="node_modules/windowbar/dist/index.js"></script>
+<script src="renderer.js"></script>
+<!--
 <script src="modules/downloads.js"></script>
 <script src="modules/updater.js"></script>
+-->
 </body>
 </html>

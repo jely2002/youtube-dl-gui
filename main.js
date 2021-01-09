@@ -2,6 +2,12 @@ const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut, 
 const { autoUpdater } = require("electron-updater")
 const fs = require('fs')
 const mkdirp = require('mkdirp')
+const Environment = require('./modules/Environment');
+const Format = require('./modules/Format');
+const DownloadQuery = require('./modules/DownloadQuery');
+const QueryList = require('./modules/QueryList');
+const InfoQuery = require('./modules/InfoQuery');
+const path = require('path')
 
 let doneIcon
 let downloadingIcon
@@ -51,10 +57,12 @@ function createWindow () {
             titleBarStyle: "hidden",
             icon: "web-resources/icon-light.png",
             webPreferences: {
-                nodeIntegration: true,
+                nodeIntegration: false,
                 enableRemoteModule: false,
                 worldSafeExecuteJavaScript: true,
-                spellcheck: false
+                spellcheck: false,
+                preload: path.join(__dirname, 'preload.js'),
+                contextIsolation: true
             }
         })
     } else {
@@ -67,10 +75,12 @@ function createWindow () {
                 frame: false,
                 icon: "web-resources/icon-light.png",
                 webPreferences: {
-                    nodeIntegration: true,
+                    nodeIntegration: false,
                     enableRemoteModule: false,
                     worldSafeExecuteJavaScript: true,
-                    spellcheck: false
+                    spellcheck: false,
+                    preload: path.join(__dirname, 'preload.js'),
+                    contextIsolation: true
                 }
             })
     }
@@ -85,10 +95,24 @@ function createWindow () {
     win.once('ready-to-show', () => {
         win.show()
     })
+    win.webContents.once('dom-ready', () => {
+        setTimeout(() => {
+            win.webContents.send("log", "Test log");
+        }, 3000)
+    });
 }
 
 app.on('ready', () => {
-    createWindow()
+   let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
+   let format = new Format("1080", "60", "best", false);
+   let query = new InfoQuery("https://www.youtube.com/watch?v=FbAxn5dgoic", env);
+    query.connect().then((data) => {
+        setTimeout(() => {
+            win.webContents.send("log", JSON.parse(data));
+        }, 3000)
+    })
+
+   createWindow()
     if(isUpdateEnabled() && process.argv[2] !== '--dev') {
         if (process.platform === "darwin") {
             autoUpdater.checkForUpdates().then((result) => {
@@ -145,6 +169,10 @@ const InputMenu = Menu.buildFromTemplate(
     role: 'selectall',
 },
 ]);
+
+ipcMain.handle("platform", (event) => {
+    return process.platform;
+})
 
 //Registers shortcuts
 app.whenReady().then(() => {
