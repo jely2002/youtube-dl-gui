@@ -61,7 +61,7 @@ function createWindow () {
                 enableRemoteModule: false,
                 worldSafeExecuteJavaScript: true,
                 spellcheck: false,
-                preload: path.join(__dirname, 'preload.js'),
+                preload: path.join(__dirname, 'modules/preload.js'),
                 contextIsolation: true
             }
         })
@@ -79,7 +79,7 @@ function createWindow () {
                     enableRemoteModule: false,
                     worldSafeExecuteJavaScript: true,
                     spellcheck: false,
-                    preload: path.join(__dirname, 'preload.js'),
+                    preload: path.join(__dirname, 'modules/preload.js'),
                     contextIsolation: true
                 }
             })
