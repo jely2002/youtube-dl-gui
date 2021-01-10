@@ -1,5 +1,5 @@
 class Format {
-    //audio = best | worst
+    //audioQuality = best | worst
     constructor(height, fps, audioQuality, audioOnly) {
         this.height = height;
         this.fps = fps;
@@ -11,7 +11,11 @@ class Format {
         if (this.audioOnly) {
             return this.audioQuality;
         } else {
-            return this.height + "p" + this.fps;
+            if(this.fps == null) {
+                return this.height + "p";
+            } else {
+                return this.height + "p" + this.fps;
+            }
         }
     }
 
@@ -19,6 +23,7 @@ class Format {
         let splitName = name.split("p");
         let height = splitName[0];
         let fps = splitName[1];
+        if(fps === "") fps = null;
         if(audio == null) audio = "best";
         return new Format(height, fps, audio)
     }

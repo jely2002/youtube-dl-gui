@@ -105,8 +105,20 @@ function createWindow () {
 app.on('ready', () => {
    let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
    let format = new Format("1080", "60", "best", false);
-   let query = new InfoQuery("https://www.youtube.com/watch?v=FbAxn5dgoic", env);
+   let query = new InfoQuery("https://www.youtube.com/watch?v=Mg_Bjigsgcg", env);
     query.connect().then((data) => {
+        setTimeout(() => {
+            win.webContents.send("log", JSON.parse(data));
+            let avFormats = query.parseAvailableFormats(JSON.parse(data));
+            console.log(avFormats);
+            avFormats.forEach((format) => {
+                console.log(format.getDisplayName());
+            })
+            console.log(query.parseVideoMetadata(JSON.parse(data)));
+        }, 3000)
+    })
+    let query1 = new InfoQuery("https://www.youtube.com/watch?v=Mg_Bjigsgcg", env);
+    query1.connect().then((data) => {
         setTimeout(() => {
             win.webContents.send("log", JSON.parse(data));
         }, 3000)
