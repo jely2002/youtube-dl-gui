@@ -1,16 +1,11 @@
-const childProcess = require('child_process');
 const execa = require('execa');
 
 class Query {
-    constructor(environment, auth, progressBar) {
+    constructor(environment, progressBar) {
         this.environment = environment;
-        this.auth = auth;
         this.progressBar = progressBar;
     }
-    isAuthUsed() {
-        if(this.auth == null) return false;
-        return this.auth.id != null;
-    }
+
     async start(url, args, cb) {
         args.push("--no-cache-dir")
         args.push(url) //Url must always be added as the final argument
@@ -28,9 +23,12 @@ class Query {
                     cb(data.toString());
                 });
                 process.stdout.on('close', (code) => {
-                    cb("close")
-                    resolve("close")
+                    cb("close");
+                    resolve("close");
                 });
+                process.stderr.on("data", (data) => {
+                    console.log(data.toString())
+                })
             });
         }
     }

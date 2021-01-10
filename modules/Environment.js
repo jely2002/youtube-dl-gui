@@ -7,6 +7,10 @@ class Environment {
         this.appPath = appPath;
         this.homePath = homePath;
         this.downloadPath = downloadPath;
+        this.cookiePath = null;
+        this.mainAudioOnly = false;
+        this.mainAudioQuality = "best";
+        this.mainDownloadSubs = false;
         this.ytdlBinary = "";
         this.ffmpegBinary = "";
         this.setPaths();
@@ -16,8 +20,8 @@ class Environment {
         switch (this.platform) {
             //TODO fully migrate to path.join
             case "win32":
-                this.ytdlBinary = path.join(this.appPath, "resources/youtube-dl.exe");
-                this.ffmpegBinary = path.join(this.appPath, "resources/ffmpeg.exe");
+                this.ytdlBinary = "resources/youtube-dl.exe";
+                this.ffmpegBinary ="resources/ffmpeg.exe";
                 break;
             case "darwin":
                 this.appPath = this.appPath.slice(0,-8);

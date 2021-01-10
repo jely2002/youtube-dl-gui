@@ -2,15 +2,17 @@ const Query = require("./Query")
 const path = require("path")
 
 class DownloadQuery extends Query {
-    constructor(url, format, environment, auth, progressBar) {
-        super(environment, auth, progressBar);
+    constructor(url, video, environment, progressBar) {
+        super(environment, progressBar);
         this.url = url;
-        this.format = format;
+        this.video = video;
+        this.format = video.selected_format;
+        console.log(this.format)
     }
 
     async connect() {
         let args;
-        if(this.format.audioOnly) {
+        if(this.video.audioOnly) {
             let numeralAudioQuality = (this.format.audioQuality === "best") ? "0" : "9";
             let output = path.join(this.environment.downloadPath, "'%(title).200s.%(ext)s") //.200 is to limit the max title length to 200 characters
             args = [
@@ -23,35 +25,45 @@ class DownloadQuery extends Query {
             ];
         } else {
             let output = path.join(this.environment.downloadPath, "%(title).200s-(%(height)sp%(fps)s).%(ext)s")
+            let format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.format.audioQuality}audio[ext=m4a]/bestvideo[height=${this.format.height}]+${this.format.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+            if(this.format.fps == null) {
+                format = `bestvideo[height=${this.format.height}]+${this.format.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+            }
             args = [
-                "-f", `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.format.audioQuality}audio[ext=m4a]/bestvideo[height=${this.format.height}]+${this.format.audioQuality}audio/bestvideo+bestaudio/best`,
+                "-f", format,
                 "-o", output,
                 '--ffmpeg-location', this.environment.ffmpegBinary, '--hls-prefer-ffmpeg',
                 '--no-mtime',
             ];
             console.log(args)
-            if (this.environment.downloadSubs) {
+            if (this.video.downloadSubs) {
                 args.push("--all-subs")
                 args.push("--embed-subs")
                 args.push("--convert-subs")
                 args.push("srt")
             }
         }
-        if(super.isAuthUsed()) {
-            if(this.auth.isCookie)  {
-                args.push("--cookies");
-                args.push(this.auth.id);
-            } else {
-                options.push('-u')
-                options.push(this.auth.id)
-                options.push('-p')
-                options.push(this.auth.password)
-            }
+        if(this.environment.cookiePath != null) {
+            args.push("--cookies");
+            args.push(this.environment.cookiePath);
         }
-        //TODO Use live binary callback and update progressbar //TODO
+        //TODO update progressbar //TODO
         // TODO Add more error handling
         try {
-            return await this.start(this.url, args);
+            await this.start(this.url, args, (liveData) => {
+                if(!liveData.includes("[download]")) return;
+                let liveDataArray = liveData.split(" ").filter((el) => { return el !== "" });
+                if(liveDataArray.length > 8) return;
+                let percentage = liveDataArray[1];
+                let speed = liveDataArray[5];
+                let eta = liveDataArray[7];
+                if(percentage === "100%") {
+                    console.log("Finishing up...");
+                    return;
+                    //Set progressbar to Finishing up.. and update
+                }
+                console.log(percentage + " | " + speed + " - ETA " + eta);
+            })
         } catch(exception) {
             console.log(exception);
             return exception;

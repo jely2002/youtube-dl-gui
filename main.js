@@ -5,7 +5,8 @@ const mkdirp = require('mkdirp')
 const Environment = require('./modules/Environment');
 const Format = require('./modules/Format');
 const DownloadQuery = require('./modules/DownloadQuery');
-const QueryList = require('./modules/QueryList');
+const InfoQueryList = require('./modules/InfoQueryList');
+const DownloadQueryList = require('./modules/DownloadQueryList');
 const InfoQuery = require('./modules/InfoQuery');
 const path = require('path')
 
@@ -66,23 +67,23 @@ function createWindow () {
             }
         })
     } else {
-            win = new BrowserWindow({
-                show: false,
-                width: 800, //850
-                height: 550, //550
-                resizable: false,
-                maximizable: false,
-                frame: false,
-                icon: "web-resources/icon-light.png",
-                webPreferences: {
-                    nodeIntegration: false,
-                    enableRemoteModule: false,
-                    worldSafeExecuteJavaScript: true,
-                    spellcheck: false,
-                    preload: path.join(__dirname, 'modules/preload.js'),
-                    contextIsolation: true
-                }
-            })
+        win = new BrowserWindow({
+            show: false,
+            width: 800, //850
+            height: 550, //550
+            resizable: false,
+            maximizable: false,
+            frame: false,
+            icon: "web-resources/icon-light.png",
+            webPreferences: {
+                nodeIntegration: false,
+                enableRemoteModule: false,
+                worldSafeExecuteJavaScript: true,
+                spellcheck: false,
+                preload: path.join(__dirname, 'modules/preload.js'),
+                contextIsolation: true
+            }
+        })
     }
     win.removeMenu()
     if(process.argv[2] === '--dev') {
@@ -102,29 +103,24 @@ function createWindow () {
     });
 }
 
-app.on('ready', () => {
-   let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
-   let format = new Format("1080", "60", "best", false);
-   let query = new InfoQuery("https://www.youtube.com/watch?v=Mg_Bjigsgcg", env);
-    query.connect().then((data) => {
-        setTimeout(() => {
-            win.webContents.send("log", JSON.parse(data));
-            let avFormats = query.parseAvailableFormats(JSON.parse(data));
-            console.log(avFormats);
-            avFormats.forEach((format) => {
-                console.log(format.getDisplayName());
-            })
-            console.log(query.parseVideoMetadata(JSON.parse(data)));
-        }, 3000)
-    })
-    let query1 = new InfoQuery("https://www.youtube.com/watch?v=Mg_Bjigsgcg", env);
-    query1.connect().then((data) => {
-        setTimeout(() => {
-            win.webContents.send("log", JSON.parse(data));
-        }, 3000)
+app.on('ready', async () => {
+    createWindow()
+    let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
+   // let format = new Format("1080", "60", "best", false);
+    let urls = await new InfoQuery("https://vimeo.com/showcase/1565697", env).connect();
+    let videos = await new InfoQueryList(urls, env).start();
+    for(let video of videos) {
+        for(let format of video.formats) {
+            format.audioOnly = false;
+            format.audioQuality = "best";
+        }
+        video.selected_format_index = 1;
+    }
+    let download = new DownloadQueryList(videos, env);
+    download.start().then(() => {
+        win.webContents.send("log", "done")
     })
 
-   createWindow()
     if(isUpdateEnabled() && process.argv[2] !== '--dev') {
         if (process.platform === "darwin") {
             autoUpdater.checkForUpdates().then((result) => {
@@ -135,7 +131,7 @@ app.on('ready', () => {
             autoUpdater.checkForUpdatesAndNotify()
         }
     }
- })
+})
 
 //Quit the application when all windows are closed, except for darwin
 app.on('window-all-closed', () => {
@@ -166,21 +162,21 @@ ipcMain.handle('setOverlayIcon', (event, arg) => {
 //Creates the input menu to show on right click
 const InputMenu = Menu.buildFromTemplate(
     [{
-    label: 'Cut',
-    role: 'cut',
-}, {
-    label: 'Copy',
-    role: 'copy',
-}, {
-    label: 'Paste',
-    role: 'paste',
-}, {
-    type: 'separator',
-}, {
-    label: 'Select all',
-    role: 'selectall',
-},
-]);
+        label: 'Cut',
+        role: 'cut',
+    }, {
+        label: 'Copy',
+        role: 'copy',
+    }, {
+        label: 'Paste',
+        role: 'paste',
+    }, {
+        type: 'separator',
+    }, {
+        label: 'Select all',
+        role: 'selectall',
+    },
+    ]);
 
 ipcMain.handle("platform", (event) => {
     return process.platform;
@@ -279,9 +275,9 @@ ipcMain.handle('showFolder', (event, arg) => {
 function isUpdateEnabled() {
     let settingsPath
     if(process.platform === "darwin") {
-            settingsPath = app.getAppPath().slice(0,-8) + 'settings'
+        settingsPath = app.getAppPath().slice(0,-8) + 'settings'
     } else if(process.platform === "linux") {
-            settingsPath = app.getPath('home') + "/.youtube-dl-gui/" + 'settings'
+        settingsPath = app.getPath('home') + "/.youtube-dl-gui/" + 'settings'
     } else {
         settingsPath = "resources/settings"
     }
