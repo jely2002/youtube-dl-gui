@@ -22,11 +22,16 @@ class InfoQueryList {
 
     async start() {
         return await new Promise(((resolve, reject) => {
+            let isUserSelection = false;
             let queries = null;
             if(this.urls.entries != null) {
+                console.log("shit")
+                isUserSelection = false;
                 queries = this.urls.entries;
                 this.length = this.urls.entries.length;
             } else if(this.urls.userSelection != null) {
+                console.log(this.urls)
+                isUserSelection = true;
                 queries = this.urls.userSelection;
                 this.length = this.urls.userSelection.length;
             } else {
@@ -40,11 +45,13 @@ class InfoQueryList {
                 //If entry.url is not set use entry.webpage_url
                 //Apply youtube url fix
                 let url = null;
-                if(entry.url == null) {
-                    url = entry.webpage_url;
+                if(isUserSelection) {
+                    url = entry;
                 } else {
-                    url = (entry.ie_key != null && entry.ie_key === "Youtube") ? "https://youtube.com/watch?v=" + entry.url : entry.url;
+                    if (entry.url == null) url = entry.webpage_url;
+                    else url = (entry.ie_key != null && entry.ie_key === "Youtube") ? "https://youtube.com/watch?v=" + entry.url : entry.url;
                 }
+
                 let task = new InfoQuery(url, this.environment, this.progressBar);
                 this.limiter.schedule(() => task.connect()).then((data) => {
                     let metadata = (data.entries != null && data.entries.length === 1 && data.entries[0].formats != null) ? data.entries[0] : data;

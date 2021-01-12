@@ -106,9 +106,15 @@ function createWindow () {
 app.on('ready', async () => {
     createWindow()
     let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
-    let urls = await new InfoQuery("https://www.youtube.com/playlist?list=PLlrW4E73Ro8AHvTJaJOe3dCRcdxzLMkHl", env).connect();
-    //let urls = await new InfoQuery("https://www.bbc.com/news/av/health-55281633", env).connect();
-   // let urls = await new InfoQuery("https://www.pornhub.com/playlist/37628281", env).connect();
+    //let urls = await new InfoQuery("https://www.youtube.com/playlist?list=PLlrW4E73Ro8AHvTJaJOe3dCRcdxzLMkHl", env).connect();
+    let urls = await new InfoQuery("https://www.bbc.com/news/av/health-55281633", env).connect();
+   //let urls = await new InfoQuery("https://www.pornhub.com/playlist/37628281", env).connect();
+    /*let urls = {userSelection: [
+            "https://www.pornhub.com/view_video.php?viewkey=ph5e650c975ba7f&pkey=37628281",
+            "https://www.bbc.com/news/av/health-55281633",
+            "https://www.youtube.com/watch?v=u7_GJwWlWrM",
+            "https://vimeo.com/167919092"
+        ]}*/
     let videos = await new InfoQueryList(urls, env).start();
     console.log("yo it should be done")
     setTimeout(() => {
@@ -117,13 +123,13 @@ app.on('ready', async () => {
         }
     }, 3000)
 
-    setTimeout(() => {
+    /*setTimeout(() => {
         let download = new DownloadQueryList(videos, env);
         win.webContents.send("log", "start download")
         download.start().then(() => {
             win.webContents.send("log", "done")
         })
-    }, 6000)
+    }, 6000)*/
 
 
     if(isUpdateEnabled() && process.argv[2] !== '--dev') {
