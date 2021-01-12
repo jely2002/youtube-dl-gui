@@ -32,6 +32,7 @@ class InfoQuery extends Query {
     parseAvailableFormats(metadata) {
         let formats = [];
         let detectedFormats = [];
+        //console.log(metadata)
         for(let dataFormat of metadata.formats) {
             if(dataFormat.height == null) continue;
             let format = new Format(dataFormat.height, dataFormat.fps, null);

@@ -31,14 +31,23 @@ class InfoQueryList {
                 this.length = this.urls.userSelection.length;
             } else {
                 //TODO Add error handling (invalid url format)
+                console.error("Invalid URL format");
                 this.length = 0;
-                resolve(null)
+                resolve(null);
             }
             let totalMetadata = [];
             for (const entry of queries) {
-                let url = (entry.ie_key != null && entry.ie_key === "Youtube") ? "https://youtube.com/watch?v=" + entry.url : entry.url;
+                //If entry.url is not set use entry.webpage_url
+                //Apply youtube url fix
+                let url = null;
+                if(entry.url == null) {
+                    url = entry.webpage_url;
+                } else {
+                    url = (entry.ie_key != null && entry.ie_key === "Youtube") ? "https://youtube.com/watch?v=" + entry.url : entry.url;
+                }
                 let task = new InfoQuery(url, this.environment, this.progressBar);
-                this.limiter.schedule(() => task.connect()).then((metadata) => {
+                this.limiter.schedule(() => task.connect()).then((data) => {
+                    let metadata = (data.entries != null && data.entries.length === 1 && data.entries[0].formats != null) ? data.entries[0] : data;
                     let availableFormats = task.parseAvailableFormats(metadata);
                     let video = new Video(url, availableFormats, metadata, this.environment);
                     let sizeQuery = new SizeQuery(video, this.environment, this.progressBar);

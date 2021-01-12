@@ -106,26 +106,31 @@ function createWindow () {
 app.on('ready', async () => {
     createWindow()
     let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
-   // let format = new Format("1080", "60", "best", false);
     let urls = await new InfoQuery("https://www.youtube.com/playlist?list=PLlrW4E73Ro8AHvTJaJOe3dCRcdxzLMkHl", env).connect();
+    //let urls = await new InfoQuery("https://www.bbc.com/news/av/health-55281633", env).connect();
+   // let urls = await new InfoQuery("https://www.pornhub.com/playlist/37628281", env).connect();
     let videos = await new InfoQueryList(urls, env).start();
     console.log("yo it should be done")
     setTimeout(() => {
         for(let video of videos) {
-            console.log(video.formats[video.selected_format_index]);
+            win.webContents.send("log", video.formats[video.selected_format_index].height + "p" + video.formats[video.selected_format_index].fps);
         }
     }, 3000)
 
-    //let download = new DownloadQueryList(videos, env);
-    //download.start().then(() => {
-    //    win.webContents.send("log", "done")
-    //})
+    setTimeout(() => {
+        let download = new DownloadQueryList(videos, env);
+        win.webContents.send("log", "start download")
+        download.start().then(() => {
+            win.webContents.send("log", "done")
+        })
+    }, 6000)
+
 
     if(isUpdateEnabled() && process.argv[2] !== '--dev') {
         if (process.platform === "darwin") {
             autoUpdater.checkForUpdates().then((result) => {
                 result.currentVersion = app.getVersion();
-                win.webContents.send('mac-update', result)
+                win.webContents.send('mac-update', result);
             })
         } else if (process.platform === "win32") {
             autoUpdater.checkForUpdatesAndNotify()

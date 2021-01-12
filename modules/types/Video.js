@@ -13,7 +13,7 @@ class Video {
         this.title = metadata.title;
         this.description = metadata.description;
         this.tags = metadata.tags;
-        this.selected_format_index = formats.length - 1; //Automatically select the highest format
+        this.selected_format_index = this.selectHighestQuality();
 
         this.duration = metadata.duration;
         if(metadata.duration != null) this.duration = new Date(metadata.duration * 1000).toISOString().substr(11, 8);
@@ -22,6 +22,14 @@ class Video {
         this.extractor = metadata.extractor_key;
         this.uploader = metadata.uploader;
         this.thumbnail = metadata.thumbnail;
+    }
+
+    selectHighestQuality() {
+        let toBeSorted = Array.from(this.formats);
+        toBeSorted.sort(function (a, b) {
+            return parseInt(b.height) - parseInt(a.height) || parseInt(b.fps) - parseInt(a.fps);
+        });
+        return this.formats.indexOf(toBeSorted[0]);
     }
 }
 module.exports = Video;
