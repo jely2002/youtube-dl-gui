@@ -1,5 +1,5 @@
 const DownloadQuery = require('./DownloadQuery');
-const Format = require('./Format');
+const Format = require('../types/Format');
 const Bottleneck = require('bottleneck');
 
 class DownloadQueryList {

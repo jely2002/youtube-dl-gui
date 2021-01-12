@@ -1,6 +1,6 @@
-const Query = require("./Query");
-const Utils = require("./Utils");
-const Format = require("./Format");
+const Query = require("../types/Query");
+const Utils = require("../Utils");
+const Format = require("../types/Format");
 
 class InfoQuery extends Query {
     constructor(url, environment, progressBar) {
@@ -34,7 +34,7 @@ class InfoQuery extends Query {
         let detectedFormats = [];
         for(let dataFormat of metadata.formats) {
             if(dataFormat.height == null) continue;
-            let format = new Format(dataFormat.height, dataFormat.fps, null, null);
+            let format = new Format(dataFormat.height, dataFormat.fps, null);
             if(!detectedFormats.includes(format.getDisplayName())) {
                 formats.push(format);
                 detectedFormats.push(format.getDisplayName());

@@ -1,4 +1,4 @@
-const Query = require("./Query")
+const Query = require("../types/Query")
 const path = require("path")
 
 class DownloadQuery extends Query {
@@ -6,7 +6,7 @@ class DownloadQuery extends Query {
         super(environment, progressBar);
         this.url = url;
         this.video = video;
-        this.format = video.selected_format;
+        this.format = video.formats[video.selected_format_index];
         console.log(this.format)
     }
 

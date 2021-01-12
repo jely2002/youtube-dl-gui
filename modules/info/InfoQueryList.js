@@ -1,5 +1,6 @@
 const InfoQuery = require('./InfoQuery');
-const Video = require('./Video');
+const SizeQuery = require('../size/SizeQuery');
+const Video = require('../types/Video');
 const Bottleneck = require('bottleneck');
 
 class InfoQueryList {
@@ -10,6 +11,10 @@ class InfoQueryList {
         this.length = null;
         this.limiter = new Bottleneck({
             trackDoneStatus: true,
+            minTime: 0,
+            maxConcurrent: 4 //TODO auto configure depending on system cores (get from env)
+        });
+        this.sizeQueryLimiter = new Bottleneck({
             minTime: 0,
             maxConcurrent: 4 //TODO auto configure depending on system cores (get from env)
         });
@@ -32,10 +37,16 @@ class InfoQueryList {
             let totalMetadata = [];
             for (const entry of queries) {
                 let url = (entry.ie_key != null && entry.ie_key === "Youtube") ? "https://youtube.com/watch?v=" + entry.url : entry.url;
-                let task = new InfoQuery(url, this.environment, this.auth);
+                let task = new InfoQuery(url, this.environment, this.progressBar);
                 this.limiter.schedule(() => task.connect()).then((metadata) => {
-                    let availableFormats = task.parseAvailableFormats(metadata)
+                    let availableFormats = task.parseAvailableFormats(metadata);
                     let video = new Video(url, availableFormats, metadata, this.environment);
+                    let sizeQuery = new SizeQuery(video, this.environment, this.progressBar);
+                    this.sizeQueryLimiter.schedule(() => sizeQuery.connect()).then((size) => {
+                        //console.log(size);
+                        //console.log(video.formats[video.selected_format_index]);
+                        //Do something for every sizequery when it is finished
+                    });
                     totalMetadata.push(video);
                     const count = this.limiter.counts();
                     this.updateProgressbar(count);

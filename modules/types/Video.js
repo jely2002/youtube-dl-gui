@@ -13,7 +13,7 @@ class Video {
         this.title = metadata.title;
         this.description = metadata.description;
         this.tags = metadata.tags;
-        this.selected_format = formats[formats.length - 1]; //Automatically select the highest format
+        this.selected_format_index = formats.length - 1; //Automatically select the highest format
 
         this.duration = metadata.duration;
         if(metadata.duration != null) this.duration = new Date(metadata.duration * 1000).toISOString().substr(11, 8);

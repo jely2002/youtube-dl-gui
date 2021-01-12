@@ -2,12 +2,12 @@ const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut, 
 const { autoUpdater } = require("electron-updater")
 const fs = require('fs')
 const mkdirp = require('mkdirp')
-const Environment = require('./modules/Environment');
-const Format = require('./modules/Format');
-const DownloadQuery = require('./modules/DownloadQuery');
-const InfoQueryList = require('./modules/InfoQueryList');
-const DownloadQueryList = require('./modules/DownloadQueryList');
-const InfoQuery = require('./modules/InfoQuery');
+const Environment = require('./modules/types/Environment');
+const Format = require('./modules/types/Format');
+const DownloadQuery = require('./modules/download/DownloadQuery');
+const InfoQueryList = require('./modules/info/InfoQueryList');
+const DownloadQueryList = require('./modules/download/DownloadQueryList');
+const InfoQuery = require('./modules/info/InfoQuery');
 const path = require('path')
 
 let doneIcon
@@ -107,19 +107,19 @@ app.on('ready', async () => {
     createWindow()
     let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
    // let format = new Format("1080", "60", "best", false);
-    let urls = await new InfoQuery("https://vimeo.com/showcase/1565697", env).connect();
+    let urls = await new InfoQuery("https://www.youtube.com/playlist?list=PLlrW4E73Ro8AHvTJaJOe3dCRcdxzLMkHl", env).connect();
     let videos = await new InfoQueryList(urls, env).start();
-    for(let video of videos) {
-        for(let format of video.formats) {
-            format.audioOnly = false;
-            format.audioQuality = "best";
+    console.log("yo it should be done")
+    setTimeout(() => {
+        for(let video of videos) {
+            console.log(video.formats[video.selected_format_index]);
         }
-        video.selected_format_index = 1;
-    }
-    let download = new DownloadQueryList(videos, env);
-    download.start().then(() => {
-        win.webContents.send("log", "done")
-    })
+    }, 3000)
+
+    //let download = new DownloadQueryList(videos, env);
+    //download.start().then(() => {
+    //    win.webContents.send("log", "done")
+    //})
 
     if(isUpdateEnabled() && process.argv[2] !== '--dev') {
         if (process.platform === "darwin") {
