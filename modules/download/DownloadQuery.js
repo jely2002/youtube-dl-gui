@@ -7,7 +7,6 @@ class DownloadQuery extends Query {
         this.url = url;
         this.video = video;
         this.format = video.formats[video.selected_format_index];
-        console.log(this.format)
     }
 
     async connect() {
@@ -18,21 +17,23 @@ class DownloadQuery extends Query {
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,
                 '--audio-format', 'mp3',
-                '--ffmpeg-location', this.environment.ffmpegBinary, '--hls-prefer-ffmpeg',
+                '--ffmpeg-location', this.environment.ffmpegBinary,
                 '--no-mtime',
                 '--embed-thumbnail',
                 '-o', output,
             ];
         } else {
             let output = path.join(this.environment.downloadPath, "%(title).200s-(%(height)sp%(fps)s).%(ext)s")
-            let format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.format.audioQuality}audio[ext=m4a]/bestvideo[height=${this.format.height}]+${this.format.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+            let format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio[ext=m4a]/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
             if(this.format.fps == null) {
-                format = `bestvideo[height=${this.format.height}]+${this.format.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+                format = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
             }
+            //TODO Add setting to enable ALWAYS mp4
             args = [
                 "-f", format,
                 "-o", output,
-                '--ffmpeg-location', this.environment.ffmpegBinary, '--hls-prefer-ffmpeg',
+                '--ffmpeg-location', this.environment.ffmpegBinary,
+                "--recode-video", "mp4",
                 '--no-mtime',
             ];
             console.log(args)
