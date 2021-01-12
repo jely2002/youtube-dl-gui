@@ -19,11 +19,13 @@ class SizeQuery extends Query {
         let output = await this.start(this.video.url, ["-J", "--flat-playlist", "-f", formatArgument]);
         let data = JSON.parse(output);
         let totalSize = 0;
-        for(const requestedFormat of data.requested_formats) {
-            if(requestedFormat.filesize != null) {
-                totalSize += requestedFormat.filesize;
-            } else if(requestedFormat.filesize_approx != null) {
-                totalSize += requestedFormat.filesize_approx;
+        if(data.requested_formats != null) {
+            for (const requestedFormat of data.requested_formats) {
+                if (requestedFormat.filesize != null) {
+                    totalSize += requestedFormat.filesize;
+                } else if (requestedFormat.filesize_approx != null) {
+                    totalSize += requestedFormat.filesize_approx;
+                }
             }
         }
         //Disable spinner
