@@ -47,12 +47,11 @@ let win
 
 //Create the window for the renderer process
 function createWindow () {
-    app.allowRendererProcessReuse = true
     if(process.platform === "darwin") {
         win = new BrowserWindow({
             show: false,
-            width: 800, //850
-            height: 520, //550
+            minWidth: 650,
+            minHeight: 800,
             resizable: false,
             maximizable: false,
             titleBarStyle: "hidden",
@@ -69,8 +68,8 @@ function createWindow () {
     } else {
         win = new BrowserWindow({
             show: false,
-            width: 800, //850
-            height: 550, //550
+            width: 650,
+            height: 800,
             resizable: false,
             maximizable: false,
             frame: false,
@@ -89,7 +88,7 @@ function createWindow () {
     if(process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
-    win.loadFile('main.html')
+    win.loadFile('renderer.html')
     win.on('closed', () => {
         win = null
     })
@@ -115,13 +114,13 @@ app.on('ready', async () => {
             "https://www.youtube.com/watch?v=u7_GJwWlWrM",
             "https://vimeo.com/167919092"
         ]}*/
-    let videos = await new InfoQueryList(urls, env).start();
-    console.log("yo it should be done")
-    setTimeout(() => {
-        for(let video of videos) {
-            win.webContents.send("log", video.formats[video.selected_format_index].height + "p" + video.formats[video.selected_format_index].fps);
-        }
-    }, 3000)
+   // let videos = await new InfoQueryList(urls, env).start();
+    //console.log("yo it should be done")
+    //setTimeout(() => {
+    //    for(let video of videos) {
+    //        win.webContents.send("log", video.formats[video.selected_format_index].height + "p" + video.formats[video.selected_format_index].fps);
+    //    }
+    //}, 3000)
 
     /*setTimeout(() => {
         let download = new DownloadQueryList(videos, env);
