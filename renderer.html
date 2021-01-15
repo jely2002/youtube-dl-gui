@@ -9,6 +9,18 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
+<div class="container urlInput">
+    <form class="urlForm">
+        <div class="form-group">
+            <input type="search" class="form-control" id="url" placeholder="YTDL link ex. youtube.com/watch?v=K4DyBUG242c" required>
+            <div class="invalid-feedback">
+                This URL is not supported by YTDL.
+            </div>
+        </div>
+    </form>
+</div>
+
+
 <script src="node_modules/jquery/dist/jquery.min.js"></script>
 <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="node_modules/windowbar/dist/index.js"></script>

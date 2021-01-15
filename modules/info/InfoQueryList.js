@@ -25,7 +25,6 @@ class InfoQueryList {
             let isUserSelection = false;
             let queries = null;
             if(this.urls.entries != null) {
-                console.log("shit")
                 isUserSelection = false;
                 queries = this.urls.entries;
                 this.length = this.urls.entries.length;

@@ -52,8 +52,8 @@ function createWindow () {
             show: false,
             minWidth: 650,
             minHeight: 800,
-            resizable: false,
             maximizable: false,
+            backgroundColor: '#212121',
             titleBarStyle: "hidden",
             icon: "web-resources/icon-light.png",
             webPreferences: {
@@ -68,10 +68,10 @@ function createWindow () {
     } else {
         win = new BrowserWindow({
             show: false,
-            width: 650,
-            height: 800,
-            resizable: false,
+            minWidth: 650,
+            minHeight: 800,
             maximizable: false,
+            backgroundColor: '#212121',
             frame: false,
             icon: "web-resources/icon-light.png",
             webPreferences: {
