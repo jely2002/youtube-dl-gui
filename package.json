@@ -22,17 +22,13 @@
     "electron-builder": "^22.9.1"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.2",
-    "await-spawn": "^4.0.1",
     "bootstrap": "^4.5.3",
+    "bootstrap-icons": "^1.3.0",
     "bottleneck": "^2.19.5",
     "electron-updater": "^4.3.4",
     "execa": "^4.1.0",
     "jquery": "^3.5.1",
     "mkdirp": "^1.0.4",
-    "popper.js": "^1.16.1",
-    "request": "^2.88.2",
-    "universalify": "^1.0.0",
     "windowbar": "^1.7.4"
   },
   "repository": {
@@ -40,6 +36,7 @@
     "url": "https://github.com/jely2002/youtube-dl-gui.git"
   },
   "build": {
+    "afterPack": "./fix-linux-builds.js",
     "appId": "com.jelleglebbeek.youtube-dl-gui",
     "productName": "YouTube Downloader GUI",
     "copyright": "Copyright © 2020 Jelle Glebbeek",
@@ -82,12 +79,12 @@
     "linux": {
       "target": "AppImage",
       "executableName": "youtube-dl-gui",
-      "icon": "build/",
+      "icon": "build/youtube-dl-gui.png",
       "synopsis": "A cross-platform GUI for youtube-dl",
-      "category": "utility",
+      "category": "X-utility",
       "desktop": {
         "Name": "YouTube-dl-GUI",
-        "Icon": "build/",
+        "Icon": "youtube-dl-gui",
         "Comment": "A cross-platform GUI for youtube-dl"
       },
       "extraResources": [

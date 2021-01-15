@@ -73,6 +73,13 @@ body {
     background-color: var(--highlight-color) !important;
     border-color: var(--secondary-highlight-color) !important;
     color: var(--font-color) !important;
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 0.5;
+}
+
+.btn > i::before {
+    transform: scale(1.5);
 }
 
 /* QUEUE AREA */
@@ -81,13 +88,13 @@ body {
 }
 
 .queue {
-    border: 1px solid var(--tertiary-bg-color);
+    /*border: 1px solid var(--tertiary-bg-color);*/
     border-radius: .25rem;
     padding: 10px;
     width: 80%;
     height: 80vh;
     background-color: var(--secondary-bg-color);
-    box-shadow: inset 0px 0px 8px 2px var(--tertiary-bg-color);
+    box-shadow: inset 0px 0px 4px 2px var(--tertiary-bg-color);
 }
 
 /* CUSTOM CHECKMARK SPINNER */

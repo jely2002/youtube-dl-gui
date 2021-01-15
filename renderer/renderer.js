@@ -15,7 +15,7 @@ async function init() {
     } else {
         new windowbar({'style':'win', 'dblClickable':false, 'fixed':true, 'title':document.title,'dark':true})
             .appendTo(document.body)
-        $('.windowbar').prepend("<img src='web-resources/icon-light.png' alt='youtube-dl-gui icon' class='windowbar-icon'>")
+        $('.windowbar').prepend("<img src='../resources/assets/icon-light.png' alt='youtube-dl-gui icon' class='windowbar-icon'>")
         $('.windowbar-title').css("left", "45px")
     }
     $('.windowbar-minimize').on('click', () => {

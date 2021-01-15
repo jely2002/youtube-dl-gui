@@ -15,11 +15,11 @@ let downloadingIcon
 
 //Set icon file paths depending on the platform
 if(process.platform === "darwin") {
-    doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'done-icon.png')
-    downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'downloading-icon.png')
+    doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'assets/done-icon.png')
+    downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'assets/downloading-icon.png')
 } else {
-    doneIcon = nativeImage.createFromPath('resources/done-icon.png')
-    downloadingIcon = nativeImage.createFromPath('resources/downloading-icon.png')
+    doneIcon = nativeImage.createFromPath('resources/assets/done-icon.png')
+    downloadingIcon = nativeImage.createFromPath('resources/assets/downloading-icon.png')
 }
 
 if(process.platform === "linux") {
@@ -54,7 +54,7 @@ function createWindow () {
             minHeight: 800,
             backgroundColor: '#212121',
             titleBarStyle: "hidden",
-            icon: "web-resources/icon-light.png",
+            icon: "resources/assets/icon-light.png",
             webPreferences: {
                 nodeIntegration: false,
                 enableRemoteModule: false,
@@ -71,7 +71,7 @@ function createWindow () {
             minHeight: 800,
             backgroundColor: '#212121',
             frame: false,
-            icon: "web-resources/icon-light.png",
+            icon: "resources/assets/icon-light.png",
             webPreferences: {
                 nodeIntegration: false,
                 enableRemoteModule: false,
@@ -86,7 +86,7 @@ function createWindow () {
     if(process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
-    win.loadFile('renderer.html')
+    win.loadFile('renderer/renderer.html')
     win.on('closed', () => {
         win = null
     })
