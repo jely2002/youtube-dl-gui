@@ -1,6 +1,4 @@
 let platform;
-let titlebar;
-
 
 init();
 
@@ -10,20 +8,20 @@ async function init() {
 
     //Initialize titlebar
     if(platform === "darwin") {
-        titlebar = new windowbar({'style':'mac', 'dblClickable':false, 'fixed':true, 'title':'YouTube Downloader','dark':true})
+        new windowbar({'style':'mac', 'dblClickable':false, 'fixed':true, 'title':document.title,'dark':true})
             .appendTo(document.body)
         $('.windowbar-title').css("left", "50%")
         $('.windowbar-controls').css("display","none")
     } else {
-        titlebar = new windowbar({'style':'win', 'dblClickable':false, 'fixed':true, 'title':'YouTube Downloader','dark':true})
+        new windowbar({'style':'win', 'dblClickable':false, 'fixed':true, 'title':document.title,'dark':true})
             .appendTo(document.body)
         $('.windowbar').prepend("<img src='web-resources/icon-light.png' alt='youtube-dl-gui icon' class='windowbar-icon'>")
         $('.windowbar-title').css("left", "45px")
     }
-    $('.windowbar-minimize').on('click', (event) => {
+    $('.windowbar-minimize').on('click', () => {
         window.main.invoke('titlebarClick', "minimize")
     })
-    $('.windowbar-close').on('click', (event) => {
+    $('.windowbar-close').on('click', () => {
         window.main.invoke('titlebarClick', "close")
     })
     $('.windowbar-maximize').on('click', (event) => {
@@ -33,26 +31,8 @@ async function init() {
         $('.windowbar').removeClass('fullscreen')
     })
 
-    //Initialize stepper
-    stepper = new Stepper($('.bs-stepper')[0], {
-        linear: true,
-        animation: true
-    })
-
     //Configures the 4 error toasts
-    $('#error').toast({
-        autohide: false,
-        animation: true
-    })
-    $('#warning').toast({
-        autohide: false,
-        animation: true
-    })
-    $('#connection').toast({
-        autohide: false,
-        animation: true
-    })
-    $('#update').toast({
+    $('#error, #warning, #connection, #update').toast({
         autohide: false,
         animation: true
     })
@@ -75,6 +55,6 @@ function showToast(toastInfo) {
     } else if(toastInfo.type === "connection") {
         $(`#${toastInfo.type}`).toast('show').css('visibility', 'visible');
     } else {
-        console.error("Main.js tried to show a toast that doesn't exists.")
+        console.error("Main tried to show a toast that doesn't exist.")
     }
 }
