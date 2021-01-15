@@ -42,7 +42,7 @@
     "copyright": "Copyright © 2020 Jelle Glebbeek",
     "win": {
       "target": "nsis",
-      "icon": "build/icon.ico",
+      "icon": "resources/assets/icon.ico",
       "extraResources": [
         {
           "from": "resources",
@@ -59,7 +59,7 @@
     },
     "mac": {
       "target": "dmg",
-      "icon": "build/icon.icns",
+      "icon": "resources/assets/icon.icns",
       "category": "public.app-category.utilities",
       "identity": null,
       "extraResources": [
@@ -79,7 +79,7 @@
     "linux": {
       "target": "AppImage",
       "executableName": "youtube-dl-gui",
-      "icon": "build/youtube-dl-gui.png",
+      "icon": "resources/assets/icon.png",
       "synopsis": "A cross-platform GUI for youtube-dl",
       "category": "X-utility",
       "desktop": {
