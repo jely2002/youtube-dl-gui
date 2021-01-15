@@ -9,16 +9,24 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
-<div class="container urlInput">
-    <form class="urlForm">
-        <div class="form-group">
-            <input type="search" class="form-control" id="url" placeholder="YTDL link ex. youtube.com/watch?v=K4DyBUG242c" required>
-            <div class="invalid-feedback">
-                This URL is not supported by YTDL.
-            </div>
+<div class="container url-input mx-auto">
+    <form class="row">
+        <div class="col-11">
+            <input type="text" class="form-control" id="add-url" placeholder="YTDL supported URL ex. https://youtube.com/watch?v=K4DyBUG242c">
+        </div>
+        <div class="col-1">
+            <button type="submit" class="btn btn-primary mb-3 mr-3"><i class="fas fa-plus"></i></button>
         </div>
     </form>
 </div>
+<div class="container-fluid queue-area">
+    <div class="row">
+        <div class="mx-auto queue">
+
+        </div>
+    </div>
+</div>
+
 
 
 <script src="node_modules/jquery/dist/jquery.min.js"></script>

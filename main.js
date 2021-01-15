@@ -52,7 +52,6 @@ function createWindow () {
             show: false,
             minWidth: 650,
             minHeight: 800,
-            maximizable: false,
             backgroundColor: '#212121',
             titleBarStyle: "hidden",
             icon: "web-resources/icon-light.png",
@@ -70,7 +69,6 @@ function createWindow () {
             show: false,
             minWidth: 650,
             minHeight: 800,
-            maximizable: false,
             backgroundColor: '#212121',
             frame: false,
             icon: "web-resources/icon-light.png",
@@ -200,6 +198,14 @@ app.whenReady().then(() => {
     globalShortcut.register('CommandOrControl+Shift+F', () => {
         win.webContents.send('flushCache')
     })
+
+    win.on('maximize', () => {
+        win.webContents.send("maximized", true)
+    });
+
+    win.on('unmaximize', () => {
+        win.webContents.send("maximized", false)
+    });
 })
 
 //Opens the input menu when ordered from renderer process
@@ -270,6 +276,9 @@ ipcMain.handle('titlebarClick', (event, arg) => {
         win.close()
     } else if(arg === "minimize") {
         win.minimize()
+    } else if(arg === "maximize") {
+        if(win.isMaximized()) win.unmaximize();
+        else win.maximize();
     }
 })
 

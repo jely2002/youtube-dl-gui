@@ -24,11 +24,8 @@ async function init() {
     $('.windowbar-close').on('click', () => {
         window.main.invoke('titlebarClick', "close")
     })
-    $('.windowbar-maximize').on('click', (event) => {
-        event.stopPropagation()
-        event.stopImmediatePropagation()
-        event.preventDefault()
-        $('.windowbar').removeClass('fullscreen')
+    $('.windowbar-maximize').on('click', () => {
+        window.main.invoke('titlebarClick', "maximize")
     })
 
     //Configures the 4 error toasts
@@ -42,6 +39,11 @@ async function init() {
 
     //Enables the main process to show toasts.
     window.main.receive("toast", (arg) => showToast(arg))
+
+    window.main.receive("maximized", (maximized) => {
+        if(maximized) $('.windowbar').addClass("fullscreen");
+        else $('.windowbar').removeClass("fullscreen");
+    })
 
 }
 
