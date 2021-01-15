@@ -18,15 +18,16 @@
   "author": "Jelle Glebbeek",
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "electron": ">=10.1.0",
+    "electron": "^11.2.0",
     "electron-builder": "^22.9.1"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.14.0",
+    "@fortawesome/fontawesome-free": "^5.15.2",
     "await-spawn": "^4.0.1",
+    "bootstrap": "^4.5.3",
     "bottleneck": "^2.19.5",
     "electron-updater": "^4.3.4",
-    "execa": "^4.0.0",
+    "execa": "^4.1.0",
     "jquery": "^3.5.1",
     "mkdirp": "^1.0.4",
     "popper.js": "^1.16.1",
