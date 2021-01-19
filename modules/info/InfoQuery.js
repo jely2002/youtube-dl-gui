@@ -28,19 +28,5 @@ class InfoQuery extends Query {
             }
         }
     }
-
-    parseAvailableFormats(metadata) {
-        let formats = [];
-        let detectedFormats = [];
-        for(let dataFormat of metadata.formats) {
-            if(dataFormat.height == null) continue;
-            let format = new Format(dataFormat.height, dataFormat.fps, null);
-            if(!detectedFormats.includes(format.getDisplayName())) {
-                formats.push(format);
-                detectedFormats.push(format.getDisplayName());
-            }
-        }
-        return formats;
-    }
 }
 module.exports = InfoQuery;
