@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
     <title>YouTube Downloader GUI</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
@@ -10,24 +10,164 @@
 </head>
 <body>
 <div class="container url-input">
-    <form class="row mx-auto">
-        <div class="col-10 mx-auto">
-            <input type="text" class="form-control" id="add-url" placeholder="YTDL supported URL ex. https://youtube.com/watch?v=K4DyBUG242c">
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary mb-3 mr-3" title="Add video to queue"><i class="bi bi-plus"></i></button>
+    <form id="url-form" class="row mx-auto">
+        <div class="input-group">
+            <input type="text" class="form-control" id="add-url" placeholder="Enter a video/playlist URL to add to the queue">
+            <div class="input-group-append">
+                <button type="button" id="add-url-btn" class="btn btn-dark" title="Add video to queue"><i class="bi bi-arrow-down-short"></i></button>
+            </div>
         </div>
     </form>
 </div>
 <div class="container-fluid queue-area">
     <div class="row">
         <div class="mx-auto queue">
-            <p class="empty">Your queue is empty</p>
-            <p class="empty undertitle">Your queue is empty</p>
+            <div class="empty">
+                <p class="title" title="Your queue is empty">Your queue is empty</p>
+                <p class="undertitle">Add some videos to get started.</p>
+            </div>
+            <div class="video-cards d-flex flex-wrap align-items-start justify-content-left">
+                <div class="video-card" id="loading">
+                    <div class="row mx-auto">
+                        <div class="col-4">
+                            <img class="mt-1" src="https://i.ytimg.com/vi/Ve_8wn3cr8E/maxresdefault.jpg">
+                        </div>
+                        <div class="col border-right border-dark">
+                            <p title="The WORST Tier 10 Tank in World of Tanks...">The WORST Tier 10 Tank in World of Tanks...</p>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row options">
+                                <div class="col-6">
+                                    <select class="custom-select download-type">
+                                        <option selected>Video + Audio</option>
+                                        <option value="1">Audio only</option>
+                                    </select>
+                                    <p class="metadata left"><strong>Speed: </strong>35.28 mb/s</p>
+                                </div>
+                                <div class="col-6">
+                                    <select class="custom-select download-quality">
+                                        <option selected>1080p60</option>
+                                        <option value="1">720p60</option>
+                                        <option value="2">720p30</option>
+                                        <option value="3">480p30</option>
+                                        <option value="3">360p30</option>
+                                        <option value="3">244p30</option>
+                                        <option value="3">144p30</option>
+                                    </select>
+                                    <p class="metadata right"><strong>ETA: </strong>3:28</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1 buttons m-auto">
+                            <a class="remove-btn"><i class="bi-x-circle mb-3"></i></a>
+                            <a class="download-btn"><i class="bi-download mb-3"></i></a>
+                            <a class="info-btn"><i class="bi-info-circle mb-3"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-card" id="sizeLoading">
+                    <div class="row mx-auto">
+                        <div class="col-4">
+                            <img class="mt-1" src="https://i.ytimg.com/vi/Ve_8wn3cr8E/maxresdefault.jpg">
+                        </div>
+                        <div class="col border-right border-dark">
+                            <p title="The WORST Tier 10 Tank in World of Tanks...">The WORST Tier 10 Tank in World of Tanks...</p>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row options">
+                                <div class="col-6">
+                                    <select class="custom-select download-type">
+                                        <option selected>Video + Audio</option>
+                                        <option value="1">Audio only</option>
+                                    </select>
+                                    <p class="metadata left"><strong>Duration: </strong>15:28</p>
+                                </div>
+                                <div class="col-6">
+                                    <select class="custom-select download-quality">
+                                        <option selected>1080p60</option>
+                                        <option value="1">720p60</option>
+                                        <option value="2">720p30</option>
+                                        <option value="3">480p30</option>
+                                        <option value="3">360p30</option>
+                                        <option value="3">244p30</option>
+                                        <option value="3">144p30</option>
+                                    </select>
+                                    <p class="metadata right"><strong>Size: </strong><i class="lds-dual-ring"></i></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1 buttons m-auto">
+                            <a class="remove-btn"><i class="bi-x-circle mb-3"></i></a>
+                            <a class="download-btn"><i class="bi-download mb-3"></i></a>
+                            <a class="info-btn"><i class="bi-info-circle mb-3"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<div class="container controls">
+    <div class="row">
 
+    </div>
+    <div class="row">
+
+    </div>
+</div>
+
+
+<div class="template video-card" id="id">
+    <div class="row mx-auto">
+        <div class="col-4">
+            <img class="mt-1" nonce="imgErr" src="../resources/assets/plain-placeholder.png" onerror="this.onerror=null;this.src='../resources/assets/plain-placeholder.png';">
+        </div>
+        <div class="col border-right border-dark">
+            <p title="" class="card-title"></p>
+            <div class="row">
+                <div class="col-12">
+                    <div class="progress mb-3">
+                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        <small class="justify-content-center d-flex position-absolute w-100"></small>
+                    </div>
+                </div>
+            </div>
+            <div class="row options">
+                <div class="col-6">
+                    <select class="custom-select download-type">
+                        <option value="both" selected>Video + Audio</option>
+                        <option value="audio">Audio only</option>
+                    </select>
+                    <p class="metadata left"></p>
+                </div>
+                <div class="col-6">
+                    <select class="custom-select download-quality"></select>
+                    <p class="metadata right"></p>
+                </div>
+            </div>
+            <div class="row info">
+                <div class="col-12">
+                    <p class="metadata info"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-1 buttons m-auto">
+            <a class="remove-btn"><i class="bi-x-circle mb-3"></i></a>
+            <a class="download-btn"><i class="bi-download mb-3"></i></a>
+            <a class="info-btn"><i class="bi-info-circle mb-3"></i></a>
+        </div>
+    </div>
+</div>
 
 
 <script src="../node_modules/jquery/dist/jquery.min.js"></script>

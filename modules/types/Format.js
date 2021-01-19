@@ -1,10 +1,10 @@
 class Format {
     //audioQuality = best | worst
-    constructor(height, fps) {
+    constructor(height, fps, filesize, filesize_label) {
         this.height = height;
         this.fps = fps;
-        this.filesize = null;
-        this.filesize_label = null;
+        this.filesize = filesize;
+        this.filesize_label = filesize_label;
     }
 
     getDisplayName() {
@@ -13,6 +13,20 @@ class Format {
         } else {
             return this.height + "p" + this.fps;
         }
+    }
+
+    serialize() {
+        return {
+            height: this.height,
+            fps: this.fps,
+            filesize: this.filesize,
+            filesize_label: this.filesize_label,
+            display_name: this.getDisplayName()
+        };
+    }
+
+    static deserialize(format) {
+        return new Format(format.height, format.fps, format.filesize, format.filesize_label);
     }
 
     static getFromDisplayName(name) {

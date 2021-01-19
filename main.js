@@ -1,17 +1,14 @@
 const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut, shell} = require('electron')
 const { autoUpdater } = require("electron-updater")
 const fs = require('fs')
-const mkdirp = require('mkdirp')
 const Environment = require('./modules/types/Environment');
-const Format = require('./modules/types/Format');
-const DownloadQuery = require('./modules/download/DownloadQuery');
-const InfoQueryList = require('./modules/info/InfoQueryList');
-const DownloadQueryList = require('./modules/download/DownloadQueryList');
-const InfoQuery = require('./modules/info/InfoQuery');
 const path = require('path')
+const QueryManager = require("./modules/QueryManager");
 
 let doneIcon
 let downloadingIcon
+
+let win
 
 //Set icon file paths depending on the platform
 if(process.platform === "darwin") {
@@ -27,34 +24,38 @@ function createWindow () {
     if(process.platform === "darwin") {
         win = new BrowserWindow({
             show: false,
-            minWidth: 650,
-            minHeight: 800,
+            minWidth: 815,
+            minHeight: 700,
+            width: 815,
+            height: 800,
             backgroundColor: '#212121',
             titleBarStyle: "hidden",
-            icon: "resources/assets/icon-light.png",
+            icon: "resources/assets/icon.png",
             webPreferences: {
                 nodeIntegration: false,
                 enableRemoteModule: false,
                 worldSafeExecuteJavaScript: true,
                 spellcheck: false,
-                preload: path.join(__dirname, 'modules/preload.js'),
+                preload: path.join(__dirname, 'preload.js'),
                 contextIsolation: true
             }
         })
     } else {
         win = new BrowserWindow({
             show: false,
-            minWidth: 650,
-            minHeight: 800,
+            minWidth: 815,
+            minHeight: 700,
+            width: 815,
+            height: 800,
             backgroundColor: '#212121',
             frame: false,
-            icon: "resources/assets/icon-light.png",
+            icon: "resources/assets/icon.png",
             webPreferences: {
                 nodeIntegration: false,
                 enableRemoteModule: false,
                 worldSafeExecuteJavaScript: true,
                 spellcheck: false,
-                preload: path.join(__dirname, 'modules/preload.js'),
+                preload: path.join(__dirname, 'preload.js'),
                 contextIsolation: true
             }
         })
@@ -70,42 +71,47 @@ function createWindow () {
     win.once('ready-to-show', () => {
         win.show()
     })
-    win.webContents.once('dom-ready', () => {
-        setTimeout(() => {
-            win.webContents.send("log", "Test log");
-        }, 3000)
+    win.webContents.on('did-finish-load', () => {
+        globalShortcut.register('CommandOrControl+Shift+D', () => {
+            win.webContents.openDevTools()
+        })
+        globalShortcut.register('CommandOrControl+Shift+F', () => {
+            win.webContents.send('flushCache')
+        })
+
+        win.on('maximize', () => {
+            win.webContents.send("maximized", true)
+        });
+
+        win.on('unmaximize', () => {
+            win.webContents.send("maximized", false)
+        });
+
+        let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
+        let queryManager = new QueryManager(win, env);
+
+        ipcMain.handle('videoAction', (event, args) => {
+            console.log("handle")
+            console.log(args)
+            switch (args.action) {
+                case "remove":
+                    console.log("remove");
+                    break;
+                case "info":
+                    console.log("info");
+                    break;
+                case "entry":
+                    queryManager.manage(args.url);
+                    break;
+
+            }
+        });
+
     });
 }
 
 app.on('ready', async () => {
     createWindow()
-    let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
-    //let urls = await new InfoQuery("https://www.youtube.com/playlist?list=PLlrW4E73Ro8AHvTJaJOe3dCRcdxzLMkHl", env).connect();
-    let urls = await new InfoQuery("https://www.bbc.com/news/av/health-55281633", env).connect();
-   //let urls = await new InfoQuery("https://www.pornhub.com/playlist/37628281", env).connect();
-    /*let urls = {userSelection: [
-            "https://www.pornhub.com/view_video.php?viewkey=ph5e650c975ba7f&pkey=37628281",
-            "https://www.bbc.com/news/av/health-55281633",
-            "https://www.youtube.com/watch?v=u7_GJwWlWrM",
-            "https://vimeo.com/167919092"
-        ]}*/
-   // let videos = await new InfoQueryList(urls, env).start();
-    //console.log("yo it should be done")
-    //setTimeout(() => {
-    //    for(let video of videos) {
-    //        win.webContents.send("log", video.formats[video.selected_format_index].height + "p" + video.formats[video.selected_format_index].fps);
-    //    }
-    //}, 3000)
-
-    /*setTimeout(() => {
-        let download = new DownloadQueryList(videos, env);
-        win.webContents.send("log", "start download")
-        download.start().then(() => {
-            win.webContents.send("log", "done")
-        })
-    }, 6000)*/
-
-
     if(isUpdateEnabled() && process.argv[2] !== '--dev') {
         if (process.platform === "darwin") {
             autoUpdater.checkForUpdates().then((result) => {
@@ -161,33 +167,16 @@ const InputMenu = Menu.buildFromTemplate(
         label: 'Select all',
         role: 'selectall',
     },
-    ]);
-
-ipcMain.handle("platform", (event) => {
-    return process.platform;
-})
-
-//Registers shortcuts
-app.whenReady().then(() => {
-    globalShortcut.register('CommandOrControl+Shift+D', () => {
-        win.webContents.openDevTools()
-    })
-    globalShortcut.register('CommandOrControl+Shift+F', () => {
-        win.webContents.send('flushCache')
-    })
-
-    win.on('maximize', () => {
-        win.webContents.send("maximized", true)
-    });
-
-    win.on('unmaximize', () => {
-        win.webContents.send("maximized", false)
-    });
-})
+    ]
+);
 
 //Opens the input menu when ordered from renderer process
 ipcMain.handle('openInputMenu', () => {
     InputMenu.popup(win);
+})
+
+ipcMain.handle("platform", () => {
+    return process.platform;
 })
 
 //Update the progressbar when ordered from renderer process

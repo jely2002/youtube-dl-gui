@@ -1,13 +1,14 @@
 const InfoQuery = require('./InfoQuery');
-const SizeQuery = require('../size/SizeQuery');
 const Video = require('../types/Video');
-const Bottleneck = require('bottleneck');
+const Utils = require("../Utils");
+const crypto = require("crypto");
 
 class InfoQueryList {
-    constructor(urls, environment, progressBar) {
-        this.urls = urls;
+    constructor(query, environment, progressBar) {
+        this.query = query;
         this.environment = environment;
         this.progressBar = progressBar;
+        this.urls = null;
         this.length = null;
         this.done = 0;
         this.limiterKey = crypto.randomBytes(16).toString("hex");
@@ -26,29 +27,18 @@ class InfoQueryList {
             if (this.length === 0) resolve(totalMetadata);
             if (this.urls === []) {
                 //TODO Add error handling (invalid url format)
-                console.error("Invalid URL format");
+                console.error("This playlist is empty.");
                 this.length = 0;
                 resolve(null);
             }
-            let totalMetadata = [];
-            for (const entry of queries) {
-                //If entry.url is not set use entry.webpage_url
-                //Apply youtube url fix
-                let url = null;
-                if(isUserSelection) {
-                    url = entry;
-                } else {
-                    if (entry.url == null) url = entry.webpage_url;
-                    else url = (entry.ie_key != null && entry.ie_key === "Youtube") ? "https://youtube.com/watch?v=" + entry.url : entry.url;
-                }
-
+            for (const url of this.urls) {
                 let task = new InfoQuery(url, this.environment, this.progressBar);
                 this.environment.limiterGroup.key(this.limiterKey).schedule(() => task.connect()).then((data) => {
                     let video = this.createVideo(data, url);
                     totalMetadata.push(video);
-                    const count = this.limiter.counts();
-                    this.updateProgressbar(count);
-                    if(count.DONE === this.length) {
+                    this.done++;
+                    this.updateProgressbar();
+                    if (this.done === this.length) {
                         resolve(totalMetadata);
                     }
                 });
