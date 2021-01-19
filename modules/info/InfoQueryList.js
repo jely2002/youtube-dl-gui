@@ -9,31 +9,22 @@ class InfoQueryList {
         this.environment = environment;
         this.progressBar = progressBar;
         this.length = null;
-        this.limiter = new Bottleneck({
-            trackDoneStatus: true,
-            minTime: 0,
-            maxConcurrent: 4 //TODO auto configure depending on system cores (get from env)
-        });
-        this.sizeQueryLimiter = new Bottleneck({
-            minTime: 0,
-            maxConcurrent: 4 //TODO auto configure depending on system cores (get from env)
-        });
+        this.done = 0;
+        this.limiterKey = crypto.randomBytes(16).toString("hex");
     }
 
     async start() {
-        return await new Promise(((resolve, reject) => {
-            let isUserSelection = false;
-            let queries = null;
-            if(this.urls.entries != null) {
-                isUserSelection = false;
-                queries = this.urls.entries;
-                this.length = this.urls.entries.length;
-            } else if(this.urls.userSelection != null) {
-                console.log(this.urls)
-                isUserSelection = true;
-                queries = this.urls.userSelection;
-                this.length = this.urls.userSelection.length;
-            } else {
+        let result = await new Promise(((resolve, reject) => {
+            let totalMetadata = [];
+            let playlistUrls = Utils.extractPlaylistUrls(this.query);
+            for (const videoData of playlistUrls[1]) {
+                let video = this.createVideo(videoData, videoData.url);
+                totalMetadata.push(video);
+            }
+            this.urls = playlistUrls[0];
+            this.length = this.urls.length;
+            if (this.length === 0) resolve(totalMetadata);
+            if (this.urls === []) {
                 //TODO Add error handling (invalid url format)
                 console.error("Invalid URL format");
                 this.length = 0;
@@ -52,16 +43,8 @@ class InfoQueryList {
                 }
 
                 let task = new InfoQuery(url, this.environment, this.progressBar);
-                this.limiter.schedule(() => task.connect()).then((data) => {
-                    let metadata = (data.entries != null && data.entries.length === 1 && data.entries[0].formats != null) ? data.entries[0] : data;
-                    let availableFormats = task.parseAvailableFormats(metadata);
-                    let video = new Video(url, availableFormats, metadata, this.environment);
-                    let sizeQuery = new SizeQuery(video, this.environment, this.progressBar);
-                    this.sizeQueryLimiter.schedule(() => sizeQuery.connect()).then((size) => {
-                        //console.log(size);
-                        //console.log(video.formats[video.selected_format_index]);
-                        //Do something for every sizequery when it is finished
-                    });
+                this.environment.limiterGroup.key(this.limiterKey).schedule(() => task.connect()).then((data) => {
+                    let video = this.createVideo(data, url);
                     totalMetadata.push(video);
                     const count = this.limiter.counts();
                     this.updateProgressbar(count);
@@ -71,15 +54,22 @@ class InfoQueryList {
                 });
             }
         }));
+        await this.environment.limiterGroup.deleteKey(this.limiterKey);
+        return result;
     }
 
-    updateProgressbar(counts) {
-        const count = (counts == null) ? this.limiter.counts() : counts;
-        const fraction = count.DONE / this.length;
-        const percentage = Math.round(fraction * 100);
+    createVideo(data, url) {
+        let metadata = (data.entries != null && data.entries.length === 1 && data.entries[0].formats != null) ? data.entries[0] : data;
+        let video = new Video(url, "single", this.environment);
+        video.setMetadata(metadata);
+        return video;
+    }
+
+    updateProgressbar() {
+        const fraction = this.done  / this.length;
+        const percentage = (fraction * 100).toFixed(2);
         const percentageString = percentage + "%";
-        console.log(percentageString)
-        //TODO update progressbar
+        this.progressBar.update(percentageString, this.done, this.length);
     }
 }
 

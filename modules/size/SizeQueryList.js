@@ -1,24 +1,23 @@
 const SizeQuery = require("./SizeQuery");
-const Bottleneck = require('bottleneck');
+const crypto = require("crypto");
 
 class SizeQueryList {
     constructor(videos, environment, progressBar) {
         this.videos = videos;
         this.environment = environment;
         this.progressBar = progressBar;
-        this.limiter = new Bottleneck({
-            minTime: 0,
-            maxConcurrent: 4 //TODO auto configure depending on system cores (get from env)
-        });
+        this.limiterKey = crypto.randomBytes(16).toString("hex");
+        this.done = 0
+        this.length = videos.length;
     }
 
     async start() {
         return await new Promise(((resolve, reject) => {
             for(const video of this.videos) {
                 let task = new SizeQuery(video, this.environment, this.progressBar);
-                this.limiter.schedule(task.connect()).then((size) => {
-                    const count = this.limiter.counts();
-                    if(count.DONE === this.length) {
+                this.environment.limiterGroup.key(this.limiterKey).schedule(() => task.connect()).then((size) => {
+                    if(this.done === this.length) {
+                        this.environment.limiterGroup.deleteKey(this.limiterKey);
                         resolve();
                     }
                 });
@@ -27,4 +26,4 @@ class SizeQueryList {
     }
 }
 
-exports.module = SizeQueryList;
+module.exports = SizeQueryList;

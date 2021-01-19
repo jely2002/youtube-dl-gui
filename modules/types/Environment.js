@@ -1,5 +1,7 @@
 const fs = require("fs");
 const path = require("path")
+const mkdirp = require("mkdirp");
+const Bottleneck = require("bottleneck");
 
 class Environment {
     constructor(platform, appPath, homePath, downloadPath) {
@@ -13,6 +15,11 @@ class Environment {
         this.mainDownloadSubs = false;
         this.ytdlBinary = "";
         this.ffmpegBinary = "";
+        this.limiterGroup = new Bottleneck.Group({
+            trackDoneStatus: true,
+            maxConcurrent: 4,
+            minTime: 0
+        })
         this.setPaths();
         this.setPermissions();
     }
