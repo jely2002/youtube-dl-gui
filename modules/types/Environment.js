@@ -22,6 +22,7 @@ class Environment {
         })
         this.setPaths();
         this.setPermissions();
+        this.createHomeFolder();
     }
     setPaths() {
         switch (this.platform) {
@@ -50,6 +51,45 @@ class Environment {
             fs.chmod(this.ffmpegBinary, 0o755, (err) => {
                 if(err) console.error(err);
             });
+        }
+    }
+    createHomeFolder() {
+        if(this.platform !== "linux") return;
+        let readonlyResources = this.appPath.slice(0, -8)
+        let destination = this.homePath + "/.youtube-dl-gui/"
+        mkdirp(this.homePath + "/.youtube-dl-gui/").then(made => {
+            if(made !== null) {
+                fs.copyFile(readonlyResources + "youtube-dl-darwin", destination + "youtube-dl-darwin", (err) => {
+                    if (err) throw err
+                    console.log('youtube-dl-darwin copied to home data')
+                })
+                fs.copyFile(readonlyResources + "ffmpeg-linux", destination + "ffmpeg", (err) => {
+                    if (err) throw err
+                    console.log('ffmpeg copied to home data')
+                })
+                fs.copyFile(readonlyResources + "details", destination + "details", (err) => {
+                    if (err) throw err
+                    console.log('details copied to home data')
+                })
+            }
+        })
+    }
+    resetLimiter(limiter) {
+        let args = {
+            trackDoneStatus: true,
+            minTime: 0,
+            maxConcurrent: 4 //TODO auto configure depending on system cores (get from env)
+        };
+        switch(limiter) {
+            case "info":
+                this.infoLimiter = new Bottleneck(args);
+                break;
+            case "size":
+                this.sizeLimiter = new Bottleneck(args);
+                break;
+            case "download":
+                this.downloadLimiter = new Bottleneck(args);
+                break;
         }
     }
 }
