@@ -31,7 +31,7 @@ class SizeQuery extends Query {
         //Disable spinner
         if(totalSize === 0) {
             this.format.filesize = null;
-            this.format.filesize_label = "unknown";
+            this.format.filesize_label = "Unknown";
             return null;
         } else {
             this.format.filesize = totalSize;
