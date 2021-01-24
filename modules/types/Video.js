@@ -5,12 +5,28 @@ class Video {
     constructor(url, type, environment) {
         this.url = url;
         this.type = type;
+        this.environment = environment;
         this.audioQuality = environment.mainAudioQuality;
         this.audioOnly = environment.mainAudioOnly;
         this.downloadSubs = environment.mainDownloadSubs;
         this.webpage_url = this.url;
         this.hasMetadata = false;
         this.identifier = crypto.randomBytes(16).toString("hex");
+    }
+
+    getFilename() {
+        if(this.hasMetadata) {
+            let sanitizeRegex = /(?:[/<>:"\|\\?\*]|[\s.]$)/g
+            let fps = (this.formats[this.selected_format_index].fps != null) ? this.formats[this.selected_format_index].fps : ""
+            let height = this.formats[this.selected_format_index].height
+            return (this.title.substr(0, 200) + "-(" + height + "p" + fps.toString().substr(0,2) + ")").replaceAll(sanitizeRegex, "_");
+        }
+    }
+
+    setQuery(query) {
+        this.query = query;
+        //Set the download path when the video was downloaded
+        this.downloadedPath = this.environment.selectedDownloadPath;
     }
 
     setMetadata(metadata) {
