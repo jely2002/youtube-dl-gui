@@ -25,8 +25,8 @@ class Format {
         };
     }
 
-    static deserialize(format) {
-        return new Format(format.height, format.fps, format.filesize, format.filesize_label);
+    static deserialize(displayname) {
+        return this.getFromDisplayName(displayname);
     }
 
     static getFromDisplayName(name) {
@@ -34,7 +34,7 @@ class Format {
         let height = splitName[0];
         let fps = splitName[1];
         if(fps === "") fps = null;
-        return new Format(height, fps, null)
+        return new Format(height, fps)
     }
 }
 module.exports = Format;

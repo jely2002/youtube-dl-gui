@@ -53,6 +53,16 @@ async function init() {
         else $('.windowbar').removeClass("fullscreen");
     })
 
+    window.main.receive("UIAction", (arg) => { //TODO decide whether to use locking feature
+       switch(arg.action) {
+           case "lock":
+               for(const elem of arg.elements) {
+                   $(elem).prop("disabled", arg.state);
+               }
+               break;
+       }
+    });
+
     window.main.receive("videoAction", (arg) => {
         switch(arg.action) {
             case "add":
@@ -102,13 +112,17 @@ function addVideo(args) {
     let template = $('.template.video-card').clone();
     $(template).removeClass('template');
     $(template).prop('id', args.identifier);
-
     if(args.type === "single") {
         $(template).find('.card-title')
             .html(args.title)
             .prop('title', args.title);
+        $(template).find('.progress-bar')
+            .addClass('progress-bar-striped')
+            .addClass('progress-bar-animated')
+            .width("100%");
         $(template).find('img').prop("src", args.thumbnail);
         $(template).find('.info').addClass("d-none");
+        $(template).find('.progress small').html("Initializing download")
         $(template).find('.metadata.left').html('<strong>Duration: </strong>' + ((args.duration == null) ? "Unknown" : args.duration));
         if(args.formats[args.selected_format_index].filesize_label != null) {
             $(template).find('.metadata.right').html('<strong>Size: </strong>' + args.formats[args.selected_format_index].filesize_label);
@@ -117,13 +131,53 @@ function addVideo(args) {
             $(template).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>');
         }
         for(const format of args.formats) {
-            $(template).find('.custom-select.download-quality').append(new Option(format.display_name, format.display_name))
+            let option = new Option(format.display_name, format.display_name);
+            $(template).find('.custom-select.download-quality').append(option);
+            $(option).addClass("video");
             if(args.formats.indexOf(format) === 0) $(template).find('.custom-select.download-quality').val(format.display_name).change();
         }
         $(template).find('.remove-btn').on('click', () => {
             $(getCard(args.identifier)).remove();
-        })
-        //TODO connect event listeners for the sidebuttons.
+            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
+        });
+
+        $(template).find('.custom-select.download-type').on('change', function () {
+            let isAudio = this.selectedOptions[0].value === "audio";
+            for(const elem of $(template).find('option')) {
+                if($(elem).hasClass("video")) {
+                    $(elem).toggle(!isAudio)
+                } else if($(elem).hasClass("audio")) {
+                    $(elem).toggle(isAudio)
+                }
+            }
+            $(template).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
+        });
+
+        $(template).find('.download-btn').on('click', () => {
+            let downloadArgs = {
+                action: "download",
+                url: args.url,
+                identifier: args.identifier,
+                format: $(template).find('.custom-select.download-quality').val(),
+                type: $(template).find('.custom-select.download-type').val()
+            }
+            window.main.invoke("videoAction", downloadArgs)
+            $(template).find('.progress').addClass("d-flex");
+            $(template).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
+            $(template).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
+            $(template).find('.options').addClass("d-flex");
+            $(template).find('select').addClass("d-none");
+            $(template).find('.download-btn').addClass("disabled");
+        });
+
+
+
+        $(template).find('.open .folder').on('click', () => {
+            window.main.invoke("videoAction", {action: "open", identifier: args.identifier, type: "folder"});
+        });
+        $(template).find('.open .item').on('click', () => {
+            window.main.invoke("videoAction", {action: "open", identifier: args.identifier, type: "item"});
+        });
 
 
     } else if(args.type === "metadata") {
@@ -145,7 +199,7 @@ function addVideo(args) {
             .html(args.url)
             .prop('title', args.url);
         $(template).find('.progress small')
-            .html('0.00%')
+            .html('0.00% - 0 of ?')
         $(template).find('.progress').addClass("d-flex");
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Fetching video metadata...');
@@ -156,11 +210,37 @@ function addVideo(args) {
 
 function updateProgress(args) {
     let card = getCard(args.identifier);
-    $(card).find('.progress-bar')
-        .width(args.percentage)
-        .prop("aria-valuenow", args.percentage.slice(0, -1));
-    $(card).find('.progress small').html(`${args.percentage} - ${args.done} of ${args.total} `);
+    if(args.progress.reset != null && args.progress.reset) {
+        resetProgress($(card).find('.progress-bar')[0], card);
+        return;
+    }
+    if(args.progress.finished != null && args.progress.finished) {
+        $(card).find('.progress small').html((args.progress.isAudio ? "Audio" : "Video") + " downloaded - 100%");
+        $(card).find('.options').addClass("d-none");
+        $(card).find('.options').removeClass("d-flex");
+        $(card).find('.open').addClass("d-flex");
+        return;
+    }
+    if(args.progress.done != null && args.progress.total != null) {
+        $(card).find('.progress small').html(`${args.progress.percentage} - ${args.progress.done} of ${args.progress.total} `);
+    } else {
+        //TODO Prevent bar from going backwards
+        console.log(args.progress.percentage.slice(0,-1))
+        console.log(parseFloat(args.progress.percentage.slice(0, -1)) + " " + parseFloat($(card).find('.progress-bar').attr("aria-valuenow")))
+        if(parseFloat(args.progress.percentage.slice(0, -1)) > parseFloat($(card).find('.progress-bar').attr("aria-valuenow"))) {
+            $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
+            $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
+            $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta);
+            $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed);
+        }
+    }
 
+}
+
+function resetProgress(elem, card) {
+    $(elem).removeClass("progress-bar-striped").removeClass("progress-bar-animated");
+    $(elem).remove();
+    $(card).find('.progress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
 }
 
 function getCard(identifier) {

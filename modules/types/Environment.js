@@ -8,7 +8,7 @@ class Environment {
         this.platform = platform;
         this.appPath = appPath;
         this.homePath = homePath;
-        this.downloadPath = downloadPath;
+        this.selectedDownloadPath = downloadPath;
         this.cookiePath = null;
         this.mainAudioOnly = false;
         this.mainAudioQuality = "best";

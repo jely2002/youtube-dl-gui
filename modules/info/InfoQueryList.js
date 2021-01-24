@@ -37,7 +37,7 @@ class InfoQueryList {
                     let video = this.createVideo(data, url);
                     totalMetadata.push(video);
                     this.done++;
-                    this.updateProgressbar();
+                    this.progressBar.updatePlaylist(this.done, this.length);
                     if (this.done === this.length) {
                         resolve(totalMetadata);
                     }
@@ -55,12 +55,6 @@ class InfoQueryList {
         return video;
     }
 
-    updateProgressbar() {
-        const fraction = this.done  / this.length;
-        const percentage = (fraction * 100).toFixed(2);
-        const percentageString = percentage + "%";
-        this.progressBar.update(percentageString, this.done, this.length);
-    }
 }
 
 module.exports = InfoQueryList;

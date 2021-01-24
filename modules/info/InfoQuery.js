@@ -1,6 +1,4 @@
 const Query = require("../types/Query");
-const Utils = require("../Utils");
-const Format = require("../types/Format");
 
 class InfoQuery extends Query {
     constructor(url, environment, progressBar) {

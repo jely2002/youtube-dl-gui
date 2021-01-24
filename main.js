@@ -94,16 +94,18 @@ function createWindow () {
             console.log("handle")
             console.log(args)
             switch (args.action) {
-                case "remove":
-                    console.log("remove");
+                case "stop":
+                    queryManager.stopSingle(args.identifier);
                     break;
-                case "info":
-                    console.log("info");
+                case "open":
+                    queryManager.openVideo(args);
+                    break;
+                case "download":
+                    queryManager.downloadVideo(args);
                     break;
                 case "entry":
                     queryManager.manage(args.url);
                     break;
-
             }
         });
 

@@ -4,6 +4,11 @@ class Query {
     constructor(environment, progressBar) {
         this.environment = environment;
         this.progressBar = progressBar;
+        this.process = null;
+    }
+
+    stop() {
+        this.process.cancel();
     }
 
     async start(url, args, cb) {
@@ -17,16 +22,16 @@ class Query {
             //Return data while the query is running (live)
             //Return "close" when the query has finished
             await new Promise((resolve, reject) => {
-                let process = execa(this.environment.ytdlBinary, args);
-                process.stdout.setEncoding('utf8');
-                process.stdout.on('data', (data) => {
+                this.process = execa(this.environment.ytdlBinary, args);
+                this.process.stdout.setEncoding('utf8');
+                this.process.stdout.on('data', (data) => {
                     cb(data.toString());
                 });
-                process.stdout.on('close', (code) => {
+                this.process.stdout.on('close', (code) => {
                     cb("close");
                     resolve("close");
                 });
-                process.stderr.on("data", (data) => {
+                this.process.stderr.on("data", (data) => {
                     console.log(data.toString())
                 })
             });

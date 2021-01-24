@@ -9,7 +9,7 @@ contextBridge.exposeInMainWorld(
             }
         },
         receive: (channel, cb) => {
-            let validChannels = ["log", "toast", "maximized", "videoAction"];
+            let validChannels = ["log", "toast", "maximized", "videoAction", "UIAction"];
             if (validChannels.includes(channel)) {
                 ipcRenderer.on(channel, (event, arg) => {
                     cb(arg)
