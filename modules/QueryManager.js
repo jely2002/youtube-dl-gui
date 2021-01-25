@@ -5,7 +5,7 @@ const InfoQueryList = require("./info/InfoQueryList");
 const SizeQueryList = require("./size/SizeQueryList");
 const ProgressBar = require("./types/ProgressBar");
 const DownloadQuery = require("./download/DownloadQuery");
-const { shell } = require('electron');
+const { shell, dialog } = require('electron');
 const path = require('path')
 const fs = require("fs");
 
@@ -149,6 +149,32 @@ class QueryManager {
                 console.error("Wrong openVideo type specified.")
             }
         });
+    }
+
+    showInfo(identifier) {
+        let video = this.getVideo(identifier);
+        let args = {
+            action: "info",
+            metadata: video.serialize(),
+            identifier: identifier
+        };
+        this.window.webContents.send("videoAction", args);
+    }
+
+    async saveInfo(identifier) {
+        let video = this.getVideo(identifier);
+        let result = await dialog.showSaveDialog(this.window, {
+            defaultPath: path.join(this.environment.selectedDownloadPath, "metadata_" + video.url.slice(-11)),
+            buttonLabel: "Save metadata",
+            filters: [
+                { name: "JSON", extensions: ["json"] },
+                { name: "All Files", extensions: ["*"] },
+            ],
+            properties: ["createDirectory"]
+        });
+        if(!result.canceled) {
+            fs.writeFileSync(result.filePath, JSON.stringify(video.serialize(), null, 3));
+        }
     }
 
     getVideo(identifier) {
