@@ -29,6 +29,28 @@ class Video {
         this.downloadedPath = this.environment.selectedDownloadPath;
     }
 
+    serialize() {
+        let formats = [];
+        for(const format of this.formats) {
+            formats.push(format.serialize());
+        }
+        return {
+            like_count: this.like_count,
+            dislike_count: this.dislike_count,
+            description: this.description,
+            view_count: this.view_count,
+            title: this.title,
+            tags: this.tags,
+            duration: this.duration,
+            extractor: this.extractor,
+            thumbnail: this.thumbnail,
+            uploader: this.uploader,
+            average_rating: this.average_rating,
+            url: this.url,
+            formats: formats
+        };
+    }
+
     setMetadata(metadata) {
         this.hasMetadata = true;
         this.like_count = metadata.like_count;

@@ -25,7 +25,7 @@ function createWindow () {
         win = new BrowserWindow({
             show: false,
             minWidth: 815,
-            minHeight: 700,
+            minHeight: 750,
             width: 815,
             height: 800,
             backgroundColor: '#212121',
@@ -44,7 +44,7 @@ function createWindow () {
         win = new BrowserWindow({
             show: false,
             minWidth: 815,
-            minHeight: 700,
+            minHeight: 750,
             width: 815,
             height: 800,
             backgroundColor: '#212121',
@@ -106,9 +106,14 @@ function createWindow () {
                 case "entry":
                     queryManager.manage(args.url);
                     break;
+                case "info":
+                    queryManager.showInfo(args.identifier);
+                    break;
+                case "downloadInfo":
+                    queryManager.saveInfo(args.identifier);
+                    break;
             }
         });
-
     });
 }
 

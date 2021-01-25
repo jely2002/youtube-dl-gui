@@ -247,6 +247,79 @@ option.audio {
     display: none;
 }
 
+#infoModal .modal-content, .modal-content textarea, .modal-content li, .modal-content ul {
+    background-color: var(--bg-color);
+    color: var(--font-color);
+}
+
+.modal-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#infoModal .btn {
+    background-color: var(--secondary-bg-color) !important;
+    border-color: var(--secondary-bg-color) !important;
+    color: var(--font-color) !important;
+    font-weight: 600;
+}
+
+#infoModal .close {
+    color: var(--font-color);
+}
+
+#info-description {
+    resize: none;
+    border-color: var(--tertiary-bg-color);
+    border-radius: 3px;
+    width: 100%;
+    box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+    padding: 0.3rem 1rem;
+}
+
+.bi-save:before {
+  padding-bottom: 2px !important;
+}
+
+.info-img {
+    width: 100%;
+}
+
+.info-img:before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    max-height: 110px;
+    width: 100%;
+    object-fit: cover;
+    background-image: url(../resources/assets/plain-placeholder.png);
+}
+
+.list-group-item {
+    padding-left: 0;
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--tertiary-bg-color);
+}
+
+#loading .custom-select  { /* TEMPORARY DEMO, REMOVE FIRST SELECTOR */
+    display: none;
+}
+
+#loading .progress { /* TEMPORARY DEMO, REMOVE REMOVE FIRST SELECTOR */
+    display: flex !important;
+}
+
+#getMetadata .options { /* TEMPORARY DEMO, REMOVE REMOVE FIRST SELECTOR */
+    display: none;
+}
+
+#getMetadata .progress { /* TEMPORARY DEMO, REMOVE REMOVE FIRST SELECTOR */
+    display: flex !important;
+}
+
 /* FILESIZE SPINNER */
 
 .lds-dual-ring {
@@ -274,31 +347,10 @@ option.audio {
     }
 }
 
-#infoModal .modal-content, .modal-content textarea, .modal-content li, .modal-content ul {
-    background-color: var(--bg-color);
-    color: var(--font-color);
-}
-
-#loading .custom-select  { /* TEMPORARY DEMO, REMOVE FIRST SELECTOR */
-    display: none;
-}
-
-#loading .progress { /* TEMPORARY DEMO, REMOVE REMOVE FIRST SELECTOR */
-    display: flex !important;
-}
-
-#getMetadata .options { /* TEMPORARY DEMO, REMOVE REMOVE FIRST SELECTOR */
-    display: none;
-}
-
-#getMetadata .progress { /* TEMPORARY DEMO, REMOVE REMOVE FIRST SELECTOR */
-    display: flex !important;
-}
-
 /* CUSTOM SCROLLBAR */
 ::-webkit-scrollbar-track
 {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color: transparent;
 }
 

@@ -1,6 +1,8 @@
 let platform;
 
-init();
+(function () {
+    init();
+})();
 
 async function init() {
     //Get platform
@@ -41,6 +43,16 @@ async function init() {
         }
     });
 
+    $('#infoModal .dismiss').on('click', () => {
+       $('#infoModal').modal("hide");
+    });
+
+    $('#infoModal .json').on('click', () => {
+        window.main.invoke('videoAction', {action: "downloadInfo", identifier: $('#infoModal .identifier').html()})
+    });
+
+    let infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+
     //Enables the main process to show logs/errors in the renderer dev console
     window.main.receive("log", (arg) => console.log(arg));
 
@@ -73,6 +85,9 @@ async function init() {
                 break;
             case "progress":
                 updateProgress(arg);
+                break;
+            case "info":
+                showInfoModal(arg.metadata, arg.identifier);
                 break;
         }
     });
@@ -170,7 +185,9 @@ function addVideo(args) {
             $(template).find('.download-btn').addClass("disabled");
         });
 
-
+        $(template).find('.info-btn').on('click', () => {
+            window.main.invoke("videoAction", {action: "info", identifier: args.identifier});
+        });
 
         $(template).find('.open .folder').on('click', () => {
             window.main.invoke("videoAction", {action: "open", identifier: args.identifier, type: "folder"});
@@ -235,6 +252,22 @@ function updateProgress(args) {
         }
     }
 
+}
+
+function showInfoModal(info, identifier) {
+    let modal = $('#infoModal');
+    $(modal).find('img').prop("src", info.thumbnail);
+    $(modal).find('.modal-title').html(info.title);
+    $(modal).find('#info-description').html(info.description == null ? "No description was found." : info.description);
+    $(modal).find('.uploader').html('<strong>Uploader: </strong>' + (info.uploader == null ? "Unknown" : info.uploader));
+    $(modal).find('.extractor').html('<strong>Extractor: </strong>' + (info.extractor == null ? "Unknown" : info.extractor));
+    $(modal).find('.url').html('<strong>URL: </strong>' + info.url);
+    $(modal).find('[title="Views"]').html('<i class="bi bi-eye"></i> ' + (info.view_count == null ? "-" : info.view_count));
+    $(modal).find('[title="Like / dislikes"]').html('<i class="bi bi-hand-thumbs-up"></i> ' + (info.like_count == null ? "-" : info.like_count) + ' &nbsp;&nbsp; <i class="bi bi-hand-thumbs-down"></i> ' + (info.dislike_count == null ? "-" : info.dislike_count));
+    $(modal).find('[title="Average rating"]').html('<i class="bi bi-star"></i> ' + (info.average_rating == null ? "-" : info.average_rating.toString().slice(0,3)));
+    $(modal).find('[title="Duration"]').html('<i class="bi bi-clock"></i> ' + (info.duration == null ? "-" : info.duration));
+    $(modal).find('.identifier').html(identifier);
+    $(modal).modal("show");
 }
 
 function resetProgress(elem, card) {

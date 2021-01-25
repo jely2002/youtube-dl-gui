@@ -142,53 +142,33 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="infoModalLabel">Video metadata</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close dismiss" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-6">
-                            <img src="https://i.ytimg.com/vi/Ve_8wn3cr8E/maxresdefault.jpg" class="img-fluid" alt="thumbnail">
+                    <div class="row mb-3">
+                        <div class="col-7">
+                            <img src="../resources/assets/plain-placeholder.png" onerror="this.onerror=null;this.src='../resources/assets/plain-placeholder.png';" class="info-img" alt="thumbnail">
                         </div>
-                        <div class="col-6">
+                        <div class="col-5">
                             <p title="Views"><i class="bi bi-eye"></i> 26139</p>
                             <p title="Like / dislikes"><i class="bi bi-hand-thumbs-up"></i> 4900 &nbsp;&nbsp; <i class="bi bi-hand-thumbs-down"></i> 26</p>
                             <p title="Average rating"><i class="bi bi-star"></i> -</p>
+                            <p title="Duration"><i class="bi bi-clock"></i> 15:28</p>
                         </div>
                     </div>
-                    <h4 class="info-title">The WORST Tier 10 Tank in World of Tanks...</h4>
-                    <textarea id="info-description" rows="4" cols="50">
-                            In World of Tanks there is one vehicle that stoops lower than any other, ladies and gentleman, I give you the Rheinmetall Panzerwagen!
-
-                            SUBSCRIBE for more videos!: ►https://goo.gl/5VIiJn
-
-                            SPONSOR THE CHANNEL: ►https://goo.gl/64hgbN
-                            T-SHIRTS: ►https://goo.gl/s2OINq
-
-                            LIVESTREAMS: Tuesdays, Thursdays and Sundays for 5 hours+ Starting @ 18:00-CET / 17:00-GMT / 12:00-EST
-                            ►http://www.twitch.tv/quickybaby
-
-                            Twitter ►http://www.twitter.com/quickybaby
-                            Instagram ►https://www.instagram.com/quickybabytv/
-                            Facebook ►http://www.facebook.com/quickybaby
-
-                            QuickyBaby's FAQ
-                            ►https://goo.gl/4Mi8wj
-
-                            ___
-
-                            World of Tanks is a Free 2 Play online game published by Wargaming and is available as a free download.
-                    </textarea>
+                    <textarea id="info-description" rows="5" cols="50"></textarea>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Tags: </strong><span class="badge bg-secondary">worldoftanks</span><span class="badge bg-secondary">WoT</span><span class="badge bg-secondary">worldoftanksfunny</span></li>
-                        <li class="list-group-item"><strong>Uploader: </strong>OneAndOnly016</li>
-                        <li class="list-group-item"><strong>Extractor: </strong>YouTube</li>
-                        <li class="list-group-item"><strong>URL: </strong><a href="https://www.youtube.com/watch?v=KOD0Gw6nftM">https://www.youtube.com/watch?v=KOD0Gw6nftM</a></li>
+                        <li class="list-group-item uploader"></li>
+                        <li class="list-group-item extractor"></li>
+                        <li class="list-group-item url"></li>
                     </ul>
                 </div>
+                <span class="identifier d-none"></span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" title="Save as JSON" class="btn json btn-secondary"><i class="bi bi-save"></i></button>
+                <button type="button" class="btn dismiss btn-secondary">Close</button>
             </div>
         </div>
     </div>
