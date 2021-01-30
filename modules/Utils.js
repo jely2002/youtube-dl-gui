@@ -54,7 +54,10 @@ class Utils {
     static hasFilesizes(metadata) {
         let filesizeDetected = false
         for(const format of metadata.formats) {
-            filesizeDetected = format.filesize != null
+            if(format.filesize != null) {
+                filesizeDetected = true
+                break;
+            }
         }
         return filesizeDetected
     }
