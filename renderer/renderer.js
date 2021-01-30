@@ -30,6 +30,18 @@ async function init() {
         window.main.invoke('titlebarClick', "maximize")
     })
 
+    $('.video-cards').each(function() {
+        let sel = this;
+        new MutationObserver(function() {
+            if ($('.video-cards').is(':empty')) {
+                $('.empty').show();
+            } else {
+                $('.empty').hide();
+            }
+        }).observe(sel, {childList: true, subtree: true});
+    });
+
+
     //Configures the 4 error toasts
     $('#error, #warning, #connection, #update').toast({
         autohide: false,

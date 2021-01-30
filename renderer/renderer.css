@@ -89,13 +89,12 @@ body {
 
 .empty {
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     text-align: center;
     width: 100%;
     color: var(--font-color);
-    display: none;
 }
 
 .template {
@@ -106,6 +105,10 @@ body {
 .empty > .title {
     font-size: 30px;
     font-weight: bold;
+}
+
+.empty > .header {
+    font-size: 120px;
 }
 
 .empty > .undertitle {
