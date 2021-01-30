@@ -151,7 +151,16 @@ body {
 }
 
 .video-card i {
-    font-size: 24px;
+    font-size: 20px;
+}
+
+.bi-card-text-strike {
+    display: block;
+    background: url(../resources/assets/card-text-strike.svg);
+    height: 1em;
+    width: 1em;
+    margin-top: 0.2em;
+    margin-bottom: 0.3em !important;
 }
 
 .video-card a {
@@ -160,7 +169,7 @@ body {
     color: var(--font-color);
 }
 
-.video-card a:hover {
+.video-card i:hover {
     transition: 150ms;
     filter: brightness(55%);
 }

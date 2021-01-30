@@ -135,6 +135,7 @@ function addVideo(args) {
             .addClass('progress-bar-striped')
             .addClass('progress-bar-animated')
             .width("100%");
+        if(args.subtitles) $(template).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
         $(template).find('img').prop("src", args.thumbnail);
         $(template).find('.info').addClass("d-none");
         $(template).find('.progress small').html("Initializing download")
@@ -185,6 +186,13 @@ function addVideo(args) {
             $(template).find('.download-btn').addClass("disabled");
         });
 
+        $(template).find('.subtitle-btn').on('click', () => {
+            let state = $(template).find('.subtitle-btn i').hasClass("bi-card-text-strike")
+            window.main.invoke("videoAction", {action: "subtitles", identifier: args.identifier, subtitle: state});
+            if(state) $(template).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled")
+            else $(template).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled")
+        });
+
         $(template).find('.info-btn').on('click', () => {
             window.main.invoke("videoAction", {action: "info", identifier: args.identifier});
         });
@@ -209,7 +217,7 @@ function addVideo(args) {
         $(template).find('.progress').addClass("d-flex");
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Downloading metadata...');
-        $(template).find('.buttons').children().each(function() { $(this).addClass("disabled"); });
+        $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); });
 
     } else if(args.type === "playlist") {
         $(template).find('.card-title')
@@ -220,7 +228,7 @@ function addVideo(args) {
         $(template).find('.progress').addClass("d-flex");
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Fetching video metadata...');
-        $(template).find('.buttons').children().each(function() { $(this).addClass("disabled"); });
+        $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); });
     }
     $('.video-cards').append(template);
 }
