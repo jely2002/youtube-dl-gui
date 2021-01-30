@@ -51,12 +51,20 @@ class Utils {
         return "single";
     }
 
+    static hasFilesizes(metadata) {
+        let filesizeDetected = false
+        for(const format of metadata.formats) {
+            filesizeDetected = format.filesize != null
+        }
+        return filesizeDetected
+    }
+
     static parseAvailableFormats(metadata) {
         let formats = [];
         let detectedFormats = [];
         for(let dataFormat of metadata.formats) {
             if(dataFormat.height == null) continue;
-            let format = new Format(dataFormat.height, dataFormat.fps, null);
+            let format = new Format(dataFormat.height, dataFormat.fps, null, null);
             if(!detectedFormats.includes(format.getDisplayName())) {
                 formats.push(format);
                 detectedFormats.push(format.getDisplayName());

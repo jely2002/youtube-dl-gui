@@ -91,7 +91,6 @@ function createWindow () {
         let queryManager = new QueryManager(win, env);
 
         ipcMain.handle('videoAction', (event, args) => {
-            console.log("handle")
             console.log(args)
             switch (args.action) {
                 case "stop":
@@ -111,6 +110,9 @@ function createWindow () {
                     break;
                 case "downloadInfo":
                     queryManager.saveInfo(args.identifier);
+                    break;
+                case "size":
+                    queryManager.startSizeQuery(args.identifier, args.formatLabel, args.clicked)
                     break;
             }
         });

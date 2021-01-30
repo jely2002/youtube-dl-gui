@@ -8,12 +8,9 @@ const DownloadQuery = require("./download/DownloadQuery");
 const { shell, dialog } = require('electron');
 const path = require('path')
 const fs = require("fs");
+const SizeQuery = require("./size/SizeQuery");
 
 class QueryManager {
-
-    //TODO ADD SIZE QUERY TO CALCULATE SIZE ACCORDING TO SETTINGS
-    //TODO Fully async size query and show spinner
-
     constructor(window, environment) {
         this.window = window;
         this.environment = environment;
@@ -43,6 +40,7 @@ class QueryManager {
         let video = new Video(url, "single", this.environment);
         video.setMetadata(initialQuery);
         this.addVideo(video);
+        if(this.environment.sizeMode === "full") this.startSizeQuery(video.identifier, video.formats[video.selected_format_index]);
     }
 
     managePlaylist(initialQuery, url) {
@@ -73,6 +71,9 @@ class QueryManager {
             url: video.url,
             title: video.title,
             duration: video.duration,
+            subtitles: video.downloadSubs,
+            loadSize: this.environment.sizeMode === "full",
+            hasFilesizes: video.hasFilesizes,
             formats: formats,
             selected_format_index: (video.hasMetadata) ? video.selected_format_index : null,
             thumbnail: video.thumbnail
@@ -101,6 +102,36 @@ class QueryManager {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             downloadVideo.query.progressBar.done();
         });
+    }
+
+    startSizeQuery(identifier, formatLabel, clicked) {
+        let video = this.getVideo(identifier);
+        let selectedFormat = formatLabel;
+        if(selectedFormat == null) {
+            selectedFormat = video.formats[video.selected_format_index]
+        } else {
+            for (const format of video.formats) {
+                if (format.getDisplayName() === formatLabel) {
+                    video.selected_format_index = video.formats.indexOf(format);
+                    console.log(formatLabel)
+                    console.log(format.filesize_label)
+                    selectedFormat = format;
+                    break;
+                }
+            }
+        }
+        if(selectedFormat.filesize_label == null) {
+            if(this.environment.sizeMode === "click" && !clicked) {
+                this.window.webContents.send("videoAction", {action: "size", size: null, identifier: video.identifier})
+            } else if(this.environment.sizeMode === "full" || clicked) {
+                let sizeQuery = new SizeQuery(video, this.environment);
+                sizeQuery.connect().then((result) => {
+                    this.window.webContents.send("videoAction", {action: "size", size: result, identifier: video.identifier})
+                });
+            }
+        } else {
+            this.window.webContents.send("videoAction", {action: "size", size: selectedFormat.filesize_label, identifier: video.identifier})
+        }
     }
 
     removeVideo(identifier) {

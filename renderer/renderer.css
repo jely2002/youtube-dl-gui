@@ -313,24 +313,8 @@ option.audio {
     border-color: var(--tertiary-bg-color);
 }
 
-#loading .custom-select  { /* TEMPORARY DEMO, REMOVE FIRST SELECTOR */
-    display: none;
-}
-
-#loading .progress { /* TEMPORARY DEMO, REMOVE REMOVE FIRST SELECTOR */
-    display: flex !important;
-}
-
-#getMetadata .options { /* TEMPORARY DEMO, REMOVE REMOVE FIRST SELECTOR */
-    display: none;
-}
-
-#getMetadata .progress { /* TEMPORARY DEMO, REMOVE REMOVE FIRST SELECTOR */
-    display: flex !important;
-}
 
 /* FILESIZE SPINNER */
-
 .lds-dual-ring {
     display: inline-block;
     width: 16px;

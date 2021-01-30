@@ -44,7 +44,7 @@ async function init() {
     });
 
     $('#infoModal .dismiss').on('click', () => {
-       $('#infoModal').modal("hide");
+        $('#infoModal').modal("hide");
     });
 
     $('#infoModal .json').on('click', () => {
@@ -66,13 +66,13 @@ async function init() {
     })
 
     window.main.receive("UIAction", (arg) => { //TODO decide whether to use locking feature
-       switch(arg.action) {
-           case "lock":
-               for(const elem of arg.elements) {
-                   $(elem).prop("disabled", arg.state);
-               }
-               break;
-       }
+        switch(arg.action) {
+            case "lock":
+                for(const elem of arg.elements) {
+                    $(elem).prop("disabled", arg.state);
+                }
+                break;
+        }
     });
 
     window.main.receive("videoAction", (arg) => {
@@ -89,6 +89,8 @@ async function init() {
             case "info":
                 showInfoModal(arg.metadata, arg.identifier);
                 break;
+            case "size":
+                updateSize(arg);
         }
     });
 
@@ -140,11 +142,15 @@ function addVideo(args) {
         $(template).find('.info').addClass("d-none");
         $(template).find('.progress small').html("Initializing download")
         $(template).find('.metadata.left').html('<strong>Duration: </strong>' + ((args.duration == null) ? "Unknown" : args.duration));
-        if(args.formats[args.selected_format_index].filesize_label != null) {
-            $(template).find('.metadata.right').html('<strong>Size: </strong>' + args.formats[args.selected_format_index].filesize_label);
+        if(!args.hasFilesizes) {
+            $(template).find('.metadata.right').html('<strong>Size: </strong>Unknown');
+        } else if(args.loadSize) {
+            $(template).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
         } else {
-            //TODO connect event listener so the load button actually works
-            $(template).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>');
+            $(template).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>').on('click', () => {
+                window.main.invoke("videoAction", { action: "size", clicked: true, identifier: args.identifier})
+                $(template).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
+            });
         }
         for(const format of args.formats) {
             let option = new Option(format.display_name, format.display_name);
@@ -167,6 +173,13 @@ function addVideo(args) {
                 }
             }
             $(template).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
+        });
+
+
+        $(template).find('.custom-select.download-quality').on('change', function () {
+            if(!args.hasFilesizes) return;
+            window.main.invoke("videoAction", {action: "size", clicked: false, formatLabel: $(template).find('.custom-select.download-quality').find(":selected").val(), identifier: args.identifier});
+            $(template).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
         });
 
         $(template).find('.download-btn').on('click', () => {
@@ -260,6 +273,21 @@ function updateProgress(args) {
         }
     }
 
+}
+
+function updateSize(args) {
+    let card = getCard(args.identifier);
+    console.log(args)
+    if(args.size == null) {
+        $(card).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>').on('click', () => {
+            window.main.invoke("videoAction", {action: "size", clicked: true, formatLabel: $('#' + args.identifier).find('.custom-select.download-quality').find(":selected").val(), identifier: args.identifier});
+            $(card).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
+        });
+    } else if(args.size === "") {
+        $(card).find('.metadata.right').html('<strong>Size: </strong>' + "Unknown");
+    } else {
+        $(card).find('.metadata.right').html('<strong>Size: </strong>' + args.size);
+    }
 }
 
 function showInfoModal(info, identifier) {

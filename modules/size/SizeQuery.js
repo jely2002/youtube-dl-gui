@@ -32,7 +32,7 @@ class SizeQuery extends Query {
         if(totalSize === 0) {
             this.format.filesize = null;
             this.format.filesize_label = "Unknown";
-            return null;
+            return "";
         } else {
             this.format.filesize = totalSize;
             this.format.filesize_label = Utils.convertBytes(totalSize);

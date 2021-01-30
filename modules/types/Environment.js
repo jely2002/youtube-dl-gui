@@ -13,6 +13,7 @@ class Environment {
         this.mainAudioOnly = false;
         this.mainAudioQuality = "best";
         this.mainDownloadSubs = false;
+        this.sizeMode = "click"
         this.ytdlBinary = "";
         this.ffmpegBinary = "";
         this.limiterGroup = new Bottleneck.Group({

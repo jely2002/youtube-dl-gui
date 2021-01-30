@@ -69,6 +69,7 @@ class Video {
         this.uploader = metadata.uploader;
         this.thumbnail = metadata.thumbnail;
 
+        this.hasFilesizes = Utils.hasFilesizes(metadata)
         this.formats = Utils.parseAvailableFormats(metadata);
         this.selected_format_index = this.selectHighestQuality();
     }
