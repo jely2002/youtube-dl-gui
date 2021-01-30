@@ -1,9 +1,8 @@
 const execa = require('execa');
 
 class Query {
-    constructor(environment, progressBar) {
+    constructor(environment) {
         this.environment = environment;
-        this.progressBar = progressBar;
         this.process = null;
     }
 

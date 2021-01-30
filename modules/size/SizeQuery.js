@@ -3,8 +3,8 @@ const Utils = require("../Utils");
 const fs = require('fs');
 
 class SizeQuery extends Query {
-    constructor(video, environment, progressBar) {
-        super(environment, progressBar);
+    constructor(video, environment) {
+        super(environment);
         this.video = video;
         this.video = video;
         this.format = video.formats[video.selected_format_index];

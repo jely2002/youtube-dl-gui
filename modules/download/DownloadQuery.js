@@ -3,7 +3,7 @@ const path = require("path")
 
 class DownloadQuery extends Query {
     constructor(url, video, environment, progressBar) {
-        super(environment, progressBar);
+        super(environment);
         this.url = url;
         this.video = video;
         this.progressBar = progressBar;
