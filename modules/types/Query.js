@@ -12,6 +12,10 @@ class Query {
 
     async start(url, args, cb) {
         args.push("--no-cache-dir")
+        if(this.environment.cookiePath != null) { //Add cookie arguments if enabled
+            args.push("--cookies");
+            args.push(this.environment.cookiePath);
+        }
         args.push(url) //Url must always be added as the final argument
         if(cb == null) {
             //Return the data after the query has completed fully.

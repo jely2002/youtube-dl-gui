@@ -51,10 +51,6 @@ class DownloadQuery extends Query {
                 args.push("srt")
             }
         }
-        if(this.environment.cookiePath != null) {
-            args.push("--cookies");
-            args.push(this.environment.cookiePath);
-        }
         let destinationCount = 0;
         let initialReset = false;
         // TODO Add more error handling

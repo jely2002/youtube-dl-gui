@@ -11,10 +11,6 @@ class InfoQuery extends Query {
         //TODO FIX/IMPLEMENT CHANNELS
         try {
             let args = ["-J", "--flat-playlist"]
-            if(this.environment.cookiePath != null) {
-                args.push("--cookies");
-                args.push(this.environment.cookiePath);
-            }
             let data = await this.start(this.url, args);
             return JSON.parse(data);
         } catch (e) {

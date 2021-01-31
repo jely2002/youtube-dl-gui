@@ -34,8 +34,10 @@ class InfoQueryList {
             for (const url of this.urls) {
                 let task = new InfoQuery(url, this.environment, this.progressBar);
                 this.environment.limiterGroup.key(this.limiterKey).schedule(() => task.connect()).then((data) => {
-                    let video = this.createVideo(data, url);
-                    totalMetadata.push(video);
+                    if(data != null) {
+                        let video = this.createVideo(data, url);
+                        totalMetadata.push(video);
+                    }
                     this.done++;
                     this.progressBar.updatePlaylist(this.done, this.length);
                     if (this.done === this.length) {
