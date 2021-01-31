@@ -63,8 +63,10 @@ class DownloadQuery extends Query {
                 }
                 if(liveData.includes("Destination")) destinationCount += 1;
                 if(destinationCount > 1) {
-                    if(destinationCount === 2) this.video.audioOnly = true;
-                    this.progressBar.reset();
+                    if(destinationCount === 2 && !this.video.audioOnly) {
+                        this.video.audioOnly = true;
+                        this.progressBar.reset();
+                    }
                 }
                 let liveDataArray = liveData.split(" ").filter((el) => {return el !== ""});
                 if(liveDataArray.length > 8) return;
