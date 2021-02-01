@@ -188,17 +188,6 @@ ipcMain.handle("platform", () => {
     return process.platform;
 })
 
-//Update the progressbar when ordered from renderer process
-ipcMain.handle('updateProgressBar', async (event, arg) => {
-    if(arg === "hide") {
-        await win.setProgressBar(-1, {mode: "none"})
-    } else if(arg === "indeterminate") {
-        win.setProgressBar(2, {mode: "indeterminate"})
-    } else {
-        await win.setProgressBar(arg)
-    }
-})
-
 
 //Show a dialog to select a folder, and return the selected value.
 ipcMain.on('openFolderDialog', async (event, selectedPath) => {

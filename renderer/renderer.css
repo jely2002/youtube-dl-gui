@@ -69,7 +69,7 @@ body {
 /* URL FORM */
 .url-input {
     margin-top: calc(40px + 2rem); /* Compensate the fixed navbar */
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .url-input .btn {
@@ -120,8 +120,8 @@ body {
     /*border: 1px solid var(--tertiary-bg-color);
     border-radius: .25rem;*/
     padding: 10px;
-    width: 87%;
-    height: 70vh;
+    width: 75%;
+    height: 67vh;
     background-color: var(--secondary-bg-color);
     /*box-shadow: inset 0 0 4px 2px var(--tertiary-bg-color);*/
     overflow-y: auto;
@@ -259,6 +259,25 @@ option.audio {
     display: none;
 }
 
+
+/* CONTROLS */
+.controls .btn {
+    background-color: var(--secondary-bg-color) !important;
+    border-color: var(--secondary-bg-color) !important;
+    color: var(--font-color) !important;
+    height: 100%;
+}
+
+.controls .progress {
+    height: 32px;
+}
+
+.controls .buttons * {
+    margin: 0 5px;
+}
+
+
+/* INFO MODAL */
 #infoModal .modal-content, .modal-content textarea, .modal-content li, .modal-content ul {
     background-color: var(--bg-color);
     color: var(--font-color);

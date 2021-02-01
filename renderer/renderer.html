@@ -14,7 +14,7 @@
         <div class="input-group">
             <input type="text" class="form-control" id="add-url" placeholder="Enter a video/playlist URL to add to the queue">
             <div class="input-group-append">
-                <button type="button" id="add-url-btn" class="btn btn-dark" title="Add video to queue"><i class="bi bi-arrow-down-short"></i></button>
+                <button type="button" id="add-url-btn" class="btn btn-dark" title="Add video to queue"><i class="bi bi-plus"></i></button>
             </div>
         </div>
     </form>
@@ -32,11 +32,29 @@
     </div>
 </div>
 <div class="container controls">
-    <div class="row">
-
+    <div class="row mt-3 mx-auto">
+        <div class="flex-grow-1">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
     </div>
-    <div class="row">
-
+    <div class="row buttons">
+        <button title="Download queue" class="btn btn-dark"><i class="bi bi-download"></i></button>
+        <button title="Download location" class="btn btn-dark"><i class="bi bi-folder"></i></button>
+        <button title="Add authentication" class="btn btn-dark"><i class="bi bi-key"></i></button>
+        <button title="Disable subtitles" class="btn btn-dark"><i class="bi bi-card-text"></i></button>
+        <select title="Download type" class="form-select" aria-label="Default select example">
+            <option selected>Audio + video</option>
+            <option value="1">Audio only</option>
+        </select>
+        <select title="Quality" class="form-select" aria-label="Default select example">
+            <option selected>1080p60</option>
+            <option value="1">1080</option>
+            <option value="2">720p60</option>
+            <option value="3">720p</option>
+        </select>
+        <button title="Settings" class="btn btn-dark"><i class="bi bi-gear"></i></button>
     </div>
 </div>
 
