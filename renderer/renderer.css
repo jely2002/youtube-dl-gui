@@ -276,6 +276,44 @@ option.audio {
     margin: 0 5px;
 }
 
+.controls .buttons i:before {
+    line-height: 1.1;
+    transform: scale(1.2);
+}
+
+.controls .spacer {
+    width: 2px;
+    margin: 0 10px;
+    background: var(--secondary-bg-color);
+}
+
+/* MODAL */
+.modal-content, .modal-content textarea, .modal-content li, .modal-content ul {
+    background-color: var(--bg-color);
+    color: var(--font-color);
+}
+
+.modal-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.modal .btn {
+    background-color: var(--secondary-bg-color) !important;
+    border-color: var(--secondary-bg-color) !important;
+    color: var(--font-color) !important;
+    font-weight: 600;
+}
+
+.modal .close {
+    color: var(--font-color);
+}
+
+
+/* SETTINGS MODAL */
+
+
 
 /* INFO MODAL */
 #infoModal .modal-content, .modal-content textarea, .modal-content li, .modal-content ul {

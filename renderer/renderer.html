@@ -150,6 +150,27 @@
     </div>
 </div>
 
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-xl modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">App settings</h5>
+                <button type="button" class="close dismiss" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label for="sizeSetting" class="form-label">Size calculation</label>
+                <select class="form-control custom-select rounded w-auto" id="sizeSetting">
+                    <option class="audio" value="full" selected>Query automatically</option>
+                    <option class="audio" value="click">Only query on click</option>
+                </select>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary">Cancel</button>
+                <button type="button" class="btn dismiss btn-secondary">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script src="../node_modules/jquery/dist/jquery.min.js"></script>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
