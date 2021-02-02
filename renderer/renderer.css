@@ -68,7 +68,7 @@ body {
 
 /* URL FORM */
 .url-input {
-    margin-top: calc(40px + 2rem); /* Compensate the fixed navbar */
+    margin-top: calc(40px + 1.5rem); /* Compensate the fixed navbar */
     margin-bottom: 1.5rem;
 }
 
@@ -89,7 +89,7 @@ body {
 
 .empty {
     position: absolute;
-    top: 40%;
+    top: 30%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     text-align: center;
@@ -120,8 +120,8 @@ body {
     /*border: 1px solid var(--tertiary-bg-color);
     border-radius: .25rem;*/
     padding: 10px;
-    width: 75%;
-    height: 67vh;
+    width: 100%;
+    height: 100vh;
     background-color: var(--secondary-bg-color);
     /*box-shadow: inset 0 0 4px 2px var(--tertiary-bg-color);*/
     overflow-y: auto;
@@ -261,6 +261,26 @@ option.audio {
 
 
 /* CONTROLS */
+.controls {
+    bottom: 0;
+    position: absolute;
+    padding-bottom: 1.5rem;
+    padding-top: 1.5rem;
+    background: var(--bg-color);
+}
+
+.controls .progress small {
+    color: #000;
+    position: absolute;
+    text-align: center;
+    line-height: 32px; /* line-height should be equal to bar height */
+    overflow: hidden;
+    font-size: 12px;
+    right: 0;
+    left: 0;
+    top: 0;
+}
+
 .controls .btn {
     background-color: var(--secondary-bg-color) !important;
     border-color: var(--secondary-bg-color) !important;
@@ -270,6 +290,9 @@ option.audio {
 
 .controls .progress {
     height: 32px;
+    width: 100%;
+    max-width: 600px;
+    position: relative;
 }
 
 .controls .buttons * {
@@ -316,28 +339,6 @@ option.audio {
 
 
 /* INFO MODAL */
-#infoModal .modal-content, .modal-content textarea, .modal-content li, .modal-content ul {
-    background-color: var(--bg-color);
-    color: var(--font-color);
-}
-
-.modal-title {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-#infoModal .btn {
-    background-color: var(--secondary-bg-color) !important;
-    border-color: var(--secondary-bg-color) !important;
-    color: var(--font-color) !important;
-    font-weight: 600;
-}
-
-#infoModal .close {
-    color: var(--font-color);
-}
-
 #info-description {
     resize: none;
     border-color: var(--tertiary-bg-color);
