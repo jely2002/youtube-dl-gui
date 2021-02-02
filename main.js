@@ -24,8 +24,8 @@ function createWindow () {
     if(process.platform === "darwin") {
         win = new BrowserWindow({
             show: false,
-            minWidth: 815,
-            minHeight: 750,
+            minWidth: 700,
+            minHeight: 650,
             width: 815,
             height: 800,
             backgroundColor: '#212121',
@@ -43,8 +43,8 @@ function createWindow () {
     } else {
         win = new BrowserWindow({
             show: false,
-            minWidth: 815,
-            minHeight: 750,
+            minWidth: 700,
+            minHeight: 650,
             width: 815,
             height: 800,
             backgroundColor: '#212121',
