@@ -5,7 +5,7 @@ class ProgressBar {
     }
 
     updatePlaylist(done, total) {
-        let percent = ((this.done / this.length) * 100).toFixed(2) + "%";
+        let percent = ((done / total) * 100).toFixed(2) + "%";
         this.manager.updateProgress(this.video, {percentage: percent, done: done, total: total});
     }
 
