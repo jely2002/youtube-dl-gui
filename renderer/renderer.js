@@ -240,11 +240,12 @@ function addVideo(args) {
             $(template).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
         } else {
             $(template).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>').on('click', () => {
-                window.main.invoke("videoAction", { action: "size", clicked: true, identifier: args.identifier})
+                window.main.invoke("videoAction", { action: "size", clicked: true, identifier: args.identifier, formatLabel: $(template).find('.custom-select.download-quality').find(":selected").val()})
                 $(template).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
             });
         }
         for(const format of args.formats) {
+            if(format.height === "best" || format.height === "worst") continue;
             let option = new Option(format.display_name, format.display_name);
             $(template).find('.custom-select.download-quality').append(option);
             $(option).addClass("video");
@@ -264,13 +265,25 @@ function addVideo(args) {
                     $(elem).toggle(isAudio)
                 }
             }
+            window.main.invoke("videoAction", {action: "audioOnly", identifier: args.identifier, value: isAudio});
             $(template).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
         });
 
 
         $(template).find('.custom-select.download-quality').on('change', function () {
             if(!args.hasFilesizes) return;
-            window.main.invoke("videoAction", {action: "size", clicked: false, formatLabel: $(template).find('.custom-select.download-quality').find(":selected").val(), identifier: args.identifier});
+            let isAudio = $(template).find(".custom-select.download-type")[0].value === "audio";
+            if(isAudio) {
+                window.main.invoke("videoAction", {action: "audioQuality", identifier: args.identifier, value: $(template).find('.custom-select.download-quality').find(":selected").val()});
+                window.main.invoke("videoAction", {action: "size", clicked: false, formatLabel: $(template).find('.custom-select.download-quality').find(":selected").val(), identifier: args.identifier});
+            } else {
+                window.main.invoke("videoAction", {
+                    action: "size",
+                    clicked: false,
+                    formatLabel: $(template).find('.custom-select.download-quality').find(":selected").val(),
+                    identifier: args.identifier
+                });
+            }
             $(template).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
         });
 
@@ -374,10 +387,10 @@ function updateSize(args) {
     let card = getCard(args.identifier);
     console.log(args)
     if(args.size == null) {
-        $(card).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>').on('click', () => {
-            window.main.invoke("videoAction", {action: "size", clicked: true, formatLabel: $('#' + args.identifier).find('.custom-select.download-quality').find(":selected").val(), identifier: args.identifier});
-            $(card).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
-        });
+        $(card).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>')//.on('click', () => {
+           // window.main.invoke("videoAction", {action: "size", clicked: true, formatLabel: $('#' + args.identifier).find('.custom-select.download-quality').find(":selected").val(), identifier: args.identifier});
+           // $(card).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
+        //});
     } else if(args.size === "") {
         $(card).find('.metadata.right').html('<strong>Size: </strong>' + "Unknown");
     } else {

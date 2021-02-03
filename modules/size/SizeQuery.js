@@ -16,27 +16,46 @@ class SizeQuery extends Query {
         if(this.format.fps == null) {
             formatArgument = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
         }
+        if(this.video.audioOnly) {
+            formatArgument = `bestvideo+${this.video.audioQuality}audio/bestvideo+bestaudio/best`;
+        }
         let output = await this.start(this.video.url, ["-J", "--flat-playlist", "-f", formatArgument]);
         let data = JSON.parse(output);
         let totalSize = 0;
         if(data.requested_formats != null) {
-            for (const requestedFormat of data.requested_formats) {
-                if (requestedFormat.filesize != null) {
-                    totalSize += requestedFormat.filesize;
-                } else if (requestedFormat.filesize_approx != null) {
-                    totalSize += requestedFormat.filesize_approx;
+            if(this.video.audioOnly) {
+                for(const requestedFormat of data.requested_formats) {
+                    if(requestedFormat.vcodec === "none") {
+                        totalSize += requestedFormat.filesize;
+                        break;
+                    }
+                }
+            } else {
+                for (const requestedFormat of data.requested_formats) {
+                    if (requestedFormat.filesize != null) {
+                        totalSize += requestedFormat.filesize;
+                    } else if (requestedFormat.filesize_approx != null) {
+                        totalSize += requestedFormat.filesize_approx;
+                    }
                 }
             }
         }
-        //Disable spinner
         if(totalSize === 0) {
-            this.format.filesize = null;
-            this.format.filesize_label = "Unknown";
-            return "";
+            if(!this.video.audioOnly) {
+                this.format.filesize = null;
+                this.format.filesize_label = "Unknown";
+                return "";
+            } else {
+                return "Unknown";
+            }
         } else {
-            this.format.filesize = totalSize;
-            this.format.filesize_label = Utils.convertBytes(totalSize);
-            return this.format.filesize_label;
+            if(!this.video.audioOnly) {
+                this.format.filesize = totalSize;
+                this.format.filesize_label = Utils.convertBytes(totalSize);
+                return this.format.filesize_label;
+            } else {
+                return Utils.convertBytes(totalSize);
+            }
         }
     }
 }

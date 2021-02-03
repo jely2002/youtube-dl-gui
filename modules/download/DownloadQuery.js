@@ -17,7 +17,7 @@ class DownloadQuery extends Query {
     async connect() {
         let args;
         if(this.video.audioOnly) {
-            let numeralAudioQuality = (this.format.audioQuality === "best") ? "0" : "9";
+            let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
             let output = path.join(this.environment.selectedDownloadPath, "'%(title).200s.%(ext)s") //.200 is to limit the max title length to 200 characters
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,

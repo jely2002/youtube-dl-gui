@@ -121,6 +121,12 @@ function createWindow () {
                 case "setmain":
                     env.setMain(args);
                     break;
+                case "audioOnly":
+                    queryManager.setAudioOnly(args.identifier, args.value);
+                    break;
+                case "audioQuality":
+                    queryManager.setAudioQuality(args.identifier, args.value);
+                    break;
             }
         });
     });

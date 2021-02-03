@@ -125,37 +125,79 @@ class QueryManager {
         downloadVideo.query.connect().then(() => {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             downloadVideo.query.progressBar.done();
-            video.downloaded = true;
+            downloadVideo.downloaded = true;
         });
     }
 
     startSizeQuery(identifier, formatLabel, clicked) {
         let video = this.getVideo(identifier);
-        let selectedFormat = formatLabel;
-        if(selectedFormat == null) {
-            selectedFormat = video.formats[video.selected_format_index]
-        } else {
-            for (const format of video.formats) {
-                if (format.getDisplayName() === formatLabel) {
-                    video.selected_format_index = video.formats.indexOf(format);
-                    console.log(formatLabel)
-                    console.log(format.filesize_label)
-                    selectedFormat = format;
-                    break;
+        if(video.audioOnly) {
+            let applicableSize = video.bestAudioSize;
+            if(formatLabel === "worst") {
+                applicableSize = video.worstAudioSize;
+            }
+            console.log(applicableSize + " " + formatLabel)
+            if(applicableSize == null) {
+                if (this.environment.sizeMode === "click" && !clicked) {
+                    this.window.webContents.send("videoAction", {action: "size", size: null, identifier: video.identifier})
+                } else if (this.environment.sizeMode === "full" || clicked) {
+                    let sizeQuery = new SizeQuery(video, this.environment);
+                    sizeQuery.connect().then((result) => {
+                        if(formatLabel === "best") {
+                            video.bestAudioSize = result;
+                            this.window.webContents.send("videoAction", {action: "size", size: video.bestAudioSize, identifier: video.identifier})
+                        } else {
+                            video.worstAudioSize = result;
+                            this.window.webContents.send("videoAction", {action: "size", size: video.worstAudioSize, identifier: video.identifier})
+                        }
+                    });
+                }
+            } else {
+                if(formatLabel === "best") {
+                    this.window.webContents.send("videoAction", {action: "size", size: video.bestAudioSize, identifier: video.identifier})
+                } else {
+                    this.window.webContents.send("videoAction", {action: "size", size: video.worstAudioSize, identifier: video.identifier})
                 }
             }
-        }
-        if(selectedFormat.filesize_label == null) {
-            if(this.environment.sizeMode === "click" && !clicked) {
-                this.window.webContents.send("videoAction", {action: "size", size: null, identifier: video.identifier})
-            } else if(this.environment.sizeMode === "full" || clicked) {
-                let sizeQuery = new SizeQuery(video, this.environment);
-                sizeQuery.connect().then((result) => {
-                    this.window.webContents.send("videoAction", {action: "size", size: result, identifier: video.identifier})
-                });
-            }
         } else {
-            this.window.webContents.send("videoAction", {action: "size", size: selectedFormat.filesize_label, identifier: video.identifier})
+            let selectedFormat = formatLabel;
+            if (selectedFormat == null) {
+                selectedFormat = video.formats[video.selected_format_index]
+            } else {
+                for (const format of video.formats) {
+                    if (format.getDisplayName() === formatLabel) {
+                        video.selected_format_index = video.formats.indexOf(format);
+                        console.log(formatLabel)
+                        console.log(format.filesize_label)
+                        selectedFormat = format;
+                        break;
+                    }
+                }
+            }
+            if (selectedFormat.filesize_label == null) {
+                if (this.environment.sizeMode === "click" && !clicked) {
+                    this.window.webContents.send("videoAction", {
+                        action: "size",
+                        size: null,
+                        identifier: video.identifier
+                    })
+                } else if (this.environment.sizeMode === "full" || clicked) {
+                    let sizeQuery = new SizeQuery(video, this.environment);
+                    sizeQuery.connect().then((result) => {
+                        this.window.webContents.send("videoAction", {
+                            action: "size",
+                            size: result,
+                            identifier: video.identifier
+                        })
+                    });
+                }
+            } else {
+                this.window.webContents.send("videoAction", {
+                    action: "size",
+                    size: selectedFormat.filesize_label,
+                    identifier: video.identifier
+                })
+            }
         }
     }
 
@@ -232,6 +274,16 @@ class QueryManager {
         if(!result.canceled) {
             fs.writeFileSync(result.filePath, JSON.stringify(video.serialize(), null, 3));
         }
+    }
+
+    setAudioOnly(identifier, value) {
+        let video = this.getVideo(identifier);
+        video.audioOnly = value;
+    }
+
+    setAudioQuality(identifier, value) {
+        let video = this.getVideo(identifier);
+        video.audioQuality = value;
     }
 
     getVideo(identifier) {

@@ -8,6 +8,8 @@ class Video {
         this.environment = environment;
         this.audioQuality = environment.mainAudioQuality;
         this.audioOnly = environment.mainAudioOnly;
+        this.bestAudioSize = null;
+        this.worstAudioSize = null;
         this.downloadSubs = environment.mainDownloadSubs;
         this.webpage_url = this.url;
         this.hasMetadata = false;
