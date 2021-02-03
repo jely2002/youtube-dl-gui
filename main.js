@@ -100,7 +100,11 @@ function createWindow () {
                     queryManager.openVideo(args);
                     break;
                 case "download":
-                    queryManager.downloadVideo(args);
+                    if(args.all) {
+                        queryManager.downloadAllVideos(args)
+                    } else {
+                        queryManager.downloadVideo(args);
+                    }
                     break;
                 case "entry":
                     queryManager.manage(args.url);

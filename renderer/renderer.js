@@ -224,7 +224,8 @@ function addVideo(args) {
                 url: args.url,
                 identifier: args.identifier,
                 format: $(template).find('.custom-select.download-quality').val(),
-                type: $(template).find('.custom-select.download-type').val()
+                type: $(template).find('.custom-select.download-type').val(),
+                all: false
             }
             window.main.invoke("videoAction", downloadArgs)
             $(template).find('.progress').addClass("d-flex");
@@ -232,7 +233,7 @@ function addVideo(args) {
             $(template).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
             $(template).find('.options').addClass("d-flex");
             $(template).find('select').addClass("d-none");
-            $(template).find('.download-btn').addClass("disabled");
+            $(this).find('.download-btn, .subtitle-btn i').addClass("disabled");
         });
 
         $(template).find('.subtitle-btn').on('click', () => {
@@ -283,6 +284,11 @@ function addVideo(args) {
 }
 
 function updateProgress(args) {
+    if(args.identifier === "queue") {
+        $('#totalProgress small').html(`Downloading video queue - ${args.progress.done} of ${args.progress.total} completed`);
+        $('#totalProgress .progress-bar').css("width", args.progress.percentage).attr("aria-valuenow", args.progress.percentage.slice(0,-1));
+        return
+    }
     let card = getCard(args.identifier);
     if(args.progress.reset != null && args.progress.reset) {
         resetProgress($(card).find('.progress-bar')[0], card);
@@ -298,9 +304,6 @@ function updateProgress(args) {
     if(args.progress.done != null && args.progress.total != null) {
         $(card).find('.progress small').html(`${args.progress.percentage} - ${args.progress.done} of ${args.progress.total} `);
     } else {
-        //TODO Prevent bar from going backwards
-        console.log(args.progress.percentage.slice(0,-1))
-        console.log(parseFloat(args.progress.percentage.slice(0, -1)) + " " + parseFloat($(card).find('.progress-bar').attr("aria-valuenow")))
         if(parseFloat(args.progress.percentage.slice(0, -1)) > parseFloat($(card).find('.progress-bar').attr("aria-valuenow"))) {
             $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
             $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);

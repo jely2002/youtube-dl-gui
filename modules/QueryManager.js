@@ -9,6 +9,7 @@ const { shell, dialog } = require('electron');
 const path = require('path')
 const fs = require("fs");
 const SizeQuery = require("./size/SizeQuery");
+const DownloadQueryList = require("./download/DownloadQueryList");
 
 class QueryManager {
     constructor(window, environment) {
@@ -81,10 +82,33 @@ class QueryManager {
         this.window.webContents.send("videoAction", args);
     }
 
+    downloadAllVideos(args) {
+        for(const videoObj of args.videos) {
+            let video = this.getVideo(videoObj.identifier)
+            if(video.downloaded || video.type !== "single") continue;
+            video.audioOnly = videoObj.type === "audio";
+            if(video.audioOnly) {
+                video.audioQuality = videoObj.format;
+            } else {
+                for (const format of video.formats) {
+                    if (format.getDisplayName() === videoObj.format) {
+                        video.selected_format_index = video.formats.indexOf(format);
+                        break;
+                    }
+                }
+            }
+            video.audioQuality = (video.audioQuality != null) ? video.audioQuality : "best";
+        }
+        let progressBar = new ProgressBar(this, "queue");
+        let downloadList = new DownloadQueryList(this.managedVideos, this.environment, this, progressBar)
+        downloadList.start().then(() => {
+
+        })
+    }
+
     downloadVideo(args) {
         let downloadVideo = this.getVideo(args.identifier);
         downloadVideo.audioOnly = args.type === "audio";
-        console.log(downloadVideo.audioOnly)
         if(downloadVideo.audioOnly) {
             downloadVideo.audioQuality = args.format;
         } else {
@@ -101,6 +125,7 @@ class QueryManager {
         downloadVideo.query.connect().then(() => {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             downloadVideo.query.progressBar.done();
+            video.downloaded = true;
         });
     }
 
@@ -142,7 +167,7 @@ class QueryManager {
     updateProgress(video, progress_args) {
         let args = {
             action: "progress",
-            identifier: video.identifier,
+            identifier: (video === "queue") ? video : video.identifier,
             progress: progress_args
         }
         this.window.webContents.send("videoAction", args);
@@ -153,6 +178,7 @@ class QueryManager {
         if(video.query != null) {
             video.query.stop();
         }
+        this.removeVideo(identifier)
     }
 
     async openVideo(args) {
