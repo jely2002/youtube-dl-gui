@@ -13,6 +13,7 @@ class Environment {
         this.mainAudioOnly = false;
         this.mainAudioQuality = "best";
         this.mainDownloadSubs = false;
+        this.mainQualitySort = "best";
         this.sizeMode = "click"
         this.ytdlBinary = "";
         this.ffmpegBinary = "";
@@ -74,6 +75,22 @@ class Environment {
                 })
             }
         })
+    }
+    setMain(args) {
+        switch(args.setting) {
+            case "subtitles":
+                this.mainDownloadSubs = args.value;
+                break;
+            case "audioonly":
+                this.mainAudioOnly = args.value;
+                break;
+            case "audioquality":
+                this.mainAudioQuality = args.value;
+                break;
+            case "qualitysort":
+                this.mainQualitySort = args.value;
+                break;
+        }
     }
     resetLimiter(limiter) {
         let args = {

@@ -118,6 +118,9 @@ function createWindow () {
                 case "size":
                     queryManager.startSizeQuery(args.identifier, args.formatLabel, args.clicked)
                     break;
+                case "setmain":
+                    env.setMain(args);
+                    break;
             }
         });
     });

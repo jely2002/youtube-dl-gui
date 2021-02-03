@@ -33,17 +33,18 @@
 </div>
 <div class="container-fluid controls">
     <div class="row mx-auto">
-        <div class="progress mx-auto">
+        <div id="totalProgress" class="progress mx-auto">
             <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
             <small class="justify-content-center d-flex position-absolute w-100">Ready to download!</small>
         </div>
     </div>
     <div class="row buttons d-flex flex-row justify-content-center">
-        <button title="Download queue" class="btn btn-dark rounded"><i class="bi bi-download"></i></button>
+        <button id="downloadBtn" title="Download queue" class="btn btn-dark rounded" disabled><i class="bi bi-download"></i></button>
+        <button type="button" id="clearBtn" title="Clear queue" class="btn btn-dark" disabled><i class="bi bi-trash"></i></button>
         <span class="spacer"></span>
-        <button title="Download location" class="btn btn-dark"><i class="bi bi-folder"></i></button>
-        <button title="Add authentication" class="btn btn-dark"><i class="bi bi-key"></i></button>
-        <button title="Disable subtitles" class="btn btn-dark"><i class="bi bi-card-text"></i></button>
+        <button id="locationBtn" title="Download location" class="btn btn-dark"><i class="bi bi-folder"></i></button>
+        <button id="authBtn" title="Add authentication" class="btn btn-dark"><i class="bi bi-key"></i></button>
+        <button id="subtitleBtn" title="Disable subtitles" class="btn btn-dark"><i title="Subtitles disabled" class="bi-card-text-strike mb-3"></i></button>
         <span class="spacer"></span>
         <select title="Download type" class="custom-select w-auto rounded" aria-label="Download type option for the whole queue">
             <option selected>Audio + video</option>
@@ -54,7 +55,7 @@
             <option value="1">Worst</option>
         </select>
         <span class="spacer"></span>
-        <button title="Settings" class="btn btn-dark"><i class="bi bi-gear"></i></button>
+        <button id="settingsBtn" title="Settings" class="btn btn-dark"><i class="bi bi-gear"></i></button>
     </div>
 </div>
 
@@ -165,8 +166,8 @@
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary">Cancel</button>
-                <button type="button" class="btn dismiss btn-secondary">Apply</button>
+                <button type="button" class="btn dismiss btn-secondary">Cancel</button>
+                <button type="button" class="btn apply btn-secondary">Apply</button>
             </div>
         </div>
     </div>

@@ -35,6 +35,7 @@ async function init() {
         new MutationObserver(function() {
             if ($('.video-cards').is(':empty')) {
                 $('.empty').show();
+                $('#downloadBtn, #clearBtn').prop("disabled", true);
             } else {
                 $('.empty').hide();
             }
@@ -72,11 +73,74 @@ async function init() {
         $('#infoModal').modal("hide");
     });
 
+    $('#settingsModal .dismiss').on('click', () => {
+        $('#settingsModal').modal("hide");
+    });
+
+    $('#settingsModal .apply').on('click', () => {
+        $('#settingsModal').modal("hide");
+        //TODO Save the settings
+    });
+
+    $('#settingsBtn').on('click', () => {
+        $('#settingsModal').modal("show");
+    });
+
     $('#infoModal .json').on('click', () => {
         window.main.invoke('videoAction', {action: "downloadInfo", identifier: $('#infoModal .identifier').html()})
     });
 
-    let infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+    $('#clearBtn').on('click', () => {
+        $('.video-cards').children().each(function () {
+            let identifier = this.id;
+            $(getCard(identifier)).remove();
+            window.main.invoke("videoAction", {action: "stop", identifier: identifier});
+        })
+        $('#totalProgress .progress-bar').remove();
+        $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
+        $('#totalProgress small').html(`Downloading video queue - 0 of ${videos.length} completed`);
+    })
+
+    $('#subtitleBtn').on('click', () => {
+        $('.video-cards').children().each(function () {
+            let identifier = this.id;
+            let state = $(this).find('.subtitle-btn i').hasClass("bi-card-text-strike");
+            window.main.invoke("videoAction", {action: "subtitles", identifier: identifier, subtitle: state});
+            if(state) $(this).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
+            else $(this).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled");
+        })
+        let state = $('#subtitleBtn i').hasClass("bi-card-text-strike");
+        window.main.invoke('videoAction', {action: "setmain", setting: "subtitles", value: state})
+        if(state) $('#subtitleBtn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
+        else $('#subtitleBtn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled");
+    })
+
+    $('#downloadBtn').on('click', () => {
+        let videos = []
+        $('.video-cards').children().each(function () {
+            videos.push({
+                identifier: this.id,
+                format: $(this).find('.custom-select.download-quality').val(),
+                type: $(this).find('.custom-select.download-type').val(),
+            })
+            $(this).find('.progress').addClass("d-flex");
+            $(this).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
+            $(this).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
+            $(this).find('.options').addClass("d-flex");
+            $(this).find('select').addClass("d-none");
+            $(this).find('.download-btn, .subtitle-btn i').addClass("disabled");
+        });
+        let args = {
+            action: "download",
+            all: true,
+            videos: videos
+        }
+        window.main.invoke('videoAction', args)
+        $('#totalProgress .progress-bar').remove();
+        $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
+        $('#totalProgress small').html(`Downloading video queue - 0 of ${videos.length} completed`);
+    });
+
 
     //Enables the main process to show logs/errors in the renderer dev console
     window.main.receive("log", (arg) => console.log(arg));
@@ -90,16 +154,7 @@ async function init() {
         else $('.windowbar').removeClass("fullscreen");
     })
 
-    window.main.receive("UIAction", (arg) => { //TODO decide whether to use locking feature
-        switch(arg.action) {
-            case "lock":
-                for(const elem of arg.elements) {
-                    $(elem).prop("disabled", arg.state);
-                }
-                break;
-        }
-    });
-
+    //Receive calls from main process and dispatch them to the right function
     window.main.receive("videoAction", (arg) => {
         switch(arg.action) {
             case "add":
@@ -166,6 +221,7 @@ function addVideo(args) {
     $(template).removeClass('template');
     $(template).prop('id', args.identifier);
     if(args.type === "single") {
+        $('#downloadBtn, #clearBtn').prop("disabled", false); //Enable the download and clear buttons
         $(template).find('.card-title')
             .html(args.title)
             .prop('title', args.title);
