@@ -89,7 +89,7 @@ body {
 
 .empty {
     position: absolute;
-    top: 30%;
+    top: 45%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     text-align: center;
@@ -121,7 +121,7 @@ body {
     border-radius: .25rem;*/
     padding: 10px;
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 268px);
     background-color: var(--secondary-bg-color);
     /*box-shadow: inset 0 0 4px 2px var(--tertiary-bg-color);*/
     overflow-y: auto;
@@ -146,6 +146,12 @@ body {
     max-width: 330px;
 }
 
+@media only screen and (max-width: 1373px) {
+    .video-cards {
+        justify-content: center !important;
+    }
+}
+
 .video-card .custom-select {
     height: unset;
     line-height: 1.2;
@@ -162,8 +168,13 @@ body {
     background: url(../resources/assets/card-text-strike.svg);
     height: 1em;
     width: 1em;
-    margin-top: 0.2em;
+    margin-top: 0.2em ;
     margin-bottom: 0.3em !important;
+}
+
+.controls .bi-card-text-strike {
+    margin-top: 0.25em !important;
+    margin-bottom: 0.25em !important;
 }
 
 .video-card a {
@@ -177,7 +188,7 @@ body {
     filter: brightness(55%);
 }
 
-.video-card a.disabled:hover, .video-card a.disabled {
+.video-card a.disabled:hover, .video-card a.disabled, .video-card i.disabled, .video-card i.disabled:hover {
     filter: brightness(25%);
     cursor: default;
 }
@@ -252,7 +263,7 @@ body {
 }
 
 .buttons {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
 
 option.audio {
