@@ -11,6 +11,7 @@ class Video {
         this.downloadSubs = environment.mainDownloadSubs;
         this.webpage_url = this.url;
         this.hasMetadata = false;
+        this.downloaded = false;
         this.identifier = crypto.randomBytes(16).toString("hex");
     }
 

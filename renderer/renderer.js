@@ -48,9 +48,22 @@ async function init() {
         animation: true
     })
 
+    //Add url when user presses enter, but prevent default behavior
+    $(document).on("keydown", "form", function(event) {
+        if(event.key == "Enter") {
+            if ($('#url-form')[0].checkValidity()) {
+                parseURL($('#add-url').val());
+                $('#url-form').trigger('reset');
+            }
+            return false;
+        }
+        return true
+    });
+
+    //Add url when user press on the + button
     $('#add-url-btn').on('click', () => {
         if($('#url-form')[0].checkValidity()) {
-            window.main.invoke('videoAction', { action: "entry", url: $('#add-url').val() });
+            parseURL($('#add-url').val());
             $('#url-form').trigger('reset');
         }
     });
@@ -120,6 +133,17 @@ async function init() {
         }
     });
 
+}
+
+function parseURL(data) {
+    if(data.includes(',')) {
+        let urls = data.replaceAll(" ", "").split(",");
+        for(const url of urls) {
+            window.main.invoke('videoAction', {action: "entry", url: url});
+        }
+    } else {
+        window.main.invoke('videoAction', {action: "entry", url: data});
+    }
 }
 
 function showToast(toastInfo) {
