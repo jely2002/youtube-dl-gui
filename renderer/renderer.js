@@ -33,12 +33,16 @@ async function init() {
     $('.video-cards').each(function() {
         let sel = this;
         new MutationObserver(function() {
+            //If the queue is completely empty show the empty text
             if ($('.video-cards').is(':empty')) {
                 $('.empty').show();
                 $('#downloadBtn, #clearBtn').prop("disabled", true);
             } else {
                 $('.empty').hide();
             }
+            $('#totalProgress .progress-bar').remove();
+            $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
+            $('#totalProgress small').html('Ready to download!');
         }).observe(sel, {childList: true, subtree: true});
     });
 
@@ -115,30 +119,61 @@ async function init() {
         else $('#subtitleBtn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled");
     })
 
-    $('#downloadBtn').on('click', () => {
+    $('#downloadBtn').on('click', async () => {
         let videos = []
-        $('.video-cards').children().each(function () {
-            videos.push({
-                identifier: this.id,
-                format: $(this).find('.custom-select.download-quality').val(),
-                type: $(this).find('.custom-select.download-type').val(),
-            })
-            $(this).find('.progress').addClass("d-flex");
-            $(this).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
-            $(this).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
-            $(this).find('.options').addClass("d-flex");
-            $(this).find('select').addClass("d-none");
-            $(this).find('.download-btn, .subtitle-btn i').addClass("disabled");
-        });
+        let videoCards = $('.video-cards').children();
+        for(const card of videoCards) {
+            let isDownloadable = await window.main.invoke("videoAction", {action: "downloadable", identifier: card.id})
+            if(isDownloadable) {
+                console.log(card.id);
+                videos.push({
+                    identifier: card.id,
+                    format: $(card).find('.custom-select.download-quality').val(),
+                    type: $(card).find('.custom-select.download-type').val(),
+                })
+                $(card).find('.progress').addClass("d-flex");
+                $(card).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
+                $(card).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
+                $(card).find('.options').addClass("d-flex");
+                $(card).find('select').addClass("d-none");
+                $(card).find('.download-btn, .subtitle-btn i').addClass("disabled");
+            }
+        }
         let args = {
             action: "download",
             all: true,
             videos: videos
         }
         window.main.invoke('videoAction', args)
+        $('#downloadBtn, #clearBtn').prop("disabled", true);
         $('#totalProgress .progress-bar').remove();
         $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
         $('#totalProgress small').html(`Downloading video queue - 0 of ${videos.length} completed`);
+    });
+
+    $('#download-type').on('change', function () {
+        let type = this.selectedOptions[0].value;
+        $('.video-cards').children().each(function () {
+            let quality = $('#download-quality').find(':selected').val();
+            $(this).find('.custom-select.download-type').val(type).change();
+            if(quality === "best") {
+                $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${type}:first`).val()).change();
+            } else if(quality === "worst") {
+                $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${type}:last`).val()).change();
+            }
+        });
+    });
+
+    $('#download-quality').on('change', function () {
+        let value = this.selectedOptions[0].value;
+        $('.video-cards').children().each(function () {
+            let type = $('#download-type').find(':selected').val();
+            if(value === "best") {
+                $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${type}:first`).val()).change();
+            } else if(value === "worst") {
+                $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${type}:last`).val()).change();
+            }
+        });
     });
 
 
@@ -146,13 +181,15 @@ async function init() {
     window.main.receive("log", (arg) => console.log(arg));
 
     //Enables the main process to show toasts.
-    window.main.receive("toast", (arg) => showToast(arg))
+    window.main.receive("toast", (arg) => showToast(arg));
 
     //Updates the windowbar icon when the app gets maximized/unmaximized
     window.main.receive("maximized", (maximized) => {
         if(maximized) $('.windowbar').addClass("fullscreen");
         else $('.windowbar').removeClass("fullscreen");
-    })
+    });
+
+    window.main.receive("updateGlobalButtons", (arg) => updateButtons(arg));
 
     //Receive calls from main process and dispatch them to the right function
     window.main.receive("videoAction", (arg) => {
@@ -221,7 +258,6 @@ function addVideo(args) {
     $(template).removeClass('template');
     $(template).prop('id', args.identifier);
     if(args.type === "single") {
-        $('#downloadBtn, #clearBtn').prop("disabled", false); //Enable the download and clear buttons
         $(template).find('.card-title')
             .html(args.title)
             .prop('title', args.title);
@@ -244,17 +280,6 @@ function addVideo(args) {
                 $(template).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
             });
         }
-        for(const format of args.formats) {
-            if(format.height === "best" || format.height === "worst") continue;
-            let option = new Option(format.display_name, format.display_name);
-            $(template).find('.custom-select.download-quality').append(option);
-            $(option).addClass("video");
-            if(args.formats.indexOf(format) === 0) $(template).find('.custom-select.download-quality').val(format.display_name).change();
-        }
-        $(template).find('.remove-btn').on('click', () => {
-            $(getCard(args.identifier)).remove();
-            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
-        });
 
         $(template).find('.custom-select.download-type').on('change', function () {
             let isAudio = this.selectedOptions[0].value === "audio";
@@ -269,6 +294,16 @@ function addVideo(args) {
             $(template).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
         });
 
+        for(const format of args.formats) {
+            let option = new Option(format.display_name, format.display_name);
+            $(template).find('.custom-select.download-quality').append(option);
+            $(option).addClass("video");
+        }
+
+        $(template).find('.remove-btn').on('click', () => {
+            $(getCard(args.identifier)).remove();
+            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
+        });
 
         $(template).find('.custom-select.download-quality').on('change', function () {
             if(!args.hasFilesizes) return;
@@ -297,6 +332,7 @@ function addVideo(args) {
                 all: false
             }
             window.main.invoke("videoAction", downloadArgs)
+            $('#downloadBtn, #clearBtn').prop("disabled", true);
             $(template).find('.progress').addClass("d-flex");
             $(template).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
             $(template).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
@@ -350,6 +386,11 @@ function addVideo(args) {
         $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); });
     }
     $('.video-cards').append(template);
+
+    //Update the type and quality values to match the global set values.
+    // This only works after the card has been appended.
+    $('#download-type').change();
+    $('#download-quality').change();
 }
 
 function updateProgress(args) {
@@ -365,6 +406,7 @@ function updateProgress(args) {
     }
     if(args.progress.finished != null && args.progress.finished) {
         $(card).find('.progress small').html((args.progress.isAudio ? "Audio" : "Video") + " downloaded - 100%");
+        $(card).find('.progress-bar').attr('aria-valuenow', 100).css('width', "100%");
         $(card).find('.options').addClass("d-none");
         $(card).find('.options').removeClass("d-flex");
         $(card).find('.open').addClass("d-flex");
@@ -385,12 +427,8 @@ function updateProgress(args) {
 
 function updateSize(args) {
     let card = getCard(args.identifier);
-    console.log(args)
     if(args.size == null) {
-        $(card).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>')//.on('click', () => {
-           // window.main.invoke("videoAction", {action: "size", clicked: true, formatLabel: $('#' + args.identifier).find('.custom-select.download-quality').find(":selected").val(), identifier: args.identifier});
-           // $(card).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
-        //});
+        $(card).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>');
     } else if(args.size === "") {
         $(card).find('.metadata.right').html('<strong>Size: </strong>' + "Unknown");
     } else {
@@ -418,6 +456,22 @@ function resetProgress(elem, card) {
     $(elem).removeClass("progress-bar-striped").removeClass("progress-bar-animated");
     $(elem).remove();
     $(card).find('.progress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
+}
+
+function updateButtons(videos) {
+    let downloadableVideos = false;
+    for(const video of videos) {
+        let domVideo = getCard(video.identifier);
+        if(domVideo == null) continue;
+        if(video.downloadable) {
+            $('#downloadBtn, #clearBtn').prop("disabled", false);
+            downloadableVideos = true;
+            break;
+        }
+        if(!downloadableVideos) {
+            $('#downloadBtn, #clearBtn').prop("disabled", true);
+        }
+    }
 }
 
 function getCard(identifier) {

@@ -46,13 +46,13 @@
         <button id="authBtn" title="Add authentication" class="btn btn-dark"><i class="bi bi-key"></i></button>
         <button id="subtitleBtn" title="Disable subtitles" class="btn btn-dark"><i title="Subtitles disabled" class="bi-card-text-strike mb-3"></i></button>
         <span class="spacer"></span>
-        <select title="Download type" class="custom-select w-auto rounded" aria-label="Download type option for the whole queue">
-            <option selected>Audio + video</option>
-            <option value="1">Audio only</option>
+        <select title="Download type" id="download-type" class="custom-select w-auto rounded" aria-label="Download type option for the whole queue">
+            <option value="video" selected>Audio + video</option>
+            <option value="audio">Audio only</option>
         </select>
-        <select title="Quality" class="custom-select w-auto rounded" aria-label="Quality option for the whole queue">
-            <option selected>Best</option>
-            <option value="1">Worst</option>
+        <select title="Quality" id="download-quality" class="custom-select w-auto rounded" aria-label="Quality option for the whole queue">
+            <option value="best" selected>Best</option>
+            <option value="worst">Worst</option>
         </select>
         <span class="spacer"></span>
         <button id="settingsBtn" title="Settings" class="btn btn-dark"><i class="bi bi-gear"></i></button>

@@ -127,6 +127,8 @@ function createWindow () {
                 case "audioQuality":
                     queryManager.setAudioQuality(args.identifier, args.value);
                     break;
+                case "downloadable":
+                    return await queryManager.isDownloadable(args.identifier);
             }
         });
     });

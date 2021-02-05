@@ -2,7 +2,6 @@ const InfoQuery = require("./info/InfoQuery");
 const Video = require("./types/Video");
 const Utils = require("./Utils");
 const InfoQueryList = require("./info/InfoQueryList");
-const SizeQueryList = require("./size/SizeQueryList");
 const ProgressBar = require("./types/ProgressBar");
 const DownloadQuery = require("./download/DownloadQuery");
 const { shell, dialog } = require('electron');
@@ -41,6 +40,7 @@ class QueryManager {
         let video = new Video(url, "single", this.environment);
         video.setMetadata(initialQuery);
         this.addVideo(video);
+        this.updateGlobalButtons();
         if(this.environment.sizeMode === "full") this.startSizeQuery(video.identifier, video.formats[video.selected_format_index]);
     }
 
@@ -54,6 +54,7 @@ class QueryManager {
             for(const video of videos) {
                 this.addVideo(video);
             }
+            this.updateGlobalButtons();
         });
     }
 
@@ -72,6 +73,7 @@ class QueryManager {
             url: video.url,
             title: video.title,
             duration: video.duration,
+            audioOnly: video.audioOnly,
             subtitles: video.downloadSubs,
             loadSize: this.environment.sizeMode === "full",
             hasFilesizes: video.hasFilesizes,
@@ -83,6 +85,7 @@ class QueryManager {
     }
 
     downloadAllVideos(args) {
+        let videosToDownload = [];
         for(const videoObj of args.videos) {
             let video = this.getVideo(videoObj.identifier)
             if(video.downloaded || video.type !== "single") continue;
@@ -98,20 +101,19 @@ class QueryManager {
                 }
             }
             video.audioQuality = (video.audioQuality != null) ? video.audioQuality : "best";
+            videosToDownload.push(video);
         }
         let progressBar = new ProgressBar(this, "queue");
-        let downloadList = new DownloadQueryList(this.managedVideos, this.environment, this, progressBar)
+        let downloadList = new DownloadQueryList(videosToDownload, this.environment, this, progressBar)
         downloadList.start().then(() => {
-
+            this.updateGlobalButtons();
         })
     }
 
     downloadVideo(args) {
         let downloadVideo = this.getVideo(args.identifier);
         downloadVideo.audioOnly = args.type === "audio";
-        if(downloadVideo.audioOnly) {
-            downloadVideo.audioQuality = args.format;
-        } else {
+        if(!downloadVideo.audioOnly) {
             for (const format of downloadVideo.formats) {
                 if (format.getDisplayName() === args.format) {
                     downloadVideo.selected_format_index = downloadVideo.formats.indexOf(format);
@@ -124,8 +126,9 @@ class QueryManager {
         downloadVideo.setQuery(new DownloadQuery(downloadVideo.url, downloadVideo, this.environment, progressBar));
         downloadVideo.query.connect().then(() => {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
-            downloadVideo.query.progressBar.done();
             downloadVideo.downloaded = true;
+            downloadVideo.query.progressBar.done();
+            this.updateGlobalButtons();
         });
     }
 
@@ -201,7 +204,7 @@ class QueryManager {
         }
     }
 
-    removeVideo(identifier) {
+    removeVideo(identifier, removeFromUI) {
         this.managedVideos = this.managedVideos.filter(item => item.identifier !== identifier);
         this.window.webContents.send("videoAction", { action: "remove", identifier: identifier })
     }
@@ -220,7 +223,7 @@ class QueryManager {
         if(video.query != null) {
             video.query.stop();
         }
-        this.removeVideo(identifier)
+        this.removeVideo(identifier, true);
     }
 
     async openVideo(args) {
@@ -284,6 +287,29 @@ class QueryManager {
     setAudioQuality(identifier, value) {
         let video = this.getVideo(identifier);
         video.audioQuality = value;
+    }
+
+    updateGlobalButtons() {
+        let videos = [];
+        for(const video of this.managedVideos) {
+            let downloadable = this.isDownloadable(video);
+            videos.push({identifier: video.identifier, downloadable: downloadable})
+        }
+        this.window.webContents.send("updateGlobalButtons", videos);
+    }
+
+    isDownloadable(video) {
+        let usedVideo = video;
+        if(video.type == null) {
+            usedVideo = this.getVideo(video);
+        }
+        console.log(usedVideo)
+        console.log(!(usedVideo == null || usedVideo.type !== "single" || usedVideo.downloaded))
+        return !(usedVideo == null || usedVideo.type !== "single" || usedVideo.downloaded)
+    }
+
+    isManaging(identifier) {
+        return this.managedVideos.some(video => video.identifier === identifier);
     }
 
     getVideo(identifier) {
