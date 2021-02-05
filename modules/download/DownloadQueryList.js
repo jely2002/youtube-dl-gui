@@ -21,8 +21,8 @@ class DownloadQueryList {
                 video.setQuery(task);
                 this.environment.limiterGroup.key(this.limiterKey).schedule(() => video.query.connect()).then(() => {
                     this.done++;
-                    video.query.progressBar.done();
                     video.downloaded = true;
+                    video.query.progressBar.done();
                     this.progressBar.updatePlaylist(this.done, this.length)
                     if(this.done === this.length) {
                         this.environment.limiterGroup.deleteKey(this.limiterKey);

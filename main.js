@@ -90,7 +90,7 @@ function createWindow () {
         let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
         let queryManager = new QueryManager(win, env);
 
-        ipcMain.handle('videoAction', (event, args) => {
+        ipcMain.handle('videoAction', async (event, args) => {
             console.log(args)
             switch (args.action) {
                 case "stop":
