@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut, shell} = require('electron')
 const { autoUpdater } = require("electron-updater")
 const fs = require('fs')
-const Environment = require('./modules/types/Environment');
+const Environment = require('./modules/Environment');
 const path = require('path')
 const QueryManager = require("./modules/QueryManager");
 
@@ -228,33 +228,6 @@ ipcMain.handle('openInputMenu', () => {
 
 ipcMain.handle("platform", () => {
     return process.platform;
-})
-
-
-//Show a dialog to select a folder, and return the selected value.
-ipcMain.on('openFolderDialog', async (event, selectedPath) => {
-    await dialog.showOpenDialog(win, {
-        defaultPath: selectedPath,
-        properties: [
-            'openDirectory',
-            'createDirectory'
-        ]
-    }).then(result => {
-        event.sender.send('directorySelected', result.filePaths[0])
-    })
-})
-
-//Show a dialog to select a file, and return the selected value.
-ipcMain.on('openFileDialog', async (event, filePath) => {
-    await dialog.showOpenDialog(win, {
-        defaultPath: filePath,
-        properties: [
-            'openFile',
-            'createDirectory'
-        ]
-    }).then(result => {
-        event.sender.send('fileSelected', result.filePaths[0])
-    })
 })
 
 ipcMain.handle('getPath', (event, arg) => {

@@ -20,9 +20,7 @@ class QueryManager {
     async manage(url) {
         let metadataVideo = new Video(url, "metadata", this.environment);
         this.addVideo(metadataVideo);
-        //this.window.webContents.send("UIAction", {"action": "lock", "elements": ["#add-url", "#add-url-btn"], "state": true});
         const initialQuery = await new InfoQuery(url, this.environment).connect();
-        //this.window.webContents.send("UIAction", {"action": "lock", "elements": ["#add-url", "#add-url-btn"], "state": false});
         this.removeVideo(metadataVideo.identifier);
 
         switch(Utils.detectInfoType(initialQuery)) {

@@ -1,6 +1,5 @@
 const Query = require("../types/Query");
 const Utils = require("../Utils");
-const fs = require('fs');
 
 class SizeQuery extends Query {
     constructor(video, environment) {
