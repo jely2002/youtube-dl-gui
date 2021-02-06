@@ -266,7 +266,7 @@ class QueryManager {
     async saveInfo(identifier) {
         let video = this.getVideo(identifier);
         let result = await dialog.showSaveDialog(this.window, {
-            defaultPath: path.join(this.environment.selectedDownloadPath, "metadata_" + video.url.slice(-11)),
+            defaultPath: path.join(this.environment.paths.downloadPath, "metadata_" + video.url.slice(-11)),
             buttonLabel: "Save metadata",
             filters: [
                 { name: "JSON", extensions: ["json"] },

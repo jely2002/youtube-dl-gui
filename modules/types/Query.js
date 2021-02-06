@@ -19,13 +19,13 @@ class Query {
         args.push(url) //Url must always be added as the final argument
         if(cb == null) {
             //Return the data after the query has completed fully.
-            const {stdout} = await execa(this.environment.ytdlBinary, args);
+            const {stdout} = await execa(this.environment.paths.ytdlBinary, args);
             return stdout
         } else {
             //Return data while the query is running (live)
             //Return "close" when the query has finished
             await new Promise((resolve, reject) => {
-                this.process = execa(this.environment.ytdlBinary, args);
+                this.process = execa(this.environment.paths.ytdlBinary, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
                     cb(data.toString());

@@ -18,18 +18,18 @@ class DownloadQuery extends Query {
         let args;
         if(this.video.audioOnly) {
             let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
-            let output = path.join(this.environment.selectedDownloadPath, "'%(title).200s.%(ext)s") //.200 is to limit the max title length to 200 characters
+            let output = path.join(this.environment.paths.downloadPath, "'%(title).200s.%(ext)s") //.200 is to limit the max title length to 200 characters
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,
                 '--audio-format', 'mp3',
-                '--ffmpeg-location', this.environment.ffmpegBinary,
+                '--ffmpeg-location', this.environment.paths.ffmpegBinary,
                 '--no-mtime',
                 '--embed-thumbnail',
                 '-o', output,
                 '--output-na-placeholder', ""
             ];
         } else {
-            let output = path.join(this.environment.selectedDownloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s")
+            let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s")
             let format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio[ext=m4a]/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
             if(this.format.fps == null) {
                 format = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
@@ -38,7 +38,7 @@ class DownloadQuery extends Query {
             args = [
                 "-f", format,
                 "-o", output,
-                '--ffmpeg-location', this.environment.ffmpegBinary,
+                '--ffmpeg-location', this.environment.paths.ffmpegBinary,
                 "--recode-video", "mp4",
                 '--no-mtime',
                 '--output-na-placeholder', ""
