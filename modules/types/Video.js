@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const Utils = require("../Utils");
 
 class Video {
