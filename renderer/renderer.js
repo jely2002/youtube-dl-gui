@@ -105,6 +105,10 @@ async function init() {
         $('#totalProgress small').html(`Downloading video queue - 0 of ${videos.length} completed`);
     })
 
+    $('#locationBtn').on('click', () => {
+        window.main.invoke("downloadFolder");
+    });
+
     $('#subtitleBtn').on('click', () => {
         $('.video-cards').children().each(function () {
             let identifier = this.id;

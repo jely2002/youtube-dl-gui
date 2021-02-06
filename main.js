@@ -87,8 +87,35 @@ function createWindow () {
             win.webContents.send("maximized", false)
         });
 
-        let env = new Environment(process.platform, app.getAppPath(), app.getPath('home'), app.getPath('downloads'));
+        let env = new Environment(app);
         let queryManager = new QueryManager(win, env);
+
+        //Show a dialog to select a folder, and return the selected value.
+        ipcMain.handle('downloadFolder', async (event) => {
+            await dialog.showOpenDialog(win, {
+                defaultPath: env.paths.downloadPath,
+                buttonLabel: "Set download location",
+                properties: [
+                    'openDirectory',
+                    'createDirectory'
+                ]
+            }).then(result => {
+                if(result.filePaths[0] != null) env.paths.downloadPath = result.filePaths[0];
+            });
+        });
+
+        //Show a dialog to select a file, and return the selected value.
+        ipcMain.on('openFileDialog', async (event, filePath) => {
+            await dialog.showOpenDialog(win, {
+                defaultPath: filePath,
+                properties: [
+                    'openFile',
+                    'createDirectory'
+                ]
+            }).then(result => {
+                event.sender.send('fileSelected', result.filePaths[0])
+            })
+        })
 
         ipcMain.handle('videoAction', async (event, args) => {
             console.log(args)
