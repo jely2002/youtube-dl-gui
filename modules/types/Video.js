@@ -14,7 +14,7 @@ class Video {
         this.webpage_url = this.url;
         this.hasMetadata = false;
         this.downloaded = false;
-        this.identifier = crypto.randomBytes(16).toString("hex");
+        this.identifier = Utils.getRandomID(16);
     }
 
     getFilename() {

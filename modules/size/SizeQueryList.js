@@ -1,12 +1,14 @@
 const SizeQuery = require("./SizeQuery");
-const crypto = require("crypto");
+const Utils = require("../Utils");
+
+//**** THIS CLASS IS CURRENTLY NOT USED AND/OR NOT WORKING ****//
 
 class SizeQueryList {
     constructor(videos, environment, progressBar) {
         this.videos = videos;
         this.environment = environment;
         this.progressBar = progressBar;
-        this.limiterKey = crypto.randomBytes(16).toString("hex");
+        this.limiterKey = Utils.getRandomID(16);
         this.done = 0
         this.length = videos.length;
     }

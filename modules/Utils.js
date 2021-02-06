@@ -1,4 +1,5 @@
 const Format = require("./types/Format");
+const crypto = require('crypto');
 const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)?([a-zA-Z0-9\-]{1,})/;
 
 class Utils {
@@ -22,6 +23,10 @@ class Utils {
             n = n/1024;
         }
         return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
+    }
+
+    static getRandomID(length) {
+        return crypto.randomBytes(length).toString("hex");
     }
 
     static extractPlaylistUrls(infoQueryResult) {

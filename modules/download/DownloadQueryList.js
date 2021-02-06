@@ -1,6 +1,6 @@
 const DownloadQuery = require('./DownloadQuery');
-const crypto = require("crypto");
 const ProgressBar = require("../types/ProgressBar");
+const Utils = require("../Utils");
 
 class DownloadQueryList {
     constructor(videos, environment, manager, progressBar) {
@@ -8,7 +8,7 @@ class DownloadQueryList {
         this.environment = environment;
         this.progressBar = progressBar;
         this.manager = manager;
-        this.limiterKey = crypto.randomBytes(16).toString("hex");
+        this.limiterKey = Utils.getRandomID(16);
         this.length = this.videos.length;
         this.done = 0;
     }

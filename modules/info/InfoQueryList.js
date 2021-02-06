@@ -1,7 +1,6 @@
 const InfoQuery = require('./InfoQuery');
 const Video = require('../types/Video');
 const Utils = require("../Utils");
-const crypto = require("crypto");
 
 class InfoQueryList {
     constructor(query, environment, progressBar) {
@@ -11,7 +10,7 @@ class InfoQueryList {
         this.urls = null;
         this.length = null;
         this.done = 0;
-        this.limiterKey = crypto.randomBytes(16).toString("hex");
+        this.limiterKey = Utils.getRandomID(16);
     }
 
     async start() {
