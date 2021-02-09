@@ -1,8 +1,8 @@
-const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut, shell} = require('electron')
-const { autoUpdater } = require("electron-updater")
-const fs = require('fs')
+const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut, shell} = require('electron');
+const { autoUpdater } = require("electron-updater");
+const fs = require('fs');
 const Environment = require('./modules/Environment');
-const path = require('path')
+const path = require('path');
 const QueryManager = require("./modules/QueryManager");
 
 let doneIcon
@@ -12,157 +12,53 @@ let win
 
 //Set icon file paths depending on the platform
 if(process.platform === "darwin") {
-    doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'assets/done-icon.png')
-    downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'assets/downloading-icon.png')
+    doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'renderer/img/done-icon.png')
+    downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'renderer/img/downloading-icon.png')
 } else {
-    doneIcon = nativeImage.createFromPath('resources/assets/done-icon.png')
-    downloadingIcon = nativeImage.createFromPath('resources/assets/downloading-icon.png')
+    doneIcon = nativeImage.createFromPath('renderer/img/done-icon.png')
+    downloadingIcon = nativeImage.createFromPath('renderer/img/downloading-icon.png')
 }
 
 //Create the window for the renderer process
-function createWindow () {
-    if(process.platform === "darwin") {
-        win = new BrowserWindow({
-            show: false,
-            minWidth: 700,
-            minHeight: 650,
-            width: 815,
-            height: 800,
-            backgroundColor: '#212121',
-            titleBarStyle: "hidden",
-            icon: "resources/assets/icon.png",
-            webPreferences: {
-                nodeIntegration: false,
-                enableRemoteModule: false,
-                worldSafeExecuteJavaScript: true,
-                spellcheck: false,
-                preload: path.join(__dirname, 'preload.js'),
-                contextIsolation: true
-            }
-        })
-    } else {
-        win = new BrowserWindow({
-            show: false,
-            minWidth: 700,
-            minHeight: 650,
-            width: 815,
-            height: 800,
-            backgroundColor: '#212121',
-            frame: false,
-            icon: "resources/assets/icon.png",
-            webPreferences: {
-                nodeIntegration: false,
-                enableRemoteModule: false,
-                worldSafeExecuteJavaScript: true,
-                spellcheck: false,
-                preload: path.join(__dirname, 'preload.js'),
-                contextIsolation: true
-            }
-        })
-    }
+function createWindow (env) {
+    win = new BrowserWindow({
+        show: false,
+        minWidth: 700,
+        minHeight: 650,
+        width: 815,
+        height: 800,
+        backgroundColor: '#212121',
+        titleBarStyle: "hidden",
+        frame: false,
+        icon: env.paths.icon,
+        webPreferences: {
+            nodeIntegration: false,
+            enableRemoteModule: false,
+            worldSafeExecuteJavaScript: true,
+            spellcheck: false,
+            preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true
+        }
+    })
     win.removeMenu()
     if(process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
-    win.loadFile('renderer/renderer.html')
+    win.loadFile(path.join(__dirname, "renderer/renderer.html"))
     win.on('closed', () => {
         win = null
     })
     win.once('ready-to-show', () => {
         win.show()
     })
-    win.webContents.on('did-finish-load', () => {
-        globalShortcut.register('CommandOrControl+Shift+D', () => {
-            win.webContents.openDevTools()
-        })
-        globalShortcut.register('CommandOrControl+Shift+F', () => {
-            win.webContents.send('flushCache')
-        })
-
-        win.on('maximize', () => {
-            win.webContents.send("maximized", true)
-        });
-
-        win.on('unmaximize', () => {
-            win.webContents.send("maximized", false)
-        });
-
-        let env = new Environment(app);
-        let queryManager = new QueryManager(win, env);
-
-        //Show a dialog to select a folder, and return the selected value.
-        ipcMain.handle('downloadFolder', async (event) => {
-            await dialog.showOpenDialog(win, {
-                defaultPath: env.paths.downloadPath,
-                buttonLabel: "Set download location",
-                properties: [
-                    'openDirectory',
-                    'createDirectory'
-                ]
-            }).then(result => {
-                if(result.filePaths[0] != null) env.paths.downloadPath = result.filePaths[0];
-            });
-        });
-
-        //Show a dialog to select a file, and return the selected value.
-        ipcMain.on('openFileDialog', async (event, filePath) => {
-            await dialog.showOpenDialog(win, {
-                defaultPath: filePath,
-                properties: [
-                    'openFile',
-                    'createDirectory'
-                ]
-            }).then(result => {
-                event.sender.send('fileSelected', result.filePaths[0])
-            })
-        })
-
-        ipcMain.handle('videoAction', async (event, args) => {
-            console.log(args)
-            switch (args.action) {
-                case "stop":
-                    queryManager.stopSingle(args.identifier);
-                    break;
-                case "open":
-                    queryManager.openVideo(args);
-                    break;
-                case "download":
-                    if(args.all) {
-                        queryManager.downloadAllVideos(args)
-                    } else {
-                        queryManager.downloadVideo(args);
-                    }
-                    break;
-                case "entry":
-                    queryManager.manage(args.url);
-                    break;
-                case "info":
-                    queryManager.showInfo(args.identifier);
-                    break;
-                case "downloadInfo":
-                    queryManager.saveInfo(args.identifier);
-                    break;
-                case "size":
-                    queryManager.startSizeQuery(args.identifier, args.formatLabel, args.clicked)
-                    break;
-                case "setmain":
-                    env.setMain(args);
-                    break;
-                case "audioOnly":
-                    queryManager.setAudioOnly(args.identifier, args.value);
-                    break;
-                case "audioQuality":
-                    queryManager.setAudioQuality(args.identifier, args.value);
-                    break;
-                case "downloadable":
-                    return await queryManager.isDownloadable(args.identifier);
-            }
-        });
-    });
+    win.webContents.on('did-finish-load', () => startCriticalHandlers(env));
 }
 
 app.on('ready', async () => {
-    createWindow()
+    const env = new Environment(app);
+    createWindow(env)
+    registerShortcuts()
+
     if(isUpdateEnabled() && process.argv[2] !== '--dev') {
         if (process.platform === "darwin") {
             autoUpdater.checkForUpdates().then((result) => {
@@ -189,17 +85,66 @@ app.on('activate', () => {
     }
 });
 
+function startCriticalHandlers(env) {
+    win.on('maximize', () => {
+        win.webContents.send("maximized", true)
+    });
 
-//Event handler to process icon updates from the renderer process
-ipcMain.handle('setOverlayIcon', (event, arg) => {
-    if(arg.mode === "hide") {
-        win.setOverlayIcon(null, "")
-    } else if(arg.mode === "downloading") {
-        win.setOverlayIcon(downloadingIcon, "downloading")
-    } else if(arg.mode === "done") {
-        win.setOverlayIcon(doneIcon, "done")
-    }
-})
+    win.on('unmaximize', () => {
+        win.webContents.send("maximized", false)
+    });
+
+    let queryManager = new QueryManager(win, env);
+
+    ipcMain.handle('videoAction', async (event, args) => {
+        console.log(args)
+        switch (args.action) {
+            case "stop":
+                queryManager.stopSingle(args.identifier);
+                break;
+            case "open":
+                queryManager.openVideo(args);
+                break;
+            case "download":
+                if(args.all) queryManager.downloadAllVideos(args)
+                else queryManager.downloadVideo(args);
+                break;
+            case "entry":
+                queryManager.manage(args.url);
+                break;
+            case "info":
+                queryManager.showInfo(args.identifier);
+                break;
+            case "downloadInfo":
+                queryManager.saveInfo(args.identifier);
+                break;
+            case "size":
+                queryManager.startSizeQuery(args.identifier, args.formatLabel, args.clicked)
+                break;
+            case "setmain":
+                env.setMain(args);
+                break;
+            case "audioOnly":
+                queryManager.setAudioOnly(args.identifier, args.value);
+                break;
+            case "audioQuality":
+                queryManager.setAudioQuality(args.identifier, args.value);
+                break;
+            case "downloadable":
+                return await queryManager.isDownloadable(args.identifier);
+        }
+    });
+}
+
+//Register shortcuts
+function registerShortcuts() {
+    globalShortcut.register('CommandOrControl+Shift+D', () => {
+        win.webContents.openDevTools()
+    })
+    globalShortcut.register('CommandOrControl+Shift+F', () => {
+        win.webContents.send('flushCache')
+    })
+}
 
 //Creates the input menu to show on right click
 const InputMenu = Menu.buildFromTemplate(
@@ -226,30 +171,12 @@ ipcMain.handle('openInputMenu', () => {
     InputMenu.popup(win);
 })
 
+//Return the platform to the renderer process
 ipcMain.handle("platform", () => {
     return process.platform;
 })
 
-ipcMain.handle('getPath', (event, arg) => {
-    if(arg === "appPath") {
-        return app.getAppPath()
-    } else {
-        return app.getPath(arg)
-    }
-})
-
-ipcMain.handle('isDev', (event) => {
-    return process.argv[2] === '--dev'
-})
-
-ipcMain.handle('appInfo', async (event, arg) => {
-    if(arg === "version") {
-        return app.getVersion()
-    } else if(arg === "country") {
-        return app.getLocaleCountryCode()
-    }
-})
-
+//Handle titlebar click events from the renderer process
 ipcMain.handle('titlebarClick', (event, arg) => {
     if(arg === 'close') {
         win.close()
@@ -261,12 +188,31 @@ ipcMain.handle('titlebarClick', (event, arg) => {
     }
 })
 
-ipcMain.handle('showItemInFolder', (event, arg) => {
-    shell.showItemInFolder(arg)
-})
+//Show a dialog to select a folder, and return the selected value.
+ipcMain.handle('downloadFolder', async (event) => {
+    await dialog.showOpenDialog(win, {
+        defaultPath: env.paths.downloadPath,
+        buttonLabel: "Set download location",
+        properties: [
+            'openDirectory',
+            'createDirectory'
+        ]
+    }).then(result => {
+        if(result.filePaths[0] != null) env.paths.downloadPath = result.filePaths[0];
+    });
+});
 
-ipcMain.handle('showFolder', (event, arg) => {
-    shell.openPath(arg)
+//Show a dialog to select a file, and return the selected value.
+ipcMain.on('openFileDialog', async (event, filePath) => {
+    await dialog.showOpenDialog(win, {
+        defaultPath: filePath,
+        properties: [
+            'openFile',
+            'createDirectory'
+        ]
+    }).then(result => {
+        event.sender.send('fileSelected', result.filePaths[0])
+    })
 })
 
 //Check if user has enabled auto-updating the app
