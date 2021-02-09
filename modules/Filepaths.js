@@ -11,32 +11,31 @@ class Filepaths {
         this.appPath = this.app.getAppPath();
 
         this.generateFilepaths();
-        if(this.platform === "linux") {
-            //Start linux fixes
-            this.createHomeFolder();
-            this.setPermissions();
-        }
     }
 
     generateFilepaths() {
-        const unpackedPrefix = "resources/app.asar.unpacked";
-        const packedPrefix = "resources/app.asar";
         switch (this.platform) {
             //TODO find a better way for the macOS slice(0, -8) hack
             //TODO Test on darwin & linux (win32 only platform that has been tested 06/02/2021)
             case "win32":
-                this.ffmpeg = this.app.isPackaged ? path.join(unpackedPrefix, "binaries/ffmpeg.exe") : "binaries/ffmpeg.exe";
-                this.ytdl = this.app.isPackaged ? path.join(unpackedPrefix, "binaries/youtube-dl.exe") : "binaries/youtube-dl.exe";
-                this.icon = this.app.isPackaged ? path.join(packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
+                this.unpackedPrefix = "resources/app.asar.unpacked";
+                this.packedPrefix = "resources/app.asar";
+                this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpeg.exe") : "binaries/ffmpeg.exe";
+                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/youtube-dl.exe") : "binaries/youtube-dl.exe";
+                this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 break;
             case "darwin":
-                this.appPath = this.appPath.slice(0,-8);
-                this.ytdl = path.join(this.appPath, "youtube-dl-unix");
-                this.ffmpeg = path.join(this.appPath, "ffmpeg");
-                break;
+                this.packedPrefix = this.appPath;
+                this.unpackedPrefix = this.appPath + ".unpacked";
+                this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpeg") : "binaries/ffmpeg";
+                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/youtube-dl-unix") : "binaries/youtube-dl-unix";
+                this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
+                this.setPermissions()
                 break;
             case "linux":
                 this.homePath = this.app.getPath('home');
+                this.createHomeFolder()
+                this.setPermissions()
                 this.appPath = path.join(this.homePath, "/.youtube-dl-gui/");
                 this.ytdl = path.join(this.appPath, "youtube-dl-unix");
                 this.ffmpeg = path.join(this.appPath, "ffmpeg");
