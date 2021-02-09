@@ -58,6 +58,7 @@ class Filepaths {
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ffmpeg-linux"), path.join(this.persistentPath, "ffmpeg"));
                     fs.copyFileSync(path.join(this.packedPrefix, "binaries/details"), path.join(this.persistentPath, "details"));
                 }
+                resolve();
             })
         })
     }
