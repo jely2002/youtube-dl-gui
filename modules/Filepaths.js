@@ -30,13 +30,13 @@ class Filepaths {
                 break;
             case "darwin":
                 this.appPath = this.appPath.slice(0,-8);
-                this.ytdl = path.join(this.appPath, "youtube-dl-darwin");
+                this.ytdl = path.join(this.appPath, "youtube-dl-unix");
                 this.ffmpeg = path.join(this.appPath, "ffmpeg");
                 break;
             case "linux":
                 this.homePath = this.app.getPath('home');
                 this.appPath = path.join(this.homePath, "/.youtube-dl-gui/");
-                this.ytdl = path.join(this.appPath, "youtube-dl-darwin");
+                this.ytdl = path.join(this.appPath, "youtube-dl-unix");
                 this.ffmpeg = path.join(this.appPath, "ffmpeg");
                 break;
         }
@@ -56,9 +56,9 @@ class Filepaths {
         let destination = this.homePath + "/.youtube-dl-gui/"
         mkdirp(this.homePath + "/.youtube-dl-gui/").then(made => {
             if(made !== null) {
-                fs.copyFile(readonlyResources + "youtube-dl-darwin", destination + "youtube-dl-darwin", (err) => {
+                fs.copyFile(readonlyResources + "youtube-dl-unix", destination + "youtube-dl-unix", (err) => {
                     if (err) throw err
-                    console.log('youtube-dl-darwin copied to home data')
+                    console.log('youtube-dl-unix copied to home data')
                 })
                 fs.copyFile(readonlyResources + "ffmpeg-linux", destination + "ffmpeg", (err) => {
                     if (err) throw err
