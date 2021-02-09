@@ -463,16 +463,20 @@ function resetProgress(elem, card) {
 
 function updateButtons(videos) {
     let downloadableVideos = false;
+
+    if(videos.length > 0) $('#clearBtn').prop("disabled", false);
+    else $('#clearBtn').prop("disabled", true);
+
     for(const video of videos) {
         let domVideo = getCard(video.identifier);
         if(domVideo == null) continue;
         if(video.downloadable) {
-            $('#downloadBtn, #clearBtn').prop("disabled", false);
+            $('#downloadBtn').prop("disabled", false);
             downloadableVideos = true;
             break;
         }
         if(!downloadableVideos) {
-            $('#downloadBtn, #clearBtn').prop("disabled", true);
+            $('#downloadBtn').prop("disabled", true);
         }
     }
 }
