@@ -7,47 +7,46 @@ class Filepaths {
     constructor(app) {
         this.app = app;
         this.platform = process.platform;
-        this.dev = process.argv[2] === "--dev";
+        this.downloadPath = this.app.getPath('downloads');
+
         this.generateFilepaths();
         if(this.platform === "linux") {
             //Start linux fixes
             this.createHomeFolder();
             this.setPermissions();
         }
-        this.downloadPath = this.app.getPath('downloads');
     }
 
     generateFilepaths() {
-        if(this.dev) {
-            switch (this.platform) {
-                //TODO find a better way for the macOS slice(0, -8) hack
-                //TODO Test on darwin & linux (win32 only platform that has been tested 06/02/2021)
-                case "win32":
-                    this.ytdlBinary = "resources/youtube-dl.exe";
-                    this.ffmpegBinary = "resources/ffmpeg.exe";
-                    break;
-                case "darwin":
-                    this.appPath = this.appPath.slice(0,-8);
-                    this.ytdlBinary = path.join(this.appPath, "youtube-dl-darwin");
-                    this.ffmpegBinary = path.join(this.appPath, "ffmpeg");
-                    break;
-                case "linux":
-                    this.homePath = this.app.getPath('home');
-                    this.appPath = path.join(this.homePath, "/.youtube-dl-gui/");
-                    this.ytdlBinary = path.join(this.appPath, "youtube-dl-darwin");
-                    this.ffmpegBinary = path.join(this.appPath, "ffmpeg");
-                    break;
-            }
-        } else {
-            //TODO Add production file paths
+        const unpackedPrefix = "resources/app.asar.unpacked";
+        const packedPrefix = "resources/app.asar";
+        switch (this.platform) {
+            //TODO find a better way for the macOS slice(0, -8) hack
+            //TODO Test on darwin & linux (win32 only platform that has been tested 06/02/2021)
+            case "win32":
+                this.ffmpeg = this.app.isPackaged ? path.join(unpackedPrefix, "binaries/ffmpeg.exe") : "binaries/ffmpeg.exe";
+                this.ytdl = this.app.isPackaged ? path.join(unpackedPrefix, "binaries/youtube-dl.exe") : "binaries/youtube-dl.exe";
+                this.icon = this.app.isPackaged ? path.join(packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
+                break;
+            case "darwin":
+                this.appPath = this.appPath.slice(0,-8);
+                this.ytdl = path.join(this.appPath, "youtube-dl-darwin");
+                this.ffmpeg = path.join(this.appPath, "ffmpeg");
+                break;
+            case "linux":
+                this.homePath = this.app.getPath('home');
+                this.appPath = path.join(this.homePath, "/.youtube-dl-gui/");
+                this.ytdl = path.join(this.appPath, "youtube-dl-darwin");
+                this.ffmpeg = path.join(this.appPath, "ffmpeg");
+                break;
         }
     }
 
     setPermissions() {
-        fs.chmod(this.ytdlBinary, 0o755, (err) => {
+        fs.chmod(this.ytdl, 0o755, (err) => {
             if(err) console.error(err);
         });
-        fs.chmod(this.ffmpegBinary, 0o755, (err) => {
+        fs.chmod(this.ffmpeg, 0o755, (err) => {
             if(err) console.error(err);
         });
     }

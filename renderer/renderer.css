@@ -165,7 +165,7 @@ body {
 
 .bi-card-text-strike {
     display: block;
-    background: url(../resources/assets/card-text-strike.svg);
+    background: url(img/card-text-strike.svg);
     height: 1em;
     width: 1em;
     margin-top: 0.2em ;
@@ -216,7 +216,7 @@ body {
     max-height: 110px;
     width: 100%;
     object-fit: cover;
-    background-image: url("../resources/assets/plain-placeholder.png");
+    background-image: url("img/plain-placeholder.png");
 }
 
 .video-card .progress {
@@ -374,7 +374,7 @@ option.audio {
     max-height: 110px;
     width: 100%;
     object-fit: cover;
-    background-image: url(../resources/assets/plain-placeholder.png);
+    background-image: url(img/plain-placeholder.png);
 }
 
 .list-group-item {

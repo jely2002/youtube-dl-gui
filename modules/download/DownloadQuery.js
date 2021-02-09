@@ -22,7 +22,7 @@ class DownloadQuery extends Query {
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,
                 '--audio-format', 'mp3',
-                '--ffmpeg-location', this.environment.paths.ffmpegBinary,
+                '--ffmpeg-location', this.environment.paths.ffmpeg,
                 '--no-mtime',
                 '--embed-thumbnail',
                 '-o', output,
@@ -38,7 +38,7 @@ class DownloadQuery extends Query {
             args = [
                 "-f", format,
                 "-o", output,
-                '--ffmpeg-location', this.environment.paths.ffmpegBinary,
+                '--ffmpeg-location', this.environment.paths.ffmpeg,
                 "--recode-video", "mp4",
                 '--no-mtime',
                 '--output-na-placeholder', ""

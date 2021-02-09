@@ -25,6 +25,7 @@
     "bootstrap": "^4.5.3",
     "bootstrap-icons": "^1.3.0",
     "bottleneck": "^2.19.5",
+    "electron-unhandled": "^3.0.2",
     "electron-updater": "^4.3.4",
     "execa": "^4.1.0",
     "jquery": "^3.5.1",
@@ -38,23 +39,19 @@
   "build": {
     "afterPack": "./fix-linux-builds.js",
     "appId": "com.jelleglebbeek.youtube-dl-gui",
+    "asarUnpack": "**/binaries/*",
     "productName": "YouTube Downloader GUI",
     "copyright": "Copyright © 2020 Jelle Glebbeek",
     "win": {
       "target": "nsis",
-      "icon": "resources/assets/icon.ico",
-      "extraResources": [
-        {
-          "from": "resources",
-          "to": "./",
-          "filter": [
-            "ffmpeg.exe",
-            "youtube-dl.exe",
-            "details",
-            "downloading-icon.png",
-            "done-icon.png"
-          ]
-        }
+      "icon": "renderer/img/icon.ico",
+      "files": [
+        "!ytdlgui_demo.gif",
+        "!fix-linux-builds.js",
+        "!**/binaries/ffmpeg",
+        "!**/binaries/ffmpeg-linux",
+        "!**/binaries/youtube-dl-darwin",
+        "!**/renderer/img/icon.icns"
       ]
     },
     "mac": {
