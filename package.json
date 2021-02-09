@@ -50,33 +50,28 @@
         "!fix-linux-builds.js",
         "!**/binaries/ffmpeg",
         "!**/binaries/ffmpeg-linux",
-        "!**/binaries/youtube-dl-darwin",
+        "!**/binaries/youtube-dl-unix",
         "!**/renderer/img/icon.icns"
       ]
     },
     "mac": {
       "target": "dmg",
-      "icon": "resources/assets/icon.icns",
+      "icon": "renderer/img/icon.icns",
       "category": "public.app-category.utilities",
       "identity": null,
-      "extraResources": [
-        {
-          "from": "resources",
-          "to": "./",
-          "filter": [
-            "ffmpeg",
-            "youtube-dl-darwin",
-            "details",
-            "downloading-icon.png",
-            "done-icon.png"
-          ]
-        }
+      "files": [
+        "!ytdlgui_demo.gif",
+        "!fix-linux-builds.js",
+        "!**/binaries/ffmpeg.exe",
+        "!**/binaries/ffmpeg-linux",
+        "!**/binaries/youtube-dl.exe",
+        "!**/renderer/img/icon.ico"
       ]
     },
     "linux": {
       "target": "AppImage",
       "executableName": "youtube-dl-gui",
-      "icon": "resources/assets/icon.png",
+      "icon": "renderer/img/icon.png",
       "synopsis": "A cross-platform GUI for youtube-dl",
       "category": "X-utility",
       "desktop": {
@@ -84,18 +79,14 @@
         "Icon": "youtube-dl-gui",
         "Comment": "A cross-platform GUI for youtube-dl"
       },
-      "extraResources": [
-        {
-          "from": "resources",
-          "to": "./",
-          "filter": [
-            "ffmpeg-linux",
-            "youtube-dl-darwin",
-            "details",
-            "downloading-icon.png",
-            "done-icon.png"
-          ]
-        }
+      "files": [
+        "!ytdlgui_demo.gif",
+        "!fix-linux-builds.js",
+        "!**/binaries/ffmpeg",
+        "!**/binaries/ffmpeg.exe",
+        "!**/binaries/youtube-dl.exe",
+        "!**/renderer/img/icon.icns",
+        "!**/renderer/img/icon.ico"
       ]
     }
   }
