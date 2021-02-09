@@ -233,6 +233,7 @@ body {
 
 .video-card .open .btn {
     line-height: 1.2;
+    font-size: 95%;
 }
 
 .video-card .progress small {
