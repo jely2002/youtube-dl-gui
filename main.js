@@ -9,6 +9,8 @@ let doneIcon
 let downloadingIcon
 
 let win
+let env
+let queryManager
 
 //Set icon file paths depending on the platform
 if(process.platform === "darwin") {
@@ -20,7 +22,7 @@ if(process.platform === "darwin") {
 }
 
 //Create the window for the renderer process
-function createWindow (env) {
+function createWindow(env) {
     win = new BrowserWindow({
         show: false,
         minWidth: 700,
@@ -55,7 +57,7 @@ function createWindow (env) {
 }
 
 app.on('ready', async () => {
-    const env = new Environment(app);
+    env = new Environment(app);
     createWindow(env)
     registerShortcuts()
 
@@ -81,7 +83,7 @@ app.on('window-all-closed', () => {
 //Create a window when there is none, but the app is still active (darwin)
 app.on('activate', () => {
     if (win === null) {
-        createWindow()
+        createWindow(env)
     }
 });
 
@@ -94,7 +96,8 @@ function startCriticalHandlers(env) {
         win.webContents.send("maximized", false)
     });
 
-    let queryManager = new QueryManager(win, env);
+    if(queryManager != null) return;
+    queryManager = new QueryManager(win, env);
 
     ipcMain.handle('videoAction', async (event, args) => {
         console.log(args)
