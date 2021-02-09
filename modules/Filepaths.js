@@ -8,6 +8,7 @@ class Filepaths {
         this.app = app;
         this.platform = process.platform;
         this.downloadPath = this.app.getPath('downloads');
+        this.appPath = this.app.getAppPath();
 
         this.generateFilepaths();
         if(this.platform === "linux") {
@@ -32,6 +33,7 @@ class Filepaths {
                 this.appPath = this.appPath.slice(0,-8);
                 this.ytdl = path.join(this.appPath, "youtube-dl-unix");
                 this.ffmpeg = path.join(this.appPath, "ffmpeg");
+                break;
                 break;
             case "linux":
                 this.homePath = this.app.getPath('home');
