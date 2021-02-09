@@ -9,14 +9,11 @@ class Filepaths {
         this.platform = process.platform;
         this.downloadPath = this.app.getPath('downloads');
         this.appPath = this.app.getAppPath();
-
         this.generateFilepaths();
     }
 
-    generateFilepaths() {
+    async generateFilepaths() {
         switch (this.platform) {
-            //TODO find a better way for the macOS slice(0, -8) hack
-            //TODO Test on darwin & linux (win32 only platform that has been tested 06/02/2021)
             case "win32":
                 this.unpackedPrefix = "resources/app.asar.unpacked";
                 this.packedPrefix = "resources/app.asar";
@@ -33,12 +30,13 @@ class Filepaths {
                 this.setPermissions()
                 break;
             case "linux":
-                this.homePath = this.app.getPath('home');
-                this.createHomeFolder()
+                this.persistentPath = path.join(this.app.getPath('home'), ".youtube-dl-gui");
+                this.packedPrefix = this.appPath;
+                this.unpackedPrefix = this.appPath + ".unpacked";
+                await this.createHomeFolder()
+                this.ytdl = path.join(this.persistentPath, "youtube-dl-unix");
+                this.ffmpeg = path.join(this.persistentPath, "ffmpeg");
                 this.setPermissions()
-                this.appPath = path.join(this.homePath, "/.youtube-dl-gui/");
-                this.ytdl = path.join(this.appPath, "youtube-dl-unix");
-                this.ffmpeg = path.join(this.appPath, "ffmpeg");
                 break;
         }
     }
@@ -52,24 +50,15 @@ class Filepaths {
         });
     }
 
-    createHomeFolder() {
-        let readonlyResources = this.appPath.slice(0, -8)
-        let destination = this.homePath + "/.youtube-dl-gui/"
-        mkdirp(this.homePath + "/.youtube-dl-gui/").then(made => {
-            if(made !== null) {
-                fs.copyFile(readonlyResources + "youtube-dl-unix", destination + "youtube-dl-unix", (err) => {
-                    if (err) throw err
-                    console.log('youtube-dl-unix copied to home data')
-                })
-                fs.copyFile(readonlyResources + "ffmpeg-linux", destination + "ffmpeg", (err) => {
-                    if (err) throw err
-                    console.log('ffmpeg copied to home data')
-                })
-                fs.copyFile(readonlyResources + "details", destination + "details", (err) => {
-                    if (err) throw err
-                    console.log('details copied to home data')
-                })
-            }
+    async createHomeFolder() {
+        await new Promise((resolve) => {
+            mkdirp(this.persistentPath).then(made => {
+                if (made !== null) {
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "youtube-dl-unix"), path.join(this.persistentPath, "youtube-dl-unix"));
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "ffmpeg-linux"), path.join(this.persistentPath, "ffmpeg"));
+                    fs.copyFileSync(path.join(this.packedPrefix, "details"), path.join(this.persistentPath, "details"));
+                }
+            })
         })
     }
 }
