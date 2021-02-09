@@ -54,9 +54,9 @@ class Filepaths {
         await new Promise((resolve) => {
             mkdirp(this.persistentPath).then(made => {
                 if (made !== null) {
-                    fs.copyFileSync(path.join(this.unpackedPrefix, "youtube-dl-unix"), path.join(this.persistentPath, "youtube-dl-unix"));
-                    fs.copyFileSync(path.join(this.unpackedPrefix, "ffmpeg-linux"), path.join(this.persistentPath, "ffmpeg"));
-                    fs.copyFileSync(path.join(this.packedPrefix, "details"), path.join(this.persistentPath, "details"));
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "youtube-dl-unix"), path.join(this.persistentPath, "binaries/youtube-dl-unix"));
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "ffmpeg-linux"), path.join(this.persistentPath, "binaries/ffmpeg"));
+                    fs.copyFileSync(path.join(this.packedPrefix, "details"), path.join(this.persistentPath, "binaries/details"));
                 }
             })
         })
