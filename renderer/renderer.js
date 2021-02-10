@@ -408,12 +408,16 @@ function addVideo(args) {
         $(template).find('.metadata.info').html('Fetching video metadata...');
         $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); });
     }
-    $('.video-cards').append(template);
 
-    //Update the type and quality values to match the global set values.
-    // This only works after the card has been appended.
-    $('#download-type').change();
-    $('#download-quality').change();
+    $(template).find('img').on('load error', (e) => {
+        $('.video-cards').append(template);
+
+        //Update the type and quality values to match the global set values.
+        // This only works after the card has been appended.
+        $('#download-type').change();
+        $('#download-quality').change();
+    });
+
 }
 
 function updateProgress(args) {
