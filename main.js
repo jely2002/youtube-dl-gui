@@ -97,6 +97,12 @@ function startCriticalHandlers(env) {
         win.webContents.send("maximized", false)
     });
 
+    //Force links with target="_blank" to be opened in an external browser
+    win.webContents.on('new-window', function(e, url) {
+        e.preventDefault();
+        shell.openExternal(url);
+    });
+
     if(queryManager != null) return;
     queryManager = new QueryManager(win, env);
     env.errorHandler = new ErrorHandler(win, queryManager);

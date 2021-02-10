@@ -509,7 +509,7 @@ function showInfoModal(info, identifier) {
     $(modal).find('#info-description').html(info.description == null ? "No description was found." : info.description);
     $(modal).find('.uploader').html('<strong>Uploader: </strong>' + (info.uploader == null ? "Unknown" : info.uploader));
     $(modal).find('.extractor').html('<strong>Extractor: </strong>' + (info.extractor == null ? "Unknown" : info.extractor));
-    $(modal).find('.url').html('<strong>URL: </strong>' + info.url);
+    $(modal).find('.url').html('<strong>URL: </strong>' + '<a target="_blank" href="' + info.url + '">' + info.url + '</a>');
     $(modal).find('[title="Views"]').html('<i class="bi bi-eye"></i> ' + (info.view_count == null ? "-" : info.view_count));
     $(modal).find('[title="Like / dislikes"]').html('<i class="bi bi-hand-thumbs-up"></i> ' + (info.like_count == null ? "-" : info.like_count) + ' &nbsp;&nbsp; <i class="bi bi-hand-thumbs-down"></i> ' + (info.dislike_count == null ? "-" : info.dislike_count));
     $(modal).find('[title="Average rating"]').html('<i class="bi bi-star"></i> ' + (info.average_rating == null ? "-" : info.average_rating.toString().slice(0,3)));
