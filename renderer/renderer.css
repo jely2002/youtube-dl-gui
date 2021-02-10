@@ -282,6 +282,11 @@ option.audio {
     background: var(--bg-color);
 }
 
+.openAuth {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .controls .progress small {
     color: #000;
     position: absolute;
@@ -347,9 +352,21 @@ option.audio {
 }
 
 
-/* SETTINGS MODAL */
+/* AUTH MODAL */
+#fileInput {
+    cursor: pointer;
+}
 
+#authModal a {
+    display: block;
+    margin-top: 1rem;
+}
 
+@media screen and (min-width: 992px) {
+    #authModal .custom-file {
+        max-width: 50%;
+    }
+}
 
 /* INFO MODAL */
 #info-description {

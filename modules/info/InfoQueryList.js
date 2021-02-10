@@ -31,7 +31,7 @@ class InfoQueryList {
                 resolve(null);
             }
             for (const url of this.urls) {
-                let task = new InfoQuery(url, this.environment, this.progressBar);
+                let task = new InfoQuery(url, this.progressBar.video.identifier, this.environment);
                 this.environment.limiterGroup.key(this.limiterKey).schedule(() => task.connect()).then((data) => {
                     if(data != null) {
                         let video = this.createVideo(data, url);

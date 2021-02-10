@@ -216,34 +216,39 @@ ipcMain.handle('downloadFolder', async (event) => {
     });
 });
 
+ipcMain.handle('messageBox', (event, args) => {
+   dialog.showMessageBoxSync(win, {
+       title: args.title,
+       message: args.message,
+       type: "none",
+       buttons: [],
+   }) ;
+});
+
 //Show a dialog to select a file, and return the selected value.
-ipcMain.on('openFileDialog', async (event, filePath) => {
-    await dialog.showOpenDialog(win, {
-        defaultPath: filePath,
+ipcMain.handle('cookieFile', async (event,clear) => {
+    if(clear === true) {
+        env.settings.cookiePath = null;
+        env.settings.save();
+        return;
+    } else if(clear === "get") {
+        return env.settings.cookiePath;
+    }
+    let result = await dialog.showOpenDialog(win, {
+        buttonLabel: "Select file",
+        defaultPath: (env.settings.cookiePath != null) ? env.settings.cookiePath : env.paths.downloadPath,
         properties: [
             'openFile',
             'createDirectory'
-        ]
-    }).then(result => {
-        event.sender.send('fileSelected', result.filePaths[0])
-    })
+        ],
+        filters: [
+            { name: "txt", extensions: ["txt"] },
+            { name: "All Files", extensions: ["*"] },
+        ],
+    });
+    if(result.filePaths[0] != null) {
+        env.settings.cookiePath = result.filePaths[0];
+        env.settings.save();
+    }
+    return result.filePaths[0];
 })
-
-//Check if user has enabled auto-updating the app
-function isUpdateEnabled() {
-    let settingsPath
-    if(process.platform === "darwin") {
-        settingsPath = app.getAppPath().slice(0,-8) + 'settings'
-    } else if(process.platform === "linux") {
-        settingsPath = app.getPath('home') + "/.youtube-dl-gui/" + 'settings'
-    } else {
-        settingsPath = "resources/settings"
-    }
-    let settingsData
-    try {
-        settingsData = fs.readFileSync(settingsPath);
-        return JSON.parse(settingsData)['update_app']
-    } catch (err) {
-        return true
-    }
-}

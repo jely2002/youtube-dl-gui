@@ -3,21 +3,22 @@ const path = require("path");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, enforceMP4, sizeMode, maxConcurrent, updateBinary, updateApplication) {
+    constructor(paths, env, enforceMP4, sizeMode, maxConcurrent, updateBinary, updateApplication, cookiePath) {
         this.paths = paths;
         this.env = env
         this.enforceMP4 = enforceMP4 == null ? false : enforceMP4;
         this.sizeMode = sizeMode == null ? "full" : sizeMode;
         this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? Math.round(os.cpus().length / 2) : maxConcurrent; //Max concurrent is standard half of the system's available cores
         this.updateBinary = updateBinary == null ? true : updateBinary; //TODO Implement setting
-        this.updateApplication = updateApplication == null ? true : updateApplication; //TODO Implement setting
+        this.updateApplication = updateApplication == null ? true : updateApplication;
+        this.cookiePath = cookiePath;
     }
 
     static async loadFromFile(paths, env) {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(paths, env, data.enforceMP4, data.sizeMode, data.maxConcurrent, data.updateBinary, data.updateApplication);
+            return new Settings(paths, env, data.enforceMP4, data.sizeMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath);
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
@@ -45,7 +46,8 @@ class Settings {
             sizeMode: this.sizeMode,
             maxConcurrent: this.maxConcurrent,
             updateBinary: this.updateBinary,
-            updateApplication: this.updateApplication
+            updateApplication: this.updateApplication,
+            cookiePath: this.cookiePath
         }
     }
 

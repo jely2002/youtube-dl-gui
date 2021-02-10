@@ -1,6 +1,7 @@
 const Bottleneck = require("bottleneck");
 const Filepaths = require("./Filepaths");
 const Settings = require("./Settings");
+const fs = require("fs").promises;
 
 class Environment {
     constructor(app) {
@@ -19,6 +20,12 @@ class Environment {
 
     async loadSettings() {
         this.settings = await Settings.loadFromFile(this.paths, this);
+        if(this.settings.cookiePath != null) { //If the file does not exist anymore, null the value and save.
+            fs.access(this.settings.cookiePath).catch(() => {
+                this.settings.cookiePath = null;
+                this.settings.save();
+            })
+        }
     }
 
     changeMaxConcurrent(max) {
