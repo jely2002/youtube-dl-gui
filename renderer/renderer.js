@@ -122,7 +122,6 @@ async function init() {
         })
         $('#totalProgress .progress-bar').remove();
         $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
-        $('#totalProgress small').html(`Downloading video queue - 0 of ${videos.length} completed`);
     })
 
     $('#locationBtn').on('click', () => {
