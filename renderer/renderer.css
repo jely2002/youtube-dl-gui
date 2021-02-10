@@ -33,6 +33,11 @@ body {
     background-color: var(--bg-color)
 }
 
+.toast i {
+    font-size: 20px;
+    margin-bottom: 6px;
+}
+
 /* NAVBAR */
 .windowbar {
     background-color: #212121 !important;

@@ -46,9 +46,8 @@ async function init() {
         }).observe(sel, {childList: true, subtree: true});
     });
 
-
-    //Configures the 4 error toasts
-    $('#error, #warning, #connection, #update').toast({
+    //Configures the 4 toasts
+    $('#update').toast({
         autohide: false,
         animation: true
     })
@@ -75,6 +74,10 @@ async function init() {
 
     $('#infoModal .dismiss').on('click', () => {
         $('#infoModal').modal("hide");
+    });
+
+    $('#authModal .dismiss').on('click', () => {
+        $('#authModal').modal("hide");
     });
 
     $('#settingsModal .dismiss').on('click', () => {
@@ -109,6 +112,33 @@ async function init() {
             $('#settingsModal').modal("show");
         })
     });
+
+    $('#authBtn').on('click', () => {
+        $('#authModal').modal("show");
+    })
+
+    $('#fileInput').on('click', (event) => {
+        event.preventDefault();
+        window.main.invoke('cookieFile', false).then((path) => {
+            if(path != null)  {
+                $('#fileInputLabel').html(path);
+                $('#fileInput').attr("title", path);
+            }
+        });
+    });
+
+    window.main.invoke('cookieFile', "get").then((path) => {
+        if(path != null) {
+            $('#fileInputLabel').html(path);
+            $('#fileInput').attr("title", path);
+        }
+    });
+
+    $('.removeCookies').on('click', () => {
+        window.main.invoke('cookieFile', true);
+        $('#fileInputLabel').html("Click to select cookies.txt");
+        $('#fileInput').attr("title", "No file selected");
+    })
 
     $('#infoModal .json').on('click', () => {
         window.main.invoke('videoAction', {action: "downloadInfo", identifier: $('#infoModal .identifier').html()})
@@ -265,13 +295,11 @@ function parseURL(data) {
 }
 
 function showToast(toastInfo) {
-    if(toastInfo.type === "error" || toastInfo.type === "warning" || toastInfo.type === "update") {
+    if(toastInfo.type === "update") {
         if(toastInfo.title != null) {
             $(`.${toastInfo.type}-title`).html(toastInfo.title);
         }
         $(`.${toastInfo.type}-body`).html(toastInfo.msg);
-        $(`#${toastInfo.type}`).toast('show').css('visibility', 'visible');
-    } else if(toastInfo.type === "connection") {
         $(`#${toastInfo.type}`).toast('show').css('visibility', 'visible');
     } else {
         console.error("Main tried to show a toast that doesn't exist.")
