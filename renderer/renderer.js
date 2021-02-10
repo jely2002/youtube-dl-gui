@@ -558,8 +558,7 @@ function setError(code, description, unexpected, identifier) {
         $(card).find('.options, .info, .open').addClass("d-none").removeClass("d-flex");
         $(card).find('.error').addClass('d-flex').removeClass("d-none");
         $(card).find('.report').unbind().on('click', () => {
-            console.log("trest")
-            window.open('https://github.com/jely2002/youtube-dl-gui/issues/new?assignees=&labels=bug&template=bug_report.md&title=Unknown%20Exception', '_blank');
+            window.open('https://github.com/jely2002/youtube-dl-gui/issues/new?assignees=&labels=bug&template=bug_report.md&title=' + encodeURIComponent(description), '_blank');
         });
         $(card).find('#fullError').unbind().on('click', () => {
             window.main.invoke("messageBox", {title: "Full error message", message: description});
