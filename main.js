@@ -62,10 +62,11 @@ app.on('ready', async () => {
     await env.loadSettings();
     createWindow(env)
     registerShortcuts()
-    if(isUpdateEnabled() && process.argv[2] !== '--dev') {
+    if(env.settings.updateApplication && process.argv[2] !== '--dev') {
         if (process.platform === "darwin") {
             autoUpdater.checkForUpdates().then((result) => {
                 result.currentVersion = app.getVersion();
+                //TODO Create update pop-up for mac
                 win.webContents.send('mac-update', result);
             })
         } else if (process.platform === "win32" || process.platform === "linux") {
