@@ -280,7 +280,6 @@ async function init() {
             node = node.parentNode;
         }
     });
-
 }
 
 function parseURL(data) {
@@ -306,7 +305,6 @@ function showToast(toastInfo) {
     }
 }
 
-//TODO add loader when thumbnail is loading OR wait for the thumbnail to be loaded before making the new video visible.
 function addVideo(args) {
     let template = $('.template.video-card').clone();
     $(template).removeClass('template');
@@ -448,7 +446,7 @@ function addVideo(args) {
         });
     }
 
-    $(template).find('img').on('load error', (e) => {
+    $(template).find('img').on('load error', () => {
         $('.video-cards').append(template);
 
         //Update the type and quality values to match the global set values.
