@@ -45,25 +45,24 @@ class QueryManager {
     }
 
     manageSingle(initialQuery, url) {
-        console.log("manageSingle")
         let video = new Video(url, "single", this.environment);
         video.setMetadata(initialQuery);
         this.addVideo(video);
-        this.updateGlobalButtons();
         if(this.environment.settings.sizeMode === "full") this.startSizeQuery(video.identifier, video.formats[video.selected_format_index]);
+        setTimeout(() => this.updateGlobalButtons(), 700); //This feels kinda hacky, maybe find a better way sometime.
     }
 
     managePlaylist(initialQuery, url) {
-        console.log("manageList");
         let playlistVideo = new Video(url, "playlist", this.environment);
         this.addVideo(playlistVideo);
         const playlistQuery = new InfoQueryList(initialQuery, this.environment, new ProgressBar(this, playlistVideo));
         playlistQuery.start().then((videos) => {
-            this.removeVideo(playlistVideo.identifier);
+            this.removeVideo(playlistVideo);
             for(const video of videos) {
                 this.addVideo(video);
+                console.log(video.url);
             }
-            this.updateGlobalButtons();
+           setTimeout(() => this.updateGlobalButtons(), 700); //This feels kinda hacky, maybe find a better way sometime.
         });
     }
 
