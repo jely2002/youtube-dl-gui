@@ -8,7 +8,6 @@ class InfoQuery extends Query {
     }
 
     async connect() {
-        //TODO FIX/IMPLEMENT CHANNELS
         try {
             let args = ["-J", "--flat-playlist"]
             let data = await this.start(this.url, args);

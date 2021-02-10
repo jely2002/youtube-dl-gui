@@ -18,10 +18,21 @@ class QueryManager {
     }
 
     async manage(url) {
+        const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)([a-zA-Z0-9\-]{1,})/
         let metadataVideo = new Video(url, "metadata", this.environment);
         this.addVideo(metadataVideo);
-        const initialQuery = await new InfoQuery(url, this.environment).connect();
-        this.removeVideo(metadataVideo.identifier);
+        const initialQuery = await new InfoQuery(url, metadataVideo.identifier, this.environment).connect();
+        if(metadataVideo.error) return;
+        if(channelRegex.test(url)) {
+            const actualQuery = await new InfoQuery(initialQuery.entries[0].url, metadataVideo.identifier, this.environment).connect();
+            if(metadataVideo.error) return;
+            this.removeVideo(metadataVideo);
+            if(actualQuery.entries == null || actualQuery.entries.length === 0) this.managePlaylist(initialQuery, url);
+            else this.managePlaylist(actualQuery, initialQuery.entries[0].url);
+            return;
+        }
+
+        this.removeVideo(metadataVideo);
 
         switch(Utils.detectInfoType(initialQuery)) {
             case "single":
