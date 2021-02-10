@@ -3,7 +3,7 @@ const Utils = require("../Utils");
 
 class SizeQuery extends Query {
     constructor(video, environment) {
-        super(environment);
+        super(environment, video.identifier);
         this.video = video;
         this.video = video;
         this.format = video.formats[video.selected_format_index];

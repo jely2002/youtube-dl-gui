@@ -206,6 +206,9 @@ async function init() {
     //Enables the main process to show toasts.
     window.main.receive("toast", (arg) => showToast(arg));
 
+    //Passes an error to the setError method
+    window.main.receive("error", (arg) => setError(arg.error.code, arg.error.description, arg.unexpected, arg.identifier))
+
     //Updates the windowbar icon when the app gets maximized/unmaximized
     window.main.receive("maximized", (maximized) => {
         if(maximized) $('.windowbar').addClass("fullscreen");
@@ -396,6 +399,10 @@ function addVideo(args) {
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Downloading metadata...');
         $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); });
+        $(template).find('.remove-btn').on('click', () => {
+            $(getCard(args.identifier)).remove();
+            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
+        });
 
     } else if(args.type === "playlist") {
         $(template).find('.card-title')
@@ -407,6 +414,10 @@ function addVideo(args) {
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Fetching video metadata...');
         $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); });
+        $(template).find('.remove-btn').on('click', () => {
+            $(getCard(args.identifier)).remove();
+            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
+        });
     }
 
     $(template).find('img').on('load error', (e) => {
@@ -502,6 +513,35 @@ function updateButtons(videos) {
         if(!downloadableVideos) {
             $('#downloadBtn').prop("disabled", true);
         }
+    }
+}
+
+function setError(code, description, unexpected, identifier) {
+    let card = getCard(identifier);
+    $(card).find('.progress-bar').removeClass("progress-bar-striped").removeClass("progress-bar-animated").css("width", "100%").css('background-color', 'var(--error-color)');
+    $(card).find('.buttons').children().each(function() {
+        if($(this).hasClass("remove-btn")) return;
+        $(this).find('i').addClass("disabled");
+        $(this).removeClass("disabled");
+    });
+    $(card).find(".remove-btn i").removeClass("disabled");
+    $(card).css("box-shadow", "none").css("border", "solid 1px var(--error-color)");
+    $(card).find('.progress small').html("Error! " + code + ".");
+    $(card).find('.progress').addClass("d-flex");
+    if(unexpected) {
+        $(card).find('.options, .info, .open').addClass("d-none").removeClass("d-flex");
+        $(card).find('.error').addClass('d-flex').removeClass("d-none");
+        $(card).find('.report').unbind().on('click', () => {
+            console.log("trest")
+            window.open('https://github.com/jely2002/youtube-dl-gui/issues/new?assignees=&labels=bug&template=bug_report.md&title=Unknown%20Exception', '_blank');
+        });
+        $(card).find('#fullError').unbind().on('click', () => {
+            window.main.invoke("messageBox", {title: "Full error message", message: description});
+        })
+    } else {
+        $(card).find('.options, .open').addClass("d-none").removeClass("d-flex");
+        $(card).find('.info').addClass('d-flex').removeClass("d-none");
+        $(card).find('.metadata.info').removeClass("d-none").html(description);
     }
 }
 

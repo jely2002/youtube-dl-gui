@@ -7,6 +7,7 @@
     --highlight-color: #5cb85c;
     --secondary-highlight-color: #52a552;
     --scroll-bar-color: #555;
+    --error-color: #b73232;
 }
 
 body {
@@ -231,7 +232,7 @@ body {
     display: none;
 }
 
-.video-card .open .btn {
+.video-card .open .btn, .video-card .error .btn {
     line-height: 1.2;
     font-size: 95%;
 }

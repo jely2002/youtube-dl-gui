@@ -124,6 +124,7 @@ class QueryManager {
         downloadVideo.setQuery(new DownloadQuery(downloadVideo.url, downloadVideo, this.environment, progressBar));
         downloadVideo.query.connect().then(() => {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
+            if(downloadVideo.error) return;
             downloadVideo.downloaded = true;
             downloadVideo.query.progressBar.done();
             this.updateGlobalButtons();
@@ -137,7 +138,6 @@ class QueryManager {
             if(formatLabel === "worst") {
                 applicableSize = video.worstAudioSize;
             }
-            console.log(applicableSize + " " + formatLabel)
             if(applicableSize == null) {
                 if (this.environment.settings.sizeMode === "click" && !clicked) {
                     this.window.webContents.send("videoAction", {action: "size", size: null, identifier: video.identifier})
@@ -168,8 +168,6 @@ class QueryManager {
                 for (const format of video.formats) {
                     if (format.getDisplayName() === formatLabel) {
                         video.selected_format_index = video.formats.indexOf(format);
-                        console.log(formatLabel)
-                        console.log(format.filesize_label)
                         selectedFormat = format;
                         break;
                     }
@@ -207,6 +205,15 @@ class QueryManager {
         this.window.webContents.send("videoAction", { action: "remove", identifier: identifier })
     }
 
+    onError(identifier) {
+        let video = this.getVideo(identifier);
+        if(video.query != null) {
+            video.query.stop();
+        }
+        video.error = true;
+        this.updateGlobalButtons();
+    }
+
     updateProgress(video, progress_args) {
         let args = {
             action: "progress",
@@ -221,7 +228,7 @@ class QueryManager {
         if(video.query != null) {
             video.query.stop();
         }
-        this.removeVideo(identifier, true);
+        this.removeVideo(video);
     }
 
     async openVideo(args) {
@@ -301,9 +308,7 @@ class QueryManager {
         if(video.type == null) {
             usedVideo = this.getVideo(video);
         }
-        console.log(usedVideo)
-        console.log(!(usedVideo == null || usedVideo.type !== "single" || usedVideo.downloaded))
-        return !(usedVideo == null || usedVideo.type !== "single" || usedVideo.downloaded)
+        return !(usedVideo == null || usedVideo.type !== "single" || usedVideo.error || usedVideo.downloaded)
     }
 
     isManaging(identifier) {

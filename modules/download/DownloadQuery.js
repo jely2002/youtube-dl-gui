@@ -3,7 +3,7 @@ const path = require("path")
 
 class DownloadQuery extends Query {
     constructor(url, video, environment, progressBar) {
-        super(environment);
+        super(environment, video.identifier);
         this.url = url;
         this.video = video;
         this.progressBar = progressBar;
@@ -51,11 +51,9 @@ class DownloadQuery extends Query {
                 args.push("--recode-video");
                 args.push("mp4");
             }
-            console.log(args)
         }
         let destinationCount = 0;
         let initialReset = false;
-        // TODO Add more error handling
         try {
             await this.start(this.url, args, (liveData) => {
                 if(!liveData.includes("[download]")) return;

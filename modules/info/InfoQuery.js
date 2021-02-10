@@ -1,8 +1,8 @@
 const Query = require("../types/Query");
 
 class InfoQuery extends Query {
-    constructor(url, environment, progressBar) {
-        super(environment, progressBar);
+    constructor(url, identifier, environment) {
+        super(environment, identifier);
         this.url = url;
         this.environment = environment;
     }

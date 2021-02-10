@@ -4,6 +4,7 @@ const fs = require('fs');
 const Environment = require('./modules/Environment');
 const path = require('path');
 const QueryManager = require("./modules/QueryManager");
+const ErrorHandler = require("./modules/ErrorHandler");
 
 let doneIcon
 let downloadingIcon
@@ -98,6 +99,7 @@ function startCriticalHandlers(env) {
 
     if(queryManager != null) return;
     queryManager = new QueryManager(win, env);
+    env.errorHandler = new ErrorHandler(win, queryManager);
 
     ipcMain.handle('settingsAction', (event, args) => {
         switch(args.action) {
@@ -110,7 +112,6 @@ function startCriticalHandlers(env) {
     })
 
     ipcMain.handle('videoAction', async (event, args) => {
-        console.log(args)
         switch (args.action) {
             case "stop":
                 queryManager.stopSingle(args.identifier);

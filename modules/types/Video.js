@@ -11,6 +11,7 @@ class Video {
         this.webpage_url = this.url;
         this.hasMetadata = false;
         this.downloaded = false;
+        this.error = false;
         this.identifier = Utils.getRandomID(16);
     }
 

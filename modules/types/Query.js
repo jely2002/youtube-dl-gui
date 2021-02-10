@@ -1,8 +1,9 @@
 const execa = require('execa');
 
 class Query {
-    constructor(environment) {
+    constructor(environment, identifier) {
         this.environment = environment;
+        this.identifier = identifier
         this.process = null;
     }
 
@@ -12,15 +13,21 @@ class Query {
 
     async start(url, args, cb) {
         args.push("--no-cache-dir")
-        if(this.environment.cookiePath != null) { //Add cookie arguments if enabled
+        if(this.environment.settings.cookiePath != null) { //Add cookie arguments if enabled
             args.push("--cookies");
-            args.push(this.environment.cookiePath);
+            args.push(this.environment.settings.cookiePath);
         }
         args.push(url) //Url must always be added as the final argument
+        console.log(args)
         if(cb == null) {
             //Return the data after the query has completed fully.
-            const {stdout} = await execa(this.environment.paths.ytdl, args);
-            return stdout
+            try {
+                const {stdout} = await execa(this.environment.paths.ytdl, args);
+                return stdout
+            } catch(e) {
+                this.environment.errorHandler.checkError(e.stderr, this.identifier);
+                return "{}";
+            }
         } else {
             //Return data while the query is running (live)
             //Return "close" when the query has finished
@@ -35,6 +42,7 @@ class Query {
                     resolve("close");
                 });
                 this.process.stderr.on("data", (data) => {
+                    this.environment.errorHandler.checkError(data.toString(), this.identifier);
                     console.log(data.toString())
                 })
             });
