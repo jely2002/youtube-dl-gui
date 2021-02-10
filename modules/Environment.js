@@ -1,5 +1,6 @@
 const Bottleneck = require("bottleneck");
 const Filepaths = require("./Filepaths");
+const Settings = require("./Settings");
 
 class Environment {
     constructor(app) {
@@ -8,11 +9,22 @@ class Environment {
         this.mainAudioQuality = "best";
         this.mainDownloadSubs = false;
         this.mainQualitySort = "best";
-        this.sizeMode = "click"
         this.paths = new Filepaths(app);
         this.limiterGroup = new Bottleneck.Group({
             trackDoneStatus: true,
-            maxConcurrent: 4,
+            maxConcurrent: this.settings,
+            minTime: 0
+        })
+    }
+
+    async loadSettings() {
+        this.settings = await Settings.loadFromFile(this.paths, this);
+    }
+
+    changeMaxConcurrent(max) {
+        this.limiterGroup.updateSettings({
+            trackDoneStatus: true,
+            maxConcurrent: max,
             minTime: 0
         })
     }
@@ -30,24 +42,6 @@ class Environment {
                 break;
             case "qualitysort":
                 this.mainQualitySort = args.value;
-                break;
-        }
-    }
-    resetLimiter(limiter) {
-        let args = {
-            trackDoneStatus: true,
-            minTime: 0,
-            maxConcurrent: 4 //TODO auto configure depending on system cores (get from env)
-        };
-        switch(limiter) {
-            case "info":
-                this.infoLimiter = new Bottleneck(args);
-                break;
-            case "size":
-                this.sizeLimiter = new Bottleneck(args);
-                break;
-            case "download":
-                this.downloadLimiter = new Bottleneck(args);
                 break;
         }
     }

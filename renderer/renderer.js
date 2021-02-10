@@ -83,11 +83,31 @@ async function init() {
 
     $('#settingsModal .apply').on('click', () => {
         $('#settingsModal').modal("hide");
-        //TODO Save the settings
+        let settings = {
+            updateBinary: $('#updateBinary').prop('checked'),
+            updateApplication: $('#updateApplication').prop('checked'),
+            enforceMP4: $('#enforceMP4').prop('checked'),
+            sizeMode: $('#sizeSetting').val(),
+            maxConcurrent: parseInt($('#maxConcurrent').val())
+        }
+        window.main.invoke("settingsAction", {action: "save", settings})
     });
 
+    $('#maxConcurrent').on('input', () => {
+        $('#concurrentLabel').html($('#maxConcurrent').val());
+    })
+
     $('#settingsBtn').on('click', () => {
-        $('#settingsModal').modal("show");
+        window.main.invoke("settingsAction", {action: "get"}).then((settings) => {
+            console.log(settings)
+            $('#updateBinary').prop('checked', settings.updateBinary);
+            $('#updateApplication').prop('checked', settings.updateApplication);
+            $('#enforceMP4').prop('checked', settings.enforceMP4);
+            $('#maxConcurrent').val(settings.maxConcurrent);
+            $('#concurrentLabel').html(settings.maxConcurrent);
+            $('#sizeSetting').val(settings.sizeMode);
+            $('#settingsModal').modal("show");
+        })
     });
 
     $('#infoModal .json').on('click', () => {

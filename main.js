@@ -58,9 +58,9 @@ function createWindow(env) {
 
 app.on('ready', async () => {
     env = new Environment(app);
+    await env.loadSettings();
     createWindow(env)
     registerShortcuts()
-
     if(isUpdateEnabled() && process.argv[2] !== '--dev') {
         if (process.platform === "darwin") {
             autoUpdater.checkForUpdates().then((result) => {
@@ -98,6 +98,16 @@ function startCriticalHandlers(env) {
 
     if(queryManager != null) return;
     queryManager = new QueryManager(win, env);
+
+    ipcMain.handle('settingsAction', (event, args) => {
+        switch(args.action) {
+            case "get":
+                return env.settings.serialize();
+            case "save":
+                env.settings.update(args.settings);
+                break;
+        }
+    })
 
     ipcMain.handle('videoAction', async (event, args) => {
         console.log(args)

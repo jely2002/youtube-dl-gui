@@ -2,7 +2,6 @@ const path = require('path');
 const mkdirp = require("mkdirp");
 const fs = require("fs");
 
-//TODO Add icons and assets to this module
 class Filepaths {
     constructor(app) {
         this.app = app;
@@ -20,6 +19,7 @@ class Filepaths {
                 this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpeg.exe") : "binaries/ffmpeg.exe";
                 this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/youtube-dl.exe") : "binaries/youtube-dl.exe";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
+                this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
                 break;
             case "darwin":
                 this.packedPrefix = this.appPath;
@@ -27,15 +27,18 @@ class Filepaths {
                 this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpeg") : "binaries/ffmpeg";
                 this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/youtube-dl-unix") : "binaries/youtube-dl-unix";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
+                this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
                 this.setPermissions()
                 break;
             case "linux":
                 this.persistentPath = path.join(this.app.getPath('home'), ".youtube-dl-gui");
                 this.packedPrefix = this.appPath;
                 this.unpackedPrefix = this.appPath + ".unpacked";
-                await this.createHomeFolder()
-                this.ytdl = path.join(this.persistentPath, "youtube-dl-unix");
-                this.ffmpeg = path.join(this.persistentPath, "ffmpeg");
+                if(this.app.isPackaged) await this.createHomeFolder()
+                this.ytdl = this.app.isPackaged ? path.join(this.persistentPath, "youtube-dl-unix") : "binaries/youtube-dl-unix";
+                this.ffmpeg = this.app.isPackaged ? path.join(this.persistentPath, "ffmpeg") : "binaries/ffmpeg";
+                this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
+                this.settings = this.app.isPackaged ? path.join(this.persistentPath, "userSettings") : "userSettings";
                 this.setPermissions()
                 break;
         }
@@ -56,7 +59,7 @@ class Filepaths {
                 if (made !== null) {
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/youtube-dl-unix"), path.join(this.persistentPath, "youtube-dl-unix"));
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ffmpeg-linux"), path.join(this.persistentPath, "ffmpeg"));
-                    fs.copyFileSync(path.join(this.packedPrefix, "binaries/details"), path.join(this.persistentPath, "details"));
+                    fs.copyFileSync(path.join(this.packedPrefix, "binaries/ytdlVersion"), path.join(this.persistentPath, "ytdlVersion"));
                 }
                 resolve();
             })

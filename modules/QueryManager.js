@@ -39,7 +39,7 @@ class QueryManager {
         video.setMetadata(initialQuery);
         this.addVideo(video);
         this.updateGlobalButtons();
-        if(this.environment.sizeMode === "full") this.startSizeQuery(video.identifier, video.formats[video.selected_format_index]);
+        if(this.environment.settings.sizeMode === "full") this.startSizeQuery(video.identifier, video.formats[video.selected_format_index]);
     }
 
     managePlaylist(initialQuery, url) {
@@ -73,7 +73,7 @@ class QueryManager {
             duration: video.duration,
             audioOnly: video.audioOnly,
             subtitles: video.downloadSubs,
-            loadSize: this.environment.sizeMode === "full",
+            loadSize: this.environment.settings.sizeMode === "full",
             hasFilesizes: video.hasFilesizes,
             formats: formats,
             selected_format_index: (video.hasMetadata) ? video.selected_format_index : null,
@@ -139,9 +139,9 @@ class QueryManager {
             }
             console.log(applicableSize + " " + formatLabel)
             if(applicableSize == null) {
-                if (this.environment.sizeMode === "click" && !clicked) {
+                if (this.environment.settings.sizeMode === "click" && !clicked) {
                     this.window.webContents.send("videoAction", {action: "size", size: null, identifier: video.identifier})
-                } else if (this.environment.sizeMode === "full" || clicked) {
+                } else if (this.environment.settings.sizeMode === "full" || clicked) {
                     let sizeQuery = new SizeQuery(video, this.environment);
                     sizeQuery.connect().then((result) => {
                         if(formatLabel === "best") {
@@ -176,13 +176,13 @@ class QueryManager {
                 }
             }
             if (selectedFormat.filesize_label == null) {
-                if (this.environment.sizeMode === "click" && !clicked) {
+                if (this.environment.settings.sizeMode === "click" && !clicked) {
                     this.window.webContents.send("videoAction", {
                         action: "size",
                         size: null,
                         identifier: video.identifier
                     })
-                } else if (this.environment.sizeMode === "full" || clicked) {
+                } else if (this.environment.settings.sizeMode === "full" || clicked) {
                     let sizeQuery = new SizeQuery(video, this.environment);
                     sizeQuery.connect().then((result) => {
                         this.window.webContents.send("videoAction", {

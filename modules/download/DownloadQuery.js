@@ -34,22 +34,24 @@ class DownloadQuery extends Query {
             if(this.format.fps == null) {
                 format = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
             }
-            //TODO Add setting to enable ALWAYS mp4
             args = [
                 "-f", format,
                 "-o", output,
                 '--ffmpeg-location', this.environment.paths.ffmpeg,
-                "--recode-video", "mp4",
                 '--no-mtime',
                 '--output-na-placeholder', ""
             ];
-            console.log(args)
             if (this.video.downloadSubs) {
-                args.push("--all-subs")
-                args.push("--embed-subs")
-                args.push("--convert-subs")
-                args.push("srt")
+                args.push("--all-subs");
+                args.push("--embed-subs");
+                args.push("--convert-subs");
+                args.push("srt");
             }
+            if (this.environment.settings.enforceMP4) {
+                args.push("--recode-video");
+                args.push("mp4");
+            }
+            console.log(args)
         }
         let destinationCount = 0;
         let initialReset = false;
