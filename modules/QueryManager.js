@@ -202,7 +202,7 @@ class QueryManager {
         }
     }
 
-    removeVideo(identifier, removeFromUI) {
+    removeVideo(identifier) {
         this.managedVideos = this.managedVideos.filter(item => item.identifier !== identifier);
         this.window.webContents.send("videoAction", { action: "remove", identifier: identifier })
     }
