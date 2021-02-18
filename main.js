@@ -5,6 +5,7 @@ const Environment = require('./modules/Environment');
 const path = require('path');
 const QueryManager = require("./modules/QueryManager");
 const ErrorHandler = require("./modules/ErrorHandler");
+const BinaryUpdater = require("./modules/BinaryUpdater");
 
 let doneIcon
 let downloadingIcon
@@ -62,6 +63,10 @@ app.on('ready', async () => {
     await env.loadSettings();
     createWindow(env)
     registerShortcuts()
+    if(env.settings.updateBinary) {
+        let updater = new BinaryUpdater(env.paths);
+        await updater.checkUpdate();
+    }
     if(env.settings.updateApplication && process.argv[2] !== '--dev') {
         if (process.platform === "darwin") {
             autoUpdater.checkForUpdates().then((result) => {
