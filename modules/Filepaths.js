@@ -11,7 +11,7 @@ class Filepaths {
         this.generateFilepaths();
     }
 
-    async generateFilepaths() {
+     async generateFilepaths() {
         switch (this.platform) {
             case "win32":
                 this.unpackedPrefix = "resources/app.asar.unpacked";
@@ -20,6 +20,7 @@ class Filepaths {
                 this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/youtube-dl.exe") : "binaries/youtube-dl.exe";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
+                this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
                 break;
             case "darwin":
                 this.packedPrefix = this.appPath;
@@ -28,6 +29,7 @@ class Filepaths {
                 this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/youtube-dl-unix") : "binaries/youtube-dl-unix";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
+                this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
                 this.setPermissions()
                 break;
             case "linux":
@@ -39,6 +41,7 @@ class Filepaths {
                 this.ffmpeg = this.app.isPackaged ? path.join(this.persistentPath, "ffmpeg") : "binaries/ffmpeg";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.persistentPath, "userSettings") : "userSettings";
+                this.ytdlVersion = this.app.isPackaged ? path.join(this.persistentPath, "ytdlVersion") :"binaries/ytdlVersion";
                 this.setPermissions()
                 break;
         }
@@ -59,7 +62,7 @@ class Filepaths {
                 if (made !== null) {
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/youtube-dl-unix"), path.join(this.persistentPath, "youtube-dl-unix"));
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ffmpeg-linux"), path.join(this.persistentPath, "ffmpeg"));
-                    fs.copyFileSync(path.join(this.packedPrefix, "binaries/ytdlVersion"), path.join(this.persistentPath, "ytdlVersion"));
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ytdlVersion1"), path.join(this.persistentPath, "ytdlVersion"));
                 }
                 resolve();
             })
