@@ -26,7 +26,7 @@ class Utils {
     }
 
     static getRandomID(length) {
-        return crypto.randomBytes(length).toString("hex");
+        return crypto.randomBytes(length / 2).toString("hex");
     }
 
     static extractPlaylistUrls(infoQueryResult) {
@@ -58,9 +58,13 @@ class Utils {
 
     static hasFilesizes(metadata) {
         let filesizeDetected = false
+        if(metadata.formats == null)  {
+            console.error("No formats could be found.")
+            return false;
+        }
         for(const format of metadata.formats) {
             if(format.filesize != null) {
-                filesizeDetected = true
+                filesizeDetected = true;
                 break;
             }
         }
@@ -70,6 +74,10 @@ class Utils {
     static parseAvailableFormats(metadata) {
         let formats = [];
         let detectedFormats = [];
+        if(metadata.formats == null) {
+            console.error("No formats could be found.")
+            return [];
+        }
         for(let dataFormat of metadata.formats) {
             if(dataFormat.height == null) continue;
             let format = new Format(dataFormat.height, dataFormat.fps, null, null);

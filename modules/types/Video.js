@@ -12,7 +12,8 @@ class Video {
         this.hasMetadata = false;
         this.downloaded = false;
         this.error = false;
-        this.identifier = Utils.getRandomID(16);
+        this.gettingSize = false;
+        this.identifier = Utils.getRandomID(32);
     }
 
     getFilename() {
