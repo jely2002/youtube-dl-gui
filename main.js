@@ -60,24 +60,17 @@ function createWindow(env) {
 
 app.on('ready', async () => {
     env = new Environment(app);
-    await env.loadSettings();
-    createWindow(env)
-    registerShortcuts()
+    await env.initialize();
+    createWindow(env);
+    registerShortcuts();
+    if(app.isPackaged && process.argv[2] !== '--dev') {
+        env.analytics.sendDownload();
+    }
     if(env.settings.updateBinary) {
         let updater = new BinaryUpdater(env.paths);
         await updater.checkUpdate();
     }
-    if(env.settings.updateApplication && process.argv[2] !== '--dev') {
-        if (process.platform === "darwin") {
-            autoUpdater.checkForUpdates().then((result) => {
-                result.currentVersion = app.getVersion();
-                //TODO Create update pop-up for mac
-                win.webContents.send('mac-update', result);
-            })
-        } else if (process.platform === "win32" || process.platform === "linux") {
-            autoUpdater.checkForUpdatesAndNotify()
-        }
-    }
+
 })
 
 //Quit the application when all windows are closed, except for darwin
@@ -111,7 +104,13 @@ function startCriticalHandlers(env) {
 
     if(queryManager != null) return;
     queryManager = new QueryManager(win, env);
-    env.errorHandler = new ErrorHandler(win, queryManager);
+    env.errorHandler = new ErrorHandler(win, queryManager, env);
+    checkAppUpdate();
+
+    ipcMain.handle('errorReport', async (event, args) => {
+        console.log(args)
+        return await env.errorHandler.reportError(args);
+    });
 
     ipcMain.handle('settingsAction', (event, args) => {
         switch(args.action) {
@@ -170,6 +169,20 @@ function registerShortcuts() {
     globalShortcut.register('CommandOrControl+Shift+F', () => {
         win.webContents.send('flushCache')
     })
+}
+
+function checkAppUpdate() {
+    if(env.settings.updateApplication && process.argv[2] !== '--dev') {
+        if (process.platform === "darwin") {
+            autoUpdater.checkForUpdates().then((result) => {
+                if(app.getVersion() !== result.updateInfo.version) {
+                    win.webContents.send('toast', {type: "update", msg: `Update ${result.updateInfo.releaseName} is out now! <br> <a target="_blank" href="https://github.com/jely2002/youtube-dl-gui/releases/latest">Download on GitHub</a>`});
+                }
+            })
+        } else if (process.platform === "win32" || process.platform === "linux") {
+            autoUpdater.checkForUpdatesAndNotify()
+        }
+    }
 }
 
 //Creates the input menu to show on right click

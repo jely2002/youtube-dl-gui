@@ -551,6 +551,7 @@ function setError(code, description, unexpected, identifier) {
         $(this).removeClass("disabled");
     });
     $(card).find(".remove-btn i").removeClass("disabled");
+    $(card).find('.report').prop("disabled", false);
     $(card).css("box-shadow", "none").css("border", "solid 1px var(--error-color)");
     $(card).find('.progress small').html("Error! " + code + ".");
     $(card).find('.progress').addClass("d-flex");
@@ -558,7 +559,10 @@ function setError(code, description, unexpected, identifier) {
         $(card).find('.options, .info, .open').addClass("d-none").removeClass("d-flex");
         $(card).find('.error').addClass('d-flex').removeClass("d-none");
         $(card).find('.report').unbind().on('click', () => {
-            window.open('https://github.com/jely2002/youtube-dl-gui/issues/new?assignees=&labels=bug&template=bug_report.md&title=' + encodeURIComponent(description), '_blank');
+            window.main.invoke("errorReport", identifier).then((id) => {
+                $(card).find('.progress small').html("Error reported! Report ID: " + id);
+                $(card).find('.report').prop("disabled", true);
+            });
         });
         $(card).find('#fullError').unbind().on('click', () => {
             window.main.invoke("messageBox", {title: "Full error message", message: description});

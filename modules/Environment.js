@@ -18,7 +18,8 @@ class Environment {
         })
     }
 
-    async loadSettings() {
+    //Read the settings and start required services
+    async initialize() {
         this.settings = await Settings.loadFromFile(this.paths, this);
         if(this.settings.cookiePath != null) { //If the file does not exist anymore, null the value and save.
             fs.access(this.settings.cookiePath).catch(() => {
@@ -26,6 +27,7 @@ class Environment {
                 this.settings.save();
             })
         }
+        this.analytics = new Analytics(this.app.getVersion(), this.paths, this.settings);
     }
 
     changeMaxConcurrent(max) {
