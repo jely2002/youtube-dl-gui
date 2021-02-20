@@ -8,7 +8,6 @@ class SizeQueryList {
         this.videos = videos;
         this.environment = environment;
         this.progressBar = progressBar;
-        this.limiterKey = Utils.getRandomID(16);
         this.done = 0
         this.length = videos.length;
     }
@@ -17,9 +16,8 @@ class SizeQueryList {
         return await new Promise(((resolve, reject) => {
             for(const video of this.videos) {
                 let task = new SizeQuery(video, this.environment, this.progressBar);
-                this.environment.limiterGroup.key(this.limiterKey).schedule(() => task.connect()).then((size) => {
+                task.connect().then(() => {
                     if(this.done === this.length) {
-                        this.environment.limiterGroup.deleteKey(this.limiterKey);
                         resolve();
                     }
                 });

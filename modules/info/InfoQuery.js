@@ -5,20 +5,17 @@ class InfoQuery extends Query {
         super(environment, identifier);
         this.url = url;
         this.environment = environment;
+        this.identifier = identifier;
     }
 
     async connect() {
         try {
             let args = ["-J", "--flat-playlist"]
-            let data = await this.start(this.url, args);
+            let data = await this.environment.metadataLimiter.schedule(() => this.start(this.url, args));
             return JSON.parse(data);
         } catch (e) {
-            if(e.stderr != null && e.stderr.includes("Unsupported URL")) { // TODO Add more error handling
-                console.log(`The url: ${this.url}, is not supported by youtube-dl.`);
-                return null;
-            } else  {
-                console.log(e)
-            }
+            this.environment.errorHandler.checkError(e.stderr, this.identifier)
+            return null;
         }
     }
 }

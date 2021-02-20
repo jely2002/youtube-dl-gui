@@ -18,7 +18,6 @@ class Query {
             args.push(this.environment.settings.cookiePath);
         }
         args.push(url) //Url must always be added as the final argument
-        console.log(args)
         if(cb == null) {
             //Return the data after the query has completed fully.
             try {
@@ -31,15 +30,19 @@ class Query {
         } else {
             //Return data while the query is running (live)
             //Return "close" when the query has finished
-            await new Promise((resolve, reject) => {
+            return await new Promise((resolve, reject) => {
                 this.process = execa(this.environment.paths.ytdl, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
                     cb(data.toString());
                 });
                 this.process.stdout.on('close', (code) => {
-                    cb("close");
-                    resolve("close");
+                    if(this.process.killed) {
+                        cb("killed");
+                        resolve("killed");
+                    }
+                    cb("done");
+                    resolve("done");
                 });
                 this.process.stderr.on("data", (data) => {
                     this.environment.errorHandler.checkError(data.toString(), this.identifier);

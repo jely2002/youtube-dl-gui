@@ -1,19 +1,26 @@
 const Bottleneck = require("bottleneck");
 const Filepaths = require("./Filepaths");
 const Settings = require("./Settings");
+const Analytics = require("./Analytics");
 const fs = require("fs").promises;
 
 class Environment {
     constructor(app) {
+        this.app = app;
         this.cookiePath = null;
         this.mainAudioOnly = false;
         this.mainAudioQuality = "best";
         this.mainDownloadSubs = false;
         this.mainQualitySort = "best";
         this.paths = new Filepaths(app);
-        this.limiterGroup = new Bottleneck.Group({
+        this.downloadLimiter = new Bottleneck({
             trackDoneStatus: true,
-            maxConcurrent: this.settings,
+            maxConcurrent: 4,
+            minTime: 0
+        })
+        this.metadataLimiter = new Bottleneck({
+            trackDoneStatus: true,
+            maxConcurrent: 4,
             minTime: 0
         })
     }
@@ -21,6 +28,7 @@ class Environment {
     //Read the settings and start required services
     async initialize() {
         this.settings = await Settings.loadFromFile(this.paths, this);
+        this.changeMaxConcurrent(this.settings.maxConcurrent);
         if(this.settings.cookiePath != null) { //If the file does not exist anymore, null the value and save.
             fs.access(this.settings.cookiePath).catch(() => {
                 this.settings.cookiePath = null;
@@ -31,11 +39,13 @@ class Environment {
     }
 
     changeMaxConcurrent(max) {
-        this.limiterGroup.updateSettings({
+        const settings = {
             trackDoneStatus: true,
             maxConcurrent: max,
             minTime: 0
-        })
+        }
+        this.downloadLimiter.updateSettings(settings);
+        this.metadataLimiter.updateSettings(settings);
     }
 
     setMain(args) {

@@ -10,7 +10,6 @@ class SizeQuery extends Query {
     }
 
     async connect() {
-        //Enable spinner
         let formatArgument = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio[ext=m4a]/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
         if(this.format.fps == null) {
             formatArgument = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
@@ -18,7 +17,7 @@ class SizeQuery extends Query {
         if(this.video.audioOnly) {
             formatArgument = `bestvideo+${this.video.audioQuality}audio/bestvideo+bestaudio/best`;
         }
-        let output = await this.start(this.video.url, ["-J", "--flat-playlist", "-f", formatArgument]);
+        let output = await this.environment.metadataLimiter.schedule(() => this.start(this.video.url, ["-J", "--flat-playlist", "-f", formatArgument]));
         let data = JSON.parse(output);
         let totalSize = 0;
         if(data.requested_formats != null) {

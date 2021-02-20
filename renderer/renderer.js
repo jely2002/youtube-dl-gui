@@ -36,17 +36,16 @@ async function init() {
             //If the queue is completely empty show the empty text
             if ($('.video-cards').is(':empty')) {
                 $('.empty').show();
+                resetTotalProgress();
                 $('#downloadBtn, #clearBtn').prop("disabled", true);
             } else {
                 $('.empty').hide();
             }
-            $('#totalProgress .progress-bar').remove();
-            $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
-            $('#totalProgress small').html('Ready to download!');
+
         }).observe(sel, {childList: true, subtree: true});
     });
 
-    //Configures the 4 toasts
+    //Configures the update toast
     $('#update').toast({
         autohide: false,
         animation: true
@@ -237,7 +236,7 @@ async function init() {
     window.main.receive("toast", (arg) => showToast(arg));
 
     //Passes an error to the setError method
-    window.main.receive("error", (arg) => setError(arg.error.code, arg.error.description, arg.unexpected, arg.identifier))
+    window.main.receive("error", (arg) => setError(arg.error.code, arg.error.description, arg.unexpected, arg.identifier));
 
     //Updates the windowbar icon when the app gets maximized/unmaximized
     window.main.receive("maximized", (maximized) => {
@@ -258,6 +257,9 @@ async function init() {
                 break;
             case "progress":
                 updateProgress(arg);
+                break;
+            case "totalProgress":
+                updateTotalProgress(arg);
                 break;
             case "info":
                 showInfoModal(arg.metadata, arg.identifier);
@@ -458,11 +460,6 @@ function addVideo(args) {
 }
 
 function updateProgress(args) {
-    if(args.identifier === "queue") {
-        $('#totalProgress small').html(`Downloading video queue - ${args.progress.done} of ${args.progress.total} completed`);
-        $('#totalProgress .progress-bar').css("width", args.progress.percentage).attr("aria-valuenow", args.progress.percentage.slice(0,-1));
-        return
-    }
     let card = getCard(args.identifier);
     if(args.progress.reset != null && args.progress.reset) {
         resetProgress($(card).find('.progress-bar')[0], card);
@@ -477,6 +474,7 @@ function updateProgress(args) {
         return;
     }
     if(args.progress.done != null && args.progress.total != null) {
+        $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
         $(card).find('.progress small').html(`${args.progress.percentage} - ${args.progress.done} of ${args.progress.total} `);
     } else {
         if(parseFloat(args.progress.percentage.slice(0, -1)) > parseFloat($(card).find('.progress-bar').attr("aria-valuenow"))) {
@@ -487,6 +485,11 @@ function updateProgress(args) {
         }
     }
 
+}
+
+function updateTotalProgress(args) {
+    $('#totalProgress small').html(`Downloading video queue - ${args.progress.done} of ${args.progress.total} completed`);
+    $('#totalProgress .progress-bar').css("width", args.progress.percentage).attr("aria-valuenow", args.progress.percentage.slice(0,-1));
 }
 
 function updateSize(args) {
@@ -520,6 +523,12 @@ function resetProgress(elem, card) {
     $(elem).removeClass("progress-bar-striped").removeClass("progress-bar-animated");
     $(elem).remove();
     $(card).find('.progress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
+}
+
+function resetTotalProgress() {
+    $('#totalProgress .progress-bar').remove();
+    $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
+    $('#totalProgress small').html('Ready to download!');
 }
 
 function updateButtons(videos) {

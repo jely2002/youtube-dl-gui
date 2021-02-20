@@ -54,32 +54,38 @@ class DownloadQuery extends Query {
         }
         let destinationCount = 0;
         let initialReset = false;
+        let result = null;
         try {
-            await this.start(this.url, args, (liveData) => {
-                if(!liveData.includes("[download]")) return;
-                if(!initialReset) {
+            result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
+                if (!liveData.includes("[download]")) return;
+                if (!initialReset) {
                     initialReset = true;
                     this.progressBar.reset();
                 }
-                if(liveData.includes("Destination")) destinationCount += 1;
-                if(destinationCount > 1) {
-                    if(destinationCount === 2 && !this.video.audioOnly) {
+                if (liveData.includes("Destination")) destinationCount += 1;
+                if (destinationCount > 1) {
+                    if (destinationCount === 2 && !this.video.audioOnly) {
                         this.video.audioOnly = true;
                         this.progressBar.reset();
                     }
                 }
-                let liveDataArray = liveData.split(" ").filter((el) => {return el !== ""});
-                if(liveDataArray.length > 8) return;
-                liveDataArray = liveDataArray.filter((el) => {return el !== "\n"});
+                let liveDataArray = liveData.split(" ").filter((el) => {
+                    return el !== ""
+                });
+                if (liveDataArray.length > 8) return;
+                liveDataArray = liveDataArray.filter((el) => {
+                    return el !== "\n"
+                });
                 let percentage = liveDataArray[1];
                 let speed = liveDataArray[5];
                 let eta = liveDataArray[7];
                 this.progressBar.updateDownload(percentage, eta, speed, this.video.audioOnly);
-            })
-        } catch(exception) {
-            console.log(exception);
-            return exception;
+            }));
+        } catch (exception) {
+            this.environment.errorHandler.checkError(exception, this.video.identifier);
+            resolve(exception);
         }
+        return result;
     }
 }
 module.exports = DownloadQuery;

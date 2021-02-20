@@ -10,11 +10,10 @@ class InfoQueryList {
         this.urls = null;
         this.length = null;
         this.done = 0;
-        this.limiterKey = Utils.getRandomID(16);
     }
 
     async start() {
-        let result = await new Promise(((resolve, reject) => {
+        let result = await new Promise((async (resolve, reject) => {
             let totalMetadata = [];
             let playlistUrls = Utils.extractPlaylistUrls(this.query);
             for (const videoData of playlistUrls[1]) {
@@ -25,15 +24,14 @@ class InfoQueryList {
             this.length = this.urls.length;
             if (this.length === 0) resolve(totalMetadata);
             if (this.urls === []) {
-                //TODO Add error handling (invalid url format)
                 console.error("This playlist is empty.");
                 this.length = 0;
                 resolve(null);
             }
             for (const url of this.urls) {
                 let task = new InfoQuery(url, this.progressBar.video.identifier, this.environment);
-                this.environment.limiterGroup.key(this.limiterKey).schedule(() => task.connect()).then((data) => {
-                    if(data != null) {
+                task.connect().then((data) => {
+                    if (data.formats != null) {
                         let video = this.createVideo(data, url);
                         totalMetadata.push(video);
                     }
@@ -45,7 +43,6 @@ class InfoQueryList {
                 });
             }
         }));
-        await this.environment.limiterGroup.deleteKey(this.limiterKey);
         return result;
     }
 

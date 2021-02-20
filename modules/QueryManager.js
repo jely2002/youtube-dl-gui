@@ -152,6 +152,8 @@ class QueryManager {
                 if (this.environment.settings.sizeMode === "click" && !clicked) {
                     this.window.webContents.send("videoAction", {action: "size", size: null, identifier: video.identifier})
                 } else if (this.environment.settings.sizeMode === "full" || clicked) {
+                    if(video.gettingSize) return;
+                    video.gettingSize = true;
                     let sizeQuery = new SizeQuery(video, this.environment);
                     sizeQuery.connect().then((result) => {
                         if(formatLabel === "best") {
@@ -162,6 +164,7 @@ class QueryManager {
                             this.window.webContents.send("videoAction", {action: "size", size: video.worstAudioSize, identifier: video.identifier})
                         }
                     });
+                    video.gettingSize = false;
                 }
             } else {
                 if(formatLabel === "best") {
@@ -192,12 +195,15 @@ class QueryManager {
                     })
                 } else if (this.environment.settings.sizeMode === "full" || clicked) {
                     let sizeQuery = new SizeQuery(video, this.environment);
+                    if(video.gettingSize) return;
+                    video.gettingSize = true;
                     sizeQuery.connect().then((result) => {
                         this.window.webContents.send("videoAction", {
                             action: "size",
                             size: result,
                             identifier: video.identifier
                         })
+                        video.gettingSize = false;
                     });
                 }
             } else {
@@ -225,10 +231,20 @@ class QueryManager {
     }
 
     updateProgress(video, progress_args) {
-        let args = {
-            action: "progress",
-            identifier: (video === "queue") ? video : video.identifier,
-            progress: progress_args
+        let args;
+        if(video === "queue") {
+            progress_args.total = this.managedVideos.length;
+            args = {
+                action: "totalProgress",
+                identifier: video.identifier,
+                progress: progress_args
+            }
+        } else {
+            args = {
+                action: "progress",
+                identifier: video.identifier,
+                progress: progress_args
+            }
         }
         this.window.webContents.send("videoAction", args);
     }
