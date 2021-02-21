@@ -12,7 +12,7 @@ async function init() {
     if(platform === "darwin") {
         new windowbar({'style':'mac', 'dblClickable':false, 'fixed':true, 'title':document.title,'dark':true})
             .appendTo(document.body)
-        $('.windowbar-title').css("left", "50%").css("top", "calc(32px /2)");
+        $('.windowbar-title').css("left", "50%").css("top", "14px");
         $('.windowbar-controls').css("display", "none");
     } else {
         new windowbar({'style':'win', 'dblClickable':false, 'fixed':true, 'title':document.title,'dark':true})
