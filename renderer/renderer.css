@@ -16,6 +16,22 @@ body {
     overflow: hidden;
 }
 
+select {
+    background-color: var(--secondary-bg-color) !important;
+    border-color: var(--secondary-bg-color) !important;
+    color: var(--font-color) !important;
+}
+
+.btn-highlight {
+    background-color: var(--highlight-color) !important;
+    color: var(--font-color);
+}
+
+.btn-highlight:hover {
+    background-color: var(--secondary-highlight-color) !important;
+    color: var(--font-color);
+}
+
 /* TOASTS */
 .toast-header {
     border-bottom: none;
@@ -92,10 +108,20 @@ body {
     font-size: 24px;
     font-weight: 600;
     line-height: 0.5;
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px !important;
 }
 
 .url-input .btn > i::before {
     transform: scale(1.5);
+}
+
+#settingsBtn {
+    margin-left: 1rem;
+}
+
+#settingsBtn > i::before {
+    transform: scale(.8) !important;
 }
 
 /* QUEUE AREA */
@@ -238,6 +264,7 @@ body {
     margin-right: 10px;
     display: none;
     position: relative;
+    background-color: var(--secondary-bg-color);
 }
 
 .video-card .open {
@@ -250,7 +277,7 @@ body {
 }
 
 .video-card .progress small {
-    color: #000;
+    color: var(--font-color);
     position: absolute;
     text-align: center;
     line-height: 31px; /* line-height should be equal to bar height */
@@ -265,7 +292,7 @@ body {
     background-color: var(--highlight-color);
 }
 
-.metadata .btn {
+.metadata .btn-dark {
     margin-bottom: 0.15em;
     line-height: 0.8;
 }
@@ -300,7 +327,7 @@ option.audio {
 }
 
 .controls .progress small {
-    color: #000;
+    color: var(--font-color);
     position: absolute;
     text-align: center;
     line-height: 32px; /* line-height should be equal to bar height */
@@ -311,7 +338,7 @@ option.audio {
     top: 0;
 }
 
-.controls .btn {
+.controls .btn-dark {
     background-color: var(--secondary-bg-color) !important;
     border-color: var(--secondary-bg-color) !important;
     color: var(--font-color) !important;
@@ -323,6 +350,7 @@ option.audio {
     width: 100%;
     max-width: 600px;
     position: relative;
+    background-color: var(--secondary-bg-color);
 }
 
 .controls .buttons * {
@@ -352,7 +380,7 @@ option.audio {
     white-space: nowrap;
 }
 
-.modal .btn {
+.modal .btn-dark {
     background-color: var(--secondary-bg-color) !important;
     border-color: var(--secondary-bg-color) !important;
     color: var(--font-color) !important;
@@ -361,6 +389,11 @@ option.audio {
 
 .modal .close {
     color: var(--font-color);
+}
+
+/* SETTINGS MODAL */
+#settingsModal .form-range {
+    margin-bottom: .5rem;
 }
 
 
@@ -416,7 +449,6 @@ option.audio {
     border-color: var(--tertiary-bg-color);
 }
 
-
 /* FILESIZE SPINNER */
 .lds-dual-ring {
     display: inline-block;
@@ -444,20 +476,17 @@ option.audio {
 }
 
 /* CUSTOM SCROLLBAR */
-::-webkit-scrollbar-track
-{
+::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color: transparent;
 }
 
-::-webkit-scrollbar
-{
+::-webkit-scrollbar {
     width: 12px;
     background-color: transparent;
 }
 
-::-webkit-scrollbar-thumb
-{
+::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: var(--scroll-bar-color);
 }

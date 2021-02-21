@@ -16,6 +16,7 @@
             <div class="input-group-append">
                 <button type="button" id="add-url-btn" class="btn btn-dark" title="Add video to queue"><i class="bi bi-plus"></i></button>
             </div>
+            <button id="settingsBtn" title="Settings" type="button" class="btn btn-dark"><i class="bi bi-gear"></i></button>
         </div>
     </form>
 </div>
@@ -39,9 +40,6 @@
         </div>
     </div>
     <div class="row buttons d-flex flex-row justify-content-center">
-        <button id="downloadBtn" title="Download queue" class="btn btn-dark rounded" disabled><i class="bi bi-download"></i></button>
-        <button type="button" id="clearBtn" title="Clear queue" class="btn btn-dark" disabled><i class="bi bi-trash"></i></button>
-        <span class="spacer"></span>
         <button id="locationBtn" title="Download location" class="btn btn-dark"><i class="bi bi-folder"></i></button>
         <button id="authBtn" title="Add authentication" class="btn btn-dark"><i class="bi bi-key"></i></button>
         <button id="subtitleBtn" title="Disable subtitles" class="btn btn-dark"><i title="Subtitles disabled" class="bi-card-text-strike mb-3"></i></button>
@@ -55,7 +53,8 @@
             <option value="worst">Worst</option>
         </select>
         <span class="spacer"></span>
-        <button id="settingsBtn" title="Settings" class="btn btn-dark"><i class="bi bi-gear"></i></button>
+        <button type="button" id="clearBtn" title="Clear queue" class="btn btn-dark rounded" disabled><i class="bi bi-trash"></i></button>
+        <button id="downloadBtn" title="Download queue" class="btn btn-highlight rounded" disabled>Download</button>
     </div>
 </div>
 
@@ -152,8 +151,8 @@
                 <span class="identifier d-none"></span>
             </div>
             <div class="modal-footer">
-                <button type="button" title="Save as JSON" class="btn json btn-secondary">Save as JSON</button>
-                <button type="button" class="btn dismiss btn-secondary">Close</button>
+                <button type="button" title="Save as JSON" class="btn json btn-dark">Save as JSON</button>
+                <button type="button" class="btn dismiss btn-dark">Close</button>
             </div>
         </div>
     </div>
@@ -175,8 +174,8 @@
                 <a target="_blank" href="https://github.com/jely2002/youtube-dl-gui/wiki/Tutorial:-Private-videos-&-playlists">What is a cookies.txt file?</a>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn removeCookies btn-secondary">Remove cookies</button>
-                <button type="button" class="btn dismiss btn-secondary">Ok</button>
+                <button type="button" class="btn removeCookies btn-dark">Remove cookies</button>
+                <button type="button" class="btn dismiss btn-highlight">Ok</button>
             </div>
         </div>
     </div>
@@ -203,21 +202,21 @@
                     <button type="button" class="btn btn-dark" id="defaultConcurrent">Reset to default</button>
                 </div>
                 <div class="mb-4">
-                    <label class="check-label" for="enforceMP4">Enforce mp4</label>
                     <input class="check-input" type="checkbox" value="" id="enforceMP4">
+                    <label class="check-label" for="enforceMP4">Enforce mp4</label>
                 </div>
                 <div class="mb-4">
-                    <label class="check-label" for="updateBinary">Update ytdl binary</label>
                     <input class="check-input" type="checkbox" value="" id="updateBinary">
+                    <label class="check-label" for="updateBinary">Update ytdl binary</label>
                 </div>
                 <div>
-                    <label class="check-label" for="updateApplication">Update app</label>
                     <input class="check-input" type="checkbox" value="" id="updateApplication">
+                    <label class="check-label" for="updateApplication">Update app</label>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn dismiss btn-secondary">Cancel</button>
-                <button type="button" class="btn apply btn-secondary">Apply</button>
+                <button type="button" class="btn dismiss btn-dark">Cancel</button>
+                <button type="button" class="btn apply btn-highlight">Apply</button>
             </div>
         </div>
     </div>
