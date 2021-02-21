@@ -72,6 +72,13 @@ body {
     margin-top: 8px;
 }
 
+.windowbar.wb-mac {
+    border-color: var(--secondary-bg-color) !important;
+    background: var(--secondary-bg-color) !important;
+    border-width: 0px !important;
+    height: 36px !important;
+}
+
 /* URL FORM */
 .url-input {
     margin-top: calc(40px + 1.5rem); /* Compensate the fixed navbar */

@@ -32,7 +32,7 @@ function createWindow(env) {
         width: 815,
         height: 800,
         backgroundColor: '#212121',
-        titleBarStyle: process.platform === "darwin" ? null : "hidden",
+        titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "hidden",
         frame: false,
         icon: env.paths.icon,
         webPreferences: {
