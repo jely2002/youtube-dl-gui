@@ -46,6 +46,7 @@ class Settings {
             enforceMP4: this.enforceMP4,
             sizeMode: this.sizeMode,
             maxConcurrent: this.maxConcurrent,
+            defaultConcurrent: Math.round(os.cpus().length / 2),
             updateBinary: this.updateBinary,
             updateApplication: this.updateApplication,
             cookiePath: this.cookiePath,

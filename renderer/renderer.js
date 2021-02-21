@@ -96,7 +96,7 @@ async function init() {
     });
 
     $('#maxConcurrent').on('input', () => {
-        $('#concurrentLabel').html($('#maxConcurrent').val());
+        $('#concurrentLabel').html(`Max concurrent <strong>(${$('#maxConcurrent').val()})</strong>`);
     })
 
     $('#settingsBtn').on('click', () => {
@@ -106,11 +106,18 @@ async function init() {
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#enforceMP4').prop('checked', settings.enforceMP4);
             $('#maxConcurrent').val(settings.maxConcurrent);
-            $('#concurrentLabel').html(settings.maxConcurrent);
+            $('#concurrentLabel').html(`Max concurrent <strong>(${settings.maxConcurrent})</strong>`);
             $('#sizeSetting').val(settings.sizeMode);
             $('#settingsModal').modal("show");
-        })
+        });
     });
+
+    $('#defaultConcurrent').on('click', () => {
+        window.main.invoke("settingsAction", {action: "get"}).then((settings) => {
+            $('#concurrentLabel').html(`Max concurrent <strong>(${settings.defaultConcurrent})</strong>`);
+            $('#maxConcurrent').val(settings.defaultConcurrent);
+        });
+    })
 
     $('#authBtn').on('click', () => {
         $('#authModal').modal("show");

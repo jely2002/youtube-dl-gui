@@ -198,9 +198,9 @@
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label for="maxConcurrent" class="form-label d-block">Max concurrent jobs</label>
-                    <input type="range" class="form-range w-50 d-inline-block" min="1" max="32" id="maxConcurrent">
-                    <p id="concurrentLabel" class="ml-3 d-inline-block align-content-center">4</p>
+                    <label for="maxConcurrent" id="concurrentLabel" class="form-label d-inline-block">Max concurrent jobs</label>
+                    <input type="range" class="form-range w-50 d-block align-middle" min="1" max="32" id="maxConcurrent">
+                    <button type="button" class="btn btn-dark" id="defaultConcurrent">Reset to default</button>
                 </div>
                 <div class="mb-4">
                     <label class="check-label" for="enforceMP4">Enforce mp4</label>
