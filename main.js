@@ -14,6 +14,8 @@ let win
 let env
 let queryManager
 
+let appStarting = true;
+
 //Set icon file paths depending on the platform
 if(process.platform === "darwin") {
     doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'renderer/img/done-icon.png')
@@ -102,63 +104,65 @@ function startCriticalHandlers(env) {
         shell.openExternal(url);
     });
 
-    if(queryManager != null) return;
     queryManager = new QueryManager(win, env);
     env.errorHandler = new ErrorHandler(win, queryManager, env);
     checkAppUpdate();
 
-    ipcMain.handle('errorReport', async (event, args) => {
-        console.log(args)
-        return await env.errorHandler.reportError(args);
-    });
+    if(appStarting) {
+        appStarting = false;
+        ipcMain.handle('errorReport', async (event, args) => {
+            console.log(args)
+            return await env.errorHandler.reportError(args);
+        });
 
-    ipcMain.handle('settingsAction', (event, args) => {
-        switch(args.action) {
-            case "get":
-                return env.settings.serialize();
-            case "save":
-                env.settings.update(args.settings);
-                break;
-        }
-    })
+        ipcMain.handle('settingsAction', (event, args) => {
+            switch (args.action) {
+                case "get":
+                    return env.settings.serialize();
+                case "save":
+                    env.settings.update(args.settings);
+                    break;
+            }
+        })
 
-    ipcMain.handle('videoAction', async (event, args) => {
-        switch (args.action) {
-            case "stop":
-                queryManager.stopSingle(args.identifier);
-                break;
-            case "open":
-                queryManager.openVideo(args);
-                break;
-            case "download":
-                if(args.all) queryManager.downloadAllVideos(args)
-                else queryManager.downloadVideo(args);
-                break;
-            case "entry":
-                queryManager.manage(args.url);
-                break;
-            case "info":
-                queryManager.showInfo(args.identifier);
-                break;
-            case "downloadInfo":
-                queryManager.saveInfo(args.identifier);
-                break;
-            case "size":
-                queryManager.startSizeQuery(args.identifier, args.formatLabel, args.clicked)
-                break;
-            case "setmain":
-                env.setMain(args);
-                break;
-            case "audioOnly":
-                queryManager.setAudioOnly(args.identifier, args.value);
-                break;
-            case "audioQuality":
-                queryManager.setAudioQuality(args.identifier, args.value);
-                break;
-            case "downloadable":
-                return await queryManager.isDownloadable(args.identifier);
-        }
-    });
+        ipcMain.handle('videoAction', async (event, args) => {
+            switch (args.action) {
+                case "stop":
+                    queryManager.stopSingle(args.identifier);
+                    break;
+                case "open":
+                    queryManager.openVideo(args);
+                    break;
+                case "download":
+                    if (args.all) queryManager.downloadAllVideos(args)
+                    else queryManager.downloadVideo(args);
+                    break;
+                case "entry":
+                    queryManager.manage(args.url);
+                    break;
+                case "info":
+                    queryManager.showInfo(args.identifier);
+                    break;
+                case "downloadInfo":
+                    queryManager.saveInfo(args.identifier);
+                    break;
+                case "size":
+                    queryManager.startSizeQuery(args.identifier, args.formatLabel, args.clicked)
+                    break;
+                case "setmain":
+                    env.setMain(args);
+                    break;
+                case "audioOnly":
+                    queryManager.setAudioOnly(args.identifier, args.value);
+                    break;
+                case "audioQuality":
+                    queryManager.setAudioQuality(args.identifier, args.value);
+                    break;
+                case "downloadable":
+                    return await queryManager.isDownloadable(args.identifier);
+            }
+        });
+    }
 }
 
 //Register shortcuts
