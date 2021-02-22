@@ -11,7 +11,7 @@ class Settings {
         this.updateBinary = updateBinary == null ? true : updateBinary;
         this.updateApplication = updateApplication == null ? true : updateApplication;
         this.cookiePath = cookiePath;
-        this.statSend = statSend;
+        this.statSend = statSend == null ? false : statSend;
     }
 
     static async loadFromFile(paths, env) {
@@ -37,7 +37,6 @@ class Settings {
         }
         this.updateBinary = settings.updateBinary;
         this.updateApplication = settings.updateApplication;
-        this.statSend = settings.statSend;
         this.save();
     }
 

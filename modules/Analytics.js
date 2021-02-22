@@ -10,7 +10,7 @@ class Analytics {
     }
 
     sendDownload() {
-        if(this.settings.statSend === false) {
+        if(!this.settings.statSend) {
             axios.post('http://backend.jelleglebbeek.com/youtubedl/download.php/', querystring.stringify({ version: this.version })).then(() => {
                 this.settings.statSend = true;
                 this.settings.save()
