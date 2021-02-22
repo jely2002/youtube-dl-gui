@@ -46,12 +46,15 @@
       "target": "nsis",
       "icon": "renderer/img/icon.ico",
       "files": [
-        "!ytdlgui_demo.gif",
-        "!fix-linux-builds.js",
         "!**/binaries/ffmpeg",
         "!**/binaries/ffmpeg-linux",
         "!**/binaries/youtube-dl-unix",
-        "!**/renderer/img/icon.icns"
+        "!**/renderer/img/icon.icns",
+        "!README.md",
+        "!.github${/*}",
+        "!ytdlgui_demo.gif",
+        "!fix-linux-builds.js",
+        "!userSettings"
       ]
     },
     "mac": {
@@ -60,12 +63,15 @@
       "category": "public.app-category.utilities",
       "identity": null,
       "files": [
-        "!ytdlgui_demo.gif",
-        "!fix-linux-builds.js",
         "!**/binaries/ffmpeg.exe",
         "!**/binaries/ffmpeg-linux",
         "!**/binaries/youtube-dl.exe",
-        "!**/renderer/img/icon.ico"
+        "!**/renderer/img/icon.ico",
+        "!README.md",
+        "!.github${/*}",
+        "!ytdlgui_demo.gif",
+        "!fix-linux-builds.js",
+        "!userSettings"
       ]
     },
     "linux": {
@@ -80,13 +86,16 @@
         "Comment": "A cross-platform GUI for youtube-dl"
       },
       "files": [
-        "!ytdlgui_demo.gif",
-        "!fix-linux-builds.js",
         "!**/binaries/ffmpeg",
         "!**/binaries/ffmpeg.exe",
         "!**/binaries/youtube-dl.exe",
         "!**/renderer/img/icon.icns",
-        "!**/renderer/img/icon.ico"
+        "!**/renderer/img/icon.ico",
+        "!README.md",
+        "!.github${/*}",
+        "!ytdlgui_demo.gif",
+        "!fix-linux-builds.js",
+        "!userSettings"
       ]
     }
   }
