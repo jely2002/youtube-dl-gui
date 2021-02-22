@@ -7,23 +7,11 @@ const QueryManager = require("./modules/QueryManager");
 const ErrorHandler = require("./modules/ErrorHandler");
 const BinaryUpdater = require("./modules/BinaryUpdater");
 
-let doneIcon
-let downloadingIcon
-
 let win
 let env
 let queryManager
 
 let appStarting = true;
-
-//Set icon file paths depending on the platform
-if(process.platform === "darwin") {
-    doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'renderer/img/done-icon.png')
-    downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'renderer/img/downloading-icon.png')
-} else {
-    doneIcon = nativeImage.createFromPath('renderer/img/done-icon.png')
-    downloadingIcon = nativeImage.createFromPath('renderer/img/downloading-icon.png')
-}
 
 //Create the window for the renderer process
 function createWindow(env) {
