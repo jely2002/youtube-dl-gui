@@ -60,7 +60,6 @@ app.on('ready', async () => {
         let updater = new BinaryUpdater(env.paths);
         await updater.checkUpdate();
     }
-
 })
 
 //Quit the application when all windows are closed, except for darwin
