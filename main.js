@@ -10,7 +10,6 @@ const BinaryUpdater = require("./modules/BinaryUpdater");
 let win
 let env
 let queryManager
-
 let appStarting = true;
 
 //Create the window for the renderer process
