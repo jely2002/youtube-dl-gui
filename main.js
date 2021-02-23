@@ -19,7 +19,7 @@ if(process.platform === "linux") {
     let readonlyResources = app.getAppPath().slice(0, -8)
     let destination = app.getPath("home") + "/.youtube-dl-gui/"
     mkdirp(app.getPath("home") + "/.youtube-dl-gui/").then(made => {
-        if(made !== null) {
+        if(made != null) {
             fs.copyFile(readonlyResources + "youtube-dl-darwin", destination + "youtube-dl-darwin", (err) => {
                 if (err) throw err
                 console.log('youtube-dl-darwin copied to home data')
