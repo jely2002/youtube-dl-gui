@@ -59,7 +59,7 @@ class Filepaths {
     async createHomeFolder() {
         await new Promise((resolve) => {
             mkdirp(this.persistentPath).then(made => {
-                if (made !== null) {
+                if (made != null) {
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/youtube-dl-unix"), path.join(this.persistentPath, "youtube-dl-unix"));
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ffmpeg-linux"), path.join(this.persistentPath, "ffmpeg"));
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ytdlVersion1"), path.join(this.persistentPath, "ytdlVersion"));
