@@ -24,12 +24,11 @@ select {
 
 .btn-highlight {
     background-color: var(--highlight-color) !important;
-    color: var(--font-color);
+    color: var(--font-color) !important;
 }
 
-.btn-highlight:hover {
+.btn-highlight:hover:not(:disabled) {
     background-color: var(--secondary-highlight-color) !important;
-    color: var(--font-color);
 }
 
 /* TOASTS */
