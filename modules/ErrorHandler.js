@@ -34,16 +34,23 @@ class ErrorHandler {
                 code: "Private or removed video",
                 description: "This video can not be extracted.",
                 trigger: "metadata.formats is not iterable"
+            },
+            {
+                code: "ffmpeg not found",
+                description: "Format merging requires ffmpeg.",
+                trigger: "ffmpeg"
             }
         ]
     }
 
     checkError(stderr, identifier) {
         for(const errorDef of this.errorDefinitions) {
+            console.log("Trigger " + errorDef.trigger)
             if(stderr.includes(errorDef.trigger)) {
-                this.raiseError(errorDef, identifier)
+                this.raiseError(errorDef, identifier);
                 break;
             } else if(stderr.includes("ERROR")) {
+                console.log("ERR: " + stderr)
                 this.raiseUnhandledError(stderr, identifier);
                 break;
             }
@@ -67,7 +74,6 @@ class ErrorHandler {
     }
 
     raiseError(errorDef, identifier) {
-        if(!this.isSingleVideo(identifier)) return;
         console.log("raised error")
         console.log(errorDef.code)
         this.win.webContents.send("error", { error: errorDef, identifier: identifier, unexpected: false });
