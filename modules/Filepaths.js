@@ -8,7 +8,6 @@ class Filepaths {
         this.platform = process.platform;
         this.downloadPath = this.app.getPath('downloads');
         this.appPath = this.app.getAppPath();
-        this.generateFilepaths();
     }
 
      async generateFilepaths() {
@@ -62,7 +61,7 @@ class Filepaths {
                 if (made != null) {
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/youtube-dl-unix"), path.join(this.persistentPath, "youtube-dl-unix"));
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ffmpeg-linux"), path.join(this.persistentPath, "ffmpeg"));
-                    fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ytdlVersion1"), path.join(this.persistentPath, "ytdlVersion"));
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ytdlVersion"), path.join(this.persistentPath, "ytdlVersion"));
                 }
                 resolve();
             })

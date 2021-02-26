@@ -26,6 +26,7 @@ class Environment {
 
     //Read the settings and start required services
     async initialize() {
+        await this.paths.generateFilepaths();
         this.settings = await Settings.loadFromFile(this.paths, this);
         this.changeMaxConcurrent(this.settings.maxConcurrent);
         if(this.settings.cookiePath != null) { //If the file does not exist anymore, null the value and save.
