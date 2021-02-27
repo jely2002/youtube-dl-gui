@@ -25,7 +25,6 @@ class DownloadQuery extends Query {
                 '--ffmpeg-location', this.environment.paths.ffmpeg,
                 '--no-mtime',
                 '--embed-thumbnail',
-                '--add-metadata',
                 '-o', output,
                 '--output-na-placeholder', ""
             ];
@@ -39,7 +38,6 @@ class DownloadQuery extends Query {
                 "-f", format,
                 "-o", output,
                 '--ffmpeg-location', this.environment.paths.ffmpeg,
-                '--add-metadata',
                 '--no-mtime',
                 '--output-na-placeholder', ""
             ];
@@ -54,8 +52,12 @@ class DownloadQuery extends Query {
                 args.push("mp4");
             }
         }
-        if(process.platform !== "win32") {
-            args.push("--xattrs");
+        if(this.environment.settings.downloadMetadata) {
+            args.push('--add-metadata');
+            if(process.platform !=="win32") {
+                args.push("--xattrs");
+
+            }
         }
         let destinationCount = 0;
         let initialReset = false;

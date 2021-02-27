@@ -89,6 +89,7 @@ async function init() {
             updateBinary: $('#updateBinary').prop('checked'),
             updateApplication: $('#updateApplication').prop('checked'),
             enforceMP4: $('#enforceMP4').prop('checked'),
+            downloadMetadata: $('#downloadMetadata').prop('checked'),
             sizeMode: $('#sizeSetting').val(),
             maxConcurrent: parseInt($('#maxConcurrent').val())
         }
@@ -105,6 +106,7 @@ async function init() {
             $('#updateBinary').prop('checked', settings.updateBinary);
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#enforceMP4').prop('checked', settings.enforceMP4);
+            $('#downloadMetadata').prop('checked', settings.downloadMetadata);
             $('#maxConcurrent').val(settings.maxConcurrent);
             $('#concurrentLabel').html(`Max concurrent <strong>(${settings.maxConcurrent})</strong>`);
             $('#sizeSetting').val(settings.sizeMode);
