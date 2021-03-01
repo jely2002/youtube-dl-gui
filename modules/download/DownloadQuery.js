@@ -59,6 +59,7 @@ class DownloadQuery extends Query {
 
             }
         }
+        if(this.environment.settings.keepUnmerged) args.push('--keep-video');
         let destinationCount = 0;
         let initialReset = false;
         let result = null;

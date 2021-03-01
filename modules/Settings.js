@@ -2,11 +2,12 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, enforceMP4, sizeMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata) {
+    constructor(paths, env, enforceMP4, sizeMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, keepUnmerged) {
         this.paths = paths;
         this.env = env
         this.enforceMP4 = enforceMP4 == null ? false : enforceMP4;
-        this.downloadMetadata = enforceMP4 == null ? true : downloadMetadata;
+        this.downloadMetadata = downloadMetadata == null ? true : downloadMetadata;
+        this.keepUnmerged = keepUnmerged == null ? false : keepUnmerged;
         this.sizeMode = sizeMode == null ? "full" : sizeMode;
         this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? Math.round(os.cpus().length / 2) : maxConcurrent; //Max concurrent is standard half of the system's available cores
         this.updateBinary = updateBinary == null ? true : updateBinary;
@@ -19,7 +20,7 @@ class Settings {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(paths, env, data.enforceMP4, data.sizeMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata);
+            return new Settings(paths, env, data.enforceMP4, data.sizeMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.keepUnmerged);
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
@@ -32,6 +33,7 @@ class Settings {
     update(settings) {
         this.enforceMP4 = settings.enforceMP4;
         this.downloadMetadata = settings.downloadMetadata;
+        this.keepUnmerged = settings.keepUnmerged;
         this.sizeMode = settings.sizeMode;
         if(this.maxConcurrent !== settings.maxConcurrent) {
             this.maxConcurrent = settings.maxConcurrent;
@@ -52,7 +54,8 @@ class Settings {
             updateApplication: this.updateApplication,
             cookiePath: this.cookiePath,
             statSend: this.statSend,
-            downloadMetadata: this.downloadMetadata
+            downloadMetadata: this.downloadMetadata,
+            keepUnmerged: this.keepUnmerged
         }
     }
 
