@@ -45,12 +45,10 @@ class ErrorHandler {
 
     checkError(stderr, identifier) {
         for(const errorDef of this.errorDefinitions) {
-            console.log("Trigger " + errorDef.trigger)
             if(stderr.includes(errorDef.trigger)) {
                 this.raiseError(errorDef, identifier);
                 break;
             } else if(stderr.includes("ERROR")) {
-                console.log("ERR: " + stderr)
                 this.raiseUnhandledError(stderr, identifier);
                 break;
             }
@@ -75,7 +73,6 @@ class ErrorHandler {
 
     raiseError(errorDef, identifier) {
         console.log("raised error")
-        console.log(errorDef.code)
         this.win.webContents.send("error", { error: errorDef, identifier: identifier, unexpected: false });
         this.queryManager.onError(identifier);
     }
