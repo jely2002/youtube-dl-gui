@@ -46,6 +46,7 @@ class ErrorHandler {
     checkError(stderr, identifier) {
         for(const errorDef of this.errorDefinitions) {
             if(stderr.includes(errorDef.trigger)) {
+                if(errorDef.code === "ffmpeg not found" && process.argv[2] === '--dev') break; //Do not raise a 'ffmpeg not found' error when in dev mode
                 this.raiseError(errorDef, identifier);
                 break;
             } else if(stderr.includes("ERROR")) {
