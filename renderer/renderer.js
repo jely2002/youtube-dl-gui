@@ -98,7 +98,7 @@ async function init() {
     });
 
     $('#maxConcurrent').on('input', () => {
-        $('#concurrentLabel').html(`Max concurrent <strong>(${$('#maxConcurrent').val()})</strong>`);
+        $('#concurrentLabel').html(`Max concurrent jobs <strong>(${$('#maxConcurrent').val()})</strong>`);
     })
 
     $('#settingsBtn').on('click', () => {
@@ -110,7 +110,7 @@ async function init() {
             $('#downloadMetadata').prop('checked', settings.downloadMetadata);
             $('#keepUnmerged').prop('checked', settings.keepUnmerged);
             $('#maxConcurrent').val(settings.maxConcurrent);
-            $('#concurrentLabel').html(`Max concurrent <strong>(${settings.maxConcurrent})</strong>`);
+            $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.maxConcurrent})</strong>`);
             $('#sizeSetting').val(settings.sizeMode);
             $('#settingsModal').modal("show");
         });
@@ -118,7 +118,7 @@ async function init() {
 
     $('#defaultConcurrent').on('click', () => {
         window.main.invoke("settingsAction", {action: "get"}).then((settings) => {
-            $('#concurrentLabel').html(`Max concurrent <strong>(${settings.defaultConcurrent})</strong>`);
+            $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.defaultConcurrent})</strong>`);
             $('#maxConcurrent').val(settings.defaultConcurrent);
         });
     })

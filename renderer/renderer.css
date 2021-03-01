@@ -394,6 +394,21 @@ option.audio {
     margin-bottom: .5rem;
 }
 
+#settingsModal .modal-body {
+    height: 61vh;
+    max-height: 571px;
+    overflow-y: auto;
+}
+
+#settingsModal hr {
+    border-color: var(--tertiary-bg-color);
+    margin: 1rem -1rem 1rem;
+}
+
+#settingsModal h3 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
 
 /* AUTH MODAL */
 #fileInput {
