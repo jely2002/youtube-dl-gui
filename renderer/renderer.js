@@ -468,14 +468,13 @@ function addVideo(args) {
     }
 
     $(template).find('img').on('load error', () => {
-        $('.video-cards').append(template);
+        $('.video-cards').prepend(template);
 
         //Update the type and quality values to match the global set values.
         // This only works after the card has been appended.
         $('#download-type').change();
         $('#download-quality').change();
     });
-
 }
 
 function updateProgress(args) {
@@ -503,7 +502,6 @@ function updateProgress(args) {
             $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed);
         }
     }
-
 }
 
 function updateTotalProgress(args) {
