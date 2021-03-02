@@ -157,10 +157,12 @@ class QueryManager {
                     let sizeQuery = new SizeQuery(video, this.environment);
                     sizeQuery.connect().then((result) => {
                         if(formatLabel === "best") {
-                            video.bestAudioSize = result;
+                            video.bestAudioSize = Utils.convertBytes(result);
+                            video.rawBestAudioSize = result;
                             this.window.webContents.send("videoAction", {action: "size", size: video.bestAudioSize, identifier: video.identifier})
                         } else {
-                            video.worstAudioSize = result;
+                            video.worstAudioSize = Utils.convertBytes(result);
+                            video.rawWorstAudioSize = result;
                             this.window.webContents.send("videoAction", {action: "size", size: video.worstAudioSize, identifier: video.identifier})
                         }
                     });

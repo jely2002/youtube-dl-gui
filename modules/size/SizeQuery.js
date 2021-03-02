@@ -52,7 +52,7 @@ class SizeQuery extends Query {
                 this.format.filesize_label = Utils.convertBytes(totalSize);
                 return this.format.filesize_label;
             } else {
-                return Utils.convertBytes(totalSize);
+                return totalSize;
             }
         }
     }
