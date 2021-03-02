@@ -91,9 +91,11 @@ async function init() {
             enforceMP4: $('#enforceMP4').prop('checked'),
             downloadMetadata: $('#downloadMetadata').prop('checked'),
             keepUnmerged: $('#keepUnmerged').prop('checked'),
+            calculateTotalSize: $('#calculateTotalSize').prop('checked'),
             sizeMode: $('#sizeSetting').val(),
             maxConcurrent: parseInt($('#maxConcurrent').val())
         }
+        window.settings = settings;
         window.main.invoke("settingsAction", {action: "save", settings})
     });
 
@@ -103,16 +105,17 @@ async function init() {
 
     $('#settingsBtn').on('click', () => {
         window.main.invoke("settingsAction", {action: "get"}).then((settings) => {
-            console.log(settings)
             $('#updateBinary').prop('checked', settings.updateBinary);
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#enforceMP4').prop('checked', settings.enforceMP4);
             $('#downloadMetadata').prop('checked', settings.downloadMetadata);
             $('#keepUnmerged').prop('checked', settings.keepUnmerged);
+            $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
             $('#maxConcurrent').val(settings.maxConcurrent);
             $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.maxConcurrent})</strong>`);
             $('#sizeSetting').val(settings.sizeMode);
             $('#settingsModal').modal("show");
+            window.settings = settings;
         });
     });
 

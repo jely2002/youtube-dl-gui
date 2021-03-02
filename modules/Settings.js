@@ -2,12 +2,13 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, enforceMP4, sizeMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, keepUnmerged) {
+    constructor(paths, env, enforceMP4, sizeMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, keepUnmerged, calculateTotalSize) {
         this.paths = paths;
         this.env = env
         this.enforceMP4 = enforceMP4 == null ? false : enforceMP4;
         this.downloadMetadata = downloadMetadata == null ? true : downloadMetadata;
         this.keepUnmerged = keepUnmerged == null ? false : keepUnmerged;
+        this.calculateTotalSize = calculateTotalSize == null ? true : calculateTotalSize;
         this.sizeMode = sizeMode == null ? "full" : sizeMode;
         this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? Math.round(os.cpus().length / 2) : maxConcurrent; //Max concurrent is standard half of the system's available cores
         this.updateBinary = updateBinary == null ? true : updateBinary;
@@ -20,7 +21,7 @@ class Settings {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(paths, env, data.enforceMP4, data.sizeMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.keepUnmerged);
+            return new Settings(paths, env, data.enforceMP4, data.sizeMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.keepUnmerged, data.calculateTotalSize);
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
@@ -34,6 +35,7 @@ class Settings {
         this.enforceMP4 = settings.enforceMP4;
         this.downloadMetadata = settings.downloadMetadata;
         this.keepUnmerged = settings.keepUnmerged;
+        this.calculateTotalSize = settings.calculateTotalSize;
         this.sizeMode = settings.sizeMode;
         if(this.maxConcurrent !== settings.maxConcurrent) {
             this.maxConcurrent = settings.maxConcurrent;
@@ -55,7 +57,8 @@ class Settings {
             cookiePath: this.cookiePath,
             statSend: this.statSend,
             downloadMetadata: this.downloadMetadata,
-            keepUnmerged: this.keepUnmerged
+            keepUnmerged: this.keepUnmerged,
+            calculateTotalSize: this.calculateTotalSize
         }
     }
 
