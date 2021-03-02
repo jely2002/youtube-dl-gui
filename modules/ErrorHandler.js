@@ -26,6 +26,11 @@ class ErrorHandler {
                 trigger: "Unsupported URL"
             },
             {
+              code: "Private or non-existent playlist",
+              description: `This playlist does not exist or is&nbsp;<span onclick="$('#authModal').modal('show');" class="openAuth">private</span>.`,
+              trigger: "ERROR: The playlist does not exist"
+            },
+            {
                 code: "Possible broken extractor (404)",
                 description: "YTDL isn't working, please wait for an update.",
                 trigger: "HTTP Error 404"

@@ -32,14 +32,18 @@ class QueryManager {
             return;
         }
 
-        this.removeVideo(metadataVideo);
 
         switch(Utils.detectInfoType(initialQuery)) {
             case "single":
                 this.manageSingle(initialQuery, url);
+                this.removeVideo(metadataVideo);
                 break;
             case "playlist":
-                this.managePlaylist(initialQuery, url)
+                this.managePlaylist(initialQuery, url);
+                this.removeVideo(metadataVideo);
+                break;
+            case false:
+                this.environment.errorHandler.raiseUnhandledError("YouTube-dl returned an empty object", metadataVideo.identifier);
                 break;
         }
     }
