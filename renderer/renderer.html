@@ -192,10 +192,12 @@
                 <h3>Performance</h3>
                 <div class="mb-4">
                     <label for="sizeSetting" class="form-label">Download size calculation</label>
-                    <select class="custom-select d-block rounded w-auto" id="sizeSetting">
+                    <select class="custom-select d-block rounded w-auto mb-2" id="sizeSetting">
                         <option value="full" selected>Automatically calculate</option>
                         <option value="click">Click to calculate</option>
                     </select>
+                    <input class="check-input" type="checkbox" value="" id="calculateTotalSize">
+                    <label class="check-label" for="calculateTotalSize">Calculate total download size</label>
                 </div>
                 <div class="mb-4">
                     <label for="maxConcurrent" id="concurrentLabel" class="form-label d-inline-block">Max concurrent jobs</label>

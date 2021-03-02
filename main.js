@@ -132,6 +132,8 @@ function startCriticalHandlers(env) {
                 case "downloadInfo":
                     queryManager.saveInfo(args.identifier);
                     break;
+                case "getSize":
+                    return queryManager.getVideoSize(args.identifier, args.formatLabel);
                 case "size":
                     queryManager.startSizeQuery(args.identifier, args.formatLabel, args.clicked)
                     break;

@@ -258,6 +258,10 @@ async function init() {
         else $('.windowbar').removeClass("fullscreen");
     });
 
+    window.main.receive("totalSize", () => {
+        updateTotalSize();
+    });
+
     window.main.receive("updateGlobalButtons", (arg) => updateButtons(arg));
 
     //Receive calls from main process and dispatch them to the right function
@@ -268,6 +272,7 @@ async function init() {
                 break;
             case "remove":
                 $(getCard(arg.identifier)).remove();
+                updateTotalSize();
                 break;
             case "progress":
                 updateProgress(arg);
@@ -515,6 +520,32 @@ function updateSize(args) {
     } else {
         $(card).find('.metadata.right').html('<strong>Size: </strong>' + args.size);
     }
+    updateTotalSize();
+}
+
+async function updateTotalSize() {
+    if(window.settings == null) {
+        window.settings = await window.main.invoke("settingsAction", {action: "get"});
+    }
+    if(!window.settings.calculateTotalSize) return;
+    const totalVideos = $('.video-cards').children().length;
+    let totalSize = 0;
+    let queriedVideos = 0;
+    $('.video-cards').children().each(async function() {
+        queriedVideos++;
+        let sizeField = $(this).find('p.metadata.right');
+        if(sizeField.is(':visible')) {
+            if(!$(sizeField.children()[1]).is('button') || $(sizeField.children()[1]).is('i')) {
+                let filesize = await window.main.invoke("videoAction", {action: "getSize", identifier: $(this).prop("id"), formatLabel: $(this).find('.custom-select.download-quality').find(":selected").val()})
+                totalSize += filesize;
+                if(queriedVideos === totalVideos && totalSize > 0) {
+                    $('#totalProgress small').html('Ready to download! Total queried size: ' +  convertBytes(totalSize));
+                } else if(queriedVideos === totalVideos && totalSize <= 0) {
+                    $('#totalProgress small').html('Ready to download!');
+                }
+            }
+        }
+    });
 }
 
 function showInfoModal(info, identifier) {
@@ -595,6 +626,15 @@ function setError(code, description, unexpected, identifier) {
         $(card).find('.info').addClass('d-flex').removeClass("d-none");
         $(card).find('.metadata.info').removeClass("d-none").html(description);
     }
+}
+
+function convertBytes(bytes) {
+    const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    let l = 0, n = parseInt(bytes, 10) || 0;
+    while(n >= 1024 && ++l){
+        n = n/1024;
+    }
+    return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
 }
 
 function getCard(identifier) {

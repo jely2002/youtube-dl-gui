@@ -141,6 +141,24 @@ class QueryManager {
         });
     }
 
+    getVideoSize(identifier, formatLabel) {
+        let video = this.getVideo(identifier);
+        if(video.audioOnly) {
+            if(formatLabel === "best") {
+               return video.rawBestAudioSize;
+            } else {
+                return video.rawWorstAudioSize;
+            }
+        } else {
+            for (const format of video.formats) {
+                if (format.getDisplayName() === formatLabel) {
+                    video.selected_format_index = video.formats.indexOf(format);
+                    return format.filesize;
+                }
+            }
+        }
+    }
+
     startSizeQuery(identifier, formatLabel, clicked) {
         let video = this.getVideo(identifier);
         if(video.audioOnly) {
@@ -167,6 +185,7 @@ class QueryManager {
                         }
                     });
                     video.gettingSize = false;
+                    this.checkTotalSize();
                 }
             } else {
                 if(formatLabel === "best") {
@@ -174,6 +193,7 @@ class QueryManager {
                 } else {
                     this.window.webContents.send("videoAction", {action: "size", size: video.worstAudioSize, identifier: video.identifier})
                 }
+                this.checkTotalSize();
             }
         } else {
             let selectedFormat = formatLabel;
@@ -206,6 +226,7 @@ class QueryManager {
                             identifier: video.identifier
                         })
                         video.gettingSize = false;
+                        this.checkTotalSize();
                     });
                 }
             } else {
@@ -213,8 +234,15 @@ class QueryManager {
                     action: "size",
                     size: selectedFormat.filesize_label,
                     identifier: video.identifier
-                })
+                });
+                this.checkTotalSize();
             }
+        }
+    }
+
+    checkTotalSize() {
+        if(this.environment.settings.calculateTotalSize) {
+            this.window.webContents.send("totalSize");
         }
     }
 
