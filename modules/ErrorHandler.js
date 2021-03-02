@@ -7,7 +7,7 @@ class ErrorHandler {
         this.errorDefinitions = [
             {
                 code: "No authentication",
-                description: 'Authenticate using&nbsp;<span onclick="$(\'#authModal\').modal(\'show\');" class="openAuth">cookies</span>&nbsp;and try again.',
+                description: `Authenticate using&nbsp;<span onclick="$('#authModal').modal('show');" class="openAuth">cookies</span>&nbsp;and try again.`,
                 trigger: "ERROR: Private video"
             },
             {
@@ -38,26 +38,29 @@ class ErrorHandler {
             {
                 code: "ffmpeg not found",
                 description: "Format merging requires ffmpeg.",
-                trigger: "ffmpeg"
+                trigger: "ffmpeg or avconv not found"
             }
         ]
     }
 
     checkError(stderr, identifier) {
+        let foundError = false;
         for(const errorDef of this.errorDefinitions) {
             if(stderr.includes(errorDef.trigger)) {
+                foundError = true;
                 if(errorDef.code === "ffmpeg not found" && process.argv[2] === '--dev') break; //Do not raise a 'ffmpeg not found' error when in dev mode
                 this.raiseError(errorDef, identifier);
                 break;
-            } else if(stderr.includes("ERROR")) {
+            }
+        }
+        if(!foundError) {
+            if(stderr.includes("ERROR")) {
                 this.raiseUnhandledError(stderr, identifier);
-                break;
             }
         }
     }
 
     raiseUnhandledError(error, identifier) {
-        if(!this.isSingleVideo(identifier)) return;
         console.log("raised unhandled error")
         let errorDef = {
             identifier: identifier,
