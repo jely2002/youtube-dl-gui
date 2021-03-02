@@ -41,7 +41,7 @@
     "appId": "com.jelleglebbeek.youtube-dl-gui",
     "asarUnpack": "**/binaries/*",
     "productName": "YouTube Downloader GUI",
-    "copyright": "Copyright © 2020 Jelle Glebbeek",
+    "copyright": "Copyright © 2020-2021 Jelle Glebbeek",
     "win": {
       "target": "nsis",
       "icon": "renderer/img/icon.ico",
