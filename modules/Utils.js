@@ -51,6 +51,7 @@ class Utils {
     }
 
     static detectInfoType(infoQueryResult) {
+        if(Object.keys(infoQueryResult).length === 0) return false;
         if (infoQueryResult._type != null && infoQueryResult._type === "playlist") return "playlist";
         if (infoQueryResult.entries != null && infoQueryResult.entries > 0) return "playlist";
         return "single";
@@ -59,7 +60,7 @@ class Utils {
     static hasFilesizes(metadata) {
         let filesizeDetected = false
         if(metadata.formats == null)  {
-            console.error("No formats could be found.")
+            console.error("No formats could be found.");
             return false;
         }
         for(const format of metadata.formats) {
