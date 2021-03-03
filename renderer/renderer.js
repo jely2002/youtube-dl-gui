@@ -264,6 +264,14 @@ async function init() {
 
     window.main.receive("updateGlobalButtons", (arg) => updateButtons(arg));
 
+    window.main.receive("binaryLock", (args) => {
+        if(args.lock === true) {
+            $('#add-url').attr("placeholder", args.placeholder).prop("disabled", true);
+        } else {
+            $('#add-url').attr("placeholder", "Enter a video/playlist URL to add to the queue").prop("disabled", false);
+        }
+    })
+
     //Receive calls from main process and dispatch them to the right function
     window.main.receive("videoAction", (arg) => {
         switch(arg.action) {

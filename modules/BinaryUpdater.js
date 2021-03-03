@@ -3,8 +3,9 @@ const fs = require("fs");
 
 class BinaryUpdater {
 
-    constructor(paths) {
+    constructor(paths, win) {
         this.paths = paths;
+        this.win = win;
     }
 
     //Checks for an update and download it if there is.
@@ -16,11 +17,13 @@ class BinaryUpdater {
             console.log(`Binaries were already up-to-date! Version: ${localVersion}`);
         } else if(localVersion == null) {
             console.log("Binaries may have been corrupted, downloading binaries to be on the safe side.");
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Re-installing ytdl version ${remoteVersion}...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         } else if(remoteVersion == null) {
             console.log("Unable to check for new updates, yt-dl.org may be down.");
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ytdl to version ${remoteVersion}...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         }
     }

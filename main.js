@@ -55,10 +55,6 @@ app.on('ready', async () => {
     if(app.isPackaged && process.argv[2] !== '--dev') {
         env.analytics.sendDownload();
     }
-    if(env.settings.updateBinary) {
-        let updater = new BinaryUpdater(env.paths);
-        await updater.checkUpdate();
-    }
 })
 
 //Quit the application when all windows are closed, except for darwin
@@ -110,6 +106,12 @@ function startCriticalHandlers(env) {
                     break;
             }
         })
+
+        if(env.settings.updateBinary) {
+            let updater = new BinaryUpdater(env.paths, win);
+            win.webContents.send("binaryLock", {lock: true, placeholder: `Checking for a new version of ytdl...`})
+            updater.checkUpdate().finally(() => { win.webContents.send("binaryLock", {lock: false}) });
+        }
 
         ipcMain.handle('videoAction', async (event, args) => {
             switch (args.action) {
