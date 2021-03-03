@@ -37,7 +37,7 @@
     "url": "https://github.com/jely2002/youtube-dl-gui.git"
   },
   "build": {
-    "afterPack": "./fix-linux-builds.js",
+    "afterPack": "./appimage-fix.js",
     "appId": "com.jelleglebbeek.youtube-dl-gui",
     "asarUnpack": "**/binaries/*",
     "productName": "YouTube Downloader GUI",
