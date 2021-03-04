@@ -44,6 +44,11 @@ class ErrorHandler {
                 code: "ffmpeg not found",
                 description: "Format merging requires ffmpeg.",
                 trigger: "ffmpeg or avconv not found"
+            },
+            {
+                code: "ffmpeg not found",
+                description: "Transcoding to mp3 or mp4 requires ffmpeg.",
+                trigger: "ffprobe/avprobe and ffmpeg/avconv not found"
             }
         ]
     }
