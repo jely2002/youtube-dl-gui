@@ -53,7 +53,10 @@ class BinaryUpdater {
         try {
             response = await axios.get(url, {maxRedirects: 0}) //This uses an http url because the site uses an invalid certificate.
         } catch (err) {
-            if(err.response.status !== 302) {
+            if(err == null || response == null) {
+                console.error(err);
+                return [null, null];
+            } else if (err.response.status !== 302) {
                 console.error('Did not get redirect for the latest version link. Status: ' + err.response.status);
                 return [null, null];
             } else {
@@ -61,6 +64,7 @@ class BinaryUpdater {
             }
         }
         console.error('Did not get redirect for the latest version link. Status: ' + response.status);
+        return [null, null];
     }
 
     //Downloads the file at the given url and saves it to the ytdl path.
