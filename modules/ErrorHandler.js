@@ -49,6 +49,11 @@ class ErrorHandler {
                 code: "ffmpeg not found",
                 description: "Transcoding to mp3 or mp4 requires ffmpeg.",
                 trigger: "ffprobe/avprobe and ffmpeg/avconv not found"
+            },
+            {
+                code: "Incomplete YouTube ID",
+                description: "The URL you entered is incomplete.",
+                trigger: "Incomplete YouTube ID"
             }
         ]
     }
@@ -65,6 +70,7 @@ class ErrorHandler {
         }
         if(!foundError) {
             if(stderr.includes("ERROR")) {
+                console.error(stderr)
                 this.raiseUnhandledError(stderr, identifier);
             }
         }
