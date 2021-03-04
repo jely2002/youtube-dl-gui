@@ -50,7 +50,6 @@ app.on('ready', async () => {
     env = new Environment(app);
     await env.initialize();
     createWindow(env);
-    registerShortcuts();
     if(app.isPackaged && process.argv[2] !== '--dev') {
         env.analytics.sendDownload();
     }
@@ -165,16 +164,6 @@ function startCriticalHandlers(env) {
             }
         });
     }
-}
-
-//Register shortcuts
-function registerShortcuts() {
-    globalShortcut.register('CommandOrControl+Shift+D', () => {
-        win.webContents.openDevTools()
-    })
-    globalShortcut.register('CommandOrControl+Shift+F', () => {
-        win.webContents.send('flushCache')
-    })
 }
 
 function checkAppUpdate() {
