@@ -115,6 +115,7 @@ async function init() {
             $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.maxConcurrent})</strong>`);
             $('#sizeSetting').val(settings.sizeMode);
             $('#settingsModal').modal("show");
+            $('#version').html("<strong>Version: </strong>" + settings.version);
             window.settings = settings;
         });
     });
