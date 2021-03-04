@@ -92,6 +92,19 @@ function startCriticalHandlers(env) {
 
     if(appStarting) {
         appStarting = false;
+
+        //Catch all console.log calls, print them to stdout and send them to the renderer devtools.
+        console.log = (arg) => {
+            process.stdout.write(arg + "\n");
+            sendLogToRenderer(arg, false);
+        };
+
+        //Catch all console.error calls, print them to stderr and send them to the renderer devtools.
+        console.error = (arg) => {
+            process.stderr.write(arg + "\n");
+            sendLogToRenderer(arg, true);
+        }
+
         ipcMain.handle('errorReport', async (event, args) => {
             console.log(args)
             return await env.errorHandler.reportError(args);
@@ -177,6 +190,10 @@ function checkAppUpdate() {
             autoUpdater.checkForUpdatesAndNotify()
         }
     }
+}
+
+function sendLogToRenderer(log, isErr) {
+    win.webContents.send("log", {log: log, isErr: isErr});
 }
 
 //Creates the input menu to show on right click

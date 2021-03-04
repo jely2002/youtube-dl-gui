@@ -244,7 +244,10 @@ async function init() {
 
 
     //Enables the main process to show logs/errors in the renderer dev console
-    window.main.receive("log", (arg) => console.log(arg));
+    window.main.receive("log", (arg) => {
+        if(arg.isErr) console.error(arg.log);
+        else console.log(arg.log);
+    } );
 
     //Enables the main process to show toasts.
     window.main.receive("toast", (arg) => showToast(arg));
