@@ -53,7 +53,7 @@ class BinaryUpdater {
         try {
             response = await axios.get(url, {maxRedirects: 0}) //This uses an http url because the site uses an invalid certificate.
         } catch (err) {
-            if(err == null || response == null) {
+            if(err == null || err.response == null) {
                 console.error(err);
                 return [null, null];
             } else if (err.response.status !== 302) {
