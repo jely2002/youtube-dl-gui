@@ -180,7 +180,7 @@ async function init() {
             else $(this).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled");
         })
         let state = $('#subtitleBtn i').hasClass("bi-card-text-strike");
-        window.main.invoke('videoAction', {action: "setmain", setting: "subtitles", value: state})
+        window.main.invoke('videoAction', {action: "setSubtitles", value: state})
         if(state) $('#subtitleBtn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
         else $('#subtitleBtn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled");
     })

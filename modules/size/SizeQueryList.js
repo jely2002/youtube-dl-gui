@@ -1,5 +1,4 @@
 const SizeQuery = require("./SizeQuery");
-const Utils = require("../Utils");
 
 //**** THIS CLASS IS CURRENTLY NOT USED AND/OR NOT WORKING ****//
 

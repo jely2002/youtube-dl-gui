@@ -86,11 +86,6 @@ class ErrorHandler {
         this.queryManager.onError(identifier);
     }
 
-
-    isSingleVideo(identifier) {
-        return this.queryManager.getVideo(identifier).type === "single";
-    }
-
     async reportError(identifier) {
         for(const err of this.unhandledErrors) {
             if(err.identifier === identifier) {

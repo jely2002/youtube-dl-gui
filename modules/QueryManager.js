@@ -18,12 +18,11 @@ class QueryManager {
     }
 
     async manage(url) {
-        const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)([a-zA-Z0-9\-]{1,})/
         let metadataVideo = new Video(url, "metadata", this.environment);
         this.addVideo(metadataVideo);
         const initialQuery = await new InfoQuery(url, metadataVideo.identifier, this.environment).connect();
         if(metadataVideo.error) return;
-        if(channelRegex.test(url)) {
+        if(Utils.isYouTubeChannel(url)) {
             const actualQuery = await new InfoQuery(initialQuery.entries[0].url, metadataVideo.identifier, this.environment).connect();
             if(metadataVideo.error) return;
             this.removeVideo(metadataVideo);
@@ -31,7 +30,6 @@ class QueryManager {
             else this.managePlaylist(actualQuery, initialQuery.entries[0].url);
             return;
         }
-
 
         switch(Utils.detectInfoType(initialQuery)) {
             case "single":
@@ -369,10 +367,6 @@ class QueryManager {
             usedVideo = this.getVideo(video);
         }
         return !(usedVideo == null || usedVideo.type !== "single" || usedVideo.error || usedVideo.downloaded)
-    }
-
-    isManaging(identifier) {
-        return this.managedVideos.some(video => video.identifier === identifier);
     }
 
     getVideo(identifier) {

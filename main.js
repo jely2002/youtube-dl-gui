@@ -1,6 +1,5 @@
-const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut, shell} = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, globalShortcut, shell} = require('electron');
 const { autoUpdater } = require("electron-updater");
-const fs = require('fs');
 const Environment = require('./modules/Environment');
 const path = require('path');
 const QueryManager = require("./modules/QueryManager");
@@ -152,8 +151,8 @@ function startCriticalHandlers(env) {
                 case "size":
                     queryManager.startSizeQuery(args.identifier, args.formatLabel, args.clicked)
                     break;
-                case "setmain":
-                    env.setMain(args);
+                case "setSubtitles":
+                    env.setSubtitles(args.value);
                     break;
                 case "audioOnly":
                     queryManager.setAudioOnly(args.identifier, args.value);

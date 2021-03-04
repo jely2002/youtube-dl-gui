@@ -13,7 +13,7 @@ class DownloadQueryList {
     }
 
     async start() {
-        return await new Promise(((resolve, reject) => {
+        return await new Promise(((resolve) => {
             for(let video of this.videos) {
                 let progressBar = new ProgressBar(this.manager, video);
                 let task = new DownloadQuery(video.webpage_url, video, this.environment, progressBar);

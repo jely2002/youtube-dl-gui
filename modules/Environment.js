@@ -48,21 +48,8 @@ class Environment {
         this.metadataLimiter.updateSettings(settings);
     }
 
-    setMain(args) {
-        switch(args.setting) {
-            case "subtitles":
-                this.mainDownloadSubs = args.value;
-                break;
-            case "audioonly":
-                this.mainAudioOnly = args.value;
-                break;
-            case "audioquality":
-                this.mainAudioQuality = args.value;
-                break;
-            case "qualitysort":
-                this.mainQualitySort = args.value;
-                break;
-        }
+    setSubtitles(value) {
+        this.mainDownloadSubs = value;
     }
 }
 module.exports = Environment;
