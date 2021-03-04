@@ -1,9 +1,10 @@
-<img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" height="50" align="left" style="height: 5em;"/>
+<img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="75"/>
 
-#&nbsp;youtube-dl-gui
+# youtube-dl-gui
 A cross-platform GUI for youtube-dl made in Electron and node.js
 
 <img src="ytdlgui_demo.gif" alt="demo" width="500"/>
+
 
 ### Features:
 - Download from all kind of platforms: YouTube, vimeo, twitter & many more
