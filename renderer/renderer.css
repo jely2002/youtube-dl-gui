@@ -118,6 +118,10 @@ select {
     margin-left: 1rem;
 }
 
+#version {
+    margin-right: auto;
+}
+
 #settingsBtn > i::before {
     transform: scale(.8) !important;
 }

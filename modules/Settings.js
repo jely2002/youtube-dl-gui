@@ -58,7 +58,8 @@ class Settings {
             statSend: this.statSend,
             downloadMetadata: this.downloadMetadata,
             keepUnmerged: this.keepUnmerged,
-            calculateTotalSize: this.calculateTotalSize
+            calculateTotalSize: this.calculateTotalSize,
+            version: this.env.version
         }
     }
 

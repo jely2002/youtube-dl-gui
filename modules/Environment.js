@@ -7,6 +7,7 @@ const fs = require("fs").promises;
 class Environment {
     constructor(app) {
         this.app = app;
+        this.version = app.getVersion();
         this.cookiePath = null;
         this.mainAudioOnly = false;
         this.mainAudioQuality = "best";
