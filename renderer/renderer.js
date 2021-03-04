@@ -192,7 +192,6 @@ async function init() {
         for(const card of videoCards) {
             let isDownloadable = await window.main.invoke("videoAction", {action: "downloadable", identifier: card.id})
             if(isDownloadable) {
-                console.log(card.id);
                 videos.push({
                     identifier: card.id,
                     format: $(card).find('.custom-select.download-quality').val(),
@@ -218,31 +217,9 @@ async function init() {
         $('#totalProgress small').html(`Downloading video queue - 0 of ${videos.length} completed`);
     });
 
-    $('#download-type').on('change', function () {
-        let type = this.selectedOptions[0].value;
-        $('.video-cards').children().each(function () {
-            let quality = $('#download-quality').find(':selected').val();
-            $(this).find('.custom-select.download-type').val(type).change();
-            if(quality === "best") {
-                $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${type}:first`).val()).change();
-            } else if(quality === "worst") {
-                $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${type}:last`).val()).change();
-            }
-        });
+    $('#download-quality, #download-type').on('change', function () {
+      updateVideoSettings();
     });
-
-    $('#download-quality').on('change', function () {
-        let value = this.selectedOptions[0].value;
-        $('.video-cards').children().each(function () {
-            let type = $('#download-type').find(':selected').val();
-            if(value === "best") {
-                $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${type}:first`).val()).change();
-            } else if(value === "worst") {
-                $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${type}:last`).val()).change();
-            }
-        });
-    });
-
 
     //Enables the main process to show logs/errors in the renderer dev console
     window.main.receive("log", (arg) => {
@@ -297,6 +274,7 @@ async function init() {
                 break;
             case "size":
                 updateSize(arg);
+                break;
         }
     });
 
@@ -379,17 +357,6 @@ function addVideo(args) {
             $(template).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
         });
 
-        for(const format of args.formats) {
-            let option = new Option(format.display_name, format.display_name);
-            $(template).find('.custom-select.download-quality').append(option);
-            $(option).addClass("video");
-        }
-
-        $(template).find('.remove-btn').on('click', () => {
-            $(getCard(args.identifier)).remove();
-            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
-        });
-
         $(template).find('.custom-select.download-quality').on('change', function () {
             if(!args.hasFilesizes) return;
             let isAudio = $(template).find(".custom-select.download-type")[0].value === "audio";
@@ -405,6 +372,17 @@ function addVideo(args) {
                 });
             }
             $(template).find('.metadata.right').html('<strong>Size: </strong><i class="lds-dual-ring"></i>');
+        });
+
+        for(const format of args.formats) {
+            let option = new Option(format.display_name, format.display_name);
+            $(template).find('.custom-select.download-quality').append(option);
+            $(option).addClass("video");
+        }
+
+        $(template).find('.remove-btn').on('click', () => {
+            $(getCard(args.identifier)).remove();
+            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
         });
 
         $(template).find('.download-btn').on('click', () => {
@@ -443,7 +421,6 @@ function addVideo(args) {
         $(template).find('.open .item').on('click', () => {
             window.main.invoke("videoAction", {action: "open", identifier: args.identifier, type: "item"});
         });
-
 
     } else if(args.type === "metadata") {
         $(template).find('.card-title')
@@ -484,8 +461,7 @@ function addVideo(args) {
 
         //Update the type and quality values to match the global set values.
         // This only works after the card has been appended.
-        $('#download-type').change();
-        $('#download-quality').change();
+        updateVideoSettings();
     });
 }
 
@@ -531,6 +507,28 @@ function updateSize(args) {
         $(card).find('.metadata.right').html('<strong>Size: </strong>' + args.size);
     }
     updateTotalSize();
+}
+
+function updateVideoSettings() {
+    let qualityValue = $('#download-quality').find(':selected').val();
+    let typeValue = $('#download-type').find(':selected').val();
+    $('.video-cards').children().each(async function () {
+        await window.main.invoke("videoAction", {action: "audioOnly", identifier: $(this).prop("id"), value: typeValue === "audio"});
+        $(this).find('.custom-select.download-type').val(typeValue);
+        if(qualityValue === "best") {
+            $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${typeValue}:first`).val()).change();
+        } else if(qualityValue === "worst") {
+            $(this).find('.custom-select.download-quality').val($(this).find(`.custom-select.download-quality option.${typeValue}:last`).val()).change();
+        }
+        let isAudio = typeValue === "audio";
+        for(const elem of $(this).find('option')) {
+            if($(elem).hasClass("video")) {
+                $(elem).toggle(!isAudio)
+            } else if($(elem).hasClass("audio")) {
+                $(elem).toggle(isAudio)
+            }
+        }
+    });
 }
 
 async function updateTotalSize() {

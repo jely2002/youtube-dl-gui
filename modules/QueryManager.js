@@ -50,7 +50,6 @@ class QueryManager {
         let video = new Video(url, "single", this.environment);
         video.setMetadata(initialQuery);
         this.addVideo(video);
-        if(this.environment.settings.sizeMode === "full") this.startSizeQuery(video.identifier, video.formats[video.selected_format_index]);
         setTimeout(() => this.updateGlobalButtons(), 700); //This feels kinda hacky, maybe find a better way sometime.
     }
 
