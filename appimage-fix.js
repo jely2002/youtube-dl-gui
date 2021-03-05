@@ -1,20 +1,27 @@
-const execa = require ( 'execa' ),
-    fs = require ( 'fs' ),
-    path = require ( 'path' );
+const child_process = require('child_process'),
+    fs = require('fs'),
+    path = require('path');
 
-function isLinux ( targets ) {
+const appName = "youtube-dl-gui";
+
+function isLinux (targets) {
     const re = /AppImage|snap|deb|rpm|freebsd|pacman/i;
-    return !!targets.find ( target => re.test ( target.name ) );
+    return !!targets.find ( target => re.test (target.name));
 }
 
-async function afterPack ({ targets, appOutDir }) {
+async function afterPack ({targets, appOutDir}) {
     if ( !isLinux ( targets ) ) return;
     const scriptPath = path.join(appOutDir, 'youtube-dl-gui'),
-        script = '#!/bin/bash\n"${BASH_SOURCE%/*}"/youtube-dl-gui.bin "$@" --no-sandbox';
-    await execa('mv', ['youtube-dl-gui', 'youtube-dl-gui.bin'], {"cwd": appOutDir});
-    fs.writeFileSync (scriptPath, script);
-    await execa ('chmod', ['+x', 'youtube-dl-gui'], {"cwd": appOutDir});
-
+        script = '#!/bin/bash\n"${BASH_SOURCE%/*}"/' + appName + '.bin "$@" --no-sandbox';
+    new Promise((resolve) => {
+        const child = child_process.exec(`mv ${appName} ${appName}.bin`, {cwd: appOutDir});
+        child.on('exit', () => {
+            resolve();
+        });
+    }).then(() => {
+        fs.writeFileSync (scriptPath, script);
+        child_process.exec(`chmod +x ${appName}`, {cwd: appOutDir});
+    });
 }
 
 module.exports = afterPack;
