@@ -11,7 +11,7 @@ function isLinux (targets) {
 
 async function afterPack ({targets, appOutDir}) {
     if ( !isLinux ( targets ) ) return;
-    const scriptPath = path.join(appOutDir, 'youtube-dl-gui'),
+    const scriptPath = path.join(appOutDir, appName),
         script = '#!/bin/bash\n"${BASH_SOURCE%/*}"/' + appName + '.bin "$@" --no-sandbox';
     new Promise((resolve) => {
         const child = child_process.exec(`mv ${appName} ${appName}.bin`, {cwd: appOutDir});
@@ -19,7 +19,7 @@ async function afterPack ({targets, appOutDir}) {
             resolve();
         });
     }).then(() => {
-        fs.writeFileSync (scriptPath, script);
+        fs.writeFileSync(scriptPath, script);
         child_process.exec(`chmod +x ${appName}`, {cwd: appOutDir});
     });
 }
