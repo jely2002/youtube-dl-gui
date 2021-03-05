@@ -38,7 +38,7 @@
 <div class="container-fluid controls">
     <div class="row mx-auto">
         <div id="totalProgress" class="progress mx-auto">
-            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             <small class="justify-content-center d-flex position-absolute w-100">Ready to download!</small>
         </div>
     </div>
@@ -240,9 +240,8 @@
     </div>
 </div>
 
-<div class="toast warning-toast" id="update" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header bg-success">
-        <i class="bi mr-3 bi-arrow-bar-up"></i>
+<div class="toast" id="update" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
         <strong class="mr-auto update-title">There is an update available!</strong>
         <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
             <span aria-hidden="true">&times;</span>

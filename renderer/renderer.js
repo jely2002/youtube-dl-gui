@@ -71,6 +71,10 @@ async function init() {
         }
     });
 
+    $('body').on('click', '#install-btn', () => {
+       window.main.invoke("installUpdate") ;
+    });
+
     $('#infoModal .dismiss').on('click', () => {
         $('#infoModal').modal("hide");
     });
@@ -227,7 +231,7 @@ async function init() {
         else console.log(arg.log);
     } );
 
-    //Enables the main process to show toasts.
+    //Enables the main process to show and update toasts.
     window.main.receive("toast", (arg) => showToast(arg));
 
     //Passes an error to the setError method
@@ -305,15 +309,13 @@ function parseURL(data) {
 }
 
 function showToast(toastInfo) {
-    if(toastInfo.type === "update") {
-        if(toastInfo.title != null) {
-            $(`.${toastInfo.type}-title`).html(toastInfo.title);
-        }
-        $(`.${toastInfo.type}-body`).html(toastInfo.msg);
-        $(`#${toastInfo.type}`).toast('show').css('visibility', 'visible');
-    } else {
-        console.error("Main tried to show a toast that doesn't exist.")
+    if(toastInfo.title != null) {
+        $(`.${toastInfo.type}-title`).html(toastInfo.title);
     }
+    if(toastInfo.body != null) {
+        $(`.${toastInfo.type}-body`).html(toastInfo.body);
+    }
+    if($(`#${toastInfo.type}`).is(':visible')) $(`#${toastInfo.type}`).toast('show').css('visibility', 'visible');
 }
 
 function addVideo(args) {

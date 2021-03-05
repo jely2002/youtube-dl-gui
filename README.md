@@ -44,6 +44,8 @@ Still haven't found your answer? Open up an issue [right here](https://github.co
 
 ## Planned features
 - White mode
+- Show progress in app-icon
+- Notify user when the download has finished
 
 Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/issues).
 

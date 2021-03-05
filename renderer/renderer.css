@@ -35,11 +35,35 @@ select {
 .toast-header {
     border-bottom: none;
     color: var(--font-color);
+    background-color: var(--tertiary-bg-color);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.toast-body > button {
+    background-color: var(--secondary-bg-color);
+    color: var(--font-color);
+}
+
+.toast-body > button:hover {
+    color: var(--font-color);
+}
+
+.toast-body > #install-btn {
+    background-color: var(--highlight-color);
+}
+
+.toast-body > button:last-child {
+    margin-left: 1rem;
+}
+
+.toast .close {
+    color: var(--font-color);
 }
 
 .toast {
     position: fixed;
-    bottom: 0;
+    bottom: 142px;
     left: 10px;
     visibility: hidden;
 }

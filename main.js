@@ -1,10 +1,10 @@
 const { app, BrowserWindow, ipcMain, dialog, Menu, globalShortcut, shell} = require('electron');
-const { autoUpdater } = require("electron-updater");
 const Environment = require('./modules/Environment');
 const path = require('path');
 const QueryManager = require("./modules/QueryManager");
 const ErrorHandler = require("./modules/ErrorHandler");
 const BinaryUpdater = require("./modules/BinaryUpdater");
+const AppUpdater = require("./modules/AppUpdater");
 
 let win
 let env
@@ -86,7 +86,6 @@ function startCriticalHandlers(env) {
 
     queryManager = new QueryManager(win, env);
     env.errorHandler = new ErrorHandler(win, queryManager, env);
-    checkAppUpdate();
 
     if(appStarting) {
         appStarting = false;
@@ -104,7 +103,6 @@ function startCriticalHandlers(env) {
         }
 
         ipcMain.handle('errorReport', async (event, args) => {
-            console.log(args)
             return await env.errorHandler.reportError(args);
         });
 
@@ -119,10 +117,17 @@ function startCriticalHandlers(env) {
         })
 
         if(env.settings.updateBinary) {
-            let updater = new BinaryUpdater(env.paths, win);
+            let binaryUpdater = new BinaryUpdater(env.paths, win);
             win.webContents.send("binaryLock", {lock: true, placeholder: `Checking for a new version of ytdl...`})
-            updater.checkUpdate().finally(() => { win.webContents.send("binaryLock", {lock: false}) });
+            binaryUpdater.checkUpdate().finally(() => { win.webContents.send("binaryLock", {lock: false}) });
         }
+
+        let appUpdater = new AppUpdater(env, win);
+        appUpdater.checkUpdate();
+
+        ipcMain.handle("installUpdate", () => {
+           appUpdater.installUpdate();
+        });
 
         ipcMain.handle('videoAction', async (event, args) => {
             switch (args.action) {
@@ -163,20 +168,6 @@ function startCriticalHandlers(env) {
                     return await queryManager.isDownloadable(args.identifier);
             }
         });
-    }
-}
-
-function checkAppUpdate() {
-    if(env.settings.updateApplication && process.argv[2] !== '--dev') {
-        if (process.platform === "darwin") {
-            autoUpdater.checkForUpdates().then((result) => {
-                if(app.getVersion() !== result.updateInfo.version) {
-                    win.webContents.send('toast', {type: "update", msg: `Update ${result.updateInfo.releaseName} is out now! <br> <a target="_blank" href="https://github.com/jely2002/youtube-dl-gui/releases/latest">Download on GitHub</a>`});
-                }
-            })
-        } else if (process.platform === "win32" || process.platform === "linux") {
-            autoUpdater.checkForUpdatesAndNotify()
-        }
     }
 }
 
@@ -240,15 +231,6 @@ ipcMain.handle('downloadFolder', async (event) => {
     });
 });
 
-ipcMain.handle('messageBox', (event, args) => {
-   dialog.showMessageBoxSync(win, {
-       title: args.title,
-       message: args.message,
-       type: "none",
-       buttons: [],
-   }) ;
-});
-
 //Show a dialog to select a file, and return the selected value.
 ipcMain.handle('cookieFile', async (event,clear) => {
     if(clear === true) {
@@ -276,3 +258,15 @@ ipcMain.handle('cookieFile', async (event,clear) => {
     }
     return result.filePaths[0];
 })
+
+//Show a messagebox with a custom title and message
+ipcMain.handle('messageBox', (event, args) => {
+   dialog.showMessageBoxSync(win, {
+       title: args.title,
+       message: args.message,
+       type: "none",
+       buttons: [],
+   }) ;
+});
+
+

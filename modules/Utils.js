@@ -17,6 +17,15 @@ class Utils {
         return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
     }
 
+    static convertBytesPerSecond(bytes) {
+        const units = ['B/s', 'KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s', 'ZB/s', 'YB/s'];
+        let l = 0, n = parseInt(bytes, 10);
+        while(n >= 1024 && ++l) {
+            n = n/1024;
+        }
+        return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
+    }
+
     static getRandomID(length) {
         return crypto.randomBytes(length / 2).toString("hex");
     }
