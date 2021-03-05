@@ -123,6 +123,7 @@ function startCriticalHandlers(env) {
         }
 
         let appUpdater = new AppUpdater(env, win);
+        env.appUpdater = appUpdater;
         appUpdater.checkUpdate();
 
         ipcMain.handle("installUpdate", () => {

@@ -623,7 +623,7 @@ function setError(code, description, unexpected, identifier) {
         $(card).find('.options, .info, .open').addClass("d-none").removeClass("d-flex");
         $(card).find('.error').addClass('d-flex').removeClass("d-none");
         $(card).find('.report').unbind().on('click', () => {
-            window.main.invoke("errorReport", identifier).then((id) => {
+            window.main.invoke("errorReport", {identifier: identifier, type: $(card).find('.custom-select.download-type').val(), quality: $(card).find('.custom-select.download-quality').val()}).then((id) => {
                 $(card).find('.progress small').html("Error reported! Report ID: " + id);
                 $(card).find('.report').prop("disabled", true);
             });

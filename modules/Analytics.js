@@ -20,7 +20,7 @@ class Analytics {
 
     async sendReport(err) {
         const id = Utils.getRandomID(8);
-        await axios.post('http://backend.jelleglebbeek.com/youtubedl/errorreport.php/', querystring.stringify({ id: id, version: this.version, code: err.error.code, description: err.error.description, platform: process.platform }));
+        await axios.post('http://backend.jelleglebbeek.com/youtubedl/errorreport.php/', querystring.stringify({ id: id, version: this.version, code: err.error.code, description: err.error.description, platform: process.platform, url: err.url, type: err.type, quality: err.quality}));
         return id;
     }
 }

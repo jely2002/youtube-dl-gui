@@ -97,9 +97,13 @@ class ErrorHandler {
         this.queryManager.onError(identifier);
     }
 
-    async reportError(identifier) {
+    async reportError(args) {
         for(const err of this.unhandledErrors) {
-            if(err.identifier === identifier) {
+            if(err.identifier === args.identifier) {
+                let video = this.queryManager.getVideo(args.identifier)
+                err.url = video.url;
+                err.type = args.type;
+                err.quality = args.quality;
                 return await this.env.analytics.sendReport(err);
             }
         }
