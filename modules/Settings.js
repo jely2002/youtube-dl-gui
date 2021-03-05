@@ -44,6 +44,9 @@ class Settings {
         this.updateBinary = settings.updateBinary;
         this.updateApplication = settings.updateApplication;
         this.save();
+
+        //Prevent installing already downloaded updates on app close.
+        this.env.appUpdater.setUpdateSetting(settings.updateApplication);
     }
 
     serialize() {

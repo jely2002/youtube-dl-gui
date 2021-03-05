@@ -37,8 +37,7 @@ class AppUpdater {
                     });
                 } else {
                     this.newVersion = result.updateInfo.releaseName;
-                    result.downloadPromise.then((download) => {
-                        console.log(download)
+                    result.downloadPromise.then(() => {
                         this.win.webContents.send('toast', {
                             type: "update",
                             title: `Update ${result.updateInfo.releaseName} was downloaded`,
@@ -56,7 +55,14 @@ class AppUpdater {
     }
 
     isUpdateAllowed() {
-        return (this.env.settings.updateApplication && process.argv[2] !== '--dev') || (process.argv[2] === "--dev" && process.argv[3] === "--test-update");
+        return (this.env.settings.updateApplication);
+    }
+
+    setUpdateSetting(value) {
+        autoUpdater.autoInstallOnAppQuit = !!value;
+        if(value === true) {
+            this.checkUpdate();
+        }
     }
 
 }
