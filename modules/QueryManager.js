@@ -264,7 +264,6 @@ class QueryManager {
     updateProgress(video, progress_args) {
         let args;
         if(video === "queue") {
-            progress_args.total = this.managedVideos.length;
             args = {
                 action: "totalProgress",
                 identifier: video.identifier,
