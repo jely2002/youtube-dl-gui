@@ -283,7 +283,10 @@ function downloadPlaylist(audioQuality) {
 
     let amountToDownload = filteredPlaylistVideos.length
     let videosDownloaded = 0
-    setProgressBarText(false, "Video %1 of %2 downloaded", videosDownloaded, amountToDownload)
+
+    let contentType = isAudio?'Audio':'Video'
+
+    setProgressBarText(false, "%1 %2 of %3 downloaded", contentType, videosDownloaded, amountToDownload)
     if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
 
     function downloadVideo(item, format_id, queue, number, cb) {
@@ -292,7 +295,7 @@ function downloadPlaylist(audioQuality) {
             increaseQueue(number)
             let percentage = ((videosDownloaded / amountToDownload) * 100) + "%"
             setProgressBarProgress(false, videosDownloaded, amountToDownload)
-            setProgressBarText(false, "Video %1 of %2 downloaded", videosDownloaded, amountToDownload)
+            setProgressBarText(false, "%1 %2 of %3 downloaded", contentType, videosDownloaded, amountToDownload)
             cb()
             return
         }
@@ -339,7 +342,7 @@ function downloadPlaylist(audioQuality) {
             ++videosDownloaded
             let percentage = ((videosDownloaded / amountToDownload) * 100) + "%"
             setProgressBarProgress(false, videosDownloaded, amountToDownload)
-            setProgressBarText(false, "Video %1 of %2 downloaded", videosDownloaded, amountToDownload)
+            setProgressBarText(false, "%1 %2 of %3 downloaded", contentType, videosDownloaded, amountToDownload)
             cb()
         })
     }
