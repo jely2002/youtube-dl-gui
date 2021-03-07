@@ -284,7 +284,7 @@ function downloadPlaylist(audioQuality) {
     let amountToDownload = filteredPlaylistVideos.length
     let videosDownloaded = 0
 
-    let contentType = isAudio?'Audio':'Video'
+    let contentType = isAudio()?'Audio':'Video'
 
     setProgressBarText(false, "%1 %2 of %3 downloaded", contentType, videosDownloaded, amountToDownload)
     if(process.platform === "win32") ipcRenderer.invoke('setOverlayIcon', {mode: "downloading"})
