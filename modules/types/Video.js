@@ -37,10 +37,10 @@ class Video {
             formats.push(format.serialize());
         }
         return {
-            like_count: this.like_count,
-            dislike_count: this.dislike_count,
+            like_count: Utils.numberFormatter(this.like_count, 2),
+            dislike_count: Utils.numberFormatter(this.dislike_count, 2),
             description: this.description,
-            view_count: this.view_count,
+            view_count: Utils.numberFormatter(this.view_count, 2),
             title: this.title,
             tags: this.tags,
             duration: this.duration,

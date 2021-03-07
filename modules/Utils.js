@@ -26,6 +26,26 @@ class Utils {
         return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
     }
 
+    static numberFormatter(number, digits) {
+        const def = [
+            { value: 1, symbol: "" },
+            { value: 1E3, symbol: "K" },
+            { value: 1E6, symbol: "M" },
+            { value: 1E9, symbol: "B" },
+            { value: 1E12, symbol: "T" },
+            { value: 1E15, symbol: "Q" },
+            { value: 1E18, symbol: "Z" }
+        ];
+        let rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+        let i;
+        for (i = def.length - 1; i > 0; i--) {
+            if (number >= def[i].value) {
+                break;
+            }
+        }
+        return (number / def[i].value).toFixed(digits).replace(rx, "$1") + def[i].symbol;
+    }
+
     static getRandomID(length) {
         return crypto.randomBytes(length / 2).toString("hex");
     }
