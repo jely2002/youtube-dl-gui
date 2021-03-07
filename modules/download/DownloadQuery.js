@@ -54,10 +54,6 @@ class DownloadQuery extends Query {
         }
         if(this.environment.settings.downloadMetadata) {
             args.push('--add-metadata');
-            if(process.platform !=="win32") {
-                args.push("--xattrs");
-
-            }
         }
         if(this.environment.settings.downloadThumbnail) {
             args.push('--write-thumbnail');

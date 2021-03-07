@@ -55,7 +55,7 @@ class AppUpdater {
     }
 
     isUpdateAllowed() {
-        return (this.env.settings.updateApplication);
+        return (this.env.settings.updateApplication && process.argv[2] !== '--dev') || (process.argv[2] === "--dev" && process.argv[3] === "--test-update");
     }
 
     setUpdateSetting(value) {
