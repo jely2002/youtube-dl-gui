@@ -5,7 +5,9 @@ const InfoQueryList = require("./info/InfoQueryList");
 const ProgressBar = require("./types/ProgressBar");
 const DownloadQuery = require("./download/DownloadQuery");
 const { shell, dialog } = require('electron');
+const axios = require('axios')
 const path = require('path')
+const url = require('url');
 const fs = require("fs");
 const SizeQuery = require("./size/SizeQuery");
 const DownloadQueryList = require("./download/DownloadQueryList");
@@ -337,6 +339,24 @@ class QueryManager {
         });
         if(!result.canceled) {
             fs.writeFileSync(result.filePath, JSON.stringify(video.serialize(), null, 3));
+        }
+    }
+
+    async saveThumb(link) {
+        let result = await dialog.showSaveDialog(this.window, {
+            defaultPath: path.join(this.environment.paths.downloadPath, "thumb_" + path.basename(url.parse(link).pathname)),
+            buttonLabel: "Save thumbnail",
+            filters: [
+                { name: "Images", extensions: ["jpeg", "jpg", "png", "webp", "tiff", "bmp"] },
+                { name: "All Files", extensions: ["*"] },
+            ],
+            properties: ["createDirectory"]
+        });
+        if(!result.canceled) {
+            const path = result.filePath;
+            const writer = fs.createWriteStream(path);
+            const response = await axios.get(link,{ responseType: "stream" });
+            response.data.pipe(writer);
         }
     }
 

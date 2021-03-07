@@ -470,6 +470,7 @@ option.audio {
 
 .info-img {
     width: 100%;
+    cursor: pointer;
 }
 
 .info-img:before {
@@ -482,6 +483,18 @@ option.audio {
     background-image: url(img/plain-placeholder.png);
 }
 
+i.img-overlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-60%);
+    font-size: 3rem;
+    opacity: 0;
+    text-shadow: 2px 2px 3px rgba(0,0,0,.6);
+    transition: 200ms;
+    cursor: pointer;
+}
+
 .list-group-item {
     padding-left: 0;
 }
@@ -489,6 +502,16 @@ option.audio {
 .modal-header, .modal-footer {
     border-color: var(--tertiary-bg-color);
 }
+
+.darken {
+    filter: brightness(.5);
+    transition: 200ms;
+}
+
+i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
+    opacity: 1;
+}
+
 
 /* FILESIZE SPINNER */
 .lds-dual-ring {

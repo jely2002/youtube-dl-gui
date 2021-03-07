@@ -2,11 +2,12 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, enforceMP4, sizeMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, keepUnmerged, calculateTotalSize) {
+    constructor(paths, env, enforceMP4, sizeMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize) {
         this.paths = paths;
         this.env = env
         this.enforceMP4 = enforceMP4 == null ? false : enforceMP4;
         this.downloadMetadata = downloadMetadata == null ? true : downloadMetadata;
+        this.downloadThumbnail = downloadThumbnail == null ? false : downloadThumbnail;
         this.keepUnmerged = keepUnmerged == null ? false : keepUnmerged;
         this.calculateTotalSize = calculateTotalSize == null ? true : calculateTotalSize;
         this.sizeMode = sizeMode == null ? "full" : sizeMode;
@@ -21,7 +22,7 @@ class Settings {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(paths, env, data.enforceMP4, data.sizeMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.keepUnmerged, data.calculateTotalSize);
+            return new Settings(paths, env, data.enforceMP4, data.sizeMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize);
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
@@ -34,6 +35,7 @@ class Settings {
     update(settings) {
         this.enforceMP4 = settings.enforceMP4;
         this.downloadMetadata = settings.downloadMetadata;
+        this.downloadThumbnail = settings.downloadThumbnail;
         this.keepUnmerged = settings.keepUnmerged;
         this.calculateTotalSize = settings.calculateTotalSize;
         this.sizeMode = settings.sizeMode;
@@ -60,6 +62,7 @@ class Settings {
             cookiePath: this.cookiePath,
             statSend: this.statSend,
             downloadMetadata: this.downloadMetadata,
+            downloadThumbnail: this.downloadThumbnail,
             keepUnmerged: this.keepUnmerged,
             calculateTotalSize: this.calculateTotalSize,
             version: this.env.version

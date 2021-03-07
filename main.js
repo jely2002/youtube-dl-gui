@@ -151,6 +151,9 @@ function startCriticalHandlers(env) {
                 case "downloadInfo":
                     queryManager.saveInfo(args.identifier);
                     break;
+                case "downloadThumb":
+                    queryManager.saveThumb(args.url);
+                    break;
                 case "getSize":
                     return queryManager.getVideoSize(args.identifier, args.formatLabel);
                 case "size":

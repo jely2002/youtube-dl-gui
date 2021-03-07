@@ -75,6 +75,14 @@ async function init() {
        window.main.invoke("installUpdate") ;
     });
 
+    $('#infoModal .img-overlay, #infoModal .info-img').on('click', () => {
+        window.main.invoke("videoAction", {action: "downloadThumb", url: $('#infoModal .info-img').attr("src")});
+    }).on('mouseover', () => {
+       $('#infoModal .info-img').addClass("darken");
+    }).on('mouseout', () => {
+       $('#infoModal .info-img').removeClass("darken");
+    });
+
     $('#infoModal .dismiss').on('click', () => {
         $('#infoModal').modal("hide");
     });
@@ -94,6 +102,7 @@ async function init() {
             updateApplication: $('#updateApplication').prop('checked'),
             enforceMP4: $('#enforceMP4').prop('checked'),
             downloadMetadata: $('#downloadMetadata').prop('checked'),
+            downloadThumbnail: $('#downloadThumbnail').prop('checked'),
             keepUnmerged: $('#keepUnmerged').prop('checked'),
             calculateTotalSize: $('#calculateTotalSize').prop('checked'),
             sizeMode: $('#sizeSetting').val(),
@@ -113,6 +122,7 @@ async function init() {
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#enforceMP4').prop('checked', settings.enforceMP4);
             $('#downloadMetadata').prop('checked', settings.downloadMetadata);
+            $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
             $('#keepUnmerged').prop('checked', settings.keepUnmerged);
             $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
             $('#maxConcurrent').val(settings.maxConcurrent);

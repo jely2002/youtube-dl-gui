@@ -59,6 +59,9 @@ class DownloadQuery extends Query {
 
             }
         }
+        if(this.environment.settings.downloadThumbnail) {
+            args.push('--write-thumbnail');
+        }
         if(this.environment.settings.keepUnmerged) args.push('--keep-video');
         let destinationCount = 0;
         let initialReset = false;
