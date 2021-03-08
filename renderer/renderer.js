@@ -228,7 +228,7 @@ async function init() {
         $('#downloadBtn, #clearBtn').prop("disabled", true);
         $('#totalProgress .progress-bar').remove();
         $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
-        $('#totalProgress small').html(`Downloading video queue - 0 of ${videos.length} completed`);
+        $('#totalProgress small').html(`Downloading - item 0 of ${videos.length} completed`);
     });
 
     $('#download-quality, #download-type').on('change', function () {
@@ -505,7 +505,7 @@ function updateProgress(args) {
 }
 
 function updateTotalProgress(args) {
-    $('#totalProgress small').html(`Downloading video queue - ${args.progress.done} of ${args.progress.total} completed`);
+    $('#totalProgress small').html(`Downloading - item ${args.progress.done} of ${args.progress.total} completed`);
     $('#totalProgress .progress-bar').css("width", args.progress.percentage).attr("aria-valuenow", args.progress.percentage.slice(0,-1));
 }
 

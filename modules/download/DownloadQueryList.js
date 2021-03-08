@@ -28,7 +28,7 @@ class DownloadQueryList {
                     this.progressBar.updatePlaylist(this.done - this.cancelled, this.length - this.cancelled);
                     if(!video.error) {
                         video.downloaded = true;
-                        video.query.progressBar.done();
+                        video.query.progressBar.done(video.audioOnly);
                     }
                     if(this.done === this.length) {
                         resolve();

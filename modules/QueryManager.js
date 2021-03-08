@@ -139,7 +139,7 @@ class QueryManager {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             if(downloadVideo.error) return;
             downloadVideo.downloaded = true;
-            downloadVideo.query.progressBar.done();
+            downloadVideo.query.progressBar.done(downloadVideo.audioOnly);
             this.updateGlobalButtons();
         });
     }

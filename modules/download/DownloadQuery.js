@@ -30,9 +30,9 @@ class DownloadQuery extends Query {
             ];
         } else {
             let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s")
-            let format = `bestvideo[height=${this.format.height}][ext=mp4][fps=${this.format.fps}]+${this.video.audioQuality}audio[ext=m4a]/bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio[ext=m4a]/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+            let format = `bestvideo[height=${this.format.height}][ext=mp4][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
             if(this.format.fps == null) {
-                format = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+                format = `bestvideo[height=${this.format.height}][ext=mp4]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
             }
             args = [
                 "-f", format,
@@ -71,8 +71,8 @@ class DownloadQuery extends Query {
                 }
                 if (liveData.includes("Destination")) destinationCount += 1;
                 if (destinationCount > 1) {
-                    if (destinationCount === 2 && !this.video.audioOnly) {
-                        this.video.audioOnly = true;
+                    if (destinationCount === 2 && !this.video.audioOnly && !this.video.downloadingAudio) {
+                        this.video.downloadingAudio = true;
                         this.progressBar.reset();
                     }
                 }
@@ -86,7 +86,7 @@ class DownloadQuery extends Query {
                 let percentage = liveDataArray[1];
                 let speed = liveDataArray[5];
                 let eta = liveDataArray[7];
-                this.progressBar.updateDownload(percentage, eta, speed, this.video.audioOnly);
+                this.progressBar.updateDownload(percentage, eta, speed, this.video.audioOnly ? true : this.video.downloadingAudio);
             }));
         } catch (exception) {
             this.environment.errorHandler.checkError(exception, this.video.identifier);
