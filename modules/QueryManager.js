@@ -63,7 +63,6 @@ class QueryManager {
             this.removeVideo(playlistVideo);
             for(const video of videos) {
                 this.addVideo(video);
-                console.log(video.url);
             }
            setTimeout(() => this.updateGlobalButtons(), 700); //This feels kinda hacky, maybe find a better way sometime.
         });
@@ -291,7 +290,6 @@ class QueryManager {
 
     async openVideo(args) {
         let video = this.getVideo(args.identifier);
-        console.log(video.getFilename())
         fs.readdir(video.downloadedPath, (err, files) => {
             for(const file of files) {
                 if(file.substr(0, file.lastIndexOf(".")) === video.getFilename()) {

@@ -1,4 +1,5 @@
 let platform;
+let progressCooldown = [];
 
 (function () {
     init();
@@ -498,8 +499,14 @@ function updateProgress(args) {
         if(parseFloat(args.progress.percentage.slice(0, -1)) > parseFloat($(card).find('.progress-bar').attr("aria-valuenow"))) {
             $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
             $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
-            $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta);
-            $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed);
+            if(!progressCooldown.includes(args.identifier)) {
+                progressCooldown.push(args.identifier);
+                $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta);
+                $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed);
+                setTimeout(() => {
+                    progressCooldown = progressCooldown.filter(item => item !== args.identifier);
+                }, 200);
+            }
         }
     }
 }
