@@ -211,108 +211,45 @@ class QueryManager {
         });
     }
 
-    getVideoSize(identifier, formatLabel) {
-        let video = this.getVideo(identifier);
-        if(video.audioOnly) {
+    async getSize(identifier, formatLabel, audioOnly, clicked) {
+        const video = this.getVideo(identifier);
+        const cachedSize = this.getCachedSize(video, formatLabel, audioOnly)
+        if(cachedSize != null) {
+            //The size for this format was already looked up
+            return cachedSize;
+        } else {
+            //Size was not already looked up
+            //Try looking it up
+            if(!clicked && this.environment.settings.sizeMode === "click") {
+                //The sizemode is click so when the lookup from renderer is initial it should not do anything.
+                return null;
+            } else {
+                return await this.querySize(video, formatLabel, video.getFormatFromLabel(formatLabel), audioOnly);
+            }
+        }
+    }
+
+    async querySize(video, formatLabel, format, audioOnly) {
+        const sizeQuery = new SizeQuery(video, audioOnly, audioOnly ? formatLabel : format, this.environment);
+        const result = await sizeQuery.connect();
+        if(audioOnly) {
             if(formatLabel === "best") {
-               return video.rawBestAudioSize;
+                video.bestAudioSize = result
             } else {
-                return video.rawWorstAudioSize;
-            }
-        } else {
-            for (const format of video.formats) {
-                if (format.getDisplayName() === formatLabel) {
-                    video.selected_format_index = video.formats.indexOf(format);
-                    return format.filesize;
-                }
+                video.worstAudioSize = result
             }
         }
+        return result;
     }
 
-    startSizeQuery(identifier, formatLabel, clicked) {
-        let video = this.getVideo(identifier);
-        if(video.audioOnly) {
-            let applicableSize = video.bestAudioSize;
-            if(formatLabel === "worst") {
-                applicableSize = video.worstAudioSize;
-            }
-            if(applicableSize == null) {
-                if (this.environment.settings.sizeMode === "click" && !clicked) {
-                    this.window.webContents.send("videoAction", {action: "size", size: null, identifier: video.identifier})
-                } else if (this.environment.settings.sizeMode === "full" || clicked) {
-                    if(video.gettingSize) return;
-                    video.gettingSize = true;
-                    let sizeQuery = new SizeQuery(video, this.environment);
-                    sizeQuery.connect().then((result) => {
-                        if(formatLabel === "best") {
-                            video.bestAudioSize = Utils.convertBytes(result);
-                            video.rawBestAudioSize = result;
-                            this.window.webContents.send("videoAction", {action: "size", size: video.bestAudioSize, identifier: video.identifier})
-                        } else {
-                            video.worstAudioSize = Utils.convertBytes(result);
-                            video.rawWorstAudioSize = result;
-                            this.window.webContents.send("videoAction", {action: "size", size: video.worstAudioSize, identifier: video.identifier})
-                        }
-                    });
-                    video.gettingSize = false;
-                    this.checkTotalSize();
-                }
-            } else {
-                if(formatLabel === "best") {
-                    this.window.webContents.send("videoAction", {action: "size", size: video.bestAudioSize, identifier: video.identifier})
-                } else {
-                    this.window.webContents.send("videoAction", {action: "size", size: video.worstAudioSize, identifier: video.identifier})
-                }
-                this.checkTotalSize();
-            }
+    getCachedSize(video, formatLabel, audioOnly) {
+        if(audioOnly) {
+            let applicableSize;
+            if (formatLabel === "best") applicableSize = video.bestAudioSize;
+            else applicableSize = video.worstAudioSize;
+            return applicableSize;
         } else {
-            let selectedFormat = formatLabel;
-            if (selectedFormat == null) {
-                selectedFormat = video.formats[video.selected_format_index]
-            } else {
-                for (const format of video.formats) {
-                    if (format.getDisplayName() === formatLabel) {
-                        video.selected_format_index = video.formats.indexOf(format);
-                        selectedFormat = format;
-                        break;
-                    }
-                }
-            }
-            if (selectedFormat.filesize_label == null) {
-                if (this.environment.settings.sizeMode === "click" && !clicked) {
-                    this.window.webContents.send("videoAction", {
-                        action: "size",
-                        size: null,
-                        identifier: video.identifier
-                    })
-                } else if (this.environment.settings.sizeMode === "full" || clicked) {
-                    let sizeQuery = new SizeQuery(video, this.environment);
-                    if(video.gettingSize) return;
-                    video.gettingSize = true;
-                    sizeQuery.connect().then((result) => {
-                        this.window.webContents.send("videoAction", {
-                            action: "size",
-                            size: result,
-                            identifier: video.identifier
-                        })
-                        video.gettingSize = false;
-                        this.checkTotalSize();
-                    });
-                }
-            } else {
-                this.window.webContents.send("videoAction", {
-                    action: "size",
-                    size: selectedFormat.filesize_label,
-                    identifier: video.identifier
-                });
-                this.checkTotalSize();
-            }
-        }
-    }
-
-    checkTotalSize() {
-        if(this.environment.settings.calculateTotalSize) {
-            this.window.webContents.send("totalSize");
+            return video.getFormatFromLabel(formatLabel).filesize;
         }
     }
 

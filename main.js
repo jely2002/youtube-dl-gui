@@ -156,10 +156,7 @@ function startCriticalHandlers(env) {
                     queryManager.saveThumb(args.url);
                     break;
                 case "getSize":
-                    return queryManager.getVideoSize(args.identifier, args.formatLabel);
-                case "size":
-                    queryManager.startSizeQuery(args.identifier, args.formatLabel, args.clicked)
-                    break;
+                    return await queryManager.getSize(args.identifier, args.formatLabel, args.audioOnly, args.clicked);
                 case "setSubtitles":
                     env.setSubtitles(args.value);
                     break;
