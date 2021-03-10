@@ -107,6 +107,7 @@ async function init() {
             keepUnmerged: $('#keepUnmerged').prop('checked'),
             calculateTotalSize: $('#calculateTotalSize').prop('checked'),
             sizeMode: $('#sizeSetting').val(),
+            splitMode: $('#splitMode').val(),
             maxConcurrent: parseInt($('#maxConcurrent').val())
         }
         window.settings = settings;
@@ -129,6 +130,7 @@ async function init() {
             $('#maxConcurrent').val(settings.maxConcurrent);
             $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.maxConcurrent})</strong>`);
             $('#sizeSetting').val(settings.sizeMode);
+            $('#splitMode').val(settings.splitMode);
             $('#settingsModal').modal("show");
             $('#version').html("<strong>Version: </strong>" + settings.version);
             window.settings = settings;
@@ -218,11 +220,17 @@ async function init() {
                 $(card).find('.options').addClass("d-flex");
                 $(card).find('select').addClass("d-none");
                 $(card).find('.download-btn, .subtitle-btn i').addClass("disabled");
+                if($(card).hasClass("unified")) {
+                    $(card).find('.metadata.left, .metadata.right').empty();
+                    $(card).find('.info').addClass("d-flex").removeClass("d-none");
+                    $(card).find('.metadata.info').html('Downloading playlist...');
+                    $(card).find('select').addClass("d-none");
+                }
             }
         }
         let args = {
             action: "download",
-            all: true,
+            downloadType: "all",
             videos: videos
         }
         window.main.invoke('videoAction', args)
@@ -287,8 +295,8 @@ async function init() {
             case "info":
                 showInfoModal(arg.metadata, arg.identifier);
                 break;
-            case "size":
-                updateSize(arg);
+            case "setUnified":
+                setUnifiedPlaylist(arg);
                 break;
         }
     });
@@ -344,7 +352,7 @@ function addVideo(args) {
         if(args.subtitles) $(template).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
         $(template).find('img').prop("src", args.thumbnail);
         $(template).find('.info').addClass("d-none");
-        $(template).find('.progress small').html("Initializing download")
+        $(template).find('.progress small').html("Setting up environment")
         $(template).find('.metadata.left').html('<strong>Duration: </strong>' + ((args.duration == null) ? "Unknown" : args.duration));
         if(!args.hasFilesizes) {
             $(template).find('.metadata.right').html('<strong>Size: </strong>Unknown');
@@ -405,7 +413,7 @@ function addVideo(args) {
                 identifier: args.identifier,
                 format: $(template).find('.custom-select.download-quality').val(),
                 type: $(template).find('.custom-select.download-type').val(),
-                all: false
+                downloadType: "single"
             }
             window.main.invoke("videoAction", downloadArgs)
             $('#downloadBtn, #clearBtn').prop("disabled", true);
@@ -414,7 +422,7 @@ function addVideo(args) {
             $(template).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
             $(template).find('.options').addClass("d-flex");
             $(template).find('select').addClass("d-none");
-            $(this).find('.download-btn, .subtitle-btn i').addClass("disabled");
+            $(template).find('.download-btn, .subtitle-btn i').addClass("disabled");
         });
 
         $(template).find('.subtitle-btn').on('click', () => {
@@ -458,7 +466,7 @@ function addVideo(args) {
             .html(args.url)
             .prop('title', args.url);
         $(template).find('.progress small')
-            .html('0.00% - 0 of ?')
+            .html('Setting up environment')
         $(template).find('.progress').addClass("d-flex");
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Fetching video metadata...');
@@ -472,10 +480,77 @@ function addVideo(args) {
     $(template).find('img').on('load error', () => {
         $('.video-cards').prepend(template);
 
-        //Update the type and quality values to match the global set values.
-        // This only works after the card has been appended.
-        updateVideoSettings();
+}
+
+function setUnifiedPlaylist(args) {
+    const card = getCard(args.identifier);
+    $(card).addClass("unified");
+
+    $(card).find('.progress').addClass("d-none").removeClass("d-flex");
+    $(card).find('.options').addClass("d-flex");
+    $(card).find('.info').addClass("d-none").removeClass("d-flex");
+    $(card).find('.metadata.left').html('<strong>Playlist size: </strong>' + args.length);
+    if(args.uploader != null) $(card).find('.metadata.right').html('<strong>Uploader: </strong>' + args.uploader);
+
+    if(args.subtitles) $(card).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
+    $(card).find('img').prop("src", args.thumb);
+    $(card).find('.card-title')
+        .html(args.title)
+        .prop('title', args.title);
+    $(card).find('.progress-bar')
+        .addClass('progress-bar-striped')
+        .addClass('progress-bar-animated')
+        .width("100%")
+        .prop("aria-valuenow", "indefinite");
+    $(card).find('.progress small').html('Setting up environment');
+    $(card).find('.download-btn i, .subtitle-btn i, .remove-btn i').removeClass("disabled");
+
+    $(card).find('.subtitle-btn').on('click', () => {
+        let state = $(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
+        window.main.invoke("videoAction", {action: "subtitles", identifier: args.identifier, subtitle: state});
+        if(state) $(card).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled")
+        else $(card).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled")
     });
+
+    $(card).find('.custom-select.download-type').on('change', function (e) {
+        let isAudio = this.selectedOptions[0].value === "audio";
+        for(const elem of $(card).find('option')) {
+            if($(elem).hasClass("video")) {
+                $(elem).toggle(!isAudio)
+            } else if($(elem).hasClass("audio")) {
+                $(elem).toggle(isAudio)
+            }
+        }
+        $(card).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
+    });
+
+    $(card).find('.download-btn').on('click', () => {
+        let downloadArgs = {
+            action: "download",
+            identifier: args.identifier,
+            format: $(card).find('.custom-select.download-quality').val(),
+            type: $(card).find('.custom-select.download-type').val(),
+            downloadType: "unified"
+        }
+        window.main.invoke("videoAction", downloadArgs);
+        $('#downloadBtn, #clearBtn').prop("disabled", true);
+        $(card).find('.progress').addClass("d-flex");
+        $(card).find('.metadata.left, .metadata.right').empty();
+        $(card).find('.info').addClass("d-flex").removeClass("d-none");
+        $(card).find('.metadata.info').html('Downloading playlist...');
+        $(card).find('select').addClass("d-none");
+        $(card).find('.download-btn, .subtitle-btn i').addClass("disabled");
+    });
+
+    for(const format of args.formats) {
+        let option = new Option(format.display_name, format.display_name);
+        $(card).find('.custom-select.download-quality').append(option);
+        $(option).addClass("video");
+    }
+    $(card).find('.open .folder').on('click', () => {
+        window.main.invoke("videoAction", {action: "open", identifier: args.identifier, type: "folder"});
+    });
+    updateVideoSettings(args.identifier);
 }
 
 function updateProgress(args) {
@@ -485,14 +560,26 @@ function updateProgress(args) {
         return;
     }
     if(args.progress.finished != null && args.progress.finished) {
-        $(card).find('.progress small').html((args.progress.isAudio ? "Audio" : "Video") + " downloaded - 100%");
-        $(card).find('.progress-bar').attr('aria-valuenow', 100).css('width', "100%");
-        $(card).find('.options').addClass("d-none");
-        $(card).find('.options').removeClass("d-flex");
-        $(card).find('.open').addClass("d-flex");
+        if(args.progress.isPlaylist) {
+            $(card).find('.progress small').html("Playlist downloaded - 100%");
+            $(card).find('.progress-bar').attr('aria-valuenow', 100).css('width', "100%");
+            $(card).find('.options').addClass("d-none").removeClass("d-flex");
+            $(card).find('.info').addClass("d-none").removeClass("d-flex");
+            $(card).find('.open .item').addClass("d-none");
+            $(card).find('.open .folder').html("Show files in folder");
+            $(card).find('.open').addClass("d-flex");
+        } else {
+            $(card).find('.progress small').html((args.progress.isAudio ? "Audio" : "Video") + " downloaded - 100%");
+            $(card).find('.progress-bar').attr('aria-valuenow', 100).css('width', "100%");
+            $(card).find('.options').addClass("d-none").removeClass("d-flex");
+            $(card).find('.open').addClass("d-flex");
+        }
         return;
     }
     if(args.progress.done != null && args.progress.total != null) {
+        if(args.progress.isPlaylist && $(card).find('.progress-bar').hasClass("progress-bar-striped")) {
+            resetProgress($(card).find('.progress-bar')[0], card);
+        }
         $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
         $(card).find('.progress small').html(`${args.progress.percentage} - ${args.progress.done} of ${args.progress.total} `);
     } else {

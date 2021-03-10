@@ -29,6 +29,14 @@ class Format {
         return this.getFromDisplayName(displayname);
     }
 
+    static getDisplayName(height, fps) {
+        if(fps == null) {
+            return height + "p";
+        } else {
+            return height + "p" + fps;
+        }
+    }
+
     static getFromDisplayName(name) {
         let splitName = name.split("p");
         let height = splitName[0];

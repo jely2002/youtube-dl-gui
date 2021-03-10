@@ -77,7 +77,7 @@ class ErrorHandler {
     }
 
     raiseUnhandledError(error, identifier) {
-        console.log("raised unhandled error")
+        if(this.queryManager.getVideo(identifier).type === "playlist") return;
         let errorDef = {
             identifier: identifier,
             unexpected: true,
@@ -92,7 +92,8 @@ class ErrorHandler {
     }
 
     raiseError(errorDef, identifier) {
-        console.log("raised error")
+        console.error(errorDef.code + " - " + errorDef.description);
+        if(this.queryManager.getVideo(identifier).type === "playlist") return;
         this.win.webContents.send("error", { error: errorDef, identifier: identifier, unexpected: false });
         this.queryManager.onError(identifier);
     }

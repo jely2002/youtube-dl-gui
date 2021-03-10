@@ -83,5 +83,13 @@ class Video {
         });
         return 0;
     }
+
+    getFormatFromLabel(formatLabel) {
+        for(const format of this.formats) {
+            if(format.getDisplayName() === formatLabel) {
+                return format;
+            }
+        }
+    }
 }
 module.exports = Video;

@@ -11,6 +11,7 @@ const url = require('url');
 const fs = require("fs");
 const SizeQuery = require("./size/SizeQuery");
 const DownloadQueryList = require("./download/DownloadQueryList");
+const Format = require("./types/Format");
 
 class QueryManager {
     constructor(window, environment) {
@@ -60,11 +61,29 @@ class QueryManager {
         this.addVideo(playlistVideo);
         const playlistQuery = new InfoQueryList(initialQuery, this.environment, new ProgressBar(this, playlistVideo));
         playlistQuery.start().then((videos) => {
-            this.removeVideo(playlistVideo);
-            for(const video of videos) {
-                this.addVideo(video);
+            if(videos.length > this.environment.settings.splitMode) {
+                let totalFormats = [];
+                playlistVideo.videos = videos;
+                for(const video of videos) {
+                    for(const format of video.formats) {
+                        format.display_name = Format.getDisplayName(format.height, format.fps);
+                        totalFormats.push(format);
+                    }
+                }
+                //Dedupe totalFormats by height and fps
+                totalFormats = totalFormats.filter((v,i,a) => a.findIndex(t=>(t.height === v.height && t.fps === v.fps))===i);
+                //Sort totalFormats DESC by height and fps
+                totalFormats.sort((a, b) => b.height - a.height || b.fps - a.fps);
+                const title = initialQuery.title == null ? url : initialQuery.title;
+                const uploader = initialQuery.uploader == null ? "Unknown" : initialQuery.uploader;
+                this.window.webContents.send("videoAction", {action: "setUnified", identifier: playlistVideo.identifier,formats: totalFormats, subtitles: playlistVideo.downloadSubs, thumb: videos[0].thumbnail, title: title, length: videos.length, uploader: uploader})
+            } else {
+                this.removeVideo(playlistVideo);
+                for (const video of videos) {
+                    this.addVideo(video);
+                }
             }
-           setTimeout(() => this.updateGlobalButtons(), 700); //This feels kinda hacky, maybe find a better way sometime.
+            setTimeout(() => this.updateGlobalButtons(), 700); //This feels kinda hacky, maybe find a better way sometime.
         });
     }
 
@@ -96,28 +115,77 @@ class QueryManager {
 
     downloadAllVideos(args) {
         let videosToDownload = [];
+        let unifiedPlaylists = [];
         for(const videoObj of args.videos) {
             let video = this.getVideo(videoObj.identifier)
-            if(video.downloaded || video.type !== "single") continue;
-            video.audioOnly = videoObj.type === "audio";
-            if(video.audioOnly) {
-                video.audioQuality = videoObj.format;
-            } else {
-                for (const format of video.formats) {
-                    if (format.getDisplayName() === videoObj.format) {
-                        video.selected_format_index = video.formats.indexOf(format);
-                        break;
+            if(video.videos == null) {
+                if (video.downloaded || video.type !== "single") continue;
+                video.audioOnly = videoObj.type === "audio";
+                if (video.audioOnly) {
+                    video.audioQuality = videoObj.format;
+                } else {
+                    for (const format of video.formats) {
+                        if (format.getDisplayName() === videoObj.format) {
+                            video.selected_format_index = video.formats.indexOf(format);
+                            break;
+                        }
                     }
                 }
+                video.audioQuality = (video.audioQuality != null) ? video.audioQuality : "best";
+                videosToDownload.push(video);
+            } else {
+                unifiedPlaylists.push(video);
+                this.getUnifiedVideos(video, video.videos, videoObj.type === "audio", videoObj.format);
+                for(const unifiedVideo of video.videos) {
+                    unifiedVideo.parentID = video.identifier;
+                    unifiedVideo.parentSize = video.videos.length;
+                    videosToDownload.push(unifiedVideo);
+                }
             }
-            video.audioQuality = (video.audioQuality != null) ? video.audioQuality : "best";
-            videosToDownload.push(video);
         }
         let progressBar = new ProgressBar(this, "queue");
         let downloadList = new DownloadQueryList(videosToDownload, this.environment, this, progressBar)
         downloadList.start().then(() => {
+            for(const unifiedPlaylist of unifiedPlaylists) { unifiedPlaylist.downloaded = true }
             this.updateGlobalButtons();
         })
+    }
+
+    getUnifiedVideos(playlist, videos, audioOnly, selectedFormat) {
+        playlist.audioOnly = audioOnly
+        if(!playlist.audioOnly) {
+            for (const video of videos) {
+                let gotFormatMatch = false;
+                for (const format of video.formats) {
+                    if (format.getDisplayName() === selectedFormat) {
+                        video.selected_format_index = video.formats.indexOf(format);
+                        gotFormatMatch = true;
+                        break;
+                    }
+                }
+                if (!gotFormatMatch) {
+                    const suppliedFormat = Format.getFromDisplayName(selectedFormat);
+                    const output = video.formats.reduce((prev, curr) => Math.abs(curr.height - suppliedFormat.height) < Math.abs(prev.height - suppliedFormat.height) ? curr : prev);
+                    video.selected_format_index = video.formats.indexOf(output);
+                }
+            }
+        }
+        playlist.audioQuality = (playlist.audioQuality != null) ? playlist.audioQuality : "best";
+    }
+
+    downloadUnifiedPlaylist(args) {
+        const playlist = this.getVideo(args.identifier);
+        const videos = playlist.videos;
+        this.getUnifiedVideos(playlist, videos, args.type === "audio", args.format);
+        playlist.audioQuality = (playlist.audioQuality != null) ? playlist.audioQuality : "best";
+        let progressBar = new ProgressBar(this, playlist);
+        playlist.setQuery(new DownloadQueryList(videos, this.environment, this, progressBar));
+        playlist.query.start().then(() => {
+            //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
+            playlist.downloaded = true;
+            playlist.query.progressBar.done(playlist.audioOnly);
+            this.updateGlobalButtons();
+        });
     }
 
     downloadVideo(args) {
@@ -273,7 +341,7 @@ class QueryManager {
         } else {
             args = {
                 action: "progress",
-                identifier: video.identifier,
+                identifier: video.identifier == null ? video : video.identifier,
                 progress: progress_args
             }
         }
@@ -358,16 +426,6 @@ class QueryManager {
         }
     }
 
-    setAudioOnly(identifier, value) {
-        let video = this.getVideo(identifier);
-        video.audioOnly = value;
-    }
-
-    setAudioQuality(identifier, value) {
-        let video = this.getVideo(identifier);
-        video.audioQuality = value;
-    }
-
     updateGlobalButtons() {
         let videos = [];
         for(const video of this.managedVideos) {
@@ -382,6 +440,7 @@ class QueryManager {
         if(video.type == null) {
             usedVideo = this.getVideo(video);
         }
+        if(usedVideo.videos != null && !usedVideo.downloaded) return true;
         return !(usedVideo == null || usedVideo.type !== "single" || usedVideo.error || usedVideo.downloaded)
     }
 

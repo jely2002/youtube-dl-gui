@@ -2,12 +2,13 @@ const Query = require("../types/Query")
 const path = require("path")
 
 class DownloadQuery extends Query {
-    constructor(url, video, environment, progressBar) {
+    constructor(url, video, environment, progressBar, unifiedPlaylist) {
         super(environment, video.identifier);
         this.url = url;
         this.video = video;
         this.progressBar = progressBar;
         this.format = video.formats[video.selected_format_index];
+        this.unifiedPlaylist = unifiedPlaylist;
     }
 
     cancel() {
@@ -64,6 +65,7 @@ class DownloadQuery extends Query {
         let result = null;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
+                if(this.unifiedPlaylist) return;
                 if (!liveData.includes("[download]")) return;
                 if (!initialReset) {
                     initialReset = true;

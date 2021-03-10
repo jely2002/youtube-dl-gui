@@ -10,6 +10,7 @@ class DownloadQueryList {
         this.length = this.videos.length;
         this.done = 0;
         this.cancelled = 0;
+        this.parentProgress = [];
     }
 
     async start() {
@@ -17,14 +18,41 @@ class DownloadQueryList {
             for(let video of this.videos) {
                 let progressBar = new ProgressBar(this.manager, video);
                 let task = new DownloadQuery(video.webpage_url, video, this.environment, progressBar);
+                if (!this.parentProgress.some(e => e.id === video.parentID)) {
+                    const bar = new ProgressBar(this.manager, video.parentID);
+                    this.parentProgress.push({
+                        id: video.parentID,
+                        done: 0,
+                        cancelled: 0,
+                        length: video.parentSize,
+                        bar: bar
+                    });
+                    bar.updatePlaylist(0, video.parentSize);
+                }
                 video.setQuery(task);
                 video.query.connect().then((returnValue) => {
-                    if(returnValue === "killed") this.cancelled++;
-                    if(returnValue !== "done") {
-                        video.error = true;
-                        this.environment.errorHandler.checkError(returnValue, video.identifier);
+                    if(video.parentID != null) {
+                        const progress = this.parentProgress.find(e => e.id === video.parentID);
+                        if(returnValue === "killed" || returnValue !== "done") progress.cancelled++;
+                        progress.done++;
+                        if (returnValue === "killed") this.cancelled++;
+                        if (returnValue !== "done") {
+                            video.error = true;
+                            this.environment.errorHandler.checkError(returnValue, video.identifier);
+                        }
+                        this.done++;
+                        progress.bar.updatePlaylist(progress.done - progress.cancelled, progress.length - progress.cancelled);
+                        if(progress.done === progress.length) {
+                            progress.bar.done(video.audioOnly);
+                        }
+                    } else {
+                        if (returnValue === "killed") this.cancelled++;
+                        if (returnValue !== "done") {
+                            video.error = true;
+                            this.environment.errorHandler.checkError(returnValue, video.identifier);
+                        }
+                        this.done++;
                     }
-                    this.done++;
                     this.progressBar.updatePlaylist(this.done - this.cancelled, this.length - this.cancelled);
                     if(!video.error) {
                         video.downloaded = true;

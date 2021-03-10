@@ -48,7 +48,7 @@
         <button id="subtitleBtn" title="Disable subtitles" class="btn btn-dark"><i title="Subtitles disabled" class="bi-card-text-strike mb-3"></i></button>
         <span class="spacer"></span>
         <select title="Download type" id="download-type" class="custom-select w-auto rounded" aria-label="Download type option for the whole queue">
-            <option value="video" selected>Audio + video</option>
+            <option value="video" selected>Video + audio</option>
             <option value="audio">Audio only</option>
         </select>
         <select title="Quality" id="download-quality" class="custom-select w-auto rounded" aria-label="Quality option for the whole queue">
@@ -231,9 +231,19 @@
                     <input class="check-input" type="checkbox" value="" id="enforceMP4">
                     <label class="check-label" for="enforceMP4">Always output MP4</label>
                 </div>
-                <div>
+                <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="keepUnmerged">
                     <label class="check-label" for="keepUnmerged">Keep unmerged files</label>
+                </div>
+                <div>
+                    <label for="splitMode" class="form-label">Split playlists into seperate videos when:</label>
+                    <select class="custom-select d-block rounded w-auto mb-2" id="splitMode">
+                        <option value="0">never split</option>
+                        <option value="49" selected>less than 50 videos</option>
+                        <option value="99">less than 100 videos</option>
+                        <option value="149">less than 150 videos</option>
+                        <option value="199">less than 200 videos</option>
+                    </select>
                 </div>
             </div>
             <div class="modal-footer">

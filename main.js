@@ -139,8 +139,9 @@ function startCriticalHandlers(env) {
                     queryManager.openVideo(args);
                     break;
                 case "download":
-                    if (args.all) queryManager.downloadAllVideos(args)
-                    else queryManager.downloadVideo(args);
+                    if (args.downloadType === "all") queryManager.downloadAllVideos(args)
+                    else if(args.downloadType === "unified") queryManager.downloadUnifiedPlaylist(args);
+                    else if(args.downloadType === "single") queryManager.downloadVideo(args);
                     break;
                 case "entry":
                     queryManager.manage(args.url);
@@ -161,12 +162,6 @@ function startCriticalHandlers(env) {
                     break;
                 case "setSubtitles":
                     env.setSubtitles(args.value);
-                    break;
-                case "audioOnly":
-                    queryManager.setAudioOnly(args.identifier, args.value);
-                    break;
-                case "audioQuality":
-                    queryManager.setAudioQuality(args.identifier, args.value);
                     break;
                 case "downloadable":
                     return await queryManager.isDownloadable(args.identifier);
