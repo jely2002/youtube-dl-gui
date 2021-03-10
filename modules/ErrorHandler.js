@@ -65,6 +65,10 @@ class ErrorHandler {
 
     checkError(stderr, identifier) {
         let foundError = false;
+        if(stderr == null) {
+            console.error("An error has occurred but no error message was given.")
+            return;
+        }
         for(const errorDef of this.errorDefinitions) {
             if(stderr.includes(errorDef.trigger)) {
                 foundError = true;

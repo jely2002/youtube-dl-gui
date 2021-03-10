@@ -1,4 +1,5 @@
 const execa = require('execa');
+const UserAgent = require('user-agents');
 
 class Query {
     constructor(environment, identifier) {
@@ -12,7 +13,11 @@ class Query {
     }
 
     async start(url, args, cb) {
-        args.push("--no-cache-dir")
+        args.push("--no-cache-dir");
+
+        args.push("--user-agent"); //Add random user agent to slow down user agent profiling
+        args.push(new UserAgent().toString());
+
         if(this.environment.settings.cookiePath != null) { //Add cookie arguments if enabled
             args.push("--cookies");
             args.push(this.environment.settings.cookiePath);
@@ -46,7 +51,7 @@ class Query {
                 });
                 this.process.stderr.on("data", (data) => {
                     this.environment.errorHandler.checkError(data.toString(), this.identifier);
-                    console.log(data.toString())
+                    console.error(data.toString())
                 })
             });
         }
