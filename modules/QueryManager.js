@@ -169,6 +169,11 @@ class QueryManager {
                     video.selected_format_index = video.formats.indexOf(output);
                 }
             }
+        } else {
+            for(const video of videos) {
+                video.audioOnly = true;
+                video.audioQuality = (playlist.audioQuality != null) ? playlist.audioQuality : "best";
+            }
         }
         playlist.audioQuality = (playlist.audioQuality != null) ? playlist.audioQuality : "best";
     }
@@ -261,7 +266,7 @@ class QueryManager {
     onError(identifier) {
         let video = this.getVideo(identifier);
         if(video.query != null) {
-            video.query.stop();
+            video.query.cancel();
         }
         video.error = true;
         this.updateGlobalButtons();
@@ -288,7 +293,7 @@ class QueryManager {
     stopSingle(identifier) {
         let video = this.getVideo(identifier);
         if(video.query != null) {
-            video.query.stop();
+            video.query.cancel();
         }
         this.removeVideo(video);
     }

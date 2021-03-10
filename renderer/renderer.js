@@ -507,7 +507,7 @@ function setUnifiedPlaylist(args) {
                 $(elem).toggle(isAudio)
             }
         }
-        $(card).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
+        $(card).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[0].display_name).change();
     });
 
     $(card).find('.download-btn').on('click', () => {

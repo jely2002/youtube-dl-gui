@@ -13,12 +13,20 @@ class DownloadQueryList {
         this.parentProgress = [];
     }
 
+    cancel() {
+        for(const video of this.videos) {
+            if(!video.downloaded) {
+                video.query.cancel();
+            }
+        }
+    }
+
     async start() {
         return await new Promise(((resolve) => {
             for(let video of this.videos) {
                 let progressBar = new ProgressBar(this.manager, video);
                 let task = new DownloadQuery(video.webpage_url, video, this.environment, progressBar);
-                if (!this.parentProgress.some(e => e.id === video.parentID)) {
+                if(video.parentID != null && !this.parentProgress.some(e => e.id === video.parentID)) {
                     const bar = new ProgressBar(this.manager, video.parentID);
                     this.parentProgress.push({
                         id: video.parentID,

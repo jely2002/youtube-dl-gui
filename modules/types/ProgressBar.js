@@ -22,7 +22,11 @@ class ProgressBar {
     }
 
     isUnifiedPlaylist() {
-        return typeof this.video === "string"
+        if(typeof this.video === "string") {
+            return true;
+        } else {
+            return this.video.videos != null;
+        }
     }
 }
 module.exports = ProgressBar;
