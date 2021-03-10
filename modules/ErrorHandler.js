@@ -54,6 +54,11 @@ class ErrorHandler {
                 code: "Incomplete YouTube ID",
                 description: "The URL you entered is incomplete.",
                 trigger: "Incomplete YouTube ID"
+            },
+            {
+                code: "Too many requests (429)",
+                description: "You are being ratelimited by the service.",
+                trigger: "HTTP Error 429"
             }
         ]
     }
