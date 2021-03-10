@@ -2,10 +2,11 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, enforceMP4, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize) {
+    constructor(paths, env, enforceMP4, spoofUserAgent, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize) {
         this.paths = paths;
         this.env = env
         this.enforceMP4 = enforceMP4 == null ? false : enforceMP4;
+        this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
         this.downloadMetadata = downloadMetadata == null ? true : downloadMetadata;
         this.downloadThumbnail = downloadThumbnail == null ? false : downloadThumbnail;
         this.keepUnmerged = keepUnmerged == null ? false : keepUnmerged;
@@ -23,7 +24,7 @@ class Settings {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(paths, env, data.enforceMP4, data.sizeMode, data.splitMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize);
+            return new Settings(paths, env, data.enforceMP4, data.spoofUserAgent, data.sizeMode, data.splitMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize);
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
@@ -35,6 +36,7 @@ class Settings {
 
     update(settings) {
         this.enforceMP4 = settings.enforceMP4;
+        this.spoofUserAgent = settings.spoofUserAgent;
         this.downloadMetadata = settings.downloadMetadata;
         this.downloadThumbnail = settings.downloadThumbnail;
         this.keepUnmerged = settings.keepUnmerged;
@@ -56,6 +58,7 @@ class Settings {
     serialize() {
         return {
             enforceMP4: this.enforceMP4,
+            spoofUserAgent: this.spoofUserAgent,
             sizeMode: this.sizeMode,
             splitMode: this.splitMode,
             maxConcurrent: this.maxConcurrent,

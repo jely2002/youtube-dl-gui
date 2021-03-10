@@ -15,8 +15,10 @@ class Query {
     async start(url, args, cb) {
         args.push("--no-cache-dir");
 
-        args.push("--user-agent"); //Add random user agent to slow down user agent profiling
-        args.push(new UserAgent().toString());
+        if(this.environment.settings.spoofUserAgent) {
+            args.push("--user-agent"); //Add random user agent to slow down user agent profiling
+            args.push(new UserAgent().toString());
+        }
 
         if(this.environment.settings.cookiePath != null) { //Add cookie arguments if enabled
             args.push("--cookies");
