@@ -18,10 +18,14 @@ class Video {
 
     getFilename() {
         if(this.hasMetadata) {
-            let sanitizeRegex = /(?:[/<>:"\|\\?\*]|[\s.]$)/g
-            let fps = (this.formats[this.selected_format_index].fps != null) ? this.formats[this.selected_format_index].fps : ""
-            let height = this.formats[this.selected_format_index].height
-            return (this.title.substr(0, 200) + "-(" + height + "p" + fps.toString().substr(0,2) + ")").replaceAll(sanitizeRegex, "_");
+            let sanitizeRegex = /(?:[/<>:"\|\\?\*]|[\s.]$)/g;
+            if(this.formats.length === 0) {
+                return (this.title.substr(0, 200) + "-(p)").replaceAll(sanitizeRegex, "_");
+            } else {
+                let fps = (this.formats[this.selected_format_index].fps != null) ? this.formats[this.selected_format_index].fps : "";
+                let height = this.formats[this.selected_format_index].height;
+                return (this.title.substr(0, 200) + "-(" + height + "p" + fps.toString().substr(0,2) + ")").replaceAll(sanitizeRegex, "_");
+            }
         }
     }
 

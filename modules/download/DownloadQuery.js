@@ -16,7 +16,7 @@ class DownloadQuery extends Query {
     }
 
     async connect() {
-        let args;
+        let args = [];
         if(this.video.audioOnly) {
             let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
             let output = path.join(this.environment.paths.downloadPath, "'%(title).200s.%(ext)s") //.200 is to limit the max title length to 200 characters
@@ -30,18 +30,28 @@ class DownloadQuery extends Query {
                 '--output-na-placeholder', ""
             ];
         } else {
-            let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s")
-            let format = `bestvideo[height=${this.format.height}][ext=mp4][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
-            if(this.format.fps == null) {
-                format = `bestvideo[height=${this.format.height}][ext=mp4]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+            if (this.video.formats.length !== 0) {
+                let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s")
+                let format = `bestvideo[height=${this.format.height}][ext=mp4][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+                if (this.format.fps == null) {
+                    format = `bestvideo[height=${this.format.height}][ext=mp4]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+                }
+                args = [
+                    "-f", format,
+                    "-o", output,
+                    '--ffmpeg-location', this.environment.paths.ffmpeg,
+                    '--no-mtime',
+                    '--output-na-placeholder', ""
+                ];
+            } else {
+                let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s")
+                args = [
+                    "-o", output,
+                    '--ffmpeg-location', this.environment.paths.ffmpeg,
+                    '--no-mtime',
+                    '--output-na-placeholder', ""
+                ];
             }
-            args = [
-                "-f", format,
-                "-o", output,
-                '--ffmpeg-location', this.environment.paths.ffmpeg,
-                '--no-mtime',
-                '--output-na-placeholder', ""
-            ];
             if (this.video.downloadSubs) {
                 args.push("--all-subs");
                 args.push("--embed-subs");

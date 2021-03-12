@@ -379,6 +379,12 @@ function addVideo(args) {
             $(template).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
         });
 
+
+        if(args.formats.length === 0) {
+            $(template).find('.custom-select.download-quality').append(new Option("No formats", "", true)).prop("disabled", true);
+            $(template).find('.custom-select.download-type').prop("disabled", true);
+            $(template).find('.subtitle-btn, .subtitle-btn i').addClass("disabled");
+        }
         for(const format of args.formats) {
             let option = new Option(format.display_name, format.display_name);
             $(template).find('.custom-select.download-quality').append(option);
@@ -557,7 +563,8 @@ function updateProgress(args) {
             $(card).find('.open .folder').html("Show files in folder");
             $(card).find('.open').addClass("d-flex");
         } else {
-            $(card).find('.progress small').html((args.progress.isAudio ? "Audio" : "Video") + " downloaded - 100%");
+            if(args.progress.isAudio == null) $(card).find('.progress small').html("Item downloaded - 100%");
+            else $(card).find('.progress small').html((args.progress.isAudio ? "Audio" : "Video") + " downloaded - 100%");
             $(card).find('.progress-bar').attr('aria-valuenow', 100).css('width', "100%");
             $(card).find('.options').addClass("d-none").removeClass("d-flex");
             $(card).find('.open').addClass("d-flex");
@@ -573,7 +580,8 @@ function updateProgress(args) {
     } else {
         if(parseFloat(args.progress.percentage.slice(0, -1)) > parseFloat($(card).find('.progress-bar').attr("aria-valuenow"))) {
             $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
-            $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
+            if(args.progress.isAudio == null) $(card).find('.progress small').html("Downloading item - " + args.progress.percentage);
+            else $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
             if(!progressCooldown.includes(args.identifier)) {
                 progressCooldown.push(args.identifier);
                 $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta);
@@ -596,7 +604,12 @@ function updateSize(identifier, clicked) {
     sizeCooldown.push(identifier)
     const card = getCard(identifier);
     if($(card).hasClass('unified')) {
-        sizeCooldown = sizeCooldown.filter(item => item !== identifier)
+        sizeCooldown = sizeCooldown.filter(item => item !== identifier);
+        return;
+    }
+    if($(card).find('.custom-select.download-quality').prop("disabled") === true) {
+        sizeCooldown = sizeCooldown.filter(item => item !== identifier);
+        $(card).find('.metadata.right').html('<strong>Size: </strong>' + "Unknown");
         return;
     }
     const formatLabel = $(card).find('.custom-select.download-quality').val();

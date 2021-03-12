@@ -10,7 +10,7 @@ class ProgressBar {
     }
 
     updateDownload(percentage, eta, speed, isAudio) {
-        this.manager.updateProgress(this.video, {percentage: percentage, eta: eta, speed: speed, isAudio: isAudio});
+        this.manager.updateProgress(this.video, {percentage: percentage, eta: eta, speed: speed, isAudio: this.video.formats.length === 0 ? null : isAudio});
     }
 
     reset() {
@@ -18,7 +18,7 @@ class ProgressBar {
     }
 
     done(isAudio) {
-        this.manager.updateProgress(this.video, {finished: true, isAudio: isAudio, isPlaylist: this.isUnifiedPlaylist()})
+        this.manager.updateProgress(this.video, {finished: true, isAudio: this.video.formats.length === 0 ? null : isAudio, isPlaylist: this.isUnifiedPlaylist()})
     }
 
     isUnifiedPlaylist() {
