@@ -254,8 +254,12 @@ select {
 }
 
 .video-card a.disabled:hover, .video-card a.disabled, .video-card i.disabled, .video-card i.disabled:hover {
-    filter: brightness(25%);
     cursor: default;
+    pointer-events: none;
+}
+
+.video-card i.disabled {
+    filter: brightness(25%);
 }
 
 .video-card i::before {
@@ -470,6 +474,8 @@ option.audio {
 
 .info-img {
     width: 100%;
+    max-height: 10rem;
+    object-fit: cover;
     cursor: pointer;
 }
 

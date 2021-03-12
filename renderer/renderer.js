@@ -231,7 +231,7 @@ async function init() {
                 $(card).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
                 $(card).find('.options').addClass("d-flex");
                 $(card).find('select').addClass("d-none");
-                $(card).find('.download-btn, .subtitle-btn i').addClass("disabled");
+                $(card).find('.download-btn, .download-btn i, .subtitle-btn, .subtitle-btn i').addClass("disabled");
                 if($(card).hasClass("unified")) {
                     $(card).find('.metadata.left, .metadata.right').empty();
                     $(card).find('.info').addClass("d-flex").removeClass("d-none");
@@ -412,7 +412,7 @@ function addVideo(args) {
             $(template).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
             $(template).find('.options').addClass("d-flex");
             $(template).find('select').addClass("d-none");
-            $(template).find('.download-btn, .subtitle-btn i').addClass("disabled");
+            $(template).find('.download-btn i, .download-btn, .subtitle-btn, .subtitle-btn i').addClass("disabled");
         });
 
         $(template).find('.subtitle-btn').on('click', () => {
@@ -445,7 +445,7 @@ function addVideo(args) {
         $(template).find('.progress').addClass("d-flex");
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Downloading metadata...');
-        $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); });
+        $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); $(this).addClass("disabled"); });
         $(template).find('.remove-btn').on('click', () => {
             $(getCard(args.identifier)).remove();
             window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
@@ -460,7 +460,7 @@ function addVideo(args) {
         $(template).find('.progress').addClass("d-flex");
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Fetching video metadata...');
-        $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); });
+        $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); $(this).addClass("disabled"); });
         $(template).find('.remove-btn').on('click', () => {
             $(getCard(args.identifier)).remove();
             window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
@@ -533,7 +533,7 @@ function setUnifiedPlaylist(args) {
         $(card).find('.info').addClass("d-flex").removeClass("d-none");
         $(card).find('.metadata.info').html('Downloading playlist...');
         $(card).find('select').addClass("d-none");
-        $(card).find('.download-btn, .subtitle-btn i').addClass("disabled");
+        $(card).find('.download-btn i, .download-btn, .subtitle-btn, .subtitle-btn i').addClass("disabled");
     });
 
     for(const format of args.formats) {
@@ -741,11 +741,15 @@ function setError(code, description, unexpected, identifier) {
     let card = getCard(identifier);
     $(card).find('.progress-bar').removeClass("progress-bar-striped").removeClass("progress-bar-animated").css("width", "100%").css('background-color', 'var(--error-color)');
     $(card).find('.buttons').children().each(function() {
-        if($(this).hasClass("remove-btn")) return;
+        if($(this).hasClass("remove-btn")) {
+            $(this).removeClass("disabled");
+            $(this).find('i').removeClass("disabled");
+            return;
+        }
         $(this).find('i').addClass("disabled");
+        $(this).addClass("disabled")
         $(this).removeClass("disabled");
     });
-    $(card).find(".remove-btn i").removeClass("disabled");
     $(card).find('.report').prop("disabled", false);
     $(card).css("box-shadow", "none").css("border", "solid 1px var(--error-color)");
     $(card).find('.progress small').html("Error! " + code + ".");
