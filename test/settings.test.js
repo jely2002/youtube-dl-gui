@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const os = require("os");
-const Settings = require('../../update-test/modules/Settings.js');
+const Settings = require('../modules/Settings');
 const env = {version: "2.0.0-test1"};
 const correctSettings = new Settings({settings: "test/test-settings.json"}, env, false, true, "full", "49", 12, true, true, "C:\\Users\\user\\cookies.txt", false, true, false, false, true);
 const defaultSettings = "{\"enforceMP4\":false,\"spoofUserAgent\":true,\"sizeMode\":\"full\",\"splitMode\":\"49\",\"maxConcurrent\":8,\"defaultConcurrent\":8,\"updateBinary\":true,\"updateApplication\":true,\"statSend\":false,\"downloadMetadata\":true,\"downloadThumbnail\":false,\"keepUnmerged\":false,\"calculateTotalSize\":true,\"version\":\"2.0.0-test1\"}"
