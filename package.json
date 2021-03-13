@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron . --dev",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "lint": "eslint {/modules/**/*.js,/*.js} && eslint **/renderer/*.js",
+    "test": "jest"
   },
   "keywords": [
     "youtube-dl",
@@ -19,7 +21,9 @@
   "license": "GPL-3.0-only",
   "devDependencies": {
     "electron": "^11.2.0",
-    "electron-builder": "^22.9.1"
+    "electron-builder": "^22.9.1",
+    "eslint": "^7.21.0",
+    "jest": "^26.6.3"
   },
   "dependencies": {
     "axios": "^0.21.1",
