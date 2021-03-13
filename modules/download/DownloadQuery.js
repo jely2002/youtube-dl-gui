@@ -102,7 +102,7 @@ class DownloadQuery extends Query {
             }));
         } catch (exception) {
             this.environment.errorHandler.checkError(exception, this.video.identifier);
-            resolve(exception);
+            return exception;
         }
         return result;
     }

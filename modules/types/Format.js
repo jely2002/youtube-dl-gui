@@ -1,5 +1,5 @@
 class Format {
-    //audioQuality = best | worst
+
     constructor(height, fps, filesize, filesize_label) {
         this.height = height;
         this.fps = fps;

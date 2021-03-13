@@ -1,7 +1,8 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld(
-    "main", {
+    "main",
+    {
         invoke: async (channel, data) => {
             let validChannels = ["platform", "messageBox","errorReport", "titlebarClick", "openInputMenu", "settingsAction", "videoAction", "cookieFile", "downloadFolder", "installUpdate"];
             if (validChannels.includes(channel)) {

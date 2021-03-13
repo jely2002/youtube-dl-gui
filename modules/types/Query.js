@@ -37,13 +37,13 @@ class Query {
         } else {
             //Return data while the query is running (live)
             //Return "close" when the query has finished
-            return await new Promise((resolve, reject) => {
+            return await new Promise((resolve) => {
                 this.process = execa(this.environment.paths.ytdl, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
                     cb(data.toString());
                 });
-                this.process.stdout.on('close', (code) => {
+                this.process.stdout.on('close', () => {
                     if(this.process.killed) {
                         cb("killed");
                         resolve("killed");

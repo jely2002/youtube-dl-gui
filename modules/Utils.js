@@ -1,6 +1,6 @@
 const Format = require("./types/Format");
 const crypto = require('crypto');
-const channelRegex = /(?:https|http)\:\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)([a-zA-Z0-9\-]{1,})/;
+const channelRegex = /(?:https|http):\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)([a-zA-Z0-9-]{1,})/;
 
 class Utils {
 
@@ -12,7 +12,7 @@ class Utils {
         const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         let l = 0, n = parseInt(bytes, 10) || 0;
         while(n >= 1024 && ++l){
-            n = n/1024;
+            n /= 1024;
         }
         return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
     }
@@ -21,7 +21,7 @@ class Utils {
         const units = ['B/s', 'KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s', 'ZB/s', 'YB/s'];
         let l = 0, n = parseInt(bytes, 10);
         while(n >= 1024 && ++l) {
-            n = n/1024;
+            n /= 1024;
         }
         return(n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
     }

@@ -3,9 +3,7 @@ let progressCooldown = [];
 let sizeCooldown = [];
 let sizeCache = [];
 
-(function () {
-    init();
-})();
+(function () { init(); })();
 
 async function init() {
     //Get platform
@@ -13,12 +11,12 @@ async function init() {
 
     //Initialize titlebar
     if(platform === "darwin") {
-        new windowbar({'style':'mac', 'dblClickable':false, 'fixed':true, 'title':document.title,'dark':true})
+        new window.windowbar({'style':'mac', 'dblClickable':false, 'fixed':true, 'title':document.title,'dark':true})
             .appendTo(document.body)
         $('.windowbar-title').css("left", "50%").css("top", "14px");
         $('.windowbar-controls').css("display", "none");
     } else {
-        new windowbar({'style':'win', 'dblClickable':false, 'fixed':true, 'title':document.title,'dark':true})
+        new window.windowbar({'style':'win', 'dblClickable':false, 'fixed':true, 'title':document.title,'dark':true})
             .appendTo(document.body)
         $('.windowbar').prepend("<img src='img/icon-titlebar-dark.png' alt='youtube-dl-gui icon' class='windowbar-icon'>")
         $('.windowbar-title').css("left", "45px")
@@ -506,7 +504,7 @@ function setUnifiedPlaylist(args) {
         else $(card).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled")
     });
 
-    $(card).find('.custom-select.download-type').on('change', function (e) {
+    $(card).find('.custom-select.download-type').on('change', function () {
         let isAudio = this.selectedOptions[0].value === "audio";
         for(const elem of $(card).find('option')) {
             if($(elem).hasClass("video")) {
@@ -680,7 +678,7 @@ async function settingExists() {
 
 async function updateTotalSize() {
     await settingExists();
-    if(!settings.calculateTotalSize) return;
+    if(!window.settings.calculateTotalSize) return;
     let total = 0;
     for(const elem of sizeCache) {
         total += elem[1];

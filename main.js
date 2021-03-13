@@ -11,63 +11,9 @@ let env
 let queryManager
 let appStarting = true;
 
-//Create the window for the renderer process
-function createWindow(env) {
-    win = new BrowserWindow({
-        show: false,
-        minWidth: 700,
-        minHeight: 650,
-        width: 815,
-        height: 800,
-        backgroundColor: '#212121',
-        titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "hidden",
-        frame: false,
-        icon: env.paths.icon,
-        webPreferences: {
-            nodeIntegration: false,
-            enableRemoteModule: false,
-            worldSafeExecuteJavaScript: true,
-            spellcheck: false,
-            preload: path.join(__dirname, 'preload.js'),
-            contextIsolation: true
-        }
-    })
-    win.removeMenu()
-    if(process.argv[2] === '--dev') {
-        win.webContents.openDevTools()
-    }
-    win.loadFile(path.join(__dirname, "renderer/renderer.html"))
-    win.on('closed', () => {
-        win = null
-    })
-    win.once('ready-to-show', () => {
-        win.show()
-    })
-    win.webContents.on('did-finish-load', () => startCriticalHandlers(env));
+function sendLogToRenderer(log, isErr) {
+    win.webContents.send("log", {log: log, isErr: isErr});
 }
-
-app.on('ready', async () => {
-    env = new Environment(app);
-    await env.initialize();
-    createWindow(env);
-    if(app.isPackaged && process.argv[2] !== '--dev') {
-        env.analytics.sendDownload();
-    }
-})
-
-//Quit the application when all windows are closed, except for darwin
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
-    }
-});
-
-//Create a window when there is none, but the app is still active (darwin)
-app.on('activate', () => {
-    if (win === null) {
-        createWindow(env)
-    }
-});
 
 function startCriticalHandlers(env) {
     win.on('maximize', () => {
@@ -79,7 +25,7 @@ function startCriticalHandlers(env) {
     });
 
     //Force links with target="_blank" to be opened in an external browser
-    win.webContents.on('new-window', function(e, url) {
+    win.webContents.on('new-window', (e, url) => {
         e.preventDefault();
         shell.openExternal(url);
     });
@@ -127,7 +73,7 @@ function startCriticalHandlers(env) {
         appUpdater.checkUpdate();
 
         ipcMain.handle("installUpdate", () => {
-           appUpdater.installUpdate();
+            appUpdater.installUpdate();
         });
 
         ipcMain.handle('videoAction', async (event, args) => {
@@ -167,29 +113,87 @@ function startCriticalHandlers(env) {
     }
 }
 
-function sendLogToRenderer(log, isErr) {
-    win.webContents.send("log", {log: log, isErr: isErr});
+//Create the window for the renderer process
+function createWindow(env) {
+    win = new BrowserWindow({
+        show: false,
+        minWidth: 700,
+        minHeight: 650,
+        width: 815,
+        height: 800,
+        backgroundColor: '#212121',
+        titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "hidden",
+        frame: false,
+        icon: env.paths.icon,
+        webPreferences: {
+            nodeIntegration: false,
+            enableRemoteModule: false,
+            worldSafeExecuteJavaScript: true,
+            spellcheck: false,
+            preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true
+        }
+    })
+    win.removeMenu()
+    if(process.argv[2] === '--dev') {
+        win.webContents.openDevTools()
+    }
+    win.loadFile(path.join(__dirname, "renderer/renderer.html"))
+    win.on('closed', () => {
+        win = null
+    })
+    win.once('ready-to-show', () => {
+        win.show()
+    })
+    win.webContents.on('did-finish-load', () => startCriticalHandlers(env));
 }
 
+app.on('ready', async () => {
+    env = new Environment(app);
+    await env.initialize();
+    createWindow(env);
+    if(app.isPackaged && process.argv[2] !== '--dev') {
+        env.analytics.sendDownload();
+    }
+    globalShortcut.register('Control+Shift+I', () => { win.webContents.openDevTools(); })
+})
+
+//Quit the application when all windows are closed, except for darwin
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
+});
+
+//Create a window when there is none, but the app is still active (darwin)
+app.on('activate', () => {
+    if (win === null) {
+        createWindow(env)
+    }
+});
+
 //Creates the input menu to show on right click
-const InputMenu = Menu.buildFromTemplate(
-    [{
+const InputMenu = Menu.buildFromTemplate([
+    {
         label: 'Cut',
         role: 'cut',
-    }, {
+    },
+    {
         label: 'Copy',
         role: 'copy',
-    }, {
+    },
+    {
         label: 'Paste',
         role: 'paste',
-    }, {
+    },
+    {
         type: 'separator',
-    }, {
+    },
+    {
         label: 'Select all',
         role: 'selectall',
     },
-    ]
-);
+]);
 
 //Opens the input menu when ordered from renderer process
 ipcMain.handle('openInputMenu', () => {
@@ -214,7 +218,7 @@ ipcMain.handle('titlebarClick', (event, arg) => {
 })
 
 //Show a dialog to select a folder, and return the selected value.
-ipcMain.handle('downloadFolder', async (event) => {
+ipcMain.handle('downloadFolder', async () => {
     await dialog.showOpenDialog(win, {
         defaultPath: env.paths.downloadPath,
         buttonLabel: "Set download location",
@@ -262,7 +266,7 @@ ipcMain.handle('messageBox', (event, args) => {
        message: args.message,
        type: "none",
        buttons: [],
-   }) ;
+   });
 });
 
 

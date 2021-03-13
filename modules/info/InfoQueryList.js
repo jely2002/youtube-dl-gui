@@ -13,7 +13,7 @@ class InfoQueryList {
     }
 
     async start() {
-        let result = await new Promise((async (resolve, reject) => {
+        let result = await new Promise(((resolve) => {
             let totalMetadata = [];
             let playlistUrls = Utils.extractPlaylistUrls(this.query);
             for (const videoData of playlistUrls[1]) {

@@ -18,7 +18,7 @@ class Video {
 
     getFilename() {
         if(this.hasMetadata) {
-            let sanitizeRegex = /(?:[/<>:"\|\\?\*]|[\s.]$)/g;
+            let sanitizeRegex = /(?:[/<>:"|\\?*]|[\s.]$)/g;
             if(this.formats.length === 0) {
                 return (this.title.substr(0, 200) + "-(p)").replaceAll(sanitizeRegex, "_");
             } else {
@@ -68,7 +68,9 @@ class Video {
         this.tags = metadata.tags;
 
         this.duration = metadata.duration;
-        if(metadata.duration != null) this.duration = new Date(metadata.duration * 1000).toISOString().substr(11, 8);
+        if(metadata.duration != null) this.duration = new Date(metadata.duration * 1000)
+            .toISOString()
+            .substr(11, 8);
         if(this.duration != null && this.duration.split(":")[0] === "00") this.duration = this.duration.substr(3);
 
         this.extractor = metadata.extractor_key;
@@ -81,8 +83,8 @@ class Video {
     }
 
     selectHighestQuality() {
-        this.formats.sort(function (a, b) {
-            return parseInt(b.height) - parseInt(a.height) || parseInt(b.fps) - parseInt(a.fps);
+        this.formats.sort((a, b) => {
+            return parseInt(b.height, 10) - parseInt(a.height, 10) || parseInt(b.fps, 10) - parseInt(a.fps, 10);
         });
         return 0;
     }

@@ -12,7 +12,7 @@ class SizeQueryList {
     }
 
     async start() {
-        return await new Promise(((resolve, reject) => {
+        return await new Promise(((resolve) => {
             for(const video of this.videos) {
                 let task = new SizeQuery(video, this.environment, this.progressBar);
                 task.connect().then(() => {
