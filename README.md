@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="75"/>
 
-# youtube-dl-gui
+# youtube-dl-gui ![version badge](https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release) ![downloads badge](https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total) ![CI badge](https://img.shields.io/github/workflow/status/jely2002/youtube-dl-gui/CI?label=CI) ![coverage badge](https://img.shields.io/codecov/c/gh/jely2002/youtube-dl-gui)
 A cross-platform GUI for youtube-dl made in Electron and node.js
 
 <img src="ytdlgui_demo.gif" alt="demo" width="500"/>
