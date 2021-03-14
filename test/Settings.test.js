@@ -1,0 +1,83 @@
+const fs = require('fs').promises;
+const os = require("os");
+const Settings = require('../modules/Settings');
+const env = {version: "2.0.0-test1"};
+const defaultSettingsInstance = new Settings({settings: "test/test-settings.json"}, env, false, true, "full", "49", 8, true, true, "C:\\Users\\user\\cookies.txt", false, true, false, false, true);
+const defaultSettings = "{\"enforceMP4\":false,\"spoofUserAgent\":true,\"sizeMode\":\"full\",\"splitMode\":\"49\",\"maxConcurrent\":8,\"defaultConcurrent\":8,\"updateBinary\":true,\"updateApplication\":true,\"statSend\":false,\"downloadMetadata\":true,\"downloadThumbnail\":false,\"keepUnmerged\":false,\"calculateTotalSize\":true,\"version\":\"2.0.0-test1\"}"
+
+describe('Load settings from file', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        fs.writeFile = jest.fn().mockResolvedValue("");
+        console.log = jest.fn().mockImplementation(() => {});
+    });
+    it('reads the specified file', () => {
+        const readFileSpy = jest.spyOn(fs, 'readFile');
+        return Settings.loadFromFile({settings: "test/test-settings.json"}, env).then((data) => {
+            expect(readFileSpy).toBeCalledTimes(1);
+        });
+    });
+    it('returns a settings instance', () => {
+        return Settings.loadFromFile({settings: "test/test-settings.json"}, env).then((data) => {
+            expect(data).toBeInstanceOf(Settings);
+        });
+    });
+    it('returns a settings instance with the right values', () => {
+        return Settings.loadFromFile({settings: "test/test-settings.json"}, env).then((data) => {
+            expect(data).toMatchObject(defaultSettingsInstance);
+        });
+    });
+});
+
+
+describe('Create new settings file on error', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        os.cpus = jest.fn().mockImplementation(() => { return new Array(16) });
+        fs.writeFile = jest.fn().mockResolvedValue("");
+        console.log = jest.fn().mockImplementation(() => {});
+    });
+    it('uses the path defined in paths', () => {
+        return Settings.loadFromFile({settings: "test/non-existent-file.json"}, env).then(() => {
+            expect(fs.writeFile.mock.calls[0]).toContain("test/non-existent-file.json");
+        });
+    }) ;
+    it('writes the new settings file', () => {
+        return Settings.loadFromFile({settings: "test/non-existent-file.json"}, env).then(() => {
+            expect(fs.writeFile).toHaveBeenCalledTimes(1);
+        });
+    });
+    it('writes the given settings', () => {
+        return Settings.loadFromFile({settings: "test/non-existent-file.json"}, env).then(() => {
+            expect(fs.writeFile.mock.calls[0]).toContainEqual(defaultSettings);
+        });
+    });
+});
+
+describe('Update settings to file', () => {
+    beforeAll(() => {
+        fs.writeFile = jest.fn().mockResolvedValue("");
+        env.appUpdater = { setUpdateSetting: jest.fn() };
+        env.changeMaxConcurrent = jest.fn();
+        console.log = jest.fn().mockImplementation(() => {});
+    });
+    it('writes the updated file', () => {
+        return Settings.loadFromFile({settings: "test/test-settings.json"}, env).then(data => {
+            delete data.cookiePath;
+            data.update(JSON.parse(defaultSettings));
+            expect(fs.writeFile).toBeCalledTimes(1);
+            expect(fs.writeFile.mock.calls[0]).toContainEqual(defaultSettings);
+        });
+    });
+    it('updates the maxConcurrent value when it changes', () => {
+        const changedDefaultSettings = JSON.parse(defaultSettings);
+        changedDefaultSettings.maxConcurrent = 4;
+
+        return Settings.loadFromFile({settings: "test/test-settings.json"}, env).then(data => {
+            delete data.cookiePath;
+            data.update(changedDefaultSettings);
+            expect(env.changeMaxConcurrent).toBeCalledTimes(1);
+        });
+    });
+});
+
