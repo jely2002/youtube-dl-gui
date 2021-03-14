@@ -1,12 +1,17 @@
-<img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="75"/>
+<p align="center">
+<img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="center" width="150px"/>  
+</p>
 
-# youtube-dl-gui ![version badge](https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release) ![downloads badge](https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total) ![CI badge](https://img.shields.io/github/workflow/status/jely2002/youtube-dl-gui/CI?label=CI) ![coverage badge](https://img.shields.io/codecov/c/gh/jely2002/youtube-dl-gui)
-A cross-platform GUI for youtube-dl made in Electron and node.js
+<h1 align="center">youtube-dl-gui<br>
+<img src="https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release">
+<img src="https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total">
+<img src="https://img.shields.io/github/workflow/status/jely2002/youtube-dl-gui/CI?label=CI">
+<img src="https://codecov.io/gh/jely2002/youtube-dl-gui/branch/v2.0.0/graph/badge.svg?token=KVSQSVTRQA"><br> 
+</h1>
+<p align="center">A cross-platform GUI for youtube-dl made in Electron and node.js</p>
 
-<img src="ytdlgui_demo.gif" alt="demo" width="500"/>
 
-
-### Features:
+## Features:
 - Download from all kind of platforms: YouTube, vimeo, twitter & many more
 - Download multiple videos/playlists/channels in one go
 - Select the resolution and format you want to download in
@@ -15,10 +20,13 @@ A cross-platform GUI for youtube-dl made in Electron and node.js
 - Shows how much size the download will use up on your system
 - The app automatically keeps ytdl up-to-date
 
+Be sure to check out [a demo gif of the application]()!
+
 ## How to use
 1. Download the applicable installer or executable for your system [here](https://github.com/jely2002/youtube-dl-gui/releases/latest).
 2. Paste a link into the box up top.
-3. Press download, and the video(s) will get downloaded to your downloads folder.
+3. Wait for the app to gather all required metadata.
+4. Press download, and the video(s) will get downloaded to your downloads folder.
 
 Want to know more about the features this app offers? Head over to the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/).
 
@@ -38,8 +46,7 @@ The last step is to build using electron-builder [(documentation)](https://www.e
 
 Please be aware that this app is only tested on windows, linux and macOS. If you decide to build for another platform/archtype it may or may not work. Builds other than those available in the releases come with absolutely no warranty.
 
-### Didn't find an answer in the FAQ? 
-There is more information in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/), be sure to have a look!<br>
+### Didn't find an answer in the FAQ? There is more information in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/), be sure to have a look!<br>
 Still haven't found your answer? Open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues), and describe the problem you're facing.
 
 ## Planned features
@@ -49,6 +56,10 @@ Still haven't found your answer? Open up an issue [right here](https://github.co
 
 Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/issues).
 
+## Demo gif
+<img src="ytdlgui_demo.gif" alt="demo" width="500"/>  
+
+
 ## Liability & Copyright notice
-Youtube-dl-gui and its maintainers cannot be held liable for misuse of this application, as stated in the [GPL-3.0 license (section 16)](https://github.com/jely2002/youtube-dl-gui/blob/a5308119a1a2352ec54e95d69cb60dcc3fee80d1/LICENSE#L600).
+Youtube-dl-gui and its maintainers cannot be held liable for misuse of this application, as stated in the [GPL-3.0 license (section 16)](https://github.com/jely2002/youtube-dl-gui/blob/a5308119a1a2352ec54e95d69cb60dcc3fee80d1/LICENSE#L600).  
 The maintainers of youtube-dl-gui do not in any way condone the use of this application in practices that violate local laws such as but not limited to the DMCA. The maintainers of this application call upon the personal responsibility of its users to use this application in a fair way, as it is intended to be used.
