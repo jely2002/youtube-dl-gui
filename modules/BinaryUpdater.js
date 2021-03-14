@@ -63,20 +63,18 @@ class BinaryUpdater {
                 return [err.response.headers.location, /yt-dl\.org\/downloads\/(\d{4}\.\d\d\.\d\d(\.\d)?)\/youtube-dl/.exec(err.response.headers.location)[1]];
             }
         }
-        console.error('Did not get redirect for the latest version link. Status: ' + response.status);
         return [null, null];
     }
 
     //Downloads the file at the given url and saves it to the ytdl path.
     async downloadUpdate(remoteUrl, remoteVersion) {
         const writer = fs.createWriteStream(this.paths.ytdl);
-        await axios.get(remoteUrl, {responseType: 'stream'}).then(response => {
+        return await axios.get(remoteUrl, {responseType: 'stream'}).then(response => {
             return new Promise((resolve, reject) => {
                 response.data.pipe(writer);
                 let error = null;
                 writer.on('error', err => {
                     error = err;
-                    writer.close();
                     reject(err);
                 });
                 writer.on('close', () => {
