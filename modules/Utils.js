@@ -10,7 +10,7 @@ class Utils {
 
     static convertBytes(bytes) {
         const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-        let l = 0, n = parseInt(bytes, 10) || 0;
+        let l = 0, n = parseInt(bytes, 10);
         while(n >= 1024 && ++l){
             n /= 1024;
         }
@@ -72,9 +72,10 @@ class Utils {
     }
 
     static detectInfoType(infoQueryResult) {
+        if(infoQueryResult == null) return false;
         if(Object.keys(infoQueryResult).length === 0) return false;
         if (infoQueryResult._type != null && infoQueryResult._type === "playlist") return "playlist";
-        if (infoQueryResult.entries != null && infoQueryResult.entries > 0) return "playlist";
+        if (infoQueryResult.entries != null && infoQueryResult.entries.length > 0) return "playlist";
         return "single";
     }
 

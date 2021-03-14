@@ -9,12 +9,11 @@ class Analytics {
         this.settings = settings;
     }
 
-    sendDownload() {
+    async sendDownload() {
         if(!this.settings.statSend) {
-            axios.post('http://backend.jelleglebbeek.com/youtubedl/download.php/', querystring.stringify({ version: this.version })).then(() => {
-                this.settings.statSend = true;
-                this.settings.save()
-            });
+            await axios.post('http://backend.jelleglebbeek.com/youtubedl/download.php/', querystring.stringify({ version: this.version }));
+            this.settings.statSend = true;
+            this.settings.save();
         }
     }
 
