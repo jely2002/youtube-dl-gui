@@ -7,7 +7,7 @@
     "start": "electron . --dev",
     "dist": "electron-builder",
     "lint": "eslint {/modules/**/*.js,/*.js} && eslint **/renderer/*.js",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "keywords": [
     "youtube-dl",
