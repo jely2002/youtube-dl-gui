@@ -68,8 +68,11 @@ describe('numberFormatter', () => {
 });
 
 describe('extractPlaylistUrls', () => {
-   it('returns empty array and logs error when playlist has no entries', () => {
-       console.error = jest.fn().mockImplementation(() => {});
+    beforeEach(() => {
+        jest.clearAllMocks();
+        console.error = jest.fn().mockImplementation(() => {});
+    });
+   it('returns empty array when playlist has no entries', () => {
        expect(Utils.extractPlaylistUrls({})).toEqual([[], []]);
        expect(console.error).toBeCalledTimes(1);
    });
@@ -110,10 +113,12 @@ describe('detectInfoType', () => {
 });
 
 describe('hasFilesizes', () => {
-    it('returns false and logs error when no formats available', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
         console.error = jest.fn().mockImplementation(() => {});
+    });
+    it('returns false when no formats available', () => {
         expect(Utils.hasFilesizes({formats: null})).toBe(false);
-        expect(console.error).toBeCalledTimes(1);
     });
     it('returns true when filesizes are found', () => {
         expect(Utils.hasFilesizes({formats: [{filesize: "size"}, {filesize: null}]})).toBe(true);
@@ -123,11 +128,13 @@ describe('hasFilesizes', () => {
     });
 })
 
-describe("parseAvailabelFormats", () => {
-    it('returns empty array and logs error when no formats available', () => {
-        console.error = jest.fn().mockImplementationOnce(() => {}).mockImplementation((data) => console.log(data));
+describe("parseAvailableFormats", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        console.error = jest.fn().mockImplementation(() => {});
+    });
+    it('returns empty array when no formats available', () => {
         expect(Utils.parseAvailableFormats({formats: null})).toEqual([]);
-        expect(console.error).toBeCalledTimes(1);
     });
     it('returns a list of formats', () => {
        const output = Utils.parseAvailableFormats({formats: [{height: 1080, fps: 60}, {height: 720, fps: 30}]});

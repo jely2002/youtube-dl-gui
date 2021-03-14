@@ -6,7 +6,7 @@ jest.mock('axios');
 
 beforeEach(() => {
     jest.clearAllMocks();
-    axios.post.mockResolvedValue("");
+    jest.spyOn(axios, 'post').mockResolvedValue("");
 });
 
 describe('sendDownload', () => {

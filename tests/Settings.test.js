@@ -55,7 +55,8 @@ describe('Create new settings file on error', () => {
 });
 
 describe('Update settings to file', () => {
-    beforeAll(() => {
+    beforeEach(() => {
+        jest.clearAllMocks();
         fs.writeFile = jest.fn().mockResolvedValue("");
         env.appUpdater = { setUpdateSetting: jest.fn() };
         env.changeMaxConcurrent = jest.fn();
@@ -74,7 +75,6 @@ describe('Update settings to file', () => {
         changedDefaultSettings.maxConcurrent = 4;
 
         return Settings.loadFromFile({settings: "tests/test-settings.json"}, env).then(data => {
-            delete data.cookiePath;
             data.update(changedDefaultSettings);
             expect(env.changeMaxConcurrent).toBeCalledTimes(1);
         });
