@@ -1,17 +1,10 @@
-<p align="center">
-<img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="center" width="150px"/>  
-</p>
+<img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="100"/>
 
-<h1 align="center">youtube-dl-gui<br>
-<img src="https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release">
-<img src="https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total">
-<img src="https://img.shields.io/github/workflow/status/jely2002/youtube-dl-gui/CI?label=CI">
-<img src="https://codecov.io/gh/jely2002/youtube-dl-gui/branch/v2.0.0/graph/badge.svg?token=KVSQSVTRQA"><br> 
-</h1>
-<p align="center">A cross-platform GUI for youtube-dl made in Electron and node.js</p>
+# youtube-dl-gui ![version badge](https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release) ![downloads badge](https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total) ![CI badge](https://img.shields.io/github/workflow/status/jely2002/youtube-dl-gui/CI?label=CI) ![codecov](https://codecov.io/gh/jely2002/youtube-dl-gui/branch/v2.0.0/graph/badge.svg?token=KVSQSVTRQA)
+A cross-platform GUI for youtube-dl made in Electron and node.js
 
 
-## Features:
+### Features:
 - Download from all kind of platforms: YouTube, vimeo, twitter & many more
 - Download multiple videos/playlists/channels in one go
 - Select the resolution and format you want to download in
@@ -20,7 +13,7 @@
 - Shows how much size the download will use up on your system
 - The app automatically keeps ytdl up-to-date
 
-Be sure to check out [a demo gif of the application]()!
+Be sure to check out [a demo gif of the application](#Demo-gif)!
 
 ## How to use
 1. Download the applicable installer or executable for your system [here](https://github.com/jely2002/youtube-dl-gui/releases/latest).
