@@ -16,7 +16,7 @@ A cross-platform GUI for youtube-dl made in Electron and node.js
 Be sure to check out [a demo gif of the application](#Demo-gif)!
 
 ## How to use
-1. Download the applicable installer or executable for your system [here](https://github.com/jely2002/youtube-dl-gui/releases/latest).
+1. Download the [applicable installer or executable](https://github.com/jely2002/youtube-dl-gui/releases/latest) for your system.
 2. Paste a link into the box up top.
 3. Wait for the app to gather all required metadata.
 4. Press download, and the video(s) will get downloaded to your downloads folder.
@@ -40,7 +40,7 @@ The last step is to build using electron-builder [(documentation)](https://www.e
 Please be aware that this app is only tested on windows, linux and macOS. If you decide to build for another platform/archtype it may or may not work. Builds other than those available in the releases come with absolutely no warranty.
 
 ### Didn't find an answer in the FAQ? There is more information in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/), be sure to have a look!<br>
-Still haven't found your answer? Open up an issue [right here](https://github.com/jely2002/youtube-dl-gui/issues), and describe the problem you're facing.
+Still haven't found your answer? [Open up an issue](https://github.com/jely2002/youtube-dl-gui/issues), and describe the problem you're facing.
 
 ## Planned features
 - White mode
