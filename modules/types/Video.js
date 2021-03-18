@@ -20,11 +20,12 @@ class Video {
         if(this.hasMetadata) {
             let sanitizeRegex = /(?:[/<>:"|\\?*]|[\s.]$)/g;
             if(this.formats.length === 0) {
-                return (this.title.substr(0, 200) + "-(p)").replaceAll(sanitizeRegex, "_");
+                const filename = this.title.substr(0, 200) + "-(p)"
+                return filename.replace(sanitizeRegex, "_");
             } else {
                 let fps = (this.formats[this.selected_format_index].fps != null) ? this.formats[this.selected_format_index].fps : "";
                 let height = this.formats[this.selected_format_index].height;
-                return (this.title.substr(0, 200) + "-(" + height + "p" + fps.toString().substr(0,2) + ")").replaceAll(sanitizeRegex, "_");
+                return (this.title.substr(0, 200) + "-(" + height + "p" + fps.toString().substr(0,2) + ")").replace(sanitizeRegex, "_");
             }
         }
     }
@@ -84,7 +85,7 @@ class Video {
 
     selectHighestQuality() {
         this.formats.sort((a, b) => {
-            return parseInt(b.height, 10) - parseInt(a.height, 10) || parseInt(b.fps, 10) - parseInt(a.fps, 10);
+            return parseInt(b.height, 10) - parseInt(a.height, 10) || (a.fps == null) - (b.fps == null) || parseInt(b.fps, 10) - parseInt(a.fps, 10);
         });
         return 0;
     }
