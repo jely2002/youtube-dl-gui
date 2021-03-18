@@ -85,12 +85,14 @@
     },
     "linux": {
       "target": "AppImage",
+      "target": "deb",
+      "target": "rpm",
       "executableName": "youtube-dl-gui",
       "icon": "build/youtube-dl-gui.png",
       "synopsis": "A cross-platform GUI for youtube-dl",
       "category": "X-utility",
       "desktop": {
-        "Name": "YouTube-dl-GUI",
+        "Name": "YouTube-DL-GUI",
         "Icon": "youtube-dl-gui",
         "Comment": "A cross-platform GUI for youtube-dl"
       },
