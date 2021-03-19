@@ -23,7 +23,7 @@
     "interface"
   ],
   "author": "Jelle Glebbeek",
-  "license": "GPL-3.0-only",
+  "license": "AGPL-3.0-only",
   "devDependencies": {
     "electron": "^11.2.0",
     "electron-builder": "^22.9.1",
