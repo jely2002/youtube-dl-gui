@@ -53,10 +53,11 @@ describe('generate filepaths', () => {
             instance.platform = platform;
             instance.setPermissions = jest.fn();
             instance.createHomeFolder = jest.fn().mockResolvedValue(undefined);
-            path.join = jest.fn();
+            const joinSpy = jest.spyOn(path, 'join').mockReturnValue("path");
             await instance.generateFilepaths();
-            if(platform === "linux") expect(path.join).toBeCalledTimes(1);
-            else expect(path.join).not.toBeCalled();
+            if(platform === "linux") expect(joinSpy).toBeCalledTimes(1);
+            else expect(joinSpy).not.toBeCalled();
+            joinSpy.mockRestore();
         }
     });
    it('calls create home folder on linux', async () => {
@@ -92,10 +93,11 @@ describe('create home folder', () => {
     it('copies 3 files if the directory did not exist yet', async () => {
         const instance = instanceBuilder(true);
         fs.copyFileSync = jest.fn();
-        path.join = jest.fn();
+        const joinSpy = jest.spyOn(path, 'join').mockReturnValue("path");
         mkdirp.mockResolvedValue("path/to/made/directory");
         await instance.createHomeFolder();
         expect(fs.copyFileSync).toBeCalledTimes(3);
+        joinSpy.mockRestore();
     });
 });
 
