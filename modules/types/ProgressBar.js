@@ -18,7 +18,9 @@ class ProgressBar {
     }
 
     done(isAudio) {
-        this.manager.updateProgress(this.video, {finished: true, isAudio: this.video.formats.length === 0 ? null : isAudio, isPlaylist: this.isUnifiedPlaylist()})
+        let audio = isAudio;
+        if(!this.isUnifiedPlaylist()) audio = this.video.formats.length === 0 ? null : isAudio;
+        this.manager.updateProgress(this.video, {finished: true, isAudio: audio, isPlaylist: this.isUnifiedPlaylist()})
     }
 
     isUnifiedPlaylist() {

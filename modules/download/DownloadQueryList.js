@@ -70,6 +70,7 @@ class DownloadQueryList {
                         resolve();
                     }
                 });
+                this.progressBar.updatePlaylist(this.done - this.cancelled, this.length - this.cancelled);
             }
         }))
 
