@@ -19,7 +19,7 @@ class DownloadQuery extends Query {
         let args = [];
         if(this.video.audioOnly) {
             let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
-            let output = path.join(this.environment.paths.downloadPath, "'%(title).200s.%(ext)s") //.200 is to limit the max title length to 200 characters
+            let output = path.join(this.environment.paths.downloadPath, "%(title).200s.%(ext)s") //.200 is to limit the max title length to 200 characters
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,
                 '--audio-format', 'mp3',
