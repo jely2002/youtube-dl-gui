@@ -135,7 +135,7 @@ class QueryManager {
                 videosToDownload.push(video);
             } else {
                 unifiedPlaylists.push(video);
-                this.getUnifiedVideos(video, video.videos, videoObj.type === "audio", videoObj.format);
+                this.getUnifiedVideos(video, video.videos, videoObj.type === "audio", videoObj.format, videoObj.downloadSubs);
                 for(const unifiedVideo of video.videos) {
                     unifiedVideo.parentID = video.identifier;
                     unifiedVideo.parentSize = video.videos.length;
@@ -151,12 +151,13 @@ class QueryManager {
         })
     }
 
-    getUnifiedVideos(playlist, videos, audioOnly, selectedFormat) {
+    getUnifiedVideos(playlist, videos, audioOnly, selectedFormat, subtitles) {
         playlist.audioOnly = audioOnly
         if(!playlist.audioOnly) {
             for (const video of videos) {
                 let gotFormatMatch = false;
                 for (const format of video.formats) {
+                    video.downloadSubs = subtitles;
                     if (format.getDisplayName() === selectedFormat) {
                         video.selected_format_index = video.formats.indexOf(format);
                         gotFormatMatch = true;
@@ -171,6 +172,7 @@ class QueryManager {
             }
         } else {
             for(const video of videos) {
+                video.downloadSubs = subtitles;
                 video.audioOnly = true;
                 video.audioQuality = (playlist.audioQuality != null) ? playlist.audioQuality : "best";
             }
@@ -181,7 +183,7 @@ class QueryManager {
     downloadUnifiedPlaylist(args) {
         const playlist = this.getVideo(args.identifier);
         const videos = playlist.videos;
-        this.getUnifiedVideos(playlist, videos, args.type === "audio", args.format);
+        this.getUnifiedVideos(playlist, videos, args.type === "audio", args.format, playlist.downloadSubs);
         playlist.audioQuality = (playlist.audioQuality != null) ? playlist.audioQuality : "best";
         let progressBar = new ProgressBar(this, playlist);
         playlist.setQuery(new DownloadQueryList(videos, this.environment, this, progressBar));
@@ -375,6 +377,20 @@ class QueryManager {
             videos.push({identifier: video.identifier, downloadable: downloadable})
         }
         this.window.webContents.send("updateGlobalButtons", videos);
+    }
+
+    setSubtitle(value, identifier) {
+        console.log("set sub")
+        const video = this.getVideo(identifier);
+        video.downloadSubs = value;
+    }
+
+    setGlobalSubtitle(value) {
+        console.log("set global")
+        for(const video of this.managedVideos) {
+            video.downloadSubs = value;
+            this.environment.mainDownloadSubs = value;
+        }
     }
 
     isDownloadable(video) {

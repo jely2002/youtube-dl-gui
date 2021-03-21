@@ -48,9 +48,5 @@ class Environment {
         this.downloadLimiter.updateSettings(settings);
         this.metadataLimiter.updateSettings(settings);
     }
-
-    setSubtitles(value) {
-        this.mainDownloadSubs = value;
-    }
 }
 module.exports = Environment;

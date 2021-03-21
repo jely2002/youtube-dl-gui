@@ -104,7 +104,10 @@ function startCriticalHandlers(env) {
                 case "getSize":
                     return await queryManager.getSize(args.identifier, args.formatLabel, args.audioOnly, args.clicked);
                 case "setSubtitles":
-                    env.setSubtitles(args.value);
+                    queryManager.setSubtitle(args.value, args.identifier);
+                    break;
+                case "globalSubtitles":
+                    queryManager.setGlobalSubtitle(args.value);
                     break;
                 case "downloadable":
                     return await queryManager.isDownloadable(args.identifier);

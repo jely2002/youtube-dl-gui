@@ -200,16 +200,16 @@ async function init() {
     });
 
     $('#subtitleBtn').on('click', () => {
+        let globalState = $('#subtitleBtn i').hasClass("bi-card-text-strike");
         $('.video-cards').children().each(function () {
-            let identifier = this.id;
             let state = $(this).find('.subtitle-btn i').hasClass("bi-card-text-strike");
-            window.main.invoke("videoAction", {action: "subtitles", identifier: identifier, subtitle: state});
-            if(state) $(this).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
-            else $(this).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled");
+            if(globalState === state) {
+                if(state) $(this).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
+                else $(this).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled");
+            }
         })
-        let state = $('#subtitleBtn i').hasClass("bi-card-text-strike");
-        window.main.invoke('videoAction', {action: "setSubtitles", value: state})
-        if(state) $('#subtitleBtn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
+        window.main.invoke("videoAction", {action: "globalSubtitles", value: globalState});
+        if(globalState) $('#subtitleBtn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
         else $('#subtitleBtn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled");
     })
 
@@ -415,7 +415,7 @@ function addVideo(args) {
 
         $(template).find('.subtitle-btn').on('click', () => {
             let state = $(template).find('.subtitle-btn i').hasClass("bi-card-text-strike")
-            window.main.invoke("videoAction", {action: "subtitles", identifier: args.identifier, subtitle: state});
+            window.main.invoke("videoAction", {action: "setSubtitles", identifier: args.identifier, value: state});
             if(state) $(template).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled")
             else $(template).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled")
         });
@@ -495,11 +495,11 @@ function setUnifiedPlaylist(args) {
         .width("100%")
         .prop("aria-valuenow", "indefinite");
     $(card).find('.progress small').html('Setting up environment');
-    $(card).find('.download-btn i, .subtitle-btn i, .remove-btn i').removeClass("disabled");
+    $(card).find('.download-btn i, .download-btn, .subtitle-btn, .subtitle-btn i, .remove-btn i, .remove-btn').removeClass("disabled");
 
     $(card).find('.subtitle-btn').on('click', () => {
         let state = $(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
-        window.main.invoke("videoAction", {action: "subtitles", identifier: args.identifier, subtitle: state});
+        window.main.invoke("videoAction", {action: "setSubtitles", identifier: args.identifier, value: state});
         if(state) $(card).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled")
         else $(card).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled")
     });
