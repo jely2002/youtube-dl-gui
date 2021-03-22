@@ -113,6 +113,29 @@ class QueryManager {
         this.window.webContents.send("videoAction", args);
     }
 
+    downloadVideo(args) {
+        let downloadVideo = this.getVideo(args.identifier);
+        downloadVideo.audioOnly = args.type === "audio";
+        if(!downloadVideo.audioOnly) {
+            for (const format of downloadVideo.formats) {
+                if (format.getDisplayName() === args.format) {
+                    downloadVideo.selected_format_index = downloadVideo.formats.indexOf(format);
+                    break;
+                }
+            }
+        }
+        downloadVideo.audioQuality = (downloadVideo.audioQuality != null) ? downloadVideo.audioQuality : "best";
+        let progressBar = new ProgressBar(this, downloadVideo);
+        downloadVideo.setQuery(new DownloadQuery(downloadVideo.url, downloadVideo, this.environment, progressBar));
+        downloadVideo.query.connect().then(() => {
+            //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
+            if(downloadVideo.error) return;
+            downloadVideo.downloaded = true;
+            downloadVideo.query.progressBar.done(downloadVideo.audioOnly);
+            this.updateGlobalButtons();
+        });
+    }
+
     downloadAllVideos(args) {
         let videosToDownload = [];
         let unifiedPlaylists = [];
@@ -144,7 +167,8 @@ class QueryManager {
             }
         }
         let progressBar = new ProgressBar(this, "queue");
-        let downloadList = new DownloadQueryList(videosToDownload, this.environment, this, progressBar)
+        let downloadList = new DownloadQueryList(videosToDownload, this.environment, this, progressBar);
+        for(const unifiedPlaylist of unifiedPlaylists) { unifiedPlaylist.setQuery(downloadList) }
         downloadList.start().then(() => {
             for(const unifiedPlaylist of unifiedPlaylists) { unifiedPlaylist.downloaded = true }
             this.updateGlobalButtons();
@@ -191,29 +215,6 @@ class QueryManager {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             playlist.downloaded = true;
             playlist.query.progressBar.done(playlist.audioOnly);
-            this.updateGlobalButtons();
-        });
-    }
-
-    downloadVideo(args) {
-        let downloadVideo = this.getVideo(args.identifier);
-        downloadVideo.audioOnly = args.type === "audio";
-        if(!downloadVideo.audioOnly) {
-            for (const format of downloadVideo.formats) {
-                if (format.getDisplayName() === args.format) {
-                    downloadVideo.selected_format_index = downloadVideo.formats.indexOf(format);
-                    break;
-                }
-            }
-        }
-        downloadVideo.audioQuality = (downloadVideo.audioQuality != null) ? downloadVideo.audioQuality : "best";
-        let progressBar = new ProgressBar(this, downloadVideo);
-        downloadVideo.setQuery(new DownloadQuery(downloadVideo.url, downloadVideo, this.environment, progressBar));
-        downloadVideo.query.connect().then(() => {
-            //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
-            if(downloadVideo.error) return;
-            downloadVideo.downloaded = true;
-            downloadVideo.query.progressBar.done(downloadVideo.audioOnly);
             this.updateGlobalButtons();
         });
     }
@@ -306,6 +307,10 @@ class QueryManager {
 
     async openVideo(args) {
         let video = this.getVideo(args.identifier);
+        if(video.type === "playlist") {
+            shell.openPath(video.downloadedPath);
+            return;
+        }
         fs.readdir(video.downloadedPath, (err, files) => {
             for(const file of files) {
                 if(file.substr(0, file.lastIndexOf(".")) === video.getFilename()) {
