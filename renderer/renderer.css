@@ -244,12 +244,12 @@ select {
 
 .video-card a {
     cursor: pointer;
-    transition: 150ms;
+    transition: 150ms color;
     color: var(--font-color);
 }
 
 .video-card i:hover {
-    transition: 150ms;
+    transition: 150ms color;
     filter: brightness(55%);
 }
 
