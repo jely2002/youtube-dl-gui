@@ -96,7 +96,9 @@ class ErrorHandler {
     }
 
     raiseUnhandledError(error, identifier) {
-        if(this.queryManager.getVideo(identifier).type === "playlist") return;
+        const video = this.queryManager.getVideo(identifier);
+        if(video == null) return;
+        if(video.type === "playlist") return;
         let errorDef = {
             identifier: identifier,
             unexpected: true,
@@ -111,8 +113,10 @@ class ErrorHandler {
     }
 
     raiseError(errorDef, identifier) {
+        const video = this.queryManager.getVideo(identifier);
+        if(video == null) return;
+        if(video.type === "playlist") return;
         console.error(errorDef.code + " - " + errorDef.description);
-        if(this.queryManager.getVideo(identifier).type === "playlist") return;
         this.win.webContents.send("error", { error: errorDef, identifier: identifier, unexpected: false });
         this.queryManager.onError(identifier);
     }
