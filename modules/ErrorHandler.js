@@ -48,6 +48,11 @@ class ErrorHandler {
             {
                 code: "ffmpeg not found",
                 description: "Transcoding to mp3 or mp4 requires ffmpeg.",
+                trigger: "ffmpeg or avconv could not be found"
+            },
+            {
+                code: "ffmpeg not found",
+                description: "Transcoding to mp3 or mp4 requires ffmpeg.",
                 trigger: "ffprobe/avprobe and ffmpeg/avconv not found"
             },
             {
@@ -59,6 +64,11 @@ class ErrorHandler {
                 code: "Too many requests (429)",
                 description: "You are being ratelimited by the service.",
                 trigger: "HTTP Error 429"
+            },
+            {
+                code: "Unable to extract initial data",
+                description: "Please do try again in a moment.",
+                trigger: "ERROR: Unable to extract yt initial data"
             }
         ]
     }
