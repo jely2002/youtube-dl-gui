@@ -12,6 +12,7 @@ let queryManager
 let appStarting = true;
 
 function sendLogToRenderer(log, isErr) {
+    if(win == null) return;
     win.webContents.send("log", {log: log, isErr: isErr});
 }
 

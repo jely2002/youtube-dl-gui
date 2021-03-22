@@ -289,7 +289,11 @@ class QueryManager {
                 progress: progress_args
             }
         }
-        this.window.webContents.send("videoAction", args);
+        try {
+            this.window.webContents.send("videoAction", args);
+        } catch(e) {
+            console.log("Blocked webContents IPC call, because the window object was destroyed.");
+        }
     }
 
     stopSingle(identifier) {
