@@ -1,11 +1,11 @@
 {
   "name": "youtube-dl-gui",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0",
   "description": "A GUI for the YouTube-dl library",
   "main": "main.js",
   "scripts": {
     "start": "electron . --dev",
-    "dist": "electron-builder",
+    "build": "electron-builder",
     "lint": "eslint {**/modules/**/*.js,/*.js} && eslint **/renderer/*.js",
     "test": "jest --coverage"
   },
