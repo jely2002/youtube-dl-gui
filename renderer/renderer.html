@@ -218,26 +218,32 @@
                     <label class="check-label" for="updateApplication">Auto-update app</label>
                 </div>
                 <hr/>
-                <h3>Advanced</h3>
+                <h3>Output</h3>
+                <div class="mb-3">
+                    <label for="outputFormat" class="form-label">Attempt to use output format:</label>
+                    <select class="custom-select d-block rounded w-auto mb-2" id="outputFormat">
+                        <option value="none" selected>Auto</option>
+                        <option value="mp4" selected>MP4</option>
+                        <option value="mkv">MKV</option>
+                    </select>
+                </div>
                 <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="downloadMetadata">
                     <label class="check-label" for="downloadMetadata">Save metadata</label>
-                </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="spoofUserAgent">
-                    <label class="check-label" for="spoofUserAgent">Spoof user-agent</label>
                 </div>
                 <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="downloadThumbnail">
                     <label class="check-label" for="downloadThumbnail">Save thumbnail as file</label>
                 </div>
                 <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="enforceMP4">
-                    <label class="check-label" for="enforceMP4">Always output MP4</label>
-                </div>
-                <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="keepUnmerged">
                     <label class="check-label" for="keepUnmerged">Keep unmerged files</label>
+                </div>
+                <hr/>
+                <h3>Advanced</h3>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="spoofUserAgent">
+                    <label class="check-label" for="spoofUserAgent">Spoof user-agent</label>
                 </div>
                 <div>
                     <label for="splitMode" class="form-label">Split playlists into seperate videos when:</label>

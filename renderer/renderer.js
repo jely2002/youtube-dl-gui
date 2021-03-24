@@ -109,7 +109,7 @@ async function init() {
         let settings = {
             updateBinary: $('#updateBinary').prop('checked'),
             updateApplication: $('#updateApplication').prop('checked'),
-            enforceMP4: $('#enforceMP4').prop('checked'),
+            outputFormat: $('#outputFormat').val(),
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
             downloadMetadata: $('#downloadMetadata').prop('checked'),
             downloadThumbnail: $('#downloadThumbnail').prop('checked'),
@@ -132,7 +132,7 @@ async function init() {
             $('#updateBinary').prop('checked', settings.updateBinary);
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
-            $('#enforceMP4').prop('checked', settings.enforceMP4);
+            $('#outputFormat').val(settings.outputFormat);
             $('#downloadMetadata').prop('checked', settings.downloadMetadata);
             $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
             $('#keepUnmerged').prop('checked', settings.keepUnmerged);

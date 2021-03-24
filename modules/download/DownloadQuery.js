@@ -32,9 +32,9 @@ class DownloadQuery extends Query {
         } else {
             if (this.video.formats.length !== 0) {
                 let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s")
-                let format = `bestvideo[height=${this.format.height}][ext=mp4][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+                let format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
                 if (this.format.fps == null) {
-                    format = `bestvideo[height=${this.format.height}][ext=mp4]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+                    format = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
                 }
                 args = [
                     "-f", format,
@@ -58,9 +58,9 @@ class DownloadQuery extends Query {
                 args.push("--convert-subs");
                 args.push("srt");
             }
-            if (this.environment.settings.enforceMP4) {
-                args.push("--recode-video");
-                args.push("mp4");
+            if (this.environment.settings.outputFormat !== "none") {
+                args.push("--merge-output-format");
+                args.push(this.environment.settings.outputFormat);
             }
         }
         if(this.environment.settings.downloadMetadata) {
