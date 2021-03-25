@@ -442,6 +442,27 @@ option.audio {
     font-size: 1rem;
 }
 
+#settingsModal .help-button i {
+    font-size: 18px;
+    color: var(--font-color);
+}
+
+#settingsModal .help-button i:before {
+    vertical-align: -.33em;
+}
+
+#settingsModal .help-button {
+    margin-left: 1rem;
+    filter: brightness(0.6);
+    cursor: pointer;
+    transition: 200ms;
+}
+
+#settingsModal .help-button:hover {
+    filter: brightness(0.4);
+    transition: 200ms;
+}
+
 /* AUTH MODAL */
 #fileInput {
     cursor: pointer;
