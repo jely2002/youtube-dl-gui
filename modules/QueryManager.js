@@ -389,13 +389,11 @@ class QueryManager {
     }
 
     setSubtitle(value, identifier) {
-        console.log("set sub")
         const video = this.getVideo(identifier);
         video.downloadSubs = value;
     }
 
     setGlobalSubtitle(value) {
-        console.log("set global")
         for(const video of this.managedVideos) {
             video.downloadSubs = value;
             this.environment.mainDownloadSubs = value;
