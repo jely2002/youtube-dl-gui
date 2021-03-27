@@ -56,7 +56,7 @@ class ErrorHandler {
                 trigger: "ffprobe/avprobe and ffmpeg/avconv not found"
             },
             {
-                code: "Incomplete YouTube ID",
+                code: "Incomplete video ID",
                 description: "The URL you entered is incomplete.",
                 trigger: "Incomplete YouTube ID"
             },
