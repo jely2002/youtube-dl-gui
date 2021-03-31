@@ -14,9 +14,9 @@ jobs:
         with:
           node-version: '12'
       - name: Install npm modules
-        run: npm install
+        run: npm ci
       - name: Build and publish artifact
-        run: npx electron-builder -p always
+        run: npm_config_yes=true npx electron-builder -p always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-windows:
@@ -27,13 +27,13 @@ jobs:
         with:
           node-version: '12'
       - name: Install npm modules
-        run: npm install
+        run: npm ci
       - name: Build and publish artifact
-        run: npx electron-builder -p always
+        run: env npm_config_yes=true npx electron-builder -p always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and publish portable artifact
-        run: npx electron-builder --win portable -p always
+        run: env npm_config_yes=true npx electron-builder --win portable -p always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-mac:
@@ -44,8 +44,8 @@ jobs:
         with:
           node-version: '12'
       - name: Install npm modules
-        run: npm install
+        run: npm ci
       - name: Build and publish artifact
-        run: npx electron-builder -p always
+        run: npm_config_yes=true npx electron-builder -p always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
