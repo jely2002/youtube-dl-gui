@@ -90,7 +90,7 @@
         "!coverage",
         "!tests",
         "!codecov.yaml",
-        "!.eslintrc.js"
+        "!**/.eslintrc.js"
       ]
     },
     "linux": {
@@ -118,7 +118,7 @@
         "!coverage",
         "!tests",
         "!codecov.yaml",
-        "!.eslintrc.js"
+        "!**/.eslintrc.js"
       ]
     }
   }
