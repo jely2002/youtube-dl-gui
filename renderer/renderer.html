@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
+    <title>YouTube Downloader GUI</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="renderer.css">
+</head>
+<body>
+
+<div class="container url-input">
+    <form id="url-form" class="row mx-auto">
+        <div class="input-group">
+            <input type="text" class="form-control" id="add-url" placeholder="Enter a video/playlist URL to add to the queue" required>
+            <div class="input-group-append">
+                <button type="button" id="add-url-btn" class="btn btn-dark" title="Add video to queue"><i class="bi bi-plus"></i></button>
+            </div>
+            <button id="settingsBtn" title="Settings" type="button" class="btn btn-dark"><i class="bi bi-gear"></i></button>
+        </div>
+    </form>
+</div>
+
+<div class="container-fluid queue-area">
+    <div class="row">
+        <div class="mx-auto queue">
+            <div class="empty">
+                <i class="header bi bi-arrow-up"></i>
+                <p class="title" title="Your queue is empty">Your queue is empty</p>
+                <p class="undertitle">Add some videos to get started.</p>
+            </div>
+            <div class="video-cards d-flex flex-wrap align-items-start"></div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid controls">
+    <div class="row mx-auto">
+        <div id="totalProgress" class="progress mx-auto">
+            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            <small class="justify-content-center d-flex position-absolute w-100">Ready to download!</small>
+        </div>
+    </div>
+    <div class="row buttons d-flex flex-row justify-content-center">
+        <button id="locationBtn" title="Download location" class="btn btn-dark"><i class="bi bi-folder"></i></button>
+        <button id="authBtn" title="Add authentication" class="btn btn-dark"><i class="bi bi-key"></i></button>
+        <button id="subtitleBtn" title="Disable subtitles" class="btn btn-dark"><i title="Subtitles disabled" class="bi-card-text-strike mb-3"></i></button>
+        <span class="spacer"></span>
+        <select title="Download type" id="download-type" class="custom-select w-auto rounded" aria-label="Download type option for the whole queue">
+            <option value="video" selected>Video + audio</option>
+            <option value="audio">Audio only</option>
+        </select>
+        <select title="Quality" id="download-quality" class="custom-select w-auto rounded" aria-label="Quality option for the whole queue">
+            <option value="best" selected>Best</option>
+            <option value="worst">Worst</option>
+        </select>
+        <span class="spacer"></span>
+        <button type="button" id="clearBtn" title="Clear queue" class="btn btn-dark rounded" disabled><i class="bi bi-trash"></i></button>
+        <button id="downloadBtn" title="Download queue" class="btn btn-highlight rounded" disabled>Download</button>
+    </div>
+</div>
+
+<div class="template video-card" id="id">
+    <div class="row mx-auto">
+        <div class="col-4">
+            <img class="mt-1" alt="Video thumbnail" nonce="imgErr" src="img/plain-placeholder.png" onerror="this.onerror=null;this.src='img/plain-placeholder.png';">
+        </div>
+        <div class="col border-right border-dark">
+            <p title="" class="card-title"></p>
+            <div class="row">
+                <div class="col-12">
+                    <div class="progress mb-3">
+                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        <small class="justify-content-center d-flex position-absolute w-100"></small>
+                    </div>
+                </div>
+            </div>
+            <div class="row options">
+                <div class="col-6">
+                    <select class="custom-select download-type">
+                        <option value="video" selected>Video + Audio</option>
+                        <option value="audio">Audio only</option>
+                    </select>
+                    <p class="metadata left"></p>
+                </div>
+                <div class="col-6">
+                    <select class="custom-select download-quality">
+                        <option class="audio" value="best" selected>Best</option>
+                        <option class="audio" value="worst">Worst</option>
+                    </select>
+                    <p class="metadata right"></p>
+                </div>
+            </div>
+            <div class="row info">
+                <div class="col-12">
+                    <p class="metadata info"></p>
+                </div>
+            </div>
+            <div class="row open">
+                <div class="col-6">
+                    <button class="btn btn-dark folder">Show file in folder</button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-dark item">Open file</button>
+                </div>
+            </div>
+            <div class="row error d-none">
+                <div class="col-6">
+                    <button id="fullError" class="btn btn-dark">Show full error</button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-dark report">Submit a report</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-1 buttons m-auto">
+            <a class="remove-btn"><i class="bi-x-circle mb-3"></i></a>
+            <a class="subtitle-btn"><i title="Subtitles disabled" class="bi-card-text-strike"></i></a>
+            <a class="download-btn"><i class="bi-download mb-3"></i></a>
+            <a class="info-btn"><i class="bi-info-circle mb-3"></i></a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-xl modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="infoModalLabel">Video metadata</h5>
+                <button type="button" class="close dismiss" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row mb-3">
+                        <div class="thumb col-7">
+                            <img title="Click to download" src="img/plain-placeholder.png" onerror="this.onerror=null;this.src='img/plain-placeholder.png';" class="info-img" alt="thumbnail">
+                            <i title="Click to download" class="img-overlay bi bi-download"></i>
+                        </div>
+                        <div class="col-5">
+                            <p title="Views"><i class="bi bi-eye"></i> -</p>
+                            <p title="Like / dislikes"><i class="bi bi-hand-thumbs-up"></i> - &nbsp;&nbsp; <i class="bi bi-hand-thumbs-down"></i> -</p>
+                            <p title="Average rating"><i class="bi bi-star"></i> -</p>
+                            <p title="Duration"><i class="bi bi-clock"></i> -</p>
+                        </div>
+                    </div>
+                    <textarea id="info-description" rows="5" cols="50" readonly></textarea>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item uploader"></li>
+                        <li class="list-group-item extractor"></li>
+                        <li class="list-group-item url"></li>
+                    </ul>
+                </div>
+                <span class="identifier d-none"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" title="Save as JSON" class="btn json btn-dark">Save as JSON</button>
+                <button type="button" class="btn dismiss btn-dark">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-xl modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="authModalLabel">Add authentication</h5>
+                <button type="button" class="close dismiss" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Add a cookies.txt file to authenticate with.</p>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="fileInput">
+                    <label id="fileInputLabel" class="custom-file-label" for="fileInput">Click to select cookies.txt</label>
+                </div>
+                <a target="_blank" href="https://github.com/jely2002/youtube-dl-gui/wiki/Tutorial:-Private-videos-&-playlists">What is a cookies.txt file?</a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn removeCookies btn-dark">Remove cookies</button>
+                <button type="button" class="btn dismiss btn-highlight">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-xl modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">App settings</h5>
+                <a class="help-button" target="_blank" href="https://github.com/jely2002/youtube-dl-gui/wiki/Settings" title="Help for settings"><i class="bi bi-question-circle"></i></a>
+                <button type="button" class="close dismiss" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Performance</h3>
+                <div class="mb-4">
+                    <label for="sizeSetting" class="form-label">Download size calculation</label>
+                    <select class="custom-select d-block rounded w-auto mb-2" id="sizeSetting">
+                        <option value="full" selected>Automatically calculate</option>
+                        <option value="click">Click to calculate</option>
+                    </select>
+                    <input class="check-input" type="checkbox" value="" id="calculateTotalSize">
+                    <label class="check-label" for="calculateTotalSize">Calculate total download size</label>
+                </div>
+                <div class="mb-4">
+                    <label for="maxConcurrent" id="concurrentLabel" class="form-label d-inline-block">Max concurrent jobs</label>
+                    <input type="range" class="form-range w-50 d-block align-middle" min="1" max="32" id="maxConcurrent">
+                    <button type="button" class="btn btn-dark" id="defaultConcurrent">Reset to default</button>
+                </div>
+                <hr/>
+                <h3>Auto-update</h3>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="updateBinary">
+                    <label class="check-label" for="updateBinary">Auto-update ytdl binary</label>
+                </div>
+                <div >
+                    <input class="check-input" type="checkbox" value="" id="updateApplication">
+                    <label class="check-label" for="updateApplication">Auto-update app</label>
+                </div>
+                <hr/>
+                <h3>Output</h3>
+                <div class="mb-3">
+                    <label for="outputFormat" class="form-label">Attempt to use output format:</label>
+                    <select class="custom-select d-block rounded w-auto mb-2" id="outputFormat">
+                        <option value="none" selected>Auto</option>
+                        <option value="mp4" selected>MP4</option>
+                        <option value="mkv">MKV</option>
+                    </select>
+                </div>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="downloadMetadata">
+                    <label class="check-label" for="downloadMetadata">Save metadata</label>
+                </div>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="downloadThumbnail">
+                    <label class="check-label" for="downloadThumbnail">Save thumbnail as file</label>
+                </div>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="keepUnmerged">
+                    <label class="check-label" for="keepUnmerged">Keep unmerged files</label>
+                </div>
+                <hr/>
+                <h3>Advanced</h3>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="spoofUserAgent">
+                    <label class="check-label" for="spoofUserAgent">Spoof user-agent</label>
+                </div>
+                <div>
+                    <label for="splitMode" class="form-label">Split playlists into separate videos when:</label>
+                    <select class="custom-select d-block rounded w-auto mb-2" id="splitMode">
+                        <option value="0">never split</option>
+                        <option value="49" selected>less than 50 videos</option>
+                        <option value="99">less than 100 videos</option>
+                        <option value="149">less than 150 videos</option>
+                        <option value="199">less than 200 videos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p id="version"></p>
+                <button type="button" class="btn dismiss btn-dark">Cancel</button>
+                <button type="button" class="btn apply btn-highlight">Apply</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="update" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <strong class="mr-auto update-title">There is an update available!</strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="toast-body update-body"></div>
+</div>
+
+<script src="../node_modules/jquery/dist/jquery.min.js"></script>
+<script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="../node_modules/windowbar/dist/index.js"></script>
+<script src="renderer.js"></script>
+
+</body>
+</html>

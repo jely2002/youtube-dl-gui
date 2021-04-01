@@ -1,105 +1,166 @@
-const { app, BrowserWindow, ipcMain, nativeImage, dialog, Menu, globalShortcut, shell} = require('electron')
-const { autoUpdater } = require("electron-updater")
-const fs = require('fs')
-const mkdirp = require('mkdirp')
-
-let doneIcon
-let downloadingIcon
-
-//Set icon file paths depending on the platform
-if(process.platform === "darwin") {
-    doneIcon = nativeImage.createFromPath( app.getAppPath().slice(0, -8) + 'done-icon.png')
-    downloadingIcon = nativeImage.createFromPath(app.getAppPath().slice(0, -8) + 'downloading-icon.png')
-} else {
-    doneIcon = nativeImage.createFromPath('resources/done-icon.png')
-    downloadingIcon = nativeImage.createFromPath('resources/downloading-icon.png')
-}
-
-if(process.platform === "linux") {
-    let readonlyResources = app.getAppPath().slice(0, -8)
-    let destination = app.getPath("home") + "/.youtube-dl-gui/"
-    mkdirp(app.getPath("home") + "/.youtube-dl-gui/").then(made => {
-        if(made != null) {
-            fs.copyFile(readonlyResources + "youtube-dl-darwin", destination + "youtube-dl-darwin", (err) => {
-                if (err) throw err
-                console.log('youtube-dl-darwin copied to home data')
-            })
-            fs.copyFile(readonlyResources + "ffmpeg-linux", destination + "ffmpeg", (err) => {
-                if (err) throw err
-                console.log('ffmpeg copied to home data')
-            })
-            fs.copyFile(readonlyResources + "details", destination + "details", (err) => {
-                if (err) throw err
-                console.log('details copied to home data')
-            })
-        }
-    })
-}
+const { app, BrowserWindow, ipcMain, dialog, Menu, globalShortcut, shell} = require('electron');
+const Environment = require('./modules/Environment');
+const path = require('path');
+const QueryManager = require("./modules/QueryManager");
+const ErrorHandler = require("./modules/ErrorHandler");
+const BinaryUpdater = require("./modules/BinaryUpdater");
+const AppUpdater = require("./modules/AppUpdater");
 
 let win
+let env
+let queryManager
+let appStarting = true;
 
-//Create the window for the renderer process
-function createWindow () {
-    app.allowRendererProcessReuse = true
-    if(process.platform === "darwin") {
-        win = new BrowserWindow({
-            show: false,
-            width: 800, //850
-            height: 520, //550
-            resizable: false,
-            maximizable: false,
-            titleBarStyle: "hidden",
-            icon: "web-resources/icon-light.png",
-            webPreferences: {
-                nodeIntegration: true,
-                enableRemoteModule: false,
-                worldSafeExecuteJavaScript: true,
-                spellcheck: false
+function sendLogToRenderer(log, isErr) {
+    if(win == null) return;
+    win.webContents.send("log", {log: log, isErr: isErr});
+}
+
+function startCriticalHandlers(env) {
+    win.on('maximize', () => {
+        win.webContents.send("maximized", true)
+    });
+
+    win.on('unmaximize', () => {
+        win.webContents.send("maximized", false)
+    });
+
+    //Force links with target="_blank" to be opened in an external browser
+    win.webContents.on('new-window', (e, url) => {
+        e.preventDefault();
+        shell.openExternal(url);
+    });
+
+    queryManager = new QueryManager(win, env);
+    env.errorHandler = new ErrorHandler(win, queryManager, env);
+
+    if(appStarting) {
+        appStarting = false;
+
+        //Catch all console.log calls, print them to stdout and send them to the renderer devtools.
+        console.log = (arg) => {
+            process.stdout.write(arg + "\n");
+            sendLogToRenderer(arg, false);
+        };
+
+        //Catch all console.error calls, print them to stderr and send them to the renderer devtools.
+        console.error = (arg) => {
+            process.stderr.write(arg + "\n");
+            sendLogToRenderer(arg, true);
+        }
+
+        ipcMain.handle('errorReport', async (event, args) => {
+            return await env.errorHandler.reportError(args);
+        });
+
+        ipcMain.handle('settingsAction', (event, args) => {
+            switch (args.action) {
+                case "get":
+                    return env.settings.serialize();
+                case "save":
+                    env.settings.update(args.settings);
+                    break;
             }
         })
-    } else {
-            win = new BrowserWindow({
-                show: false,
-                width: 800, //850
-                height: 550, //550
-                resizable: false,
-                maximizable: false,
-                frame: false,
-                icon: "web-resources/icon-light.png",
-                webPreferences: {
-                    nodeIntegration: true,
-                    enableRemoteModule: false,
-                    worldSafeExecuteJavaScript: true,
-                    spellcheck: false
-                }
-            })
+
+        if(env.settings.updateBinary) {
+            let binaryUpdater = new BinaryUpdater(env.paths, win);
+            win.webContents.send("binaryLock", {lock: true, placeholder: `Checking for a new version of ytdl...`})
+            binaryUpdater.checkUpdate().finally(() => { win.webContents.send("binaryLock", {lock: false}) });
+        }
+
+        let appUpdater = new AppUpdater(env, win);
+        env.appUpdater = appUpdater;
+        appUpdater.checkUpdate();
+
+        ipcMain.handle("installUpdate", () => {
+            appUpdater.installUpdate();
+        });
+
+        ipcMain.handle('videoAction', async (event, args) => {
+            switch (args.action) {
+                case "stop":
+                    queryManager.stopSingle(args.identifier);
+                    break;
+                case "open":
+                    queryManager.openVideo(args);
+                    break;
+                case "download":
+                    if (args.downloadType === "all") queryManager.downloadAllVideos(args)
+                    else if(args.downloadType === "unified") queryManager.downloadUnifiedPlaylist(args);
+                    else if(args.downloadType === "single") queryManager.downloadVideo(args);
+                    break;
+                case "entry":
+                    queryManager.manage(args.url);
+                    break;
+                case "info":
+                    queryManager.showInfo(args.identifier);
+                    break;
+                case "downloadInfo":
+                    queryManager.saveInfo(args.identifier);
+                    break;
+                case "downloadThumb":
+                    queryManager.saveThumb(args.url);
+                    break;
+                case "getSize":
+                    return await queryManager.getSize(args.identifier, args.formatLabel, args.audioOnly, args.clicked);
+                case "setSubtitles":
+                    queryManager.setSubtitle(args.value, args.identifier);
+                    break;
+                case "globalSubtitles":
+                    queryManager.setGlobalSubtitle(args.value);
+                    break;
+                case "downloadable":
+                    return await queryManager.isDownloadable(args.identifier);
+            }
+        });
     }
+}
+
+//Create the window for the renderer process
+function createWindow(env) {
+    win = new BrowserWindow({
+        show: false,
+        minWidth: 700,
+        minHeight: 650,
+        width: 815,
+        height: 800,
+        backgroundColor: '#212121',
+        titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "hidden",
+        frame: false,
+        icon: env.paths.icon,
+        webPreferences: {
+            nodeIntegration: false,
+            enableRemoteModule: false,
+            worldSafeExecuteJavaScript: true,
+            spellcheck: false,
+            preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true
+        }
+    })
     win.removeMenu()
     if(process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
-    win.loadFile('main.html')
+    win.loadFile(path.join(__dirname, "renderer/renderer.html"))
     win.on('closed', () => {
         win = null
     })
     win.once('ready-to-show', () => {
         win.show()
     })
+    win.webContents.on('did-finish-load', () => startCriticalHandlers(env));
 }
 
-app.on('ready', () => {
-    createWindow()
-    if(isUpdateEnabled() && process.argv[2] !== '--dev') {
-        if (process.platform === "darwin") {
-            autoUpdater.checkForUpdates().then((result) => {
-                result.currentVersion = app.getVersion();
-                win.webContents.send('mac-update', result)
-            })
-        } else if (process.platform === "win32" || process.platform === "linux") {
-            autoUpdater.checkForUpdatesAndNotify()
-        }
+app.on('ready', async () => {
+    env = new Environment(app);
+    await env.initialize();
+    createWindow(env);
+    if(app.isPackaged && process.argv[2] !== '--dev') {
+        env.analytics.sendDownload();
     }
- })
+    globalShortcut.register('Control+Shift+I', () => { win.webContents.openDevTools(); })
+})
 
 //Quit the application when all windows are closed, except for darwin
 app.on('window-all-closed', () => {
@@ -111,145 +172,105 @@ app.on('window-all-closed', () => {
 //Create a window when there is none, but the app is still active (darwin)
 app.on('activate', () => {
     if (win === null) {
-        createWindow()
+        createWindow(env)
     }
 });
 
-
-//Event handler to process icon updates from the renderer process
-ipcMain.handle('setOverlayIcon', (event, arg) => {
-    if(arg.mode === "hide") {
-        win.setOverlayIcon(null, "")
-    } else if(arg.mode === "downloading") {
-        win.setOverlayIcon(downloadingIcon, "downloading")
-    } else if(arg.mode === "done") {
-        win.setOverlayIcon(doneIcon, "done")
-    }
-})
-
 //Creates the input menu to show on right click
-const InputMenu = Menu.buildFromTemplate(
-    [{
-    label: 'Cut',
-    role: 'cut',
-}, {
-    label: 'Copy',
-    role: 'copy',
-}, {
-    label: 'Paste',
-    role: 'paste',
-}, {
-    type: 'separator',
-}, {
-    label: 'Select all',
-    role: 'selectall',
-},
+const InputMenu = Menu.buildFromTemplate([
+    {
+        label: 'Cut',
+        role: 'cut',
+    },
+    {
+        label: 'Copy',
+        role: 'copy',
+    },
+    {
+        label: 'Paste',
+        role: 'paste',
+    },
+    {
+        type: 'separator',
+    },
+    {
+        label: 'Select all',
+        role: 'selectall',
+    },
 ]);
-
-//Registers shortcuts
-app.whenReady().then(() => {
-    globalShortcut.register('CommandOrControl+Shift+D', () => {
-        win.webContents.openDevTools()
-    })
-    globalShortcut.register('CommandOrControl+Shift+F', () => {
-        win.webContents.send('flushCache')
-    })
-})
 
 //Opens the input menu when ordered from renderer process
 ipcMain.handle('openInputMenu', () => {
     InputMenu.popup(win);
 })
 
-//Update the progressbar when ordered from renderer process
-ipcMain.handle('updateProgressBar', async (event, arg) => {
-    if(arg === "hide") {
-        await win.setProgressBar(-1, {mode: "none"})
-    } else if(arg === "indeterminate") {
-        win.setProgressBar(2, {mode: "indeterminate"})
-    } else {
-        await win.setProgressBar(arg)
-    }
+//Return the platform to the renderer process
+ipcMain.handle("platform", () => {
+    return process.platform;
 })
 
-
-//Show a dialog to select a folder, and return the selected value.
-ipcMain.on('openFolderDialog', async (event, selectedPath) => {
-    await dialog.showOpenDialog(win, {
-        defaultPath: selectedPath,
-        properties: [
-            'openDirectory',
-            'createDirectory'
-        ]
-    }).then(result => {
-        event.sender.send('directorySelected', result.filePaths[0])
-    })
-})
-
-//Show a dialog to select a file, and return the selected value.
-ipcMain.on('openFileDialog', async (event, filePath) => {
-    await dialog.showOpenDialog(win, {
-        defaultPath: filePath,
-        properties: [
-            'openFile',
-            'createDirectory'
-        ]
-    }).then(result => {
-        event.sender.send('fileSelected', result.filePaths[0])
-    })
-})
-
-ipcMain.handle('getPath', (event, arg) => {
-    if(arg === "appPath") {
-        return app.getAppPath()
-    } else {
-        return app.getPath(arg)
-    }
-})
-
-ipcMain.handle('isDev', (event) => {
-    return process.argv[2] === '--dev'
-})
-
-ipcMain.handle('appInfo', async (event, arg) => {
-    if(arg === "version") {
-        return app.getVersion()
-    } else if(arg === "country") {
-        return app.getLocaleCountryCode()
-    }
-})
-
+//Handle titlebar click events from the renderer process
 ipcMain.handle('titlebarClick', (event, arg) => {
     if(arg === 'close') {
         win.close()
     } else if(arg === "minimize") {
         win.minimize()
+    } else if(arg === "maximize") {
+        if(win.isMaximized()) win.unmaximize();
+        else win.maximize();
     }
 })
 
-ipcMain.handle('showItemInFolder', (event, arg) => {
-    shell.showItemInFolder(arg)
+//Show a dialog to select a folder, and return the selected value.
+ipcMain.handle('downloadFolder', async () => {
+    await dialog.showOpenDialog(win, {
+        defaultPath: env.paths.downloadPath,
+        buttonLabel: "Set download location",
+        properties: [
+            'openDirectory',
+            'createDirectory'
+        ]
+    }).then(result => {
+        if(result.filePaths[0] != null) env.paths.downloadPath = result.filePaths[0];
+    });
+});
+
+//Show a dialog to select a file, and return the selected value.
+ipcMain.handle('cookieFile', async (event,clear) => {
+    if(clear === true) {
+        env.settings.cookiePath = null;
+        env.settings.save();
+        return;
+    } else if(clear === "get") {
+        return env.settings.cookiePath;
+    }
+    let result = await dialog.showOpenDialog(win, {
+        buttonLabel: "Select file",
+        defaultPath: (env.settings.cookiePath != null) ? env.settings.cookiePath : env.paths.downloadPath,
+        properties: [
+            'openFile',
+            'createDirectory'
+        ],
+        filters: [
+            { name: "txt", extensions: ["txt"] },
+            { name: "All Files", extensions: ["*"] },
+        ],
+    });
+    if(result.filePaths[0] != null) {
+        env.settings.cookiePath = result.filePaths[0];
+        env.settings.save();
+    }
+    return result.filePaths[0];
 })
 
-ipcMain.handle('showFolder', (event, arg) => {
-    shell.openPath(arg)
-})
+//Show a messagebox with a custom title and message
+ipcMain.handle('messageBox', (event, args) => {
+   dialog.showMessageBoxSync(win, {
+       title: args.title,
+       message: args.message,
+       type: "none",
+       buttons: [],
+   });
+});
 
-//Check if user has enabled auto-updating the app
-function isUpdateEnabled() {
-    let settingsPath
-    if(process.platform === "darwin") {
-            settingsPath = app.getAppPath().slice(0,-8) + 'settings'
-    } else if(process.platform === "linux") {
-            settingsPath = app.getPath('home') + "/.youtube-dl-gui/" + 'settings'
-    } else {
-        settingsPath = "resources/settings"
-    }
-    let settingsData
-    try {
-        settingsData = fs.readFileSync(settingsPath);
-        return JSON.parse(settingsData)['update_app']
-    } catch (err) {
-        return true
-    }
-}
+

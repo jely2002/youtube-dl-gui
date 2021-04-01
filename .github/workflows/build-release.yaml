@@ -1,0 +1,51 @@
+name: Build artifacts to link to release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - name: Install npm modules
+        run: npm ci
+      - name: Build and publish artifact
+        run: npm_config_yes=true npx electron-builder -p always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - name: Install npm modules
+        run: npm ci
+      - name: Build and publish artifact
+        run: env npm_config_yes=true npx electron-builder -p always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish portable artifact
+        run: env npm_config_yes=true npx electron-builder --win portable -p always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - name: Install npm modules
+        run: npm ci
+      - name: Build and publish artifact
+        run: npm_config_yes=true npx electron-builder -p always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

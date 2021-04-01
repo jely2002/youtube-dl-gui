@@ -1,11 +1,19 @@
 {
   "name": "youtube-dl-gui",
-  "version": "1.8.7",
+  "version": "2.0.0",
   "description": "A GUI for the YouTube-dl library",
   "main": "main.js",
   "scripts": {
     "start": "electron . --dev",
-    "dist": "electron-builder"
+    "build": "electron-builder",
+    "lint": "eslint {**/modules/**/*.js,/*.js} && eslint renderer/*.js",
+    "test": "jest --coverage",
+    "quick-test": "jest && eslint {**/modules/**/*.js,/*.js} && eslint renderer/*.js"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "**/modules/**/*.js"
+    ]
   },
   "keywords": [
     "youtube-dl",
@@ -15,78 +23,80 @@
     "gui",
     "interface"
   ],
-  "author": {
-    "name": "Jelle Glebbeek",
-    "email": "contact@jelleglebbeek.com"
-  },
-  "license": "GPL-3.0-only",
+  "author": "Jelle Glebbeek",
+  "license": "AGPL-3.0-only",
   "devDependencies": {
-    "electron": ">=10.1.0",
-    "electron-builder": "^22.9.1"
+    "electron": "^11.2.0",
+    "electron-builder": "^22.9.1",
+    "eslint": "^7.21.0",
+    "jest": "^26.6.3"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.14.0",
-    "electron-updater": "^4.3.4",
-    "escape-string-regexp": "^4.0.0",
-    "execa": "^4.0.0",
-    "github-api": "^3.3.0",
+    "axios": "^0.21.1",
+    "bootstrap": "^4.5.3",
+    "bootstrap-icons": "^1.3.0",
+    "bottleneck": "^2.19.5",
+    "electron-updater": "^4.3.8",
+    "execa": "^4.1.0",
     "jquery": "^3.5.1",
     "mkdirp": "^1.0.4",
-    "popper.js": "^1.16.1",
-    "request": "^2.88.2",
-    "universalify": "^1.0.0",
-    "windowbar": "^1.7.4",
-    "yaml": "^1.10.0"
+    "user-agents": "^1.0.586",
+    "windowbar": "^1.7.4"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/jely2002/youtube-dl-gui.git"
   },
   "build": {
-    "afterPack": "./fix-linux-builds.js",
+    "afterPack": "./appimage-fix.js",
     "appId": "com.jelleglebbeek.youtube-dl-gui",
+    "asarUnpack": "**/binaries/*",
     "productName": "YouTube Downloader GUI",
-    "copyright": "Copyright © 2020 Jelle Glebbeek",
+    "copyright": "Copyright © 2020-2021 Jelle Glebbeek",
     "win": {
       "target": "nsis",
-      "icon": "build/icon.ico",
-      "extraResources": [
-        {
-          "from": "resources",
-          "to": "./",
-          "filter": [
-            "ffmpeg.exe",
-            "youtube-dl.exe",
-            "details",
-            "downloading-icon.png",
-            "done-icon.png"
-          ]
-        }
+      "icon": "renderer/img/icon.ico",
+      "files": [
+        "!**/binaries/ffmpeg",
+        "!**/binaries/ffmpeg-linux",
+        "!**/binaries/youtube-dl-unix",
+        "!**/renderer/img/icon.icns",
+        "!README.md",
+        "!.github${/*}",
+        "!ytdlgui_demo.gif",
+        "!appimage-fix.js",
+        "!userSettings",
+        "!coverage",
+        "!tests",
+        "!codecov.yaml",
+        "!**/.eslintrc.js"
       ]
     },
     "mac": {
       "target": "dmg",
-      "icon": "build/icon.icns",
+      "icon": "renderer/img/icon.icns",
       "category": "public.app-category.utilities",
       "identity": null,
-      "extraResources": [
-        {
-          "from": "resources",
-          "to": "./",
-          "filter": [
-            "ffmpeg",
-            "youtube-dl-darwin",
-            "details",
-            "downloading-icon.png",
-            "done-icon.png"
-          ]
-        }
+      "files": [
+        "!**/binaries/ffmpeg.exe",
+        "!**/binaries/ffmpeg-linux",
+        "!**/binaries/youtube-dl.exe",
+        "!**/renderer/img/icon.ico",
+        "!README.md",
+        "!.github${/*}",
+        "!ytdlgui_demo.gif",
+        "!appimage-fix.js",
+        "!userSettings",
+        "!coverage",
+        "!tests",
+        "!codecov.yaml",
+        "!**/.eslintrc.js"
       ]
     },
     "linux": {
       "target": "AppImage",
       "executableName": "youtube-dl-gui",
-      "icon": "build/youtube-dl-gui.png",
+      "icon": "renderer/img/icon.png",
       "synopsis": "A cross-platform GUI for youtube-dl",
       "category": "X-utility",
       "desktop": {
@@ -94,18 +104,21 @@
         "Icon": "youtube-dl-gui",
         "Comment": "A cross-platform GUI for youtube-dl"
       },
-      "extraResources": [
-        {
-          "from": "resources",
-          "to": "./",
-          "filter": [
-            "ffmpeg-linux",
-            "youtube-dl-darwin",
-            "details",
-            "downloading-icon.png",
-            "done-icon.png"
-          ]
-        }
+      "files": [
+        "!**/binaries/ffmpeg",
+        "!**/binaries/ffmpeg.exe",
+        "!**/binaries/youtube-dl.exe",
+        "!**/renderer/img/icon.icns",
+        "!**/renderer/img/icon.ico",
+        "!README.md",
+        "!.github${/*}",
+        "!ytdlgui_demo.gif",
+        "!appimage-fix.js",
+        "!userSettings",
+        "!coverage",
+        "!tests",
+        "!codecov.yaml",
+        "!**/.eslintrc.js"
       ]
     }
   }
