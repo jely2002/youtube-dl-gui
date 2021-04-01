@@ -6,9 +6,9 @@
   "scripts": {
     "start": "electron . --dev",
     "build": "electron-builder",
-    "lint": "eslint {**/modules/**/*.js,/*.js} && eslint **/renderer/*.js",
+    "lint": "eslint {**/modules/**/*.js,/*.js} && eslint renderer/*.js",
     "test": "jest --coverage",
-    "quick-test": "jest && eslint {**/modules/**/*.js,/*.js} && eslint **/renderer/*.js"
+    "quick-test": "jest && eslint {**/modules/**/*.js,/*.js} && eslint renderer/*.js"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -65,7 +65,11 @@
         "!.github${/*}",
         "!ytdlgui_demo.gif",
         "!appimage-fix.js",
-        "!userSettings"
+        "!userSettings",
+        "!coverage",
+        "!tests",
+        "!codecov.yaml",
+        "!**/.eslintrc.js"
       ]
     },
     "mac": {
@@ -82,7 +86,11 @@
         "!.github${/*}",
         "!ytdlgui_demo.gif",
         "!appimage-fix.js",
-        "!userSettings"
+        "!userSettings",
+        "!coverage",
+        "!tests",
+        "!codecov.yaml",
+        "!.eslintrc.js"
       ]
     },
     "linux": {
@@ -106,7 +114,11 @@
         "!.github${/*}",
         "!ytdlgui_demo.gif",
         "!appimage-fix.js",
-        "!userSettings"
+        "!userSettings",
+        "!coverage",
+        "!tests",
+        "!codecov.yaml",
+        "!.eslintrc.js"
       ]
     }
   }
