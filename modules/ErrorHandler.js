@@ -69,6 +69,26 @@ class ErrorHandler {
                 code: "Unable to extract initial data",
                 description: "Please do try again in a moment.",
                 trigger: "ERROR: Unable to extract yt initial data"
+            },
+            {
+                code: "No write permission",
+                description: "No permission to write in selected download folder.",
+                trigger: "unable to open for writing: [Errno 95]"
+            },
+            {
+                code: "Unable to launch YTDL",
+                description: 'You might be missing <a href="https://github.com/jely2002/youtube-dl-gui#how-to-use" target="_blank"> required dependencies</a>.',
+                trigger: "returned an empty object"
+            },
+            {
+                code: "SSL certificate verification failed",
+                description: "YTDL can't verify the ssl certificate of the service.",
+                trigger: "SSL: CERTIFICATE_VERIFY_FAILED"
+            },
+            {
+                code: "Max fragment retries reached",
+                description: "The service did not respond with a fragment in time.",
+                trigger: "giving up after 10 fragment retries"
             }
         ]
     }
