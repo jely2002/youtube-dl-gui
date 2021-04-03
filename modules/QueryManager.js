@@ -44,7 +44,7 @@ class QueryManager {
                 this.removeVideo(metadataVideo);
                 break;
             case false:
-                this.environment.errorHandler.raiseUnhandledError("YouTube-dl returned an empty object", metadataVideo.identifier);
+                this.environment.errorHandler.checkError("YouTube-dl returned an empty object", metadataVideo.identifier);
                 break;
         }
     }
