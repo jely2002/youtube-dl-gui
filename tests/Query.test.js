@@ -25,7 +25,7 @@ describe('ytdl Query', () => {
     it('adds a random user agent when this setting is enabled', () => {
         UserAgent.prototype.toString = jest.fn().mockReturnValue("agent");
         const errorHandlerMock = jest.fn();
-        const instance = instanceBuilder(true, null, errorHandlerMock);
+        const instance = instanceBuilder(true, null, errorHandlerMock, "python");
         return instance.start("https://url.link", [], null).then(() => {
             expect(UserAgent.prototype.toString).toBeCalledTimes(1);
             expect(execa.mock.calls[0][1]).toContain("--user-agent");
@@ -34,22 +34,30 @@ describe('ytdl Query', () => {
     });
    it('adds the cookies argument when specified in settings', () => {
         const errorHandlerMock = jest.fn();
-        const instance = instanceBuilder(false, "a/path/to/cookies.txt", errorHandlerMock);
+        const instance = instanceBuilder(false, "a/path/to/cookies.txt", errorHandlerMock, "python");
         return instance.start("https://url.link", [], null).then(() => {
             expect(execa.mock.calls[0][1]).toContain("--cookies");
             expect(execa.mock.calls[0][1]).toContain("a/path/to/cookies.txt");
         });
     });
+    it('uses the detected python command', () => {
+        const errorHandlerMock = jest.fn();
+        const instance = instanceBuilder(false, null, errorHandlerMock, "python3");
+        return instance.start("https://url.link", [], null).then(() => {
+            expect(execa.mock.calls[0][0]).toEqual("python3");
+            expect(execa.mock.calls[0][1][0]).toEqual("a/path/to/ytdl");
+        });
+    });
     it('adds the url as final argument', () => {
         const errorHandlerMock = jest.fn();
-        const instance = instanceBuilder(false, null, errorHandlerMock);
+        const instance = instanceBuilder(false, null, errorHandlerMock, "python");
         return instance.start("https://url.link", [], null).then(() => {
-            expect(execa.mock.calls[0][1]).toContain("https://url.link");
+            expect(execa.mock.calls[0][1][execa.mock.calls[0][1].length - 1]).toContain("https://url.link");
         });
     })
     it('adds the no-cache-dir as argument', () => {
         const errorHandlerMock = jest.fn();
-        const instance = instanceBuilder(false, null, errorHandlerMock);
+        const instance = instanceBuilder(false, null, errorHandlerMock, "python");
         return instance.start("https://url.link", [], null).then(() => {
             expect(execa.mock.calls[0][1]).toContain("--no-cache-dir");
         });
@@ -62,7 +70,7 @@ describe('Query with live callback', () => {
         execa.mockReturnValue(mock)
         const errorHandlerMock = jest.fn();
         const callbackMock = jest.fn();
-        const instance = instanceBuilder(false, null, errorHandlerMock);
+        const instance = instanceBuilder(false, null, errorHandlerMock, "python");
         const result = instance.start("https://url.link", [], callbackMock);
         setTimeout(() => {
             instance.stop();
@@ -76,7 +84,7 @@ describe('Query with live callback', () => {
         console.error = jest.fn();
         const errorHandlerMock = jest.fn();
         const callbackMock = jest.fn();
-        const instance = instanceBuilder(false, null, errorHandlerMock);
+        const instance = instanceBuilder(false, null, errorHandlerMock, "python");
         const result = instance.start("https://url.link", [], callbackMock);
         setTimeout(() => {
             stderr.emit("data", "test-error");
@@ -91,7 +99,7 @@ describe('Query with live callback', () => {
         const [stdout, stderr, mock] = execaMockBuilder(false);
         execa.mockReturnValue(mock)
         const callbackMock = jest.fn();
-        const instance = instanceBuilder(false, null, jest.fn());
+        const instance = instanceBuilder(false, null, jest.fn(), "python");
         const result = instance.start("https://url.link", [], callbackMock);
         setTimeout(() => {
             stdout.emit("close");
@@ -103,7 +111,7 @@ describe('Query with live callback', () => {
         const [stdout, stderr, mock] = execaMockBuilder(false);
         execa.mockReturnValue(mock);
         const callbackMock = jest.fn();
-        const instance = instanceBuilder(false, null, jest.fn());
+        const instance = instanceBuilder(false, null, jest.fn(), "python");
         const result = instance.start("https://url.link", [], callbackMock);
         setTimeout(() => {
             stdout.emit("data", "test-data");
@@ -120,21 +128,21 @@ describe('Query without callback', () => {
     it('Returns the data from the execa call', async () => {
         execa.mockResolvedValue({stdout: "fake-data"});
         const errorHandlerMock = jest.fn();
-        const instance = instanceBuilder(true, null, errorHandlerMock);
+        const instance = instanceBuilder(true, null, errorHandlerMock, "python");
         const result = instance.start("https://url.link", [], null)
         await expect(result).resolves.toEqual("fake-data");
     });
     it('Returns a stringified empty object on error', async () => {
         execa.mockResolvedValue(null);
         const errorHandlerMock = jest.fn();
-        const instance = instanceBuilder(true, null, errorHandlerMock);
+        const instance = instanceBuilder(true, null, errorHandlerMock, "python");
         const result = instance.start("https://url.link", [], null)
         await expect(result).resolves.toEqual("{}");
     });
     it('Checks the error on error', () => {
         execa.mockResolvedValue(null);
         const errorHandlerMock = jest.fn();
-        const instance = instanceBuilder(true, null, errorHandlerMock);
+        const instance = instanceBuilder(true, null, errorHandlerMock, "python");
         return instance.start("https://url.link", [], null).then(() => {
             expect(errorHandlerMock).toBeCalledTimes(1);
         });
@@ -148,6 +156,6 @@ function execaMockBuilder(killed) {
     return [stdout, stderr, mock];
 }
 
-function instanceBuilder(spoofUserAgent, cookiePath, errorHandlerMock) {
-    return new Query({errorHandler: {checkError: errorHandlerMock}, paths: {ytdl: "a/path/to/ytdl"}, settings: {cookiePath: cookiePath, spoofUserAgent: spoofUserAgent}}, "test__id");
+function instanceBuilder(spoofUserAgent, cookiePath, errorHandlerMock, pythonCommand) {
+    return new Query({pythonCommand: pythonCommand, errorHandler: {checkError: errorHandlerMock}, paths: {ytdl: "a/path/to/ytdl"}, settings: {cookiePath: cookiePath, spoofUserAgent: spoofUserAgent}}, "test__id");
 }

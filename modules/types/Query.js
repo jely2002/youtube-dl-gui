@@ -25,10 +25,17 @@ class Query {
             args.push(this.environment.settings.cookiePath);
         }
         args.push(url) //Url must always be added as the final argument
+
+        let command = this.environment.paths.ytdl; //Set the command to be executed
+
+        if(this.environment.pythonCommand !== "python") { //If standard python is not available use another install if detected
+            args.unshift(this.environment.paths.ytdl);
+            command = this.environment.pythonCommand;
+        }
         if(cb == null) {
             //Return the data after the query has completed fully.
             try {
-                const {stdout} = await execa(this.environment.paths.ytdl, args);
+                const {stdout} = await execa(command, args);
                 return stdout
             } catch(e) {
                 this.environment.errorHandler.checkError(e.stderr, this.identifier);
@@ -38,7 +45,7 @@ class Query {
             //Return data while the query is running (live)
             //Return "close" when the query has finished
             return await new Promise((resolve) => {
-                this.process = execa(this.environment.paths.ytdl, args);
+                this.process = execa(command, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
                     cb(data.toString());

@@ -2,6 +2,7 @@ const Bottleneck = require("bottleneck");
 const Filepaths = require("./Filepaths");
 const Settings = require("./Settings");
 const Analytics = require("./Analytics");
+const DetectPython = require("./DetectPython");
 const fs = require("fs").promises;
 
 class Environment {
@@ -35,6 +36,12 @@ class Environment {
                 this.settings.cookiePath = null;
                 this.settings.save();
             })
+        }
+        if(process.platform === "linux") {
+            const pythonDetect = new DetectPython();
+            this.pythonCommand = await pythonDetect.detect();
+        } else {
+            this.pythonCommand = "python";
         }
         this.analytics = new Analytics(this.app.getVersion(), this.paths, this.settings);
     }
