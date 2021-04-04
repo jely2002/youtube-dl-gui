@@ -30,10 +30,12 @@ Please see if the answer is in the frequently answered questions.
 #### 1.  I can't open a video I downloaded
 Sometimes a video gets downloaded in a format that isn't supported by all media players. This can be fixed by watching the video in VLC media player, or by transcoding it to another format.
 #### 2. How do I download private videos?
-Please take a look at the tutorial on this subject. It can be found in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/Private-videos-&-playlists-2.0.0).
+Please take a look at the [tutorial](https://github.com/jely2002/youtube-dl-gui/wiki/Private-videos-&-playlists-2.0.0) on this subject.
 #### 3. What do all the settings do?
 For more information on what all the settings do, take a look at the [wiki page](https://github.com/jely2002/youtube-dl-gui/wiki/Settings) about this subject.
-#### 4. How do I build from source?
+#### 4. I got an error, what do I do now?
+For a list of all errors and their common causes and solutions please take a look at the [wiki page](https://github.com/jely2002/youtube-dl-gui/wiki/Errors). If you got an unhandled error make sure you report it.
+#### 5. How do I build from source?
 First, clone the repository using `git clone https://github.com/jely2002/youtube-dl-gui.git`.
 
 Then navigate to the directory and install the npm modules by executing: `npm install`.
