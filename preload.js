@@ -4,7 +4,7 @@ contextBridge.exposeInMainWorld(
     "main",
     {
         invoke: async (channel, data) => {
-            let validChannels = ["platform", "messageBox","errorReport", "titlebarClick", "openInputMenu", "settingsAction", "videoAction", "cookieFile", "downloadFolder", "installUpdate"];
+            let validChannels = ["platform", "messageBox","errorReport", "titlebarClick", "openInputMenu", "settingsAction", "videoAction", "cookieFile", "downloadFolder", "installUpdate", "iconProgress", "theme"];
             if (validChannels.includes(channel)) {
                 return await ipcRenderer.invoke(channel, data);
             }

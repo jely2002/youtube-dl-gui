@@ -125,7 +125,7 @@ function createWindow(env) {
         minHeight: 650,
         width: 815,
         height: 800,
-        backgroundColor: '#212121',
+        backgroundColor: env.settings.theme === "dark" ? '#212121' : '#ffffff',
         titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "hidden",
         frame: false,
         icon: env.paths.icon,
@@ -146,10 +146,11 @@ function createWindow(env) {
     win.on('closed', () => {
         win = null
     })
-    win.once('ready-to-show', () => {
-        win.show()
-    })
-    win.webContents.on('did-finish-load', () => startCriticalHandlers(env));
+    win.once('focus', () => win.flashFrame(false))
+    win.webContents.on('did-finish-load', () => {
+        win.show();
+        startCriticalHandlers(env)
+    });
 }
 
 app.on('ready', async () => {
@@ -207,6 +208,11 @@ ipcMain.handle('openInputMenu', () => {
 //Return the platform to the renderer process
 ipcMain.handle("platform", () => {
     return process.platform;
+})
+
+//Return the user selected theme to the renderer process
+ipcMain.handle("theme", () => {
+    return env.settings.theme;
 })
 
 //Handle titlebar click events from the renderer process

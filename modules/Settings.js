@@ -2,7 +2,7 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, spoofUserAgent, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize) {
+    constructor(paths, env, outputFormat, spoofUserAgent, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
@@ -18,13 +18,14 @@ class Settings {
         this.updateApplication = updateApplication == null ? true : updateApplication;
         this.cookiePath = cookiePath;
         this.statSend = statSend == null ? false : statSend;
+        this.theme = theme == null ? "dark" : theme;
     }
 
     static async loadFromFile(paths, env) {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(paths, env, data.outputFormat, data.spoofUserAgent, data.sizeMode, data.splitMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize);
+            return new Settings(paths, env, data.outputFormat, data.spoofUserAgent, data.sizeMode, data.splitMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize, data.theme);
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
@@ -49,6 +50,7 @@ class Settings {
         }
         this.updateBinary = settings.updateBinary;
         this.updateApplication = settings.updateApplication;
+        this.theme = settings.theme;
         this.save();
 
         //Prevent installing already downloaded updates on app close.
@@ -71,6 +73,7 @@ class Settings {
             downloadThumbnail: this.downloadThumbnail,
             keepUnmerged: this.keepUnmerged,
             calculateTotalSize: this.calculateTotalSize,
+            theme: this.theme,
             version: this.env.version
         }
     }

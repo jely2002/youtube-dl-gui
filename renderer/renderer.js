@@ -31,6 +31,11 @@ async function init() {
         window.main.invoke('titlebarClick', "maximize")
     })
 
+    //Set the selected theme (dark | light)
+    const startupTheme = await window.main.invoke('theme');
+    console.log(startupTheme)
+    toggleWhiteMode(startupTheme);
+
     $('.video-cards').each(function() {
         let sel = this;
         new MutationObserver(function() {
@@ -117,10 +122,12 @@ async function init() {
             calculateTotalSize: $('#calculateTotalSize').prop('checked'),
             sizeMode: $('#sizeSetting').val(),
             splitMode: $('#splitMode').val(),
-            maxConcurrent: parseInt($('#maxConcurrent').val())
+            maxConcurrent: parseInt($('#maxConcurrent').val()),
+            theme: $('#theme').val()
         }
         window.settings = settings;
-        window.main.invoke("settingsAction", {action: "save", settings})
+        window.main.invoke("settingsAction", {action: "save", settings});
+        toggleWhiteMode(settings.theme);
     });
 
     $('#maxConcurrent').on('input', () => {
@@ -142,6 +149,7 @@ async function init() {
             $('#sizeSetting').val(settings.sizeMode);
             $('#splitMode').val(settings.splitMode);
             $('#settingsModal').modal("show");
+            $('#theme').val(settings.theme);
             $('#version').html("<strong>Version: </strong>" + settings.version);
             window.settings = settings;
         });
@@ -317,6 +325,15 @@ async function init() {
             node = node.parentNode;
         }
     });
+}
+
+function toggleWhiteMode(setting) {
+    const value = setting === "light";
+    $('body').toggleClass("white-mode", value);
+    $('.windowbar-minimize, .windowbar-maximize, .windowbar-close > svg').toggleClass("invert", value);
+    $('.windowbar > img').attr('src', "img/icon-titlebar-" + (value ? "light" : "dark") + ".png");
+    $('#downloadBtn').toggleClass("desaturate", value);
+    $('#subtitleBtn > i').toggleClass("light-icon", value);
 }
 
 function parseURL(data) {

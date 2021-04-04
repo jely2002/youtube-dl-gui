@@ -10,6 +10,14 @@
     --error-color: #b73232;
 }
 
+.white-mode {
+    --bg-color: #ffffff;
+    --secondary-bg-color: #eaeaea;
+    --tertiary-bg-color: #dcdcdc;
+    --font-color: #3c3c3c;
+    --scroll-bar-color: #dcdcdc;
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--font-color);
@@ -78,7 +86,7 @@ select {
 
 /* NAVBAR */
 .windowbar {
-    background-color: #212121 !important;
+    background-color: var(--bg-color) !important;
 }
 
 .windowbar.fixed {
@@ -94,6 +102,7 @@ select {
 }
 
 .windowbar-title {
+    color: var(--font-color) !important;
     font-size: 13px !important;
     line-height: 14px;
     margin-top: 4px;
@@ -414,7 +423,6 @@ option.audio {
     background-color: var(--secondary-bg-color) !important;
     border-color: var(--secondary-bg-color) !important;
     color: var(--font-color) !important;
-    font-weight: 600;
 }
 
 .modal .close {
@@ -566,6 +574,19 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
     }
 }
 
+/* WHITE MODE CLASSES */
+.invert {
+    filter: invert(1);
+}
+
+.desaturate:disabled {
+    filter: saturate(.1);
+}
+
+.light-icon.bi-card-text-strike {
+    background: url("img/card-text-strike-light.svg");
+}
+
 /* CUSTOM SCROLLBAR */
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -581,3 +602,4 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: var(--scroll-bar-color);
 }
+

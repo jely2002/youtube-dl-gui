@@ -2,8 +2,8 @@ const fs = require('fs').promises;
 const os = require("os");
 const Settings = require('../modules/Settings');
 const env = {version: "2.0.0-test1"};
-const defaultSettingsInstance = new Settings({settings: "tests/test-settings.json"}, env, "none", true, "click", "49", 8, true, true, "C:\\Users\\user\\cookies.txt", false, true, false, false, true);
-const defaultSettings = "{\"outputFormat\":\"none\",\"spoofUserAgent\":true,\"sizeMode\":\"click\",\"splitMode\":\"49\",\"maxConcurrent\":8,\"defaultConcurrent\":8,\"updateBinary\":true,\"updateApplication\":true,\"statSend\":false,\"downloadMetadata\":true,\"downloadThumbnail\":false,\"keepUnmerged\":false,\"calculateTotalSize\":true,\"version\":\"2.0.0-test1\"}"
+const defaultSettingsInstance = new Settings({settings: "tests/test-settings.json"}, env, "none", true, "click", "49", 8, true, true, "C:\\Users\\user\\cookies.txt", false, true, false, false, true, "dark");
+const defaultSettings = "{\"outputFormat\":\"none\",\"spoofUserAgent\":true,\"sizeMode\":\"click\",\"splitMode\":\"49\",\"maxConcurrent\":8,\"defaultConcurrent\":8,\"updateBinary\":true,\"updateApplication\":true,\"statSend\":false,\"downloadMetadata\":true,\"downloadThumbnail\":false,\"keepUnmerged\":false,\"calculateTotalSize\":true,\"theme\":\"dark\",\"version\":\"2.0.0-test1\"}"
 
 describe('Load settings from file', () => {
     beforeEach(() => {
