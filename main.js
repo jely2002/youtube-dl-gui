@@ -49,6 +49,15 @@ function startCriticalHandlers(env) {
             sendLogToRenderer(arg, true);
         }
 
+        ipcMain.handle('iconProgress', (event, args) => {
+            win.setProgressBar(args);
+            if(args === 1) {
+                if(process.platform === "darwin") app.dock.bounce();
+                else win.flashFrame(true);
+                win.setProgressBar(-1);
+            }
+        });
+
         ipcMain.handle('errorReport', async (event, args) => {
             return await env.errorHandler.reportError(args);
         });

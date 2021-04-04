@@ -201,6 +201,7 @@ async function init() {
         })
         $('#totalProgress .progress-bar').remove();
         $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
+        window.main.invoke("iconProgress", -1);
     })
 
     $('#locationBtn').on('click', () => {
@@ -612,6 +613,8 @@ function updateProgress(args) {
 function updateTotalProgress(args) {
     $('#totalProgress small').html(`Downloading - item ${args.progress.done} of ${args.progress.total} completed`);
     $('#totalProgress .progress-bar').css("width", args.progress.percentage).attr("aria-valuenow", args.progress.percentage.slice(0,-1));
+    const ratio = parseFloat(args.progress.percentage.slice(0,-1));
+    window.main.invoke("iconProgress", ratio / 100);
 }
 
 function updateSize(identifier, clicked) {
@@ -730,6 +733,7 @@ function resetTotalProgress() {
     $('#totalProgress .progress-bar').remove();
     $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
     $('#totalProgress small').html('Ready to download!');
+    window.main.invoke("iconProgress", -1);
 }
 
 function updateButtons(videos) {
