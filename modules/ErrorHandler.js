@@ -81,7 +81,7 @@ class ErrorHandler {
                 trigger: "returned an empty object"
             },
             {
-                code: "SSL certificate verification failed",
+                code: "SSL verification failed",
                 description: "YTDL can't verify the ssl certificate of the service.",
                 trigger: "SSL: CERTIFICATE_VERIFY_FAILED"
             },
@@ -89,6 +89,11 @@ class ErrorHandler {
                 code: "Max fragment retries reached",
                 description: "The service did not respond with a fragment in time.",
                 trigger: "giving up after 10 fragment retries"
+            },
+            {
+                code: "Connection timed out",
+                description: "Please try again in a moment.",
+                trigger: "EOF occurred in violation of protocol"
             }
         ]
     }
