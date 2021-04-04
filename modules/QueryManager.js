@@ -293,7 +293,7 @@ class QueryManager {
         try {
             this.window.webContents.send("videoAction", args);
         } catch(e) {
-            console.log("Blocked webContents IPC call, because the window object was destroyed.");
+            console.log("Blocked webContents IPC call, the window object was destroyed.");
         }
     }
 
