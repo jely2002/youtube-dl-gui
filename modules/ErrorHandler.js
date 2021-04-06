@@ -94,6 +94,11 @@ class ErrorHandler {
                 code: "Connection timed out",
                 description: "Please try again in a moment.",
                 trigger: "EOF occurred in violation of protocol"
+            },
+            {
+                code: "Connection reset",
+                description: "The connection was forcibly closed by the remote host.",
+                trigger: "[WinError 10054]"
             }
         ]
     }
