@@ -51,6 +51,7 @@ Still haven't found your answer? [Open up an issue](https://github.com/jely2002/
 - White mode
 - Show progress in app-icon
 - Notify user when the download has finished
+- Support for downloading livestreams
 
 Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/issues).
 
