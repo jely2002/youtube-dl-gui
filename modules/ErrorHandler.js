@@ -11,6 +11,11 @@ class ErrorHandler {
                 trigger: "ERROR: Private video"
             },
             {
+                code: "No authentication",
+                description: `Authenticate using&nbsp;<span onclick="$('#authModal').modal('show');" class="openAuth">cookies</span>&nbsp;and try again.`,
+                trigger: "ERROR: This video is only available for registered users"
+            },
+            {
                 code: "No connection could be made",
                 description: "The host or your internet connection is down.",
                 trigger: "getaddrinfo failed"
@@ -29,6 +34,11 @@ class ErrorHandler {
               code: "Private or non-existent playlist",
               description: `This playlist does not exist or is&nbsp;<span onclick="$('#authModal').modal('show');" class="openAuth">private</span>.`,
               trigger: "ERROR: The playlist does not exist"
+            },
+            {
+                code: "Age restricted video",
+                description: `To download this video log-in using &nbsp;<span onclick="$('#authModal').modal('show');" class="openAuth">cookies</span>.`,
+                trigger: "ERROR: Sign in to confirm your age"
             },
             {
                 code: "Possible broken extractor (404)",
@@ -99,6 +109,11 @@ class ErrorHandler {
                 code: "Connection reset",
                 description: "The connection was forcibly closed by the remote host.",
                 trigger: "[WinError 10054]"
+            },
+            {
+                code: "File in use by another process",
+                description: "Make sure you haven't opened the file while downloading.",
+                trigger: "[WinError 32]"
             }
         ]
     }
