@@ -16,6 +16,11 @@ class ErrorHandler {
                 trigger: "ERROR: This video is only available for registered users"
             },
             {
+                code: "Members-only content",
+                description: `Authenticate using&nbsp;<span onclick="$('#authModal').modal('show');" class="openAuth">cookies</span>&nbsp;and try again.`,
+                trigger: "ERROR: Join this channel to get access to members-only content"
+            },
+            {
                 code: "No connection could be made",
                 description: "The host or your internet connection is down.",
                 trigger: "getaddrinfo failed"
@@ -87,7 +92,7 @@ class ErrorHandler {
             },
             {
                 code: "Unable to launch YTDL",
-                description: 'You might be missing <a href="https://github.com/jely2002/youtube-dl-gui#how-to-use" target="_blank"> required dependencies</a>.',
+                description: 'You might be missing&nbsp;<a href="https://github.com/jely2002/youtube-dl-gui#how-to-use" target="_blank"> required dependencies</a>.',
                 trigger: "returned an empty object"
             },
             {
