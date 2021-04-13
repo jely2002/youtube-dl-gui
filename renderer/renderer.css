@@ -251,6 +251,10 @@ select {
     margin-bottom: 0.25em !important;
 }
 
+.video-card .metadata .info a {
+    text-decoration: underline;
+}
+
 .video-card a {
     cursor: pointer;
     transition: 150ms color;
