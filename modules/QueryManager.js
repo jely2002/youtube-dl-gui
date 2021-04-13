@@ -43,6 +43,9 @@ class QueryManager {
                 this.managePlaylist(initialQuery, url);
                 this.removeVideo(metadataVideo);
                 break;
+            case "livestream":
+                this.environment.errorHandler.raiseError({code: "Not supported", description: "Livestreams are not yet supported."}, metadataVideo.identifier);
+                break;
             case false:
                 this.environment.errorHandler.checkError("YouTube-dl returned an empty object", metadataVideo.identifier);
                 break;
