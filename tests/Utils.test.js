@@ -97,6 +97,10 @@ describe('detectInfoType', () => {
        expect(Utils.detectInfoType([])).toBe(false);
        expect(Utils.detectInfoType({})).toBe(false);
    });
+   it('returns livestream when is_live is true', () => {
+       expect(Utils.detectInfoType({_type: "video", is_live: true})).toBe("livestream");
+       expect(Utils.detectInfoType({_type: null})).not.toBe("livestream");
+   });
    it('returns playlist when the type is playlist', () => {
        expect(Utils.detectInfoType({_type: "playlist"})).toBe("playlist");
        expect(Utils.detectInfoType({_type: null})).not.toBe("playlist");
