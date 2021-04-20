@@ -31,10 +31,18 @@ class DownloadQuery extends Query {
             ];
         } else {
             if (this.video.formats.length !== 0) {
-                let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s")
-                let format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
-                if (this.format.fps == null) {
-                    format = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+                let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s");
+                let format;
+                if(this.video.videoOnly) {
+                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]/bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`;
+                    if (this.format.fps == null) {
+                        format = `bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`
+                    }
+                } else {
+                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+                    if (this.format.fps == null) {
+                        format = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+                    }
                 }
                 args = [
                     "-f", format,

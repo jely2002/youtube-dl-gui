@@ -119,6 +119,7 @@ class QueryManager {
     downloadVideo(args) {
         let downloadVideo = this.getVideo(args.identifier);
         downloadVideo.audioOnly = args.type === "audio";
+        downloadVideo.videoOnly = args.type === "videoOnly";
         if(!downloadVideo.audioOnly) {
             for (const format of downloadVideo.formats) {
                 if (format.getDisplayName() === args.format) {
@@ -143,11 +144,12 @@ class QueryManager {
         let videosToDownload = [];
         let unifiedPlaylists = [];
         for(const videoObj of args.videos) {
-            let video = this.getVideo(videoObj.identifier)
+            let video = this.getVideo(videoObj.identifier);
             if(video.videos == null) {
-                if (video.downloaded || video.type !== "single") continue;
+                if(video.downloaded || video.type !== "single") continue;
                 video.audioOnly = videoObj.type === "audio";
-                if (video.audioOnly) {
+                video.videoOnly = videoObj.type === "videoOnly";
+                if(video.audioOnly) {
                     video.audioQuality = videoObj.format;
                 } else {
                     for (const format of video.formats) {
@@ -222,9 +224,9 @@ class QueryManager {
         });
     }
 
-    async getSize(identifier, formatLabel, audioOnly, clicked) {
+    async getSize(identifier, formatLabel, audioOnly, videoOnly, clicked) {
         const video = this.getVideo(identifier);
-        const cachedSize = this.getCachedSize(video, formatLabel, audioOnly)
+        const cachedSize = this.getCachedSize(video, formatLabel, audioOnly, videoOnly);
         if(cachedSize != null) {
             //The size for this format was already looked up
             return cachedSize;
@@ -235,13 +237,13 @@ class QueryManager {
                 //The sizemode is click so when the lookup from renderer is initial it should not do anything.
                 return null;
             } else {
-                return await this.querySize(video, formatLabel, video.getFormatFromLabel(formatLabel), audioOnly);
+                return await this.querySize(video, formatLabel, video.getFormatFromLabel(formatLabel), audioOnly, videoOnly);
             }
         }
     }
 
-    async querySize(video, formatLabel, format, audioOnly) {
-        const sizeQuery = new SizeQuery(video, audioOnly, audioOnly ? formatLabel : format, this.environment);
+    async querySize(video, formatLabel, format, audioOnly, videoOnly) {
+        const sizeQuery = new SizeQuery(video, audioOnly, videoOnly, audioOnly ? formatLabel : format, this.environment);
         const result = await sizeQuery.connect();
         if(audioOnly) {
             if(formatLabel === "best") {
@@ -249,16 +251,24 @@ class QueryManager {
             } else {
                 video.worstAudioSize = result
             }
+        } else if(videoOnly) {
+            const formatCopy = Format.getFromDisplayName(formatLabel);
+            formatCopy.filesize = result;
+            video.videoOnlySizeCache.push(formatCopy);
         }
         return result;
     }
 
-    getCachedSize(video, formatLabel, audioOnly) {
+    getCachedSize(video, formatLabel, audioOnly, videoOnly) {
         if(audioOnly) {
             let applicableSize;
             if (formatLabel === "best") applicableSize = video.bestAudioSize;
             else applicableSize = video.worstAudioSize;
             return applicableSize;
+        } else if(videoOnly) {
+            const cachedFormat = video.videoOnlySizeCache.find(format => format.getDisplayName() === formatLabel);
+            if(cachedFormat != null) return cachedFormat.filesize;
+            else return null;
         } else {
             return video.getFormatFromLabel(formatLabel).filesize;
         }

@@ -11,6 +11,7 @@ class Environment {
         this.version = app.getVersion();
         this.cookiePath = null;
         this.mainAudioOnly = false;
+        this.mainVideoOnly = true;
         this.mainAudioQuality = "best";
         this.mainDownloadSubs = false;
         this.paths = new Filepaths(app);

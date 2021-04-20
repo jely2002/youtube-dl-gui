@@ -33,7 +33,6 @@ async function init() {
 
     //Set the selected theme (dark | light)
     const startupTheme = await window.main.invoke('theme');
-    console.log(startupTheme)
     toggleWhiteMode(startupTheme);
 
     $('.video-cards').each(function() {
@@ -637,6 +636,7 @@ function updateSize(identifier, clicked) {
         identifier: identifier,
         formatLabel: formatLabel,
         audioOnly: $(card).find('.custom-select.download-type').val() === "audio",
+        videoOnly: $(card).find('.custom-select.download-type').val() === "videoOnly",
         clicked: clicked
     }).then((size) => {
         if(size != null && size === "Unknown") {
@@ -662,10 +662,11 @@ async function updateVideoSettings(identifier) {
     const oldQuality = $(card).find('.custom-select.download-quality');
     const oldType = $(card).find('.custom-select.download-type').val();
     $(card).find('.custom-select.download-type').val(typeValue);
+    const classValue = typeValue === "videoOnly" ? "video" : typeValue;
     if(qualityValue === "best") {
-        $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${typeValue}:first`).val());
+        $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${classValue}:first`).val());
     } else if(qualityValue === "worst") {
-        $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${typeValue}:last`).val());
+        $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${classValue}:last`).val());
     }
     let isAudio = typeValue === "audio";
     for(const elem of $(card).find('option')) {
