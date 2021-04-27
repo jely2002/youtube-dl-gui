@@ -45,7 +45,10 @@ module.exports = {
             "error",
             "last"
         ],
-        "complexity": "error",
+        "complexity": [
+            "error",
+            { "max": 25 }
+            ],
         "computed-property-spacing": [
             "error",
             "never"

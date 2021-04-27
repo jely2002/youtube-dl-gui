@@ -1,4 +1,4 @@
-const TaskList =  require('../modules/persistence/taskList')
+const TaskList =  require('../modules/persistence/TaskList')
 const fs = require('fs').promises;
 
 beforeEach(() => {
