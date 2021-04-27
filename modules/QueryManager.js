@@ -428,5 +428,22 @@ class QueryManager {
         });
     }
 
+    getTaskList() {
+        const urlList = []
+        for(const video of this.managedVideos) {
+            urlList.push(video.url)
+        }
+        return urlList
+    }
+
+    loadTaskList(taskList) {
+        let count = 0;
+        for(const url of taskList) {
+            this.manage(url);
+            count++;
+        }
+        console.log("Added " + count + " saved tasks.")
+    }
+
 }
 module.exports = QueryManager;

@@ -1,6 +1,6 @@
 const Bottleneck = require("bottleneck");
 const Filepaths = require("./Filepaths");
-const Settings = require("./Settings");
+const Settings = require("./persistence/Settings");
 const Analytics = require("./Analytics");
 const DetectPython = require("./DetectPython");
 const fs = require("fs").promises;

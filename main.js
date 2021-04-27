@@ -5,10 +5,12 @@ const QueryManager = require("./modules/QueryManager");
 const ErrorHandler = require("./modules/ErrorHandler");
 const BinaryUpdater = require("./modules/BinaryUpdater");
 const AppUpdater = require("./modules/AppUpdater");
+const TaskList = require("./modules/persistence/TaskList");
 
 let win
 let env
 let queryManager
+let taskList
 let appStarting = true;
 
 function sendLogToRenderer(log, isErr) {
@@ -32,6 +34,8 @@ function startCriticalHandlers(env) {
     });
 
     queryManager = new QueryManager(win, env);
+    taskList = new TaskList(env.paths, queryManager)
+    taskList.loadTaskList();
     env.errorHandler = new ErrorHandler(win, queryManager, env);
 
     if(appStarting) {
@@ -175,7 +179,7 @@ app.on('ready', async () => {
 //Quit the application when all windows are closed, except for darwin
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit()
+        taskList.saveTaskList().finally(() => app.quit())
     }
 });
 
