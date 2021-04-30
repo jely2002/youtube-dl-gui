@@ -2,11 +2,12 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, spoofUserAgent, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
+    constructor(paths, env, outputFormat, spoofUserAgent, taskList, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
         this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
+        this.taskList = taskList == null ? true : taskList;
         this.downloadMetadata = downloadMetadata == null ? true : downloadMetadata;
         this.downloadThumbnail = downloadThumbnail == null ? false : downloadThumbnail;
         this.keepUnmerged = keepUnmerged == null ? false : keepUnmerged;
@@ -25,7 +26,7 @@ class Settings {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(paths, env, data.outputFormat, data.spoofUserAgent, data.sizeMode, data.splitMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize, data.theme);
+            return new Settings(paths, env, data.outputFormat, data.spoofUserAgent, data.taskList, data.sizeMode, data.splitMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize, data.theme);
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
@@ -38,6 +39,7 @@ class Settings {
     update(settings) {
         this.outputFormat = settings.outputFormat;
         this.spoofUserAgent = settings.spoofUserAgent;
+        this.taskList = settings.taskList;
         this.downloadMetadata = settings.downloadMetadata;
         this.downloadThumbnail = settings.downloadThumbnail;
         this.keepUnmerged = settings.keepUnmerged;
@@ -61,6 +63,7 @@ class Settings {
         return {
             outputFormat: this.outputFormat,
             spoofUserAgent: this.spoofUserAgent,
+            taskList: this.taskList,
             sizeMode: this.sizeMode,
             splitMode: this.splitMode,
             maxConcurrent: this.maxConcurrent,

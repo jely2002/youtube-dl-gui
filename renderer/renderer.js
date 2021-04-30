@@ -56,6 +56,12 @@ async function init() {
         animation: true
     })
 
+    //Configures the restore toast
+    $('#task-list').toast({
+        autohide: false,
+        animation: true
+    })
+
     //Add url when user presses enter, but prevent default behavior
     $(document).on("keydown", "form", function(event) {
         if(event.key == "Enter") {
@@ -77,7 +83,9 @@ async function init() {
     });
 
     $('body').on('click', '#install-btn', () => {
-       window.main.invoke("installUpdate") ;
+        window.main.invoke("installUpdate");
+    }).on('click', '#tasklist-btn', () => {
+        window.main.invoke("restoreTaskList");
     }).on('click', '.video-card .metadata.right button', function() {
         const card = $(this).closest('.video-card');
         updateSize($(card).prop('id'), true);
@@ -115,6 +123,7 @@ async function init() {
             updateApplication: $('#updateApplication').prop('checked'),
             outputFormat: $('#outputFormat').val(),
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
+            taskList: $('#taskList').prop('checked'),
             downloadMetadata: $('#downloadMetadata').prop('checked'),
             downloadThumbnail: $('#downloadThumbnail').prop('checked'),
             keepUnmerged: $('#keepUnmerged').prop('checked'),
@@ -138,6 +147,7 @@ async function init() {
             $('#updateBinary').prop('checked', settings.updateBinary);
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
+            $('#taskList').prop('checked', settings.taskList);
             $('#outputFormat').val(settings.outputFormat);
             $('#downloadMetadata').prop('checked', settings.downloadMetadata);
             $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);

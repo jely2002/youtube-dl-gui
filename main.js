@@ -34,8 +34,16 @@ function startCriticalHandlers(env) {
     });
 
     queryManager = new QueryManager(win, env);
+
     taskList = new TaskList(env.paths, queryManager)
-    taskList.loadTaskList();
+    if(env.settings.taskList) {
+        taskList.load()
+    }
+
+    ipcMain.handle("restoreTaskList", () => {
+        taskList.restore()
+    })
+
     env.errorHandler = new ErrorHandler(win, queryManager, env);
 
     if(appStarting) {
@@ -179,7 +187,7 @@ app.on('ready', async () => {
 //Quit the application when all windows are closed, except for darwin
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        taskList.saveTaskList().finally(() => app.quit())
+        taskList.save().finally(() => app.quit())
     }
 });
 

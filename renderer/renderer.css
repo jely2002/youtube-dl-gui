@@ -57,7 +57,7 @@ select {
     color: var(--font-color);
 }
 
-.toast-body > #install-btn {
+.toast-body > #install-btn, .toast-body > #tasklist-btn {
     background-color: var(--highlight-color);
 }
 
