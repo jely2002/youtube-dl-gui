@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for youtube-dl-gui
 title: ''
-labels: enhancement
+labels: 'feature request'
 assignees: ''
 
 ---
