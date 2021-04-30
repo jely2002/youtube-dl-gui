@@ -8,36 +8,50 @@ beforeEach(() => {
     console.log = jest.fn().mockImplementation(() => {});
 });
 
-describe("saveTaskList", () => {
+describe("save", () => {
     it("writes the tasklist to a file", () => {
         const instance = instanceBuilder()
-        instance.saveTaskList()
+        instance.save()
         expect(instance.manager.getTaskList).toBeCalledTimes(1)
         expect(fs.writeFile).toBeCalledTimes(1)
     })
 })
 
-describe("loadTaskList", () => {
+describe("load", () => {
     it("reads the tasklist from a file", () => {
         const instance = instanceBuilder()
-        instance.loadTaskList()
+        instance.load()
         expect(fs.readFile).toBeCalledTimes(1)
     })
-    it("loads the task list into query manager", async () => {
+    it("shows a restore toast", async () => {
         const instance = instanceBuilder()
-        await instance.loadTaskList()
-        expect(instance.manager.loadTaskList).toBeCalledTimes(1)
+        await instance.load()
+        expect(instance.manager.window.webContents.send).toBeCalledTimes(1)
     })
     it("logs to console when the file does not exist", async () => {
         const instance = instanceBuilder()
         fs.readFile = jest.fn().mockRejectedValue("")
-        await instance.loadTaskList()
+        await instance.load()
         expect(console.log).toBeCalledTimes(1)
+    })
+    it("logs to console when the file is empty", async () => {
+        const instance = instanceBuilder()
+        fs.readFile = jest.fn().mockResolvedValue("[]")
+        await instance.load()
+        expect(console.log).toBeCalledTimes(1)
+    })
+})
+
+describe("restore", () => {
+    it("loads the task list into query manager", async () => {
+        const instance = instanceBuilder()
+        await instance.restore()
+        expect(instance.manager.loadTaskList).toBeCalledTimes(1)
     })
 })
 
 function instanceBuilder() {
     const paths = { taskList: "path/to/task/list" }
-    const manager = { getTaskList: jest.fn().mockResolvedValue(["url1", "url2"]), loadTaskList: jest.fn().mockResolvedValue("") }
+    const manager = { window: { webContents: { send: jest.fn() } }, getTaskList: jest.fn().mockResolvedValue(["url1", "url2"]), loadTaskList: jest.fn().mockResolvedValue("") }
     return new TaskList(paths, manager)
 }
