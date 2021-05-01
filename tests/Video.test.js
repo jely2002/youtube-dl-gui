@@ -63,6 +63,9 @@ function instanceBuilder(type) {
     const env = {
         paths: {
             downloadPath: "test__downloadpath"
+        },
+        settings: {
+            nameFormatMode: "%(title).200s-(%(height)sp%(fps).0d).%(ext)s"
         }
     };
     const video = new Video("http://test.url", type, env);
