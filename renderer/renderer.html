@@ -235,9 +235,20 @@
                     <label for="outputFormat" class="form-label">Attempt to use output format:</label>
                     <select class="custom-select d-block rounded w-auto mb-2" id="outputFormat">
                         <option value="none" selected>Auto</option>
-                        <option value="mp4" selected>MP4</option>
+                        <option value="mp4">MP4</option>
                         <option value="mkv">MKV</option>
                     </select>
+                </div>
+                <div class="mb-1">
+                    <label for="nameFormat" class="form-label">Filename format:</label>
+                    <select class="custom-select d-block rounded w-auto mb-2" id="nameFormat">
+                        <option value="%(title).200s-(%(height)sp%(fps).0d).%(ext)s" selected>Title + quality</option>
+                        <option value="%(title).200s.%(ext)s">Title</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <input id="nameFormatCustom" class="form-control" type="text" value="%(title).200s-(%(height)sp%(fps).0d).%(ext)s" disabled>
                 </div>
                 <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="downloadMetadata">

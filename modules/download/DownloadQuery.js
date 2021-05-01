@@ -17,9 +17,9 @@ class DownloadQuery extends Query {
 
     async connect() {
         let args = [];
+        let output = path.join(this.environment.paths.downloadPath, this.environment.settings.nameFormat);
         if(this.video.audioOnly) {
             let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
-            let output = path.join(this.environment.paths.downloadPath, "%(title).200s.%(ext)s") //.200 is to limit the max title length to 200 characters
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,
                 '--audio-format', 'mp3',
@@ -31,7 +31,6 @@ class DownloadQuery extends Query {
             ];
         } else {
             if (this.video.formats.length !== 0) {
-                let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s");
                 let format;
                 if(this.video.videoOnly) {
                     format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]/bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`;
@@ -52,7 +51,6 @@ class DownloadQuery extends Query {
                     '--output-na-placeholder', ""
                 ];
             } else {
-                let output = path.join(this.environment.paths.downloadPath, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s")
                 args = [
                     "-o", output,
                     '--ffmpeg-location', this.environment.paths.ffmpeg,

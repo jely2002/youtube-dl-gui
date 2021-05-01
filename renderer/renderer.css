@@ -475,6 +475,10 @@ option.audio {
     transition: 200ms;
 }
 
+#nameFormatCustom {
+    width: 80%;
+}
+
 /* AUTH MODAL */
 #fileInput {
     cursor: pointer;

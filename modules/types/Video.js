@@ -27,7 +27,11 @@ class Video {
             } else {
                 let fps = (this.formats[this.selected_format_index].fps != null) ? this.formats[this.selected_format_index].fps : "";
                 let height = this.formats[this.selected_format_index].height;
-                return (this.title.substr(0, 200) + "-(" + height + "p" + fps.toString().substr(0,2) + ")").replace(sanitizeRegex, "_");
+                if(this.environment.settings.nameFormatMode === "%(title).200s-(%(height)sp%(fps).0d).%(ext)s") {
+                    return (this.title.substr(0, 200) + "-(" + height + "p" + fps.toString().substr(0,2) + ")").replace(sanitizeRegex, "_");
+                } else if(this.environment.settings.nameFormatMode !== "custom") {
+                    return this.title.substr(0, 200).replace(sanitizeRegex, "_");
+                }
             }
         }
     }

@@ -124,6 +124,8 @@ async function init() {
             outputFormat: $('#outputFormat').val(),
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
             taskList: $('#taskList').prop('checked'),
+            nameFormatMode: $('#nameFormat').val(),
+            nameFormat: $('#nameFormatCustom').val(),
             downloadMetadata: $('#downloadMetadata').prop('checked'),
             downloadThumbnail: $('#downloadThumbnail').prop('checked'),
             keepUnmerged: $('#keepUnmerged').prop('checked'),
@@ -142,12 +144,23 @@ async function init() {
         $('#concurrentLabel').html(`Max concurrent jobs <strong>(${$('#maxConcurrent').val()})</strong>`);
     })
 
+    $('#nameFormat').on('change', function() {
+        const value = this.selectedOptions[0].value
+        if(value !== "custom") {
+           $('#nameFormatCustom').val(value).prop("disabled", true)
+        } else {
+            $('#nameFormatCustom').val(window.settings.nameFormat).prop("disabled", false)
+        }
+    })
+
     $('#settingsBtn').on('click', () => {
         window.main.invoke("settingsAction", {action: "get"}).then((settings) => {
             $('#updateBinary').prop('checked', settings.updateBinary);
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
             $('#taskList').prop('checked', settings.taskList);
+            $('#nameFormatCustom').val(settings.nameFormat);
+            $('#nameFormat').val(settings.nameFormatMode);
             $('#outputFormat').val(settings.outputFormat);
             $('#downloadMetadata').prop('checked', settings.downloadMetadata);
             $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
@@ -593,6 +606,7 @@ function updateProgress(args) {
             $(card).find('.progress-bar').attr('aria-valuenow', 100).css('width', "100%");
             $(card).find('.options').addClass("d-none").removeClass("d-flex");
             $(card).find('.open').addClass("d-flex");
+            if(window.settings.nameFormatMode === "custom") $(card).find('.open .item').prop("disabled", true)
         }
         return;
     }
