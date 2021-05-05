@@ -87,6 +87,7 @@ class QueryManager {
                 }
             }
             setTimeout(() => this.updateGlobalButtons(), 700); //This feels kinda hacky, maybe find a better way sometime.
+            setTimeout(() => this.updateGlobalButtons(), 2000); //This feels even more hacky, maybe find a better way sometime.
         });
     }
 
