@@ -61,8 +61,13 @@ class DownloadQuery extends Query {
             if (this.video.downloadSubs) {
                 args.push("--all-subs");
                 args.push("--embed-subs");
+                args.push("--sub-format")
+                args.push("srt")
                 args.push("--convert-subs");
                 args.push("srt");
+                if(this.environment.settings.autoGenSubs) {
+                    args.push("--write-auto-sub");
+                }
             }
             if (this.environment.settings.outputFormat !== "none") {
                 args.push("--merge-output-format");

@@ -124,6 +124,7 @@ async function init() {
             outputFormat: $('#outputFormat').val(),
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
             taskList: $('#taskList').prop('checked'),
+            autoGenSubs: $('#autoGenSubs').prop('checked'),
             nameFormatMode: $('#nameFormat').val(),
             nameFormat: $('#nameFormatCustom').val(),
             downloadMetadata: $('#downloadMetadata').prop('checked'),
@@ -159,6 +160,7 @@ async function init() {
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
             $('#taskList').prop('checked', settings.taskList);
+            $('#autoGenSubs').prop('checked', settings.autoGenSubs);
             $('#nameFormatCustom').val(settings.nameFormat);
             $('#nameFormat').val(settings.nameFormatMode);
             $('#outputFormat').val(settings.outputFormat);
