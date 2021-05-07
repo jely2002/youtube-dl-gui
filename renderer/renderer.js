@@ -407,7 +407,7 @@ function addVideo(args) {
             $(template).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>')
         }
 
-        // Initialize remove video popover
+        //Initialize remove video popover
         $(template).find('.remove-btn').popover();
         $(template).find('.remove-btn').on('hide.bs.popover', function() {
             $(this).removeClass("clicked");
