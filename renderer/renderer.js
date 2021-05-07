@@ -407,6 +407,12 @@ function addVideo(args) {
             $(template).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>')
         }
 
+        // Initialize remove video popover
+        $(template).find('.remove-btn').popover();
+        $(template).find('.remove-btn').on('hide.bs.popover', function() {
+            $(this).removeClass("clicked");
+        });
+
         $(template).find('.custom-select.download-type').on('change', function () {
             let isAudio = this.selectedOptions[0].value === "audio";
             for(const elem of $(template).find('option')) {
@@ -431,10 +437,8 @@ function addVideo(args) {
             $(option).addClass("video");
         }
 
-        $(template).find('.remove-btn').on('click', () => {
-            $(getCard(args.identifier)).remove();
-            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
-        });
+        $(template).find('.remove-btn').on('click', () => removeVideo(getCard(args.identifier)));
+
 
         $(template).find('.download-btn').on('click', () => {
             let downloadArgs = {
@@ -486,10 +490,7 @@ function addVideo(args) {
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Downloading metadata...');
         $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); $(this).addClass("disabled"); });
-        $(template).find('.remove-btn').on('click', () => {
-            $(getCard(args.identifier)).remove();
-            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
-        });
+        $(template).find('.remove-btn').on('click', () => removeVideo(getCard(args.identifier)));
 
     } else if(args.type === "playlist") {
         $(template).find('.card-title')
@@ -501,10 +502,7 @@ function addVideo(args) {
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Fetching video metadata...');
         $(template).find('.buttons').children().each(function() { $(this).find('i').addClass("disabled"); $(this).addClass("disabled"); });
-        $(template).find('.remove-btn').on('click', () => {
-            $(getCard(args.identifier)).remove();
-            window.main.invoke("videoAction", {action: "stop", identifier: args.identifier});
-        });
+        $(template).find('.remove-btn').on('click', () => removeVideo(getCard(args.identifier)));
     }
 
     new Promise((resolve) => {
@@ -514,6 +512,17 @@ function addVideo(args) {
         if(args.type === "single") updateVideoSettings(args.identifier);
     });
 
+}
+
+function removeVideo(card) {
+    const btn = $(card).find('.remove-btn')
+    if(btn.hasClass("clicked") || $(card).find(".custom-select.download-type").is(":visible") || $(card).find(".btn.btn-dark.folder").is(":visible") || $(card).find(".row.error.d-none").is(":visible")) {
+        $(btn).popover('hide');
+        $(card).remove();
+        window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
+    } else {
+        $(btn).addClass("clicked");
+    }
 }
 
 function setUnifiedPlaylist(args) {

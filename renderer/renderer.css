@@ -555,6 +555,24 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
     opacity: 1;
 }
 
+/* POPOVER */
+.popover {
+    box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.2);
+}
+
+.popover-body {
+    background: var(--bg-color);
+    color: var(--font-color);
+}
+
+.arrow:after {
+    border-bottom-color: var(--bg-color) !important;
+}
+
+.remove-btn:focus {
+    outline: none !important;
+}
+
 
 /* FILESIZE SPINNER */
 .lds-dual-ring {

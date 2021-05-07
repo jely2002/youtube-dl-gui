@@ -117,7 +117,7 @@
             </div>
         </div>
         <div class="col-1 buttons m-auto">
-            <a class="remove-btn"><i class="bi-x-circle mb-3"></i></a>
+            <a class="remove-btn" data-container="body" data-toggle="popover" tabindex="0" data-trigger="focus" data-placement="bottom" data-content="Click again to remove"><i class="bi-x-circle mb-3"></i></a>
             <a class="subtitle-btn"><i title="Subtitles disabled" class="bi-card-text-strike"></i></a>
             <a class="download-btn"><i class="bi-download mb-3"></i></a>
             <a class="info-btn"><i class="bi-info-circle mb-3"></i></a>
@@ -317,6 +317,7 @@
 </div>
 
 <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+<script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="../node_modules/windowbar/dist/index.js"></script>
 <script src="renderer.js"></script>
