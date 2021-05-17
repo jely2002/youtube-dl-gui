@@ -92,10 +92,10 @@ describe('extractPlaylistUrls', () => {
 });
 
 describe('detectInfoType', () => {
-   it('returns false when parameter is empty', () => {
-       expect(Utils.detectInfoType(null)).toBe(false);
-       expect(Utils.detectInfoType([])).toBe(false);
-       expect(Utils.detectInfoType({})).toBe(false);
+   it('returns the object when parameter is empty', () => {
+       expect(Utils.detectInfoType(null)).toBe(null);
+       expect(Utils.detectInfoType([])).toEqual([]);
+       expect(Utils.detectInfoType({})).toEqual({});
    });
    it('returns livestream when is_live is true', () => {
        expect(Utils.detectInfoType({_type: "video", is_live: true})).toBe("livestream");
