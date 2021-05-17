@@ -294,7 +294,7 @@ ipcMain.handle('cookieFile', async (event,clear) => {
 ipcMain.handle('messageBox', (event, args) => {
    dialog.showMessageBoxSync(win, {
        title: args.title,
-       message: args.message,
+       message: (args.message.startsWith("Youtube-dl returned an empty object")) ? "Youtube-dl returned an empty object" : args.message,
        type: "none",
        buttons: [],
    });

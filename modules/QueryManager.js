@@ -46,8 +46,8 @@ class QueryManager {
             case "livestream":
                 this.environment.errorHandler.raiseError({code: "Not supported", description: "Livestreams are not yet supported."}, metadataVideo.identifier);
                 break;
-            case false:
-                this.environment.errorHandler.checkError("YouTube-dl returned an empty object", metadataVideo.identifier);
+            default:
+                this.environment.errorHandler.raiseUnhandledError("Youtube-dl returned an empty object\n" + JSON.stringify(Utils.detectInfoType(initialQuery), null, 2), metadataVideo.identifier);
                 break;
         }
     }

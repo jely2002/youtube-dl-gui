@@ -72,8 +72,8 @@ class Utils {
     }
 
     static detectInfoType(infoQueryResult) {
-        if(infoQueryResult == null) return false;
-        if(Object.keys(infoQueryResult).length === 0) return false;
+        if(infoQueryResult == null) return infoQueryResult;
+        if(Object.keys(infoQueryResult).length === 0) return infoQueryResult;
         if(infoQueryResult.is_live != null && infoQueryResult.is_live === true) return "livestream";
         if(infoQueryResult._type != null && infoQueryResult._type === "playlist") return "playlist";
         if(infoQueryResult.entries != null && infoQueryResult.entries.length > 0) return "playlist";
