@@ -602,6 +602,10 @@ function updateProgress(args) {
         resetProgress($(card).find('.progress-bar')[0], card);
         return;
     }
+    if(args.progress.initial != null && args.progress.initial) {
+        $(card).find('.progress small').html(args.progress.message);
+        return;
+    }
     if(args.progress.finished != null && args.progress.finished) {
         if(args.progress.isPlaylist) {
             $(card).find('.progress small').html("Playlist downloaded - 100%");
