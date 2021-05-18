@@ -17,7 +17,7 @@ class Query {
 
         if(this.environment.settings.spoofUserAgent) {
             args.push("--user-agent"); //Add random user agent to slow down user agent profiling
-            args.push(new UserAgent().toString());
+            args.push(new UserAgent({ deviceCategory: 'desktop' }).toString());
         }
 
         if(!this.environment.settings.validateCertificate) {
@@ -42,8 +42,9 @@ class Query {
                 const {stdout} = await execa(command, args);
                 return stdout
             } catch(e) {
-                console.error(e.stderr);
-                this.environment.errorHandler.raiseUnhandledError("Please report this error.\n" + e.stderr, this.identifier);
+                if(!this.environment.errorHandler.checkError(e.stderr, this.identifier)) {
+                    this.environment.errorHandler.raiseUnhandledError("Please report this error.\n" + e.stderr, this.identifier);
+                }
                 return "{}";
             }
         } else {

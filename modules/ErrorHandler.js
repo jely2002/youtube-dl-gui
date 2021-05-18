@@ -139,10 +139,12 @@ class ErrorHandler {
         }
         if(!foundError) {
             if(stderr.includes("ERROR")) {
+                foundError = true;
                 console.error(stderr)
                 this.raiseUnhandledError(stderr, identifier);
             }
         }
+        return foundError;
     }
 
     raiseUnhandledError(error, identifier) {
