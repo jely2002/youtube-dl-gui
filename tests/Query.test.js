@@ -157,5 +157,5 @@ function execaMockBuilder(killed) {
 }
 
 function instanceBuilder(spoofUserAgent, cookiePath, errorHandlerMock, pythonCommand) {
-    return new Query({pythonCommand: pythonCommand, errorHandler: {checkError: errorHandlerMock}, paths: {ytdl: "a/path/to/ytdl"}, settings: {cookiePath: cookiePath, spoofUserAgent: spoofUserAgent}}, "test__id");
+    return new Query({pythonCommand: pythonCommand, errorHandler: {checkError: errorHandlerMock,  raiseUnhandledError: errorHandlerMock}, paths: {ytdl: "a/path/to/ytdl"}, settings: {cookiePath: cookiePath, spoofUserAgent: spoofUserAgent}}, "test__id");
 }

@@ -38,7 +38,8 @@ class Query {
                 const {stdout} = await execa(command, args);
                 return stdout
             } catch(e) {
-                this.environment.errorHandler.checkError(e.stderr, this.identifier);
+                console.error(e.stderr);
+                this.environment.errorHandler.raiseUnhandledError("Please report this error.\n" + e.stderr, this.identifier);
                 return "{}";
             }
         } else {
