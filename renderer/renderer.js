@@ -256,6 +256,7 @@ async function init() {
                     identifier: card.id,
                     format: $(card).find('.custom-select.download-quality').val(),
                     type: $(card).find('.custom-select.download-type').val(),
+                    downloadSubs: !$(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
                 })
                 $(card).find('.progress').addClass("d-flex");
                 $(card).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
@@ -534,7 +535,6 @@ function setUnifiedPlaylist(args) {
     $(card).find('.info').addClass("d-none").removeClass("d-flex");
     $(card).find('.metadata.left').html('<strong>Playlist size: </strong>' + args.length);
     if(args.uploader != null) $(card).find('.metadata.right').html('<strong>Uploader: </strong>' + args.uploader);
-
     if(args.subtitles) $(card).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
     $(card).find('img').prop("src", args.thumb);
     $(card).find('.card-title')
