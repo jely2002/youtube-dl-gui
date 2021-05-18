@@ -144,7 +144,7 @@ describe('Query without callback', () => {
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder(true, null, errorHandlerMock, "python");
         return instance.start("https://url.link", [], null).then(() => {
-            expect(errorHandlerMock).toBeCalledTimes(1);
+            expect(errorHandlerMock).toBeCalled();
         });
     });
 })
