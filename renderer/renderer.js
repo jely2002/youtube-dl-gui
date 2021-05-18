@@ -123,6 +123,7 @@ async function init() {
             updateApplication: $('#updateApplication').prop('checked'),
             outputFormat: $('#outputFormat').val(),
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
+            validateCertificate: $('#validateCertificate').prop('checked'),
             taskList: $('#taskList').prop('checked'),
             autoGenSubs: $('#autoGenSubs').prop('checked'),
             nameFormatMode: $('#nameFormat').val(),
@@ -159,6 +160,7 @@ async function init() {
             $('#updateBinary').prop('checked', settings.updateBinary);
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
+            $('#validateCertificate').prop('checked', settings.validateCertificate);
             $('#taskList').prop('checked', settings.taskList);
             $('#autoGenSubs').prop('checked', settings.autoGenSubs);
             $('#nameFormatCustom').val(settings.nameFormat);

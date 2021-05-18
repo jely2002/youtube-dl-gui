@@ -20,6 +20,10 @@ class Query {
             args.push(new UserAgent().toString());
         }
 
+        if(!this.environment.settings.validateCertificate) {
+            args.push("--no-check-certificate"); //Dont check the certificate if validate certificate is false
+        }
+
         if(this.environment.settings.cookiePath != null) { //Add cookie arguments if enabled
             args.push("--cookies");
             args.push(this.environment.settings.cookiePath);

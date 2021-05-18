@@ -2,11 +2,12 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, spoofUserAgent, taskList, autoGenSubs, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
+    constructor(paths, env, outputFormat, spoofUserAgent, validateCertificate, taskList, autoGenSubs, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
         this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
+        this.validateCertificate = validateCertificate == null ? false : validateCertificate;
         this.taskList = taskList == null ? true : taskList;
         this.autoGenSubs = autoGenSubs == null ? false : autoGenSubs;
         this.nameFormat = nameFormat == null ? "%(title).200s-(%(height)sp%(fps).0d).%(ext)s" : nameFormat;
@@ -29,7 +30,7 @@ class Settings {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(paths, env, data.outputFormat, data.spoofUserAgent, data.taskList, data.autoGenSubs, data.nameFormat, data.nameFormatMode, data.sizeMode, data.splitMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize, data.theme);
+            return new Settings(paths, env, data.outputFormat, data.spoofUserAgent, data.validateCertificate, data.taskList, data.autoGenSubs, data.nameFormat, data.nameFormatMode, data.sizeMode, data.splitMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize, data.theme);
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
@@ -42,6 +43,7 @@ class Settings {
     update(settings) {
         this.outputFormat = settings.outputFormat;
         this.spoofUserAgent = settings.spoofUserAgent;
+        this.validateCertificate = settings.validateCertificate;
         this.taskList = settings.taskList;
         this.autoGenSubs = settings.autoGenSubs;
         this.nameFormat = settings.nameFormat;
@@ -69,6 +71,7 @@ class Settings {
         return {
             outputFormat: this.outputFormat,
             spoofUserAgent: this.spoofUserAgent,
+            validateCertificate: this.validateCertificate,
             taskList: this.taskList,
             autoGenSubs: this.autoGenSubs,
             nameFormat: this.nameFormat,
