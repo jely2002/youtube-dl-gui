@@ -46,6 +46,11 @@ class ErrorHandler {
                 trigger: "ERROR: Sign in to confirm your age"
             },
             {
+                code: "Embed-only video",
+                description: "Try using the URL of the embed page.",
+                trigger: "ERROR: Cannot download embed-only video without embedding URL"
+            },
+            {
                 code: "Possible broken extractor (404)",
                 description: "YTDL isn't working, please wait for an update.",
                 trigger: "HTTP Error 404"
@@ -87,22 +92,17 @@ class ErrorHandler {
             },
             {
                 code: "No write permission",
-                description: "No permission to write in selected download folder.",
-                trigger: "unable to open for writing: [Errno 95]"
-            },
-            {
-                code: "Unable to launch YTDL",
-                description: 'You might be missing&nbsp;<a href="https://github.com/jely2002/youtube-dl-gui#how-to-use" target="_blank"> required dependencies</a>.',
-                trigger: "returned an empty object"
+                description: "No write permission in download folder.",
+                trigger: "[Errno 95]"
             },
             {
                 code: "SSL verification failed",
-                description: "YTDL can't verify the ssl certificate of the service.",
-                trigger: "SSL: CERTIFICATE_VERIFY_FAILED"
+                description: "Disable the 'Validate HTTPS certificates' setting.",
+                trigger: "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed"
             },
             {
                 code: "Max fragment retries reached",
-                description: "The service did not respond with a fragment in time.",
+                description: "The service did not respond in time.",
                 trigger: "giving up after 10 fragment retries"
             },
             {
@@ -111,14 +111,39 @@ class ErrorHandler {
                 trigger: "EOF occurred in violation of protocol"
             },
             {
+                code: "Connection timed out",
+                description: "Please try again in a moment.",
+                trigger: "[Errno 60]"
+            },
+            {
+                code: "No connection could be made",
+                description: "Check your proxy and internet connection.",
+                trigger: "[WinError 10060]"
+            },
+            {
                 code: "Connection reset",
-                description: "The connection was forcibly closed by the remote host.",
+                description: "The connection was closed by the remote host.",
                 trigger: "[WinError 10054]"
             },
             {
                 code: "File in use by another process",
-                description: "Make sure you haven't opened the file while downloading.",
+                description: "Don't open the file while it's downloading.",
                 trigger: "[WinError 32]"
+            },
+            {
+                code: "Binaries missing/corrupted",
+                description: "Please restart the app, or disable antivirus.",
+                trigger: "Command failed with ENOENT: resources\\app.asar.unpacked\\binaries\\youtube-dl.exe"
+            },
+            {
+                code: "Binaries missing/corrupted",
+                description: "Please restart the app, or disable antivirus.",
+                trigger: "Command failed with ENOENT: binaries/youtube-dl.exe"
+            },
+            {
+                code: "Missing dependency",
+                description: "Please install <a href=\"https://github.com/jely2002/youtube-dl-gui#how-to-use\" target=\"_blank\"> Microsoft Visual C++ 2010</a>",
+                trigger: "3221225781"
             }
         ]
     }
