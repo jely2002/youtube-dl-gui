@@ -43,7 +43,9 @@ class Query {
                 return stdout
             } catch(e) {
                 if(!this.environment.errorHandler.checkError(e.stderr, this.identifier)) {
-                    this.environment.errorHandler.raiseUnhandledError("Please report this error.\n" + JSON.stringify(e, null, 2), this.identifier);
+                    if(!this.environment.errorHandler.checkError(e.shortMessage, this.identifier)) {
+                        this.environment.errorHandler.raiseUnhandledError("Please report this error.\n" + JSON.stringify(e, null, 2), this.identifier);
+                    }
                 }
                 return "{}";
             }

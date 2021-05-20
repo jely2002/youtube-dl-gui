@@ -152,7 +152,7 @@ class ErrorHandler {
         let foundError = false;
         if(stderr == null) {
             console.error("An error has occurred but no error message was given.")
-            return;
+            return false;
         }
         for(const errorDef of this.errorDefinitions) {
             if(stderr.includes(errorDef.trigger)) {
