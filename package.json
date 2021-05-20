@@ -49,9 +49,13 @@
     "url": "https://github.com/jely2002/youtube-dl-gui.git"
   },
   "build": {
-    "afterPack": "./appimage-fix.js",
+    "afterPack": "./build/appimage-fix.js",
     "appId": "com.jelleglebbeek.youtube-dl-gui",
     "asarUnpack": "**/binaries/*",
+    "nsis": {
+      "include": "./build/vcredist.nsh",
+      "packElevateHelper": false
+    },
     "productName": "YouTube Downloader GUI",
     "copyright": "Copyright © 2020-2021 Jelle Glebbeek",
     "win": {
