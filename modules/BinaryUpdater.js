@@ -38,6 +38,11 @@ class BinaryUpdater {
             console.error(err);
             data = null;
         }
+        try {
+            await fs.promises.access(this.paths.ytdl);
+        } catch(e) {
+            data = null;
+        }
         if(data == null) {
             return null;
         } else {
@@ -76,9 +81,9 @@ class BinaryUpdater {
                     error = err;
                     reject(err);
                 });
-                writer.on('close', () => {
+                writer.on('close', async () => {
                     if (!error) {
-                        this.writeVersionInfo(remoteVersion);
+                        await this.writeVersionInfo(remoteVersion);
                         resolve(true);
                     }
                 });
@@ -87,11 +92,10 @@ class BinaryUpdater {
     }
 
     //Writes the new version number to the ytdlVersion file
-    writeVersionInfo(version) {
+    async writeVersionInfo(version) {
         const data = {version: version};
-        fs.promises.writeFile(this.paths.ytdlVersion, JSON.stringify(data)).then(() => {
-            console.log("New version data written to ytdlVersion.");
-        });
+        await fs.promises.writeFile(this.paths.ytdlVersion, JSON.stringify(data));
+        console.log("New version data written to ytdlVersion.");
     }
 }
 
