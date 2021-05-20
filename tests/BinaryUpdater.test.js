@@ -29,6 +29,7 @@ describe("getLocalVersion", () => {
     });
     it('returns the version property from the json file', () => {
         jest.spyOn(fs.promises, 'readFile').mockResolvedValue("{\"version\": \"v2.0.0-test1\"}")
+        jest.spyOn(fs.promises, 'access').mockResolvedValue("");
         const instance = new BinaryUpdater({ ytdlVersion: "a/test/path" });
         return instance.getLocalVersion().then((data) => {
             expect(data).toBe("v2.0.0-test1");
