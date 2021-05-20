@@ -36,8 +36,16 @@ function startCriticalHandlers(env) {
     queryManager = new QueryManager(win, env);
 
     taskList = new TaskList(env.paths, queryManager)
-    if(env.settings.taskList) {
-        taskList.load()
+
+    if(env.settings.updateBinary) {
+        let binaryUpdater = new BinaryUpdater(env.paths, win);
+        win.webContents.send("binaryLock", {lock: true, placeholder: `Checking for a new version of ytdl...`})
+        binaryUpdater.checkUpdate().finally(() => {
+            win.webContents.send("binaryLock", {lock: false});
+            taskList.load();
+        });
+    } else if(env.settings.taskList) {
+        taskList.load();
     }
 
     ipcMain.handle("restoreTaskList", () => {
@@ -83,12 +91,6 @@ function startCriticalHandlers(env) {
                     break;
             }
         })
-
-        if(env.settings.updateBinary) {
-            let binaryUpdater = new BinaryUpdater(env.paths, win);
-            win.webContents.send("binaryLock", {lock: true, placeholder: `Checking for a new version of ytdl...`})
-            binaryUpdater.checkUpdate().finally(() => { win.webContents.send("binaryLock", {lock: false}) });
-        }
 
         let appUpdater = new AppUpdater(env, win);
         env.appUpdater = appUpdater;
