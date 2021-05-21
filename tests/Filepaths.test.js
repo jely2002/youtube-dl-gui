@@ -68,6 +68,13 @@ describe('generate filepaths', () => {
        await instance.generateFilepaths();
        expect(instance.createHomeFolder).toBeCalledTimes(1);
    });
+   it('calls create portable folder when this version is used', async () => {
+       const instance = instanceBuilder(true, true);
+       instance.platform = "win32";
+       instance.createPortableFolder = jest.fn().mockResolvedValue(undefined);
+       await instance.generateFilepaths();
+       expect(instance.createPortableFolder).toBeCalledTimes(1);
+   })
    it('sets permissions on darwin and linux', async () => {
        const platforms = ["win32", "linux", "darwin"];
        for(const platform of platforms) {
@@ -101,11 +108,32 @@ describe('create home folder', () => {
     });
 });
 
-function instanceBuilder(packaged) {
+describe('create portable folder', () => {
+    it('does not copy the files if the folder already exists', async () => {
+        const instance = instanceBuilder(true);
+        fs.copyFileSync = jest.fn();
+        mkdirp.mockResolvedValue(null);
+        await instance.createPortableFolder();
+        expect(fs.copyFileSync).not.toBeCalled();
+    });
+    it('copies 3 files if the directory did not exist yet', async () => {
+        const instance = instanceBuilder(true);
+        fs.copyFileSync = jest.fn();
+        const joinSpy = jest.spyOn(path, 'join').mockReturnValue("path");
+        mkdirp.mockResolvedValue("path/to/made/directory");
+        await instance.createPortableFolder();
+        expect(fs.copyFileSync).toBeCalledTimes(3);
+        joinSpy.mockRestore();
+    });
+});
+
+
+
+function instanceBuilder(packaged, portable) {
     const app = {
         isPackaged: packaged,
         getPath: jest.fn(() => "path/to/downloads"),
-        getAppPath: jest.fn(() => "path/to/application")
+        getAppPath: jest.fn(() => portable ? "\\AppData\\Local\\Temp\\" : "path/to/application")
     }
     return new Filepaths(app);
 }
