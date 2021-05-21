@@ -4,13 +4,38 @@ contextBridge.exposeInMainWorld(
     "main",
     {
         invoke: async (channel, data) => {
-            let validChannels = ["platform", "messageBox","errorReport", "titlebarClick", "openInputMenu", "settingsAction", "videoAction", "cookieFile", "downloadFolder", "installUpdate", "iconProgress", "theme", "restoreTaskList"];
+            let validChannels = [
+                "platform",
+                "messageBox",
+                "errorReport",
+                "titlebarClick",
+                "openInputMenu",
+                "settingsAction",
+                "videoAction",
+                "cookieFile",
+                "downloadFolder",
+                "installUpdate",
+                "iconProgress",
+                "theme",
+                "restoreTaskList",
+                "getDoneActions",
+                "setDoneAction"
+            ];
             if (validChannels.includes(channel)) {
                 return await ipcRenderer.invoke(channel, data);
             }
         },
         receive: (channel, cb) => {
-            let validChannels = ["log", "error", "toast", "maximized", "videoAction", "updateGlobalButtons", "totalSize", "binaryLock"];
+            let validChannels = [
+                "log",
+                "error",
+                "toast",
+                "maximized",
+                "videoAction",
+                "updateGlobalButtons",
+                "totalSize",
+                "binaryLock"
+            ];
             if (validChannels.includes(channel)) {
                 ipcRenderer.on(channel, (event, arg) => {
                     cb(arg)

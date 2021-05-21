@@ -14,6 +14,7 @@ class Environment {
         this.mainVideoOnly = false;
         this.mainAudioQuality = "best";
         this.mainDownloadSubs = false;
+        this.doneAction = "Do nothing";
         this.paths = new Filepaths(app);
         this.downloadLimiter = new Bottleneck({
             trackDoneStatus: true,

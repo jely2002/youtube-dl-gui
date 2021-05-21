@@ -6,6 +6,7 @@ const ErrorHandler = require("./modules/ErrorHandler");
 const BinaryUpdater = require("./modules/BinaryUpdater");
 const AppUpdater = require("./modules/AppUpdater");
 const TaskList = require("./modules/persistence/TaskList");
+const DoneAction = require("./modules/DoneAction");
 
 let win
 let env
@@ -99,6 +100,15 @@ function startCriticalHandlers(env) {
         ipcMain.handle("installUpdate", () => {
             appUpdater.installUpdate();
         });
+
+        ipcMain.handle('getDoneActions', () => {
+            const doneAction = new DoneAction();
+            return doneAction.getActions();
+        });
+
+        ipcMain.handle('setDoneAction', (event, args) => {
+            env.doneAction = args.action;
+        })
 
         ipcMain.handle('videoAction', async (event, args) => {
             switch (args.action) {

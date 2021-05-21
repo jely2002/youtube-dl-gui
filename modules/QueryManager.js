@@ -12,6 +12,7 @@ const fs = require("fs");
 const SizeQuery = require("./size/SizeQuery");
 const DownloadQueryList = require("./download/DownloadQueryList");
 const Format = require("./types/Format");
+const DoneAction = require("./DoneAction");
 
 class QueryManager {
     constructor(window, environment) {
@@ -178,6 +179,8 @@ class QueryManager {
         downloadList.start().then(() => {
             for(const unifiedPlaylist of unifiedPlaylists) { unifiedPlaylist.downloaded = true }
             this.updateGlobalButtons();
+            const doneAction = new DoneAction();
+            doneAction.executeAction(this.environment.doneAction);
         })
     }
 
