@@ -11,7 +11,7 @@ class Filepaths {
     }
 
      async generateFilepaths() {
-        switch (this.platform) {
+        switch (this.detectPlatform()) {
             case "win32":
                 this.unpackedPrefix = "resources/app.asar.unpacked";
                 this.packedPrefix = "resources/app.asar";
@@ -21,6 +21,18 @@ class Filepaths {
                 this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
                 this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
                 this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
+                break;
+            case "win32portable":
+                this.persistentPath = path.join(this.app.getPath('appData'), "youtube-dl-gui-portable");
+                this.unpackedPrefix = "resources/app.asar.unpacked";
+                this.packedPrefix = "resources/app.asar";
+                await this.createPortableFolder();
+                this.ffmpeg = path.join(this.persistentPath, "ffmpeg.exe");
+                this.ytdl = path.join(this.persistentPath, "youtube-dl.exe");
+                this.icon = path.join(this.packedPrefix, "renderer/img/icon.png");
+                this.settings = path.join(this.persistentPath, "userSettings");
+                this.taskList = path.join(this.persistentPath, "taskList");
+                this.ytdlVersion = path.join(this.persistentPath, "ytdlVersion");
                 break;
             case "darwin":
                 this.packedPrefix = this.appPath;
@@ -49,6 +61,11 @@ class Filepaths {
         }
     }
 
+    detectPlatform() {
+        if(this.appPath.includes("\\AppData\\Local\\Temp\\")) return "win32portable";
+        else return this.platform;
+    }
+
     setPermissions() {
         fs.chmod(this.ytdl, 0o755, (err) => {
             if(err) console.error(err);
@@ -56,6 +73,19 @@ class Filepaths {
         fs.chmod(this.ffmpeg, 0o755, (err) => {
             if(err) console.error(err);
         });
+    }
+
+    async createPortableFolder() {
+        await new Promise((resolve) => {
+            mkdirp(this.persistentPath).then(made => {
+                if (made != null) {
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/youtube-dl.exe"), path.join(this.persistentPath, "youtube-dl.exe"));
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ffmpeg.exe"), path.join(this.persistentPath, "ffmpeg.exe"));
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ytdlVersion"), path.join(this.persistentPath, "ytdlVersion"));
+                }
+                resolve();
+            })
+        })
     }
 
     async createHomeFolder() {
