@@ -49,14 +49,15 @@ function startCriticalHandlers(env) {
         taskList.load();
     }
 
-    ipcMain.handle("restoreTaskList", () => {
-        taskList.restore()
-    })
-
     env.errorHandler = new ErrorHandler(win, queryManager, env);
 
     if(appStarting) {
         appStarting = false;
+
+        //
+        ipcMain.handle("restoreTaskList", () => {
+            taskList.restore()
+        });
 
         //Catch all console.log calls, print them to stdout and send them to the renderer devtools.
         console.log = (arg) => {
@@ -154,10 +155,10 @@ function startCriticalHandlers(env) {
 function createWindow(env) {
     win = new BrowserWindow({
         show: false,
-        minWidth: 700,
+        minWidth: 840,
         minHeight: 650,
-        width: 815,
-        height: 800,
+        width: 860,
+        height: 840,
         backgroundColor: env.settings.theme === "dark" ? '#212121' : '#ffffff',
         titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "hidden",
         frame: false,
