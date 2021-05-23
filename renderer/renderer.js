@@ -309,7 +309,7 @@ async function init() {
     window.main.receive("toast", (arg) => showToast(arg));
 
     //Passes an error to the setError method
-    window.main.receive("error", (arg) => setError(arg.error.code, arg.error.description, arg.unexpected, arg.identifier));
+    window.main.receive("error", (arg) => setError(arg.error.code, arg.error.description, arg.unexpected, arg.identifier, arg.url));
 
     //Updates the windowbar icon when the app gets maximized/unmaximized
     window.main.receive("maximized", (maximized) => {
@@ -823,18 +823,24 @@ function updateButtons(videos) {
     }
 }
 
-function setError(code, description, unexpected, identifier) {
+function setError(code, description, unexpected, identifier, url) {
     let card = getCard(identifier);
     $(card).find('.progress-bar').removeClass("progress-bar-striped").removeClass("progress-bar-animated").css("width", "100%").css('background-color', 'var(--error-color)');
     $(card).find('.buttons').children().each(function() {
         if($(this).hasClass("remove-btn")) {
-            $(this).removeClass("disabled");
-            $(this).find('i').removeClass("disabled");
-            return;
+            $(this).removeClass("disabled").find('i').removeClass("disabled");
+        } else if($(this).hasClass("subtitle-btn")) {
+            $(this).removeClass("subtitle-btn")
+                .removeClass("disabled")
+                .addClass("retry-btn")
+                .html('<i title="Retry" class="bi bi-arrow-counterclockwise"></i>')
+                .on('click', function() {
+                    window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
+                    parseURL(url);
+                }).find('i').removeClass("disabled");
+        } else {
+            $(this).addClass("disabled").find('i').addClass("disabled");
         }
-        $(this).find('i').addClass("disabled");
-        $(this).addClass("disabled")
-        $(this).removeClass("disabled");
     });
     $(card).find('.report').prop("disabled", false);
     $(card).css("box-shadow", "none").css("border", "solid 1px var(--error-color)");

@@ -194,7 +194,7 @@ class ErrorHandler {
         if(video == null) return;
         if(video.type === "playlist") return;
         console.error(errorDef.code + " - " + errorDef.description);
-        this.win.webContents.send("error", { error: errorDef, identifier: identifier, unexpected: false });
+        this.win.webContents.send("error", { error: errorDef, identifier: identifier, unexpected: false, url: video.url });
         this.queryManager.onError(identifier);
     }
 
