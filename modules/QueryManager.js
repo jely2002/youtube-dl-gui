@@ -314,10 +314,10 @@ class QueryManager {
         }
     }
 
-    stopSingle(identifier) {
+    stopDownload(identifier) {
         let video = this.getVideo(identifier);
-        if(video.query != null) {
-            video.query.cancel();
+        if (video.query != null) {
+               video.query.cancel();
         }
         this.removeVideo(video);
     }

@@ -6,13 +6,18 @@ class Query {
         this.environment = environment;
         this.identifier = identifier
         this.process = null;
+        this.stopped = false;
     }
 
     stop() {
-        this.process.cancel();
+        this.stopped = true;
+        if(this.process != null) {
+            this.process.cancel();
+        }
     }
 
     async start(url, args, cb) {
+        if(this.stopped) return "killed";
         args.push("--no-cache-dir");
 
         if(this.environment.settings.spoofUserAgent) {

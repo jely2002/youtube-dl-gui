@@ -410,12 +410,6 @@ function addVideo(args) {
             $(template).find('.metadata.right').html('<strong>Size: </strong><button class="btn btn-dark">Load</button>')
         }
 
-        //Initialize remove video popover
-        $(template).find('.remove-btn').popover();
-        $(template).find('.remove-btn').on('hide.bs.popover', function() {
-            $(this).removeClass("clicked");
-        });
-
         $(template).find('.custom-select.download-type').on('change', function () {
             let isAudio = this.selectedOptions[0].value === "audio";
             for(const elem of $(template).find('option')) {
@@ -428,7 +422,6 @@ function addVideo(args) {
             $(template).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
         });
 
-
         if(args.formats.length === 0) {
             $(template).find('.custom-select.download-quality').append(new Option("No formats", "", true)).prop("disabled", true);
             $(template).find('.custom-select.download-type').prop("disabled", true);
@@ -439,6 +432,13 @@ function addVideo(args) {
             $(template).find('.custom-select.download-quality').append(option);
             $(option).addClass("video");
         }
+
+        //Initialize remove video popover
+        $(template).find('.remove-btn').popover();
+        $(template).find('.remove-btn').on('hide.bs.popover', function() {
+            console.log("remove clicked")
+            $(this).removeClass("clicked");
+        });
 
         $(template).find('.remove-btn').on('click', () => removeVideo(getCard(args.identifier)));
 
@@ -523,7 +523,9 @@ function removeVideo(card) {
         $(btn).popover('hide');
         $(card).remove();
         window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
+        console.log("remove card")
     } else {
+        console.log("add clicked")
         $(btn).addClass("clicked");
     }
 }
@@ -633,7 +635,7 @@ function updateProgress(args) {
         }
         $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
         $(card).find('.progress small').html(`${args.progress.percentage} - ${args.progress.done} of ${args.progress.total} `);
-    } else {
+    } else if(args.progress.percentage != null) {
         if(parseFloat(args.progress.percentage.slice(0, -1)) > parseFloat($(card).find('.progress-bar').attr("aria-valuenow"))) {
             $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
             if(args.progress.isAudio == null) $(card).find('.progress small').html("Downloading item - " + args.progress.percentage);
@@ -651,6 +653,10 @@ function updateProgress(args) {
 }
 
 function updateTotalProgress(args) {
+    if(args.progress.resetTotal != null && args.progress.resetTotal) {
+        resetTotalProgress();
+        return;
+    }
     $('#totalProgress small').html(`Downloading - item ${args.progress.done} of ${args.progress.total} completed`);
     $('#totalProgress .progress-bar').css("width", args.progress.percentage).attr("aria-valuenow", args.progress.percentage.slice(0,-1));
     const ratio = parseFloat(args.progress.percentage.slice(0,-1));

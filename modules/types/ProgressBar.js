@@ -5,8 +5,17 @@ class ProgressBar {
     }
 
     updatePlaylist(done, total) {
-        let percent = ((done / total) * 100).toFixed(2) + "%";
-        this.manager.updateProgress(this.video, {percentage: percent, done: done, total: total, isPlaylist: this.isUnifiedPlaylist()});
+        if(done === 0 && total === 0) {
+            this.manager.updateProgress(this.video, {resetTotal: true})
+        } else {
+            let percent = ((done / total) * 100).toFixed(2) + "%";
+            this.manager.updateProgress(this.video, {
+                percentage: percent,
+                done: done,
+                total: total,
+                isPlaylist: this.isUnifiedPlaylist()
+            });
+        }
     }
 
     updateDownload(percentage, eta, speed, isAudio) {

@@ -113,7 +113,7 @@ function startCriticalHandlers(env) {
         ipcMain.handle('videoAction', async (event, args) => {
             switch (args.action) {
                 case "stop":
-                    queryManager.stopSingle(args.identifier);
+                    queryManager.stopDownload(args.identifier);
                     break;
                 case "open":
                     queryManager.openVideo(args);

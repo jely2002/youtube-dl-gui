@@ -12,7 +12,7 @@ class DownloadQuery extends Query {
     }
 
     cancel() {
-        this.stop();
+        super.stop();
     }
 
     async connect() {
