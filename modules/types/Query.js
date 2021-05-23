@@ -56,7 +56,7 @@ class Query {
             }
         } else {
             //Return data while the query is running (live)
-            //Return "close" when the query has finished
+            //Return "done" when the query has finished
             return await new Promise((resolve) => {
                 this.process = execa(command, args);
                 this.process.stdout.setEncoding('utf8');

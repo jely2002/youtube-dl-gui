@@ -267,12 +267,22 @@ async function init() {
         for(const card of videoCards) {
             let isDownloadable = await window.main.invoke("videoAction", {action: "downloadable", identifier: card.id})
             if(isDownloadable) {
-                videos.push({
-                    identifier: card.id,
-                    format: $(card).find('.custom-select.download-quality').val(),
-                    type: $(card).find('.custom-select.download-type').val(),
-                    downloadSubs: !$(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
-                })
+                if($(card).hasClass("unified")) {
+                    videos.push({
+                        identifier: card.id,
+                        url: $(card).find('.url').val(),
+                        format: $(card).find('.custom-select.download-quality').val(),
+                        type: $(card).find('.custom-select.download-type').val(),
+                        downloadSubs: !$(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
+                    })
+                } else {
+                    videos.push({
+                        identifier: card.id,
+                        format: $(card).find('.custom-select.download-quality').val(),
+                        type: $(card).find('.custom-select.download-type').val(),
+                        downloadSubs: !$(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
+                    })
+                }
                 $(card).find('.progress').addClass("d-flex");
                 $(card).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
                 $(card).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
@@ -554,7 +564,7 @@ function removeVideo(card) {
 function setUnifiedPlaylist(args) {
     const card = getCard(args.identifier);
     $(card).addClass("unified");
-
+    $(card).append(`<input type="hidden" class="url" value="${args.url}">`);
     $(card).find('.progress').addClass("d-none").removeClass("d-flex");
     $(card).find('.options').addClass("d-flex");
     $(card).find('.info').addClass("d-none").removeClass("d-flex");
@@ -648,6 +658,7 @@ function updateProgress(args) {
             $(card).find('.open').addClass("d-flex");
             if(window.settings.nameFormatMode === "custom") $(card).find('.open .item').prop("disabled", true)
         }
+        changeSubsToRetry(args.url, card);
         return;
     }
     if(args.progress.done != null && args.progress.total != null) {
@@ -834,6 +845,23 @@ function updateButtons(videos) {
     }
 }
 
+function changeSubsToRetry(url, card) {
+    if(card == null) return;
+    $(card).find('.subtitle-btn').removeClass("subtitle-btn")
+        .removeClass("disabled")
+        .addClass("retry-btn")
+        .html('<i title="Retry" class="bi bi-arrow-counterclockwise"></i>')
+        .on('click', function() {
+            window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
+            if(url == null) {
+                parseURL($(card).find('.url').val());
+            } else {
+                parseURL(url);
+            }
+        })
+        .find('i').removeClass("disabled");
+}
+
 function setError(code, description, unexpected, identifier, url) {
     let card = getCard(identifier);
     $(card).append(`<input type="hidden" class="url" value="${url}">`);
@@ -842,14 +870,7 @@ function setError(code, description, unexpected, identifier, url) {
         if($(this).hasClass("remove-btn") || $(this).hasClass("info-btn")) {
             $(this).removeClass("disabled").find('i').removeClass("disabled");
         } else if($(this).hasClass("subtitle-btn")) {
-            $(this).removeClass("subtitle-btn")
-                .removeClass("disabled")
-                .addClass("retry-btn")
-                .html('<i title="Retry" class="bi bi-arrow-counterclockwise"></i>')
-                .on('click', function() {
-                    window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
-                    parseURL(url);
-                }).find('i').removeClass("disabled");
+           changeSubsToRetry(url, card);
         } else {
             $(this).addClass("disabled").find('i').addClass("disabled");
         }

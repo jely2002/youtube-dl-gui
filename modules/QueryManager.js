@@ -80,7 +80,7 @@ class QueryManager {
                 totalFormats.sort((a, b) => b.height - a.height || b.fps - a.fps);
                 const title = initialQuery.title == null ? url : initialQuery.title;
                 const uploader = initialQuery.uploader == null ? "Unknown" : initialQuery.uploader;
-                this.window.webContents.send("videoAction", {action: "setUnified", identifier: playlistVideo.identifier,formats: totalFormats, subtitles: this.environment.mainDownloadSubs, thumb: videos[0].thumbnail, title: title, length: videos.length, uploader: uploader})
+                this.window.webContents.send("videoAction", {action: "setUnified", identifier: playlistVideo.identifier,formats: totalFormats, subtitles: this.environment.mainDownloadSubs, thumb: videos[0].thumbnail, title: title, length: videos.length, uploader: uploader, url: playlistVideo.url})
             } else {
                 this.removeVideo(playlistVideo);
                 for (const video of videos) {
@@ -164,6 +164,7 @@ class QueryManager {
                 video.audioQuality = (video.audioQuality != null) ? video.audioQuality : "best";
                 videosToDownload.push(video);
             } else {
+                video.url = videoObj.url;
                 unifiedPlaylists.push(video);
                 this.getUnifiedVideos(video, video.videos, videoObj.type === "audio", videoObj.format, videoObj.downloadSubs);
                 for(const unifiedVideo of video.videos) {
@@ -304,6 +305,7 @@ class QueryManager {
             args = {
                 action: "progress",
                 identifier: video.identifier == null ? video : video.identifier,
+                url: video.url,
                 progress: progress_args
             }
         }

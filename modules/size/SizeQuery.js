@@ -21,7 +21,6 @@ class SizeQuery extends Query {
         }
         let output = await this.environment.metadataLimiter.schedule(() => this.start(this.video.url, ["-J", "--flat-playlist", "-f", formatArgument]));
         let data = JSON.parse(output);
-        console.log(data)
         let totalSize = 0;
         if(data.requested_formats != null) {
             if(this.audioOnly) {
