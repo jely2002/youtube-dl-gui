@@ -62,10 +62,6 @@ class DownloadQuery extends Query {
                 this.progressBar.setInitial("Downloading subtitles");
                 args.push("--all-subs");
                 args.push("--embed-subs");
-                args.push("--sub-format")
-                args.push("srt");
-                args.push("--convert-subs");
-                args.push("srt");
                 if(this.environment.settings.autoGenSubs) {
                     args.push("--write-auto-sub");
                 }
