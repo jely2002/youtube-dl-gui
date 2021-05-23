@@ -435,13 +435,14 @@ function addVideo(args) {
 
         //Initialize remove video popover
         $(template).find('.remove-btn').popover();
-        $(template).find('.remove-btn').on('hide.bs.popover', function() {
-            console.log("remove clicked")
-            $(this).removeClass("clicked");
+        $(document).click(function(event) {
+            let target = $(event.target);
+            if(!target.closest('.remove-btn').length) {
+                $('.remove-btn').removeClass("clicked").popover("hide");
+            }
         });
 
         $(template).find('.remove-btn').on('click', () => removeVideo(getCard(args.identifier)));
-
 
         $(template).find('.download-btn').on('click', () => {
             let downloadArgs = {
@@ -528,9 +529,8 @@ function removeVideo(card) {
         $(btn).popover('hide');
         $(card).remove();
         window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
-        console.log("remove card")
     } else {
-        console.log("add clicked")
+        $(btn).popover('show');
         $(btn).addClass("clicked");
     }
 }
