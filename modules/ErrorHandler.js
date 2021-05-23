@@ -144,6 +144,11 @@ class ErrorHandler {
                 code: "Missing dependency",
                 description: "Please install <a href=\"https://github.com/jely2002/youtube-dl-gui#how-to-use\" target=\"_blank\"> Microsoft Visual C++ 2010</a>",
                 trigger: "3221225781"
+            },
+            {
+                code: "Binaries missing/corrupted",
+                trigger: "is not recognized as an internal or external command",
+                description: "Please restart the app, or disable antivirus."
             }
         ]
     }

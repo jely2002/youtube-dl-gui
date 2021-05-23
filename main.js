@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu, globalShortcut, shell} = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, globalShortcut, shell, clipboard } = require('electron');
 const Environment = require('./modules/Environment');
 const path = require('path');
 const QueryManager = require("./modules/QueryManager");
@@ -232,6 +232,18 @@ const InputMenu = Menu.buildFromTemplate([
 //Opens the input menu when ordered from renderer process
 ipcMain.handle('openInputMenu', () => {
     InputMenu.popup(win);
+})
+
+ipcMain.handle('openCopyMenu', (event, content) => {
+    const CopyMenu = Menu.buildFromTemplate([
+        {
+            label: 'Copy link address',
+            click: () => {
+                clipboard.writeText(content);
+            }
+        }
+    ]);
+    CopyMenu.popup(win);
 })
 
 //Return the platform to the renderer process

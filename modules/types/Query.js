@@ -72,7 +72,10 @@ class Query {
                     resolve("done");
                 });
                 this.process.stderr.on("data", (data) => {
-                    this.environment.errorHandler.checkError(data.toString(), this.identifier);
+                    if(this.environment.errorHandler.checkError(data.toString(), this.identifier)) {
+                        cb("killed");
+                        resolve("killed");
+                    }
                     console.error(data.toString())
                 })
             });

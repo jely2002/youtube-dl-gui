@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld(
                 "errorReport",
                 "titlebarClick",
                 "openInputMenu",
+                "openCopyMenu",
                 "settingsAction",
                 "videoAction",
                 "cookieFile",

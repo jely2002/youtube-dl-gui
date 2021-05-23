@@ -362,6 +362,9 @@ async function init() {
             if (node.nodeName.match(/^(input|textarea)$/i) || node.isContentEditable) {
                 window.main.invoke('openInputMenu');
                 break;
+            } else if (node.nodeName.match(/^(a)$/i)) {
+                window.main.invoke('openCopyMenu', $(node).prop('href'));
+                break;
             }
             node = node.parentNode;
         }
@@ -649,7 +652,6 @@ function updateProgress(args) {
     }
     if(args.progress.done != null && args.progress.total != null) {
         if($(card).find('.progress-bar').hasClass("progress-bar-striped")) {
-            console.log("RESETTING")
             resetProgress($(card).find('.progress-bar')[0], card);
         }
         $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
@@ -776,16 +778,25 @@ async function updateTotalSize() {
 
 function showInfoModal(info, identifier) {
     let modal = $('#infoModal');
-    $(modal).find('img').prop("src", info.thumbnail);
-    $(modal).find('.modal-title').html(info.title);
-    $(modal).find('#info-description').html(info.description == null ? "No description was found." : info.description);
-    $(modal).find('.uploader').html('<strong>Uploader: </strong>' + (info.uploader == null ? "Unknown" : info.uploader));
-    $(modal).find('.extractor').html('<strong>Extractor: </strong>' + (info.extractor == null ? "Unknown" : info.extractor));
-    $(modal).find('.url').html('<strong>URL: </strong>' + '<a target="_blank" href="' + info.url + '">' + info.url + '</a>');
-    $(modal).find('[title="Views"]').html('<i class="bi bi-eye"></i> ' + (info.view_count == null ? "-" : info.view_count));
-    $(modal).find('[title="Like / dislikes"]').html('<i class="bi bi-hand-thumbs-up"></i> ' + (info.like_count == null ? "-" : info.like_count) + ' &nbsp;&nbsp; <i class="bi bi-hand-thumbs-down"></i> ' + (info.dislike_count == null ? "-" : info.dislike_count));
-    $(modal).find('[title="Average rating"]').html('<i class="bi bi-star"></i> ' + (info.average_rating == null ? "-" : info.average_rating.toString().slice(0,3)));
-    $(modal).find('[title="Duration"]').html('<i class="bi bi-clock"></i> ' + (info.duration == null ? "-" : info.duration));
+    let data = info;
+    if(data == null) {
+        const card = getCard(identifier);
+        data = {
+            title: $(card).find('.card-title').text(),
+            description: "This video threw an error. Not all info is available.\n\nError:\n" + $(card).find('.metadata').text(),
+            url: $(card).find('.url').val()
+        }
+    }
+    $(modal).find('img').prop("src", data.thumbnail);
+    $(modal).find('.modal-title').html(data.title);
+    $(modal).find('#info-description').html(data.description == null ? "No description was found." : data.description);
+    $(modal).find('.uploader').html('<strong>Uploader: </strong>' + (data.uploader == null ? "Unknown" : data.uploader));
+    $(modal).find('.extractor').html('<strong>Extractor: </strong>' + (data.extractor == null ? "Unknown" : data.extractor));
+    $(modal).find('.url').html('<strong>URL: </strong>' + '<a target="_blank" href="' + data.url + '">' + data.url + '</a>');
+    $(modal).find('[title="Views"]').html('<i class="bi bi-eye"></i> ' + (data.view_count == null ? "-" : data.view_count));
+    $(modal).find('[title="Like / dislikes"]').html('<i class="bi bi-hand-thumbs-up"></i> ' + (data.like_count == null ? "-" : data.like_count) + ' &nbsp;&nbsp; <i class="bi bi-hand-thumbs-down"></i> ' + (info.dislike_count == null ? "-" : info.dislike_count));
+    $(modal).find('[title="Average rating"]').html('<i class="bi bi-star"></i> ' + (data.average_rating == null ? "-" : data.average_rating.toString().slice(0,3)));
+    $(modal).find('[title="Duration"]').html('<i class="bi bi-clock"></i> ' + (data.duration == null ? "-" : data.duration));
     $(modal).find('.identifier').html(identifier);
     $(modal).modal("show");
 }
@@ -825,9 +836,10 @@ function updateButtons(videos) {
 
 function setError(code, description, unexpected, identifier, url) {
     let card = getCard(identifier);
+    $(card).append(`<input type="hidden" class="url" value="${url}">`);
     $(card).find('.progress-bar').removeClass("progress-bar-striped").removeClass("progress-bar-animated").css("width", "100%").css('background-color', 'var(--error-color)');
     $(card).find('.buttons').children().each(function() {
-        if($(this).hasClass("remove-btn")) {
+        if($(this).hasClass("remove-btn") || $(this).hasClass("info-btn")) {
             $(this).removeClass("disabled").find('i').removeClass("disabled");
         } else if($(this).hasClass("subtitle-btn")) {
             $(this).removeClass("subtitle-btn")
@@ -841,6 +853,9 @@ function setError(code, description, unexpected, identifier, url) {
         } else {
             $(this).addClass("disabled").find('i').addClass("disabled");
         }
+    });
+    $(card).find('.info-btn').on('click', () => {
+        window.main.invoke("videoAction", {action: "info", identifier: identifier});
     });
     $(card).find('.report').prop("disabled", false);
     $(card).css("box-shadow", "none").css("border", "solid 1px var(--error-color)");
