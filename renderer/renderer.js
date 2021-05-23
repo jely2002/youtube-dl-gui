@@ -538,7 +538,7 @@ function addVideo(args) {
 
 function removeVideo(card) {
     const btn = $(card).find('.remove-btn')
-    if(btn.hasClass("clicked") || $(card).find(".custom-select.download-type").is(":visible") || $(card).find(".btn.btn-dark.folder").is(":visible") || $(card).find(".row.error.d-none").is(":visible")) {
+    if(btn.hasClass("clicked") || $(card).find(".custom-select.download-type").is(":visible") || $(card).find(".btn.btn-dark.folder").is(":visible") || $(card).find(".row.error.d-none").is(":visible") || $(card).find(".url").length) {
         $(btn).popover('hide');
         $(card).remove();
         window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
