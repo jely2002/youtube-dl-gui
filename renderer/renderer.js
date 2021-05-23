@@ -501,6 +501,11 @@ function addVideo(args) {
             .prop('title', args.url);
         $(template).find('.progress small')
             .html('Setting up environment')
+        $(template).find('.progress-bar')
+            .addClass('progress-bar-striped')
+            .addClass('progress-bar-animated')
+            .width("100%")
+            .prop("aria-valuenow", "indefinite");
         $(template).find('.progress').addClass("d-flex");
         $(template).find('.options').addClass("d-none");
         $(template).find('.metadata.info').html('Fetching video metadata...');
@@ -630,7 +635,8 @@ function updateProgress(args) {
         return;
     }
     if(args.progress.done != null && args.progress.total != null) {
-        if(args.progress.isPlaylist && $(card).find('.progress-bar').hasClass("progress-bar-striped")) {
+        if($(card).find('.progress-bar').hasClass("progress-bar-striped")) {
+            console.log("RESETTING")
             resetProgress($(card).find('.progress-bar')[0], card);
         }
         $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
