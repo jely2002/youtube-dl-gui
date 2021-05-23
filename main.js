@@ -102,11 +102,6 @@ function startCriticalHandlers(env) {
             appUpdater.installUpdate();
         });
 
-        ipcMain.handle('getDoneActions', () => {
-            const doneAction = new DoneAction();
-            return doneAction.getActions();
-        });
-
         ipcMain.handle('setDoneAction', (event, args) => {
             env.doneAction = args.action;
         })
@@ -243,6 +238,13 @@ ipcMain.handle('openInputMenu', () => {
 ipcMain.handle("platform", () => {
     return process.platform;
 })
+
+
+//Return the available actions to the renderer process
+ipcMain.handle('getDoneActions', () => {
+    const doneAction = new DoneAction();
+    return doneAction.getActions();
+});
 
 //Return the user selected theme to the renderer process
 ipcMain.handle("theme", () => {

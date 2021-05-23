@@ -2,8 +2,8 @@ const execa = require("execa");
 
 const actions = {
     "win32": {
-        "Sleep": ["%windir%\\System32\\rundll32.exe", "powrprof.dll,SetSuspendState", "0,1,0"],
-        "Lock": ["%windir%\\System32\\rundll32.exe", "user32.dll,LockWorkStation"],
+        "Sleep": ["rundll32.exe", "powrprof.dll,SetSuspendState", "0,1,0"],
+        "Lock": ["rundll32.exe", "user32.dll,LockWorkStation"],
         "Shutdown": ["shutdown", "/s", "/f", "/t", "0"],
         "Reboot": ["shutdown", "/r", "/f", "/t", "0"],
     },

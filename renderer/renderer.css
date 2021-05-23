@@ -204,7 +204,7 @@ select {
 }
 
 .video-card {
-    max-width: 645px;
+    max-width: 700px;
     height: 140px;
     margin: 1em 1em 0 1em;
     background-color: var(--bg-color);
@@ -220,7 +220,7 @@ select {
     max-width: 330px;
 }
 
-@media only screen and (max-width: 1373px) {
+@media only screen and (max-width: 1483px) {
     .video-cards {
         justify-content: center !important;
     }
@@ -229,7 +229,7 @@ select {
 .video-card .custom-select {
     height: unset;
     line-height: 1.2;
-    width: 145px;
+    width: 160px;
     margin-bottom: 1em;
 }
 
@@ -391,7 +391,7 @@ option.audio {
 .controls .progress {
     height: 32px;
     width: 100%;
-    max-width: 600px;
+    max-width: 700px;
     position: relative;
     background-color: var(--secondary-bg-color);
 }
@@ -611,6 +611,41 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
 
 .light-icon.bi-card-text-strike {
     background: url("img/card-text-strike-light.svg");
+}
+
+/* WHEN DONE DROPDOWN */
+.dropdown-menu {
+    background-color: var(--secondary-bg-color);
+    border: solid 1px var(--tertiary-bg-color);
+}
+
+.dropdown-item {
+    color: var(--font-color);
+    padding: .25rem 0 !important;
+}
+
+.dropdown-item:hover, .dropdown-item:active {
+    background-color: var(--secondary-bg-color) !important;
+    color: var(--font-color) !important;
+}
+
+.dropdown-menu {
+    padding: 2px !important;
+}
+
+.dropdown-divider {
+    border-color: var(--tertiary-bg-color);
+    margin: 2px 0 !important;
+}
+
+.dropdown-selected:after {
+    margin-left: 1.5rem;
+    content: "✓";
+    color: var(--font-color);
+}
+
+.dropdown-toggle:focus, .dropdown-toggle:hover, .dropdown-toggle:active  {
+    background-color: var(--secondary-bg-color) !important;
 }
 
 /* CUSTOM SCROLLBAR */

@@ -31,6 +31,19 @@ async function init() {
         window.main.invoke('titlebarClick', "maximize")
     })
 
+
+    //Init the when done dropdown
+    $('.dropdown-toggle').dropdown();
+    const availableOptions = await window.main.invoke('getDoneActions');
+    for(const option of availableOptions) {
+        $('#whenDoneOptions').append('<li class="dropdown-divider"></li>').append(`<li><a class="dropdown-item" href="#">${option}</a></li>`)
+    }
+    $('.dropdown-item').on('click', function() {
+        $('#whenDoneOptions').find('.dropdown-selected').removeClass('dropdown-selected');
+        $(this).addClass('dropdown-selected');
+        window.main.invoke("setDoneAction", {action: $(this).text()});
+    })
+
     //Set the selected theme (dark | light)
     const startupTheme = await window.main.invoke('theme');
     toggleWhiteMode(startupTheme);

@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="renderer.css">
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
 </head>
 <body>
 
@@ -56,6 +58,17 @@
             <option value="best" selected>Best</option>
             <option value="worst">Worst</option>
         </select>
+        <span class="spacer"></span>
+        <div class="dropdown dropup">
+            <button class="btn btn-dark dropdown-toggle" type="button" id="whenDoneButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                When done
+            </button>
+            <ul id="whenDoneOptions" class="dropdown-menu" aria-labelledby="whenDoneButton">
+                <li><a class="dropdown-item dropdown-selected" href="#">Do nothing</a></li>
+                <li class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Close app</a></li>
+            </ul>
+        </div>
         <span class="spacer"></span>
         <button type="button" id="clearBtn" title="Clear queue" class="btn btn-dark rounded" disabled><i class="bi bi-trash"></i></button>
         <button id="downloadBtn" title="Download queue" class="btn btn-highlight rounded" disabled>Download</button>
@@ -320,8 +333,7 @@
     <div class="toast-body task-list-body"></div>
 </div>
 
-<script src="../node_modules/jquery/dist/jquery.min.js"></script>
-<script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
+
 <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="../node_modules/windowbar/dist/index.js"></script>
 <script src="renderer.js"></script>
