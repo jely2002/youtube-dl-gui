@@ -106,6 +106,10 @@ function startCriticalHandlers(env) {
             env.doneAction = args.action;
         })
 
+        ipcMain.handle('getSubtitles', (event, args) => {
+            return queryManager.getAvailableSubtitles(args.identifier);
+        })
+
         ipcMain.handle('videoAction', async (event, args) => {
             switch (args.action) {
                 case "stop":
@@ -134,7 +138,7 @@ function startCriticalHandlers(env) {
                 case "getSize":
                     return await queryManager.getSize(args.identifier, args.formatLabel, args.audioOnly, args.videoOnly, args.clicked);
                 case "setSubtitles":
-                    queryManager.setSubtitle(args.value, args.identifier);
+                    queryManager.setSubtitle(args);
                     break;
                 case "globalSubtitles":
                     queryManager.setGlobalSubtitle(args.value);

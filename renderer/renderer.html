@@ -6,9 +6,11 @@
     <title>YouTube Downloader GUI</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="lib/select2.min.css">
     <link rel="stylesheet" href="renderer.css">
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="lib/select2.min.js"></script>
 </head>
 <body>
 
@@ -171,6 +173,37 @@
             <div class="modal-footer">
                 <button type="button" title="Save as JSON" class="btn json btn-dark">Save as JSON</button>
                 <button type="button" class="btn dismiss btn-dark">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="subsModal" tabindex="-1" aria-labelledby="subsModalLabel" aria-hidden="true">
+    <div class="modal-xl modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="subsModalLabel">Subtitle settings</h5>
+                <button type="button" class="close dismiss" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <p>Select the subtitle languages you want to download.</p>
+                    <div class="mb-1">
+                        <input class="check-input" type="checkbox" value="" id="enableSubs">
+                        <label class="check-label" for="enableSubs">Download subtitles</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subsLang" class="form-label d-block">Subtitles:</label>
+                        <select class="w-75 mb-2" id="subsLang" multiple></select>
+                    </div>
+                    <div>
+                        <label for="autoGenSubsLang" class="form-label d-block">Auto-generated subtitles:</label>
+                        <select class="w-75 mb-2" id="autoGenSubsLang" multiple></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn subsSave btn-dark" >Ok</button>
             </div>
         </div>
     </div>

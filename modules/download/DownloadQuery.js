@@ -60,11 +60,14 @@ class DownloadQuery extends Query {
             }
             if (this.video.downloadSubs) {
                 this.progressBar.setInitial("Downloading subtitles");
-                args.push("--all-subs");
+                args.push("--write-sub");
+                args.push("--write-auto-sub");
                 args.push("--embed-subs");
-                if(this.environment.settings.autoGenSubs) {
-                    args.push("--write-auto-sub");
-                }
+                args.push("--sub-lang");
+                let langs = "";
+                this.video.subLanguages.forEach(lang => langs += lang + ",")
+                args.push(langs.slice(0, -1));
+                console.log(langs.slice(0, -1));
             }
             if (this.environment.settings.outputFormat !== "none") {
                 args.push("--merge-output-format");

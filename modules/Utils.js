@@ -1,5 +1,6 @@
 const Format = require("./types/Format");
 const crypto = require('crypto');
+const ISO6392 = require('iso-639-2');
 const channelRegex = /(?:https|http):\/\/(?:[\w]+\.)?youtube\.com\/(?:c\/|channel\/|user\/)([a-zA-Z0-9-]{1,})/;
 
 class Utils {
@@ -69,6 +70,24 @@ class Utils {
             urls.push(url);
         }
         return [urls, alreadyDone]
+    }
+
+    static getNameFromISO(sub) {
+        if(sub === "iw") return "Hebrew";
+        if(sub === "zh-Hans") return "Chinese (Simplified)";
+        if(sub === "zh-Hant") return "Chinese (Traditional)";
+        const iso6391 = ISO6392.find(lang => {
+            return lang.iso6391 === sub
+        })
+        if(iso6391 == null) {
+            const iso6392 = ISO6392.find(lang => {
+                return lang.iso6392B === sub;
+            });
+            if(iso6392 == null) return sub;
+            return iso6392.name.split(";")[0].split(",")[0];
+        } else {
+            return iso6391.name.split(";")[0].split(",")[0];
+        }
     }
 
     static detectInfoType(infoQueryResult) {

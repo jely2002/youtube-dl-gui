@@ -354,6 +354,23 @@ class QueryManager {
         });
     }
 
+    getAvailableSubtitles(identifier) {
+        const video = this.getVideo(identifier);
+        let subs = [];
+        let autoGen = [];
+        if(video.subtitles != null && video.subtitles.length !== 0) {
+            subs = Object.keys(video.subtitles).map(sub => {
+                return {iso: sub, name: Utils.getNameFromISO(sub)};
+            })
+        }
+        if(video.autoCaptions != null && video.autoCaptions.length !== 0 && this.environment.settings.autoGenSubs) {
+            autoGen = Object.keys(video.autoCaptions).map(sub => {
+                return {iso: sub, name: Utils.getNameFromISO(sub)};
+            })
+        }
+        return [subs.sort(), autoGen.sort()];
+    }
+
     showInfo(identifier) {
         let video = this.getVideo(identifier);
         let args = {
@@ -407,9 +424,10 @@ class QueryManager {
         this.window.webContents.send("updateGlobalButtons", videos);
     }
 
-    setSubtitle(value, identifier) {
-        const video = this.getVideo(identifier);
-        video.downloadSubs = value;
+    setSubtitle(args) {
+        const video = this.getVideo(args.identifier);
+        video.downloadSubs = args.enabled;
+        video.subLanguages = args.langs;
     }
 
     setGlobalSubtitle(value) {

@@ -10,6 +10,7 @@ class Video {
         this.videoOnly = environment.mainVideoOnly;
         this.videoOnlySizeCache = [];
         this.downloadSubs = environment.mainDownloadSubs;
+        this.subLanguages = [];
         this.downloadingAudio = false;
         this.webpage_url = this.url;
         this.hasMetadata = false;
@@ -73,6 +74,8 @@ class Video {
         this.title = metadata.title;
         this.description = metadata.description;
         this.tags = metadata.tags;
+        this.subtitles = metadata.subtitles;
+        this.autoCaptions = metadata.automatic_captions;
 
         this.duration = metadata.duration;
         if(metadata.duration != null) this.duration = new Date(metadata.duration * 1000)
