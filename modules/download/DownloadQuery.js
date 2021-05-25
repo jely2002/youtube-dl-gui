@@ -58,7 +58,7 @@ class DownloadQuery extends Query {
                     '--output-na-placeholder', ""
                 ];
             }
-            if (this.video.downloadSubs) {
+            if (this.video.downloadSubs && this.video.subLanguages.length > 0) {
                 this.progressBar.setInitial("Downloading subtitles");
                 args.push("--write-sub");
                 args.push("--write-auto-sub");
@@ -67,7 +67,6 @@ class DownloadQuery extends Query {
                 let langs = "";
                 this.video.subLanguages.forEach(lang => langs += lang + ",")
                 args.push(langs.slice(0, -1));
-                console.log(langs.slice(0, -1));
             }
             if (this.environment.settings.outputFormat !== "none") {
                 args.push("--merge-output-format");

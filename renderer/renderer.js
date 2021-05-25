@@ -154,7 +154,6 @@ async function init() {
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
             validateCertificate: $('#validateCertificate').prop('checked'),
             taskList: $('#taskList').prop('checked'),
-            autoGenSubs: $('#autoGenSubs').prop('checked'),
             nameFormatMode: $('#nameFormat').val(),
             nameFormat: $('#nameFormatCustom').val(),
             downloadMetadata: $('#downloadMetadata').prop('checked'),
@@ -191,7 +190,6 @@ async function init() {
             $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
             $('#validateCertificate').prop('checked', settings.validateCertificate);
             $('#taskList').prop('checked', settings.taskList);
-            $('#autoGenSubs').prop('checked', settings.autoGenSubs);
             $('#nameFormatCustom').val(settings.nameFormat);
             $('#nameFormat').val(settings.nameFormatMode);
             $('#outputFormat').val(settings.outputFormat);
@@ -439,6 +437,7 @@ function addVideo(args) {
             .addClass('progress-bar-striped')
             .addClass('progress-bar-animated')
             .width("100%");
+        console.log(args.subtitles);
         if(args.subtitles) $(template).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
         $(template).find('img').prop("src", args.thumbnail);
         $(template).find('.info').addClass("d-none");
@@ -801,26 +800,31 @@ function saveSubtitlesModal() {
     const modal = $('#subsModal');
     const identifier = $(modal).find('.identifier').val();
     const card = getCard(identifier);
-    const langs = $('#subsLang').select2('data').map((option => option.id));
-    langs.concat($('#autoGenSubsLang').select2('data').map(option => option.id));
-    console.log(langs);
+    const subs = $('#subsLang').select2('data').map((option => option.id));
+    const autoGen = $('#autoGenSubsLang').select2('data').map(option => option.id);
     if($(modal).find('#enableSubs').is(":checked")) $(card).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
     else $(card).find('.subtitle-btn i').removeClass("bi-card-text").addClass("bi-card-text-strike").attr("title", "Subtitles disabled");
-    window.main.invoke("videoAction", {action: "setSubtitles", identifier: identifier, langs: langs, enabled: $(modal).find('#enableSubs').prop('checked')});
+    window.main.invoke("videoAction", {action: "setSubtitles", identifier: identifier, subs: subs, autoGen: autoGen, enabled: $(modal).find('#enableSubs').prop('checked'), unified: $(card).hasClass("unified")});
 }
 
 async function showSubtitleModal(identifier, card) {
     const modal = $('#subsModal');
-    const availableLangs = await window.main.invoke("getSubtitles", {identifier: identifier});
+    const availableLangs = await window.main.invoke("getSubtitles", {identifier: identifier, unified: $(card).hasClass("unified")});
+    const selectedLangs = await window.main.invoke("getSelectedSubtitles", {identifier: identifier});
     if($(modal).find('.identifier').length) {
         $(modal).find('.identifier').val(identifier);
     } else {
         $(modal).append(`<input type="hidden" class="identifier" value="${identifier}">`);
     }
-    $(modal).find('#autoGenSubsLang').empty();
-    for(const lang of availableLangs[0]) {
-        let option = new Option(lang.name, lang.iso);
-        $(modal).find('#subsLang').append(option);
+    $(modal).find('#subsLang').empty();
+    if(availableLangs[0].length === 0) {
+        $(modal).find('#subsLang').closest("div").css("display", "none");
+    } else {
+        $(modal).find('#subsLang').closest("div").css("display", "initial");
+        for (const lang of availableLangs[0]) {
+            let option = new Option(lang.name, lang.iso);
+            $(modal).find('#subsLang').append(option);
+        }
     }
     $(modal).find('#autoGenSubsLang').empty();
     if(availableLangs[1].length === 0) {
@@ -832,7 +836,22 @@ async function showSubtitleModal(identifier, card) {
             $(modal).find('#autoGenSubsLang').append(option);
         }
     }
-    $(modal).find('#enableSubs').prop('checked', !$(card).find('.subtitle-btn i').hasClass("bi-card-text-strike"));
+    $(modal).find('#autoGenSubsLang, #subsLang').unbind('select2:select').on('select2:select', () => {
+        $(modal).find('#enableSubs').prop("checked", true);
+    });
+    if(availableLangs[0].length === 0 && availableLangs[1].length === 0) {
+        $(modal).find('.description').text("No subtitles available.")
+        $(modal).find('#enableSubs').prop("checked", false).prop("disabled", true);
+    } else {
+        if($(card).hasClass("unified")) {
+            $(modal).find('.description').html("Select the subtitle languages you want to try to download.")
+        } else {
+            $(modal).find('.description').text("Select the subtitle languages you want to download.")
+        }
+        $(modal).find('#enableSubs').prop("disabled", false);
+    }
+    $(modal).find('#subsLang').val(selectedLangs[0]);
+    $(modal).find('#autoGenSubsLang').val(selectedLangs[1]);
     modal.modal("show");
 }
 
@@ -896,7 +915,9 @@ function updateButtons(videos) {
 
 function changeSubsToRetry(url, card) {
     if(card == null) return;
-    $(card).find('.subtitle-btn').removeClass("subtitle-btn")
+    $(card).find('.subtitle-btn')
+        .unbind()
+        .removeClass("subtitle-btn")
         .removeClass("disabled")
         .addClass("retry-btn")
         .html('<i title="Retry" class="bi bi-arrow-counterclockwise"></i>')

@@ -21,7 +21,8 @@ contextBridge.exposeInMainWorld(
                 "restoreTaskList",
                 "getDoneActions",
                 "setDoneAction",
-                "getSubtitles"
+                "getSubtitles",
+                "getSelectedSubtitles"
             ];
             if (validChannels.includes(channel)) {
                 return await ipcRenderer.invoke(channel, data);

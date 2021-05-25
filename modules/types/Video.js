@@ -11,6 +11,7 @@ class Video {
         this.videoOnlySizeCache = [];
         this.downloadSubs = environment.mainDownloadSubs;
         this.subLanguages = [];
+        this.selectedSubs = [];
         this.downloadingAudio = false;
         this.webpage_url = this.url;
         this.hasMetadata = false;
