@@ -345,7 +345,7 @@ class QueryManager {
             }
             //Fallback
             if(args.type === "folder") {
-                shell.showItemInFolder(video.downloadedPath);
+                shell.openPath(video.downloadedPath);
             } else if(args.type === "item") {
                 shell.openPath(path.join(video.downloadedPath, video.getFilename()) + ".mp4");
             } else {
