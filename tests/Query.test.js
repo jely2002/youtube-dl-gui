@@ -32,6 +32,21 @@ describe('ytdl Query', () => {
             expect(execa.mock.calls[0][1]).toContain("agent");
         });
     });
+   it('adds the proxy when one is set', () => {
+       const errorHandlerMock = jest.fn();
+       const instance = instanceBuilder(false, "a/path/to/cookies.txt", errorHandlerMock, "python", "https://iama.proxy");
+       return instance.start("https://url.link", [], null).then(() => {
+           expect(execa.mock.calls[0][1]).toContain("--proxy");
+           expect(execa.mock.calls[0][1]).toContain("https://iama.proxy");
+       });
+   })
+    it('does not add a proxy when none are set', () => {
+        const errorHandlerMock = jest.fn();
+        const instance = instanceBuilder(false, "a/path/to/cookies.txt", errorHandlerMock, "python", "");
+        return instance.start("https://url.link", [], null).then(() => {
+            expect(execa.mock.calls[0][1]).not.toContain("--proxy");
+        });
+    })
    it('adds the cookies argument when specified in settings', () => {
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder(false, "a/path/to/cookies.txt", errorHandlerMock, "python");
@@ -156,6 +171,6 @@ function execaMockBuilder(killed) {
     return [stdout, stderr, mock];
 }
 
-function instanceBuilder(spoofUserAgent, cookiePath, errorHandlerMock, pythonCommand) {
-    return new Query({pythonCommand: pythonCommand, errorHandler: {checkError: errorHandlerMock,  raiseUnhandledError: errorHandlerMock}, paths: {ytdl: "a/path/to/ytdl"}, settings: {cookiePath: cookiePath, spoofUserAgent: spoofUserAgent}}, "test__id");
+function instanceBuilder(spoofUserAgent, cookiePath, errorHandlerMock, pythonCommand, proxy) {
+    return new Query({pythonCommand: pythonCommand, errorHandler: {checkError: errorHandlerMock,  raiseUnhandledError: errorHandlerMock}, paths: {ytdl: "a/path/to/ytdl"}, settings: {cookiePath: cookiePath, spoofUserAgent: spoofUserAgent, proxy: proxy}}, "test__id");
 }

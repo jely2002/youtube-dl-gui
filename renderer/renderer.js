@@ -151,6 +151,7 @@ async function init() {
             updateBinary: $('#updateBinary').prop('checked'),
             updateApplication: $('#updateApplication').prop('checked'),
             outputFormat: $('#outputFormat').val(),
+            proxy: $('#proxySetting').val(),
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
             validateCertificate: $('#validateCertificate').prop('checked'),
             taskList: $('#taskList').prop('checked'),
@@ -190,6 +191,7 @@ async function init() {
             $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
             $('#validateCertificate').prop('checked', settings.validateCertificate);
             $('#taskList').prop('checked', settings.taskList);
+            $('#proxySetting').val(settings.proxy);
             $('#nameFormatCustom').val(settings.nameFormat);
             $('#nameFormat').val(settings.nameFormatMode);
             $('#outputFormat').val(settings.outputFormat);

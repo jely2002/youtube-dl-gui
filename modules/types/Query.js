@@ -25,6 +25,11 @@ class Query {
             args.push(new UserAgent({ deviceCategory: 'desktop' }).toString());
         }
 
+        if(this.environment.settings.proxy != null && this.environment.settings.proxy.length > 0) {
+            args.push("--proxy");
+            args.push(this.environment.settings.proxy);
+        }
+
         if(!this.environment.settings.validateCertificate) {
             args.push("--no-check-certificate"); //Dont check the certificate if validate certificate is false
         }

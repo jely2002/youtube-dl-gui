@@ -22,7 +22,7 @@ class ErrorHandler {
             },
             {
                 code: "No connection could be made",
-                description: "The host or your internet connection is down.",
+                description: "The host or your internet/proxy connection is down.",
                 trigger: "getaddrinfo failed"
             },
             {
