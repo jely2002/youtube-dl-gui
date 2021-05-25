@@ -90,6 +90,21 @@ class Utils {
         }
     }
 
+    static sortSubtitles(a, b) {
+        if (a.name < b.name){
+            return -1;
+        }
+        if (a.name > b.name){
+            return 1;
+        }
+        return 0;
+    }
+
+    static dedupeSubtitles(subs) {
+        const keys = ['name'];
+        return subs.filter((s => o => (k => !s.has(k) && s.add(k))(keys.map(k => o[k]).join('|')))(new Set()));
+    }
+
     static detectInfoType(infoQueryResult) {
         if(infoQueryResult == null) return infoQueryResult;
         if(Object.keys(infoQueryResult).length === 0) return infoQueryResult;

@@ -27,6 +27,27 @@ describe('getRandomID', () => {
     })
 });
 
+describe('dedupeSubtitles', () => {
+    it('dedupes by name', () => {
+        const testList = [ {name: "dutch", iso: "nl"}, {name: "dutch", iso: "nl"}, {name: "english", iso: "en"} ];
+        const testListDeduped = [ {name: "dutch", iso: "nl"}, {name: "english", iso: "en"} ];
+        expect(Utils.dedupeSubtitles(testList)).toEqual(testListDeduped);
+    })
+});
+
+describe('sortSubtitles', () => {
+    const testList = [{name: "finland", iso: "fi"}, {name: "english", iso: "en"}, {name: "afrikaans", iso: "af"}, {name: "afrikaans", iso: "af"},  {name: "belgium", iso: "be"}, {name: "dutch", iso: "nl"}  ];
+    const testListSorted = [ {name: "afrikaans", iso: "af"}, {name: "afrikaans", iso: "af"}, {name: "belgium", iso: "be"}, {name: "dutch", iso: "nl"}, {name: "english", iso: "en"}, {name: "finland", iso: "fi"} ];
+    expect(testList.sort(Utils.sortSubtitles)).toEqual(testListSorted);
+});
+
+describe('getIsoFromName', () => {
+    const isoNames = require('./iso-test.json');
+    for(const isoName of isoNames) {
+        expect(Utils.getNameFromISO(isoName.iso)).toBe(isoName.name);
+    }
+})
+
 
 describe('convertBytes', () => {
     it('returns a defined value', () => {

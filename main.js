@@ -104,11 +104,15 @@ function startCriticalHandlers(env) {
 
         ipcMain.handle('setDoneAction', (event, args) => {
             env.doneAction = args.action;
-        })
+        });
 
         ipcMain.handle('getSubtitles', (event, args) => {
-            return queryManager.getAvailableSubtitles(args.identifier);
-        })
+            return queryManager.getAvailableSubtitles(args.identifier, args.unified);
+        });
+
+        ipcMain.handle('getSelectedSubtitles', (event, args) => {
+           return queryManager.getSelectedSubtitles(args.identifier);
+        });
 
         ipcMain.handle('videoAction', async (event, args) => {
             switch (args.action) {

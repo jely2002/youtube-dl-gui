@@ -345,7 +345,7 @@ class QueryManager {
             }
             //Fallback
             if(args.type === "folder") {
-                shell.showItemInFolder(video.downloadedPath);
+                shell.openPath(video.downloadedPath);
             } else if(args.type === "item") {
                 shell.openPath(path.join(video.downloadedPath, video.getFilename()) + ".mp4");
             } else {
@@ -354,8 +354,31 @@ class QueryManager {
         });
     }
 
-    getAvailableSubtitles(identifier) {
+    getUnifiedAvailableSubtitles(videos) {
+        let totalSubs = [];
+        let totalAutoGen = [];
+        for(const video of videos) {
+            if(video.subtitles != null && video.subtitles.length !== 0) {
+                totalSubs = totalSubs.concat(Object.keys(video.subtitles).map(sub => {
+                    return {iso: sub, name: Utils.getNameFromISO(sub)};
+                }))
+            }
+            if(video.autoCaptions != null && video.autoCaptions.length !== 0) {
+                totalAutoGen = totalAutoGen.concat(Object.keys(video.autoCaptions).map(sub => {
+                    return {iso: sub, name: Utils.getNameFromISO(sub)};
+                }))
+            }
+        }
+        const totalSubsDedupe = Utils.dedupeSubtitles(totalSubs);
+        const totalAutoGenDedupe = Utils.dedupeSubtitles(totalAutoGen);
+        return [totalSubsDedupe.sort(Utils.sortSubtitles), totalAutoGenDedupe.sort(Utils.sortSubtitles)];
+    }
+
+    getAvailableSubtitles(identifier, unified) {
         const video = this.getVideo(identifier);
+        if(unified) {
+            return this.getUnifiedAvailableSubtitles(video.videos);
+        }
         let subs = [];
         let autoGen = [];
         if(video.subtitles != null && video.subtitles.length !== 0) {
@@ -363,12 +386,17 @@ class QueryManager {
                 return {iso: sub, name: Utils.getNameFromISO(sub)};
             })
         }
-        if(video.autoCaptions != null && video.autoCaptions.length !== 0 && this.environment.settings.autoGenSubs) {
+        if(video.autoCaptions != null && video.autoCaptions.length !== 0) {
             autoGen = Object.keys(video.autoCaptions).map(sub => {
                 return {iso: sub, name: Utils.getNameFromISO(sub)};
             })
         }
-        return [subs.sort(), autoGen.sort()];
+        return [subs.sort(Utils.sortSubtitles), autoGen.sort(Utils.sortSubtitles)];
+    }
+
+    getSelectedSubtitles(identifier) {
+        const video = this.getVideo(identifier);
+        return video.selectedSubs;
     }
 
     showInfo(identifier) {
@@ -424,16 +452,28 @@ class QueryManager {
         this.window.webContents.send("updateGlobalButtons", videos);
     }
 
+    setUnifiedSubtitle(videos, args) {
+        for(const video of videos) {
+            video.downloadSubs = args.enabled;
+            video.selectedSubs = [args.subs, args.autoGen];
+            video.subLanguages = [...new Set([...args.subs, ...args.autoGen])];
+        }
+    }
+
     setSubtitle(args) {
         const video = this.getVideo(args.identifier);
+        if(args.unified) {
+            this.setUnifiedSubtitle(video.videos, args);
+        }
         video.downloadSubs = args.enabled;
-        video.subLanguages = args.langs;
+        video.selectedSubs = [args.subs, args.autoGen];
+        video.subLanguages = [...new Set([...args.subs, ...args.autoGen])];
     }
 
     setGlobalSubtitle(value) {
+        this.environment.mainDownloadSubs = value;
         for(const video of this.managedVideos) {
             video.downloadSubs = value;
-            this.environment.mainDownloadSubs = value;
         }
     }
 
