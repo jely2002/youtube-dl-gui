@@ -96,6 +96,11 @@ class ErrorHandler {
                 trigger: "[Errno 95]"
             },
             {
+                code: "Blocked by firewall/program",
+                description: "Check your firewall and or internet settings.",
+                trigger: "[WinError 10013]"
+            },
+            {
                 code: "SSL verification failed",
                 description: "Disable the 'Validate HTTPS certificates' setting.",
                 trigger: "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed"
