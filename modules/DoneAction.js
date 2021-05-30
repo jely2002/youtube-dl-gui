@@ -12,7 +12,7 @@ const actions = {
         "Shutdown": ["shutdown", "-h", "now"],
         "Reboot": ["shutdown", "-r", "now"]
     },
-    "mac": {
+    "darwin": {
         "Sleep": ["pmset", "sleepnow"],
         "Shutdown": ["shutdown", "-h", "now"],
         "Reboot": ["shutdown", "-r", "now"]
