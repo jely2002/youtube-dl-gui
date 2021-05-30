@@ -3,7 +3,7 @@ const DoneAction = require("../modules/DoneAction");
 
 jest.mock('execa');
 
-const platforms = ["win32", "linux", "mac"];
+const platforms = ["win32", "linux", "darwin"];
 const actions = ["Lock", "Sleep", "Shutdown"];
 const actionLength = [4, 3, 3];
 
