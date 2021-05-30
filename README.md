@@ -27,34 +27,22 @@ Be sure to check out [a demo gif of the application](#Demo-gif)!
 Want to know more about the features this app offers? Head over to the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/).
 
 ## Something is not working!
-Please see if the answer is in the frequently answered questions.
-### FAQ
-#### 1.  I can't open a video I downloaded
-Sometimes a video gets downloaded in a format that isn't supported by all media players. This can be fixed by watching the video in VLC media player, or by transcoding it to another format.
-Add #### 2. I added a playlist, but the app shows only one video?
-This can happen if the playlist is bigger than 50 videos. Because of performance reasons the app merges all videos together into one 'playlist video'. You can change the 50 video limit with the ['Split playlists into separate videos'](https://github.com/jely2002/youtube-dl-gui/wiki/Settings#split-playlists-into-separate-videos) setting.
-#### 3. How do I download private videos?
-Please take a look at the [tutorial](https://github.com/jely2002/youtube-dl-gui/wiki/Private-videos-&-playlists-2.0.0) on this subject.
-#### 4. What do all the settings do?
-For more information on what all the settings do, take a look at the [wiki page](https://github.com/jely2002/youtube-dl-gui/wiki/Settings) about this subject.
-#### 5. I got an error, what do I do now?
-For a list of all errors and their common causes and solutions please take a look at the [wiki page](https://github.com/jely2002/youtube-dl-gui/wiki/Errors). If you got an unhandled error make sure you report it.
-#### 6. How do I build from source?
+Please see if the answer is in the [frequently answered questions](https://github.com/jely2002/youtube-dl-gui/wiki/FAQ) or in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/).
+
+Still haven't found your answer? [Open up an issue](https://github.com/jely2002/youtube-dl-gui/issues), and describe the problem you're facing.
+
+## Building from source
 First, clone the repository using `git clone https://github.com/jely2002/youtube-dl-gui.git`.
 
 Then navigate to the directory and install the npm modules by executing: `npm install`.
 
 The last step is to build using electron-builder [(documentation)](https://www.electron.build/cli). For example, the command to build a windows installer is: `npx electron-builder --win`. The output files can be found in the 'dist' folder.
 
-Please be aware that this app is only tested on windows, linux and macOS. If you decide to build for another platform/archtype it may or may not work. Builds other than those available in the releases come with absolutely no warranty.
-
-### Didn't find an answer in the FAQ? There is more information in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/), be sure to have a look!<br>
-Still haven't found your answer? [Open up an issue](https://github.com/jely2002/youtube-dl-gui/issues), and describe the problem you're facing.
+Please be aware that this app is only tested on windows, linux and macOS. If you decide to build for another platform/archtype it may or may not work. Builds other than those available in the releases come with absolutely no support.
 
 ## Planned features
-- White mode
-- Show progress in app-icon
-- Notify user when the download has finished
+- Select individual audio and video codecs (advanced mode)
+- List all audio qualities
 - Support for downloading livestreams
 
 Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/issues).
