@@ -17,7 +17,7 @@
 <div class="container url-input">
     <form id="url-form" class="row mx-auto">
         <div class="input-group">
-            <input type="text" class="form-control" id="add-url" placeholder="Enter a video/playlist URL to add to the queue" required>
+            <input type="text" class="form-control" id="add-url" placeholder="Enter a video/playlist URL to add to the queue">
             <div class="input-group-append">
                 <button type="button" id="add-url-btn" class="btn btn-dark" title="Add video to queue"><i class="bi bi-plus"></i></button>
             </div>
@@ -255,6 +255,10 @@
                     <label for="maxConcurrent" id="concurrentLabel" class="form-label d-inline-block">Max concurrent jobs</label>
                     <input type="range" class="form-range w-50 d-block align-middle" min="1" max="32" id="maxConcurrent">
                     <button type="button" class="btn btn-dark" id="defaultConcurrent">Reset to default</button>
+                </div>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="autoFillClipboard">
+                    <label class="check-label" for="autoFillClipboard">Automatically fill in copied links</label>
                 </div>
                 <hr/>
                 <h3>Appearance</h3>

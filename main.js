@@ -7,10 +7,12 @@ const BinaryUpdater = require("./modules/BinaryUpdater");
 const AppUpdater = require("./modules/AppUpdater");
 const TaskList = require("./modules/persistence/TaskList");
 const DoneAction = require("./modules/DoneAction");
+const ClipboardWatcher = require("./modules/ClipboardWatcher");
 
 let win
 let env
 let queryManager
+let clipboardWatcher
 let taskList
 let appStarting = true;
 
@@ -34,6 +36,8 @@ function startCriticalHandlers(env) {
         shell.openExternal(url);
     });
 
+    clipboardWatcher = new ClipboardWatcher(win, env);
+
     queryManager = new QueryManager(win, env);
 
     taskList = new TaskList(env.paths, queryManager)
@@ -44,6 +48,7 @@ function startCriticalHandlers(env) {
         binaryUpdater.checkUpdate().finally(() => {
             win.webContents.send("binaryLock", {lock: false});
             taskList.load();
+            clipboardWatcher.startPolling();
         });
     } else if(env.settings.taskList) {
         taskList.load();

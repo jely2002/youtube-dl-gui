@@ -1,4 +1,5 @@
 let platform;
+let linkCopied = false;
 let progressCooldown = [];
 let sizeCooldown = [];
 let sizeCache = [];
@@ -31,6 +32,11 @@ async function init() {
         window.main.invoke('titlebarClick', "maximize")
     })
 
+    //Updates the placeholder to a copied link
+    window.main.receive("updateLinkPlaceholder", (args) => {
+        $('#add-url').prop("placeholder", args.text);
+        linkCopied = args.copied;
+    });
 
     //Init the when done dropdown
     $('.dropdown-toggle').dropdown();
@@ -82,10 +88,7 @@ async function init() {
     //Add url when user presses enter, but prevent default behavior
     $(document).on("keydown", "form", function(event) {
         if(event.key == "Enter") {
-            if ($('#url-form')[0].checkValidity()) {
-                parseURL($('#add-url').val());
-                $('#url-form').trigger('reset');
-            }
+            verifyURL();
             return false;
         }
         return true
@@ -93,10 +96,7 @@ async function init() {
 
     //Add url when user press on the + button
     $('#add-url-btn').on('click', () => {
-        if($('#url-form')[0].checkValidity()) {
-            parseURL($('#add-url').val());
-            $('#url-form').trigger('reset');
-        }
+       verifyURL();
     });
 
     $('body').on('click', '#install-btn', () => {
@@ -150,6 +150,7 @@ async function init() {
         let settings = {
             updateBinary: $('#updateBinary').prop('checked'),
             updateApplication: $('#updateApplication').prop('checked'),
+            autoFillClipboard: $('#autoFillClipboard').prop('checked'),
             outputFormat: $('#outputFormat').val(),
             proxy: $('#proxySetting').val(),
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
@@ -191,6 +192,7 @@ async function init() {
             $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
             $('#validateCertificate').prop('checked', settings.validateCertificate);
             $('#taskList').prop('checked', settings.taskList);
+            $('#autoFillClipboard').prop('checked', settings.autoFillClipboard);
             $('#proxySetting').val(settings.proxy);
             $('#nameFormatCustom').val(settings.nameFormat);
             $('#nameFormat').val(settings.nameFormatMode);
@@ -395,6 +397,19 @@ async function init() {
             node = node.parentNode;
         }
     });
+}
+
+function verifyURL() {
+    if(linkCopied) {
+        parseURL($('#add-url').prop('placeholder'));
+        $('#url-form').trigger('reset');
+    } else if($('#url-form')[0].checkValidity()) {
+        const value = $('#add-url').val()
+        if(value != null && value.length > 0) {
+            parseURL(value);
+            $('#url-form').trigger('reset');
+        }
+    }
 }
 
 function toggleWhiteMode(setting) {

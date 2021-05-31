@@ -36,6 +36,7 @@ contextBridge.exposeInMainWorld(
                 "maximized",
                 "videoAction",
                 "updateGlobalButtons",
+                "updateLinkPlaceholder",
                 "totalSize",
                 "binaryLock"
             ];
