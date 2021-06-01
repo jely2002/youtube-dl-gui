@@ -1,8 +1,15 @@
 const ErrorHandler = require("../modules/ErrorHandler");
 const Utils = require("../modules/Utils");
+const Sentry = require("@sentry/electron");
+
+jest.mock('@sentry/electron', () => ({
+    Severity: { Error: "error", Warn: "warn" },
+    captureMessage: jest.fn()
+}));
 
 beforeEach(() => {
-  jest.clearAllMocks();
+   Sentry.captureMessage.mockImplementation((code, scope) => scope({setLevel: jest.fn(), setContext: jest.fn(), setTag: jest.fn()}));
+   jest.clearAllMocks();
 });
 
 describe('reportError', () => {
@@ -50,7 +57,7 @@ describe('raiseUnhandledError', () => {
     it('does not raise an error if the video type is playlist', () => {
         const instance = instanceBuilder();
         instance.queryManager.getVideo.mockReturnValue({type: "playlist", identifier: "test__identifier"});
-        instance.raiseUnhandledError("test__unhandled", "test__identifier");
+        instance.raiseUnhandledError("test__unhandled", "test__unhandled_desc", "test__identifier");
         expect(instance.win.webContents.send).not.toBeCalled();
         expect(instance.queryManager.onError).not.toBeCalled();
     });
@@ -58,28 +65,34 @@ describe('raiseUnhandledError', () => {
         const randomIDSpy = jest.spyOn(Utils, 'getRandomID').mockReturnValueOnce("12345678");
         const instance = instanceBuilder();
         instance.queryManager.getVideo.mockReturnValue({type: "single", identifier: "test__identifier"});
-        instance.raiseUnhandledError("test__unhandled", "test__identifier");
+        instance.raiseUnhandledError("test__unhandled", "test__unhandled_desc", "test__identifier");
         expect(instance.unhandledErrors).toContainEqual({
             identifier: "test__identifier",
             unexpected: true,
             error_id: "12345678",
             error: {
-                code: "Unhandled exception",
-                description: "test__unhandled",
+                code: "test__unhandled",
+                description: "test__unhandled_desc",
             }
         });
         randomIDSpy.mockRestore();
     });
+    it('reports the error to sentry', () => {
+        const instance = instanceBuilder();
+        instance.queryManager.getVideo.mockReturnValue({type: "single", identifier: "test__identifier"});
+        instance.raiseUnhandledError("test__unhandled", "test__unhandled_desc", "test__identifier");
+        expect(Sentry.captureMessage).toBeCalledTimes(1);
+    });
     it('sends the error to the renderer process', () => {
         const instance = instanceBuilder();
         instance.queryManager.getVideo.mockReturnValue({type: "single", identifier: "test__identifier"});
-        instance.raiseUnhandledError("test__unhandled", "test__identifier");
+        instance.raiseUnhandledError("test__unhandled", "test__unhandled_desc", "test__identifier");
         expect(instance.win.webContents.send).toBeCalledTimes(1);
     });
     it('calls onError to mark the video as errored', () => {
         const instance = instanceBuilder();
         instance.queryManager.getVideo.mockReturnValue({type: "single", identifier: "test__identifier"});
-        instance.raiseUnhandledError("test__unhandled", "test__identifier");
+        instance.raiseUnhandledError("test__unhandled", "test__unhandled_desc", "test__identifier");
         expect(instance.queryManager.onError).toBeCalledWith("test__identifier");
     });
 });
@@ -116,6 +129,12 @@ function instanceBuilder() {
     const env = {
         analytics: {
             sendReport: jest.fn()
+        },
+        settings: {
+            testSetting: true
+        },
+        paths: {
+            testPath: "a/path/yes.txt"
         }
     };
     const win = {
