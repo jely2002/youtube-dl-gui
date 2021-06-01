@@ -202,13 +202,11 @@ class ErrorHandler {
             scope.setLevel(Sentry.Severity.Error);
             scope.setTag("url", video.url);
             scope.setTag("error_id", errorDef.error_id);
-            if(video.formats != null) {
-                scope.setData("formats", video.formats);
-            }
             if(video.selected_format_index != null) {
-                scope.setData("selected_format", video.formats[video.selected_format_index].serialize())
+                scope.setContext("selected_format", video.formats[video.selected_format_index].serialize())
             }
-            scope.setData("settings", this.env.settings);
+            const { env, paths, ...settings } = this.env.settings;
+            scope.setContext("settings", settings);
         });
         this.win.webContents.send("error", errorDef);
         this.unhandledErrors.push(errorDef);
@@ -222,16 +220,11 @@ class ErrorHandler {
         console.error(errorDef.code + " - " + errorDef.description);
         this.win.webContents.send("error", { error: errorDef, identifier: identifier, unexpected: false, url: video.url });
         this.queryManager.onError(identifier);
-        Sentry.captureMessage(errorDef.code, Sentry.Severity.Warning);
     }
 
     async reportError(args) {
         for(const err of this.unhandledErrors) {
             if(err.identifier === args.identifier) {
-                let video = this.queryManager.getVideo(args.identifier)
-                err.url = video.url;
-                err.type = args.type;
-                err.quality = args.quality;
                 return await this.env.analytics.sendReport(err.error_id);
             }
         }

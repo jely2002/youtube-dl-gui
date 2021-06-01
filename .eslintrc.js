@@ -190,6 +190,7 @@ module.exports = {
         "no-unreachable-loop": "error",
         "no-unsafe-optional-chaining": "error",
         "no-unused-expressions": "error",
+        "no-unused-vars": ["error", { "ignoreRestSiblings": true }],
         "no-use-before-define": "error",
         "no-useless-backreference": "error",
         "no-useless-call": "error",
