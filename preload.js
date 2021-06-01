@@ -1,4 +1,13 @@
+const Sentry = require("@sentry/electron");
+const version = require('./package.json').version;
 const { contextBridge, ipcRenderer } = require('electron')
+
+Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    release: "youtube-dl-gui@" + version,
+    sendDefaultPii: true,
+    environment: process.argv[2] === '--dev' ? "development" : "production"
+});
 
 contextBridge.exposeInMainWorld(
     "main",

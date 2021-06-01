@@ -8,13 +8,18 @@ const AppUpdater = require("./modules/AppUpdater");
 const TaskList = require("./modules/persistence/TaskList");
 const DoneAction = require("./modules/DoneAction");
 const ClipboardWatcher = require("./modules/ClipboardWatcher");
+const Analytics = require("./modules/Analytics");
 
 let win
 let env
 let queryManager
 let clipboardWatcher
 let taskList
+let analytics;
 let appStarting = true;
+
+analytics = new Analytics(app);
+analytics.initSentry().then(() => console.log("Sentry initialized"));
 
 function sendLogToRenderer(log, isErr) {
     if(win == null) return;
@@ -196,12 +201,9 @@ function createWindow(env) {
 }
 
 app.on('ready', async () => {
-    env = new Environment(app);
+    env = new Environment(app, analytics);
     await env.initialize();
     createWindow(env);
-    if(app.isPackaged && process.argv[2] !== '--dev') {
-        env.analytics.sendDownload();
-    }
     globalShortcut.register('Control+Shift+I', () => { win.webContents.openDevTools(); })
 })
 

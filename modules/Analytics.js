@@ -1,25 +1,27 @@
-const axios = require("axios");
-const querystring = require("querystring");
-const Utils = require("./Utils");
+const Sentry = require("@sentry/electron");
+const path = require("path");
 
 class Analytics {
-    constructor(version, paths, settings) {
-        this.paths = paths;
-        this.version = version;
-        this.settings = settings;
+    constructor(app) {
+        this.app = app;
     }
 
-    async sendDownload() {
-        if(!this.settings.statSend) {
-            await axios.post('http://backend.jelleglebbeek.com/youtubedl/download.php/', querystring.stringify({ version: this.version }));
-            this.settings.statSend = true;
-            this.settings.save();
-        }
+    initSentry() {
+        return new Promise(resolve => {
+            require('dotenv').config({path: this.app.isPackaged ? path.join(process.cwd(), "/resources/app.asar/.env") : path.resolve(process.cwd(), '.env')});
+            Sentry.init({
+                dsn: process.env.SENTRY_DSN,
+                release: "youtube-dl-gui@" + this.app.getVersion(),
+                sendDefaultPii: true,
+                environment: process.argv[2] === '--dev' ? "development" : "production"
+            });
+            resolve();
+        });
     }
 
-    async sendReport(err) {
-        const id = Utils.getRandomID(8);
-        await axios.post('http://backend.jelleglebbeek.com/youtubedl/errorreport.php/', querystring.stringify({ id: id, version: this.version, code: err.error.code, description: err.error.description, platform: process.platform, url: err.url, type: err.type, quality: err.quality}));
+    async sendReport(id) {
+        //Legacy code, no longer used.
+        //Await axios.post('http://backend.jelleglebbeek.com/youtubedl/errorreport.php/', querystring.stringify({ id: id, version: this.version, code: err.error.code, description: err.error.description, platform: process.platform, url: err.url, type: err.type, quality: err.quality}));
         return id;
     }
 }

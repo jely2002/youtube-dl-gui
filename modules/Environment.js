@@ -1,13 +1,13 @@
 const Bottleneck = require("bottleneck");
 const Filepaths = require("./Filepaths");
 const Settings = require("./persistence/Settings");
-const Analytics = require("./Analytics");
 const DetectPython = require("./DetectPython");
 const fs = require("fs").promises;
 
 class Environment {
-    constructor(app) {
+    constructor(app, analytics) {
         this.app = app;
+        this.analytics = analytics;
         this.version = app.getVersion();
         this.cookiePath = null;
         this.mainAudioOnly = false;
@@ -45,7 +45,6 @@ class Environment {
         } else {
             this.pythonCommand = "python";
         }
-        this.analytics = new Analytics(this.app.getVersion(), this.paths, this.settings);
     }
 
     changeMaxConcurrent(max) {

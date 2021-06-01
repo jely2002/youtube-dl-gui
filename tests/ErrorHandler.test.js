@@ -1,4 +1,5 @@
 const ErrorHandler = require("../modules/ErrorHandler");
+const Utils = require("../modules/Utils");
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -54,17 +55,20 @@ describe('raiseUnhandledError', () => {
         expect(instance.queryManager.onError).not.toBeCalled();
     });
     it('adds the error to the unhandled error list', () => {
+        const randomIDSpy = jest.spyOn(Utils, 'getRandomID').mockReturnValueOnce("12345678");
         const instance = instanceBuilder();
         instance.queryManager.getVideo.mockReturnValue({type: "single", identifier: "test__identifier"});
         instance.raiseUnhandledError("test__unhandled", "test__identifier");
         expect(instance.unhandledErrors).toContainEqual({
             identifier: "test__identifier",
             unexpected: true,
+            error_id: "12345678",
             error: {
                 code: "Unhandled exception",
                 description: "test__unhandled",
             }
         });
+        randomIDSpy.mockRestore();
     });
     it('sends the error to the renderer process', () => {
         const instance = instanceBuilder();

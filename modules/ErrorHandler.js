@@ -1,3 +1,6 @@
+const Sentry = require("@sentry/electron");
+const Utils = require("./Utils");
+
 class ErrorHandler {
     constructor(win, queryManager, env) {
         this.env = env;
@@ -188,12 +191,25 @@ class ErrorHandler {
         if(video.type === "playlist") return;
         let errorDef = {
             identifier: identifier,
+            error_id: Utils.getRandomID(8),
             unexpected: true,
             error: {
                 code: "Unhandled exception",
                 description: error,
             }
         };
+        Sentry.captureMessage(error, scope => {
+            scope.setLevel(Sentry.Severity.Error);
+            scope.setTag("url", video.url);
+            scope.setTag("error_id", errorDef.error_id);
+            if(video.formats != null) {
+                scope.setData("formats", video.formats);
+            }
+            if(video.selected_format_index != null) {
+                scope.setData("selected_format", video.formats[video.selected_format_index].serialize())
+            }
+            scope.setData("settings", this.env.settings);
+        });
         this.win.webContents.send("error", errorDef);
         this.unhandledErrors.push(errorDef);
         this.queryManager.onError(identifier);
@@ -206,6 +222,7 @@ class ErrorHandler {
         console.error(errorDef.code + " - " + errorDef.description);
         this.win.webContents.send("error", { error: errorDef, identifier: identifier, unexpected: false, url: video.url });
         this.queryManager.onError(identifier);
+        Sentry.captureMessage(errorDef.code, Sentry.Severity.Warning);
     }
 
     async reportError(args) {
@@ -215,7 +232,7 @@ class ErrorHandler {
                 err.url = video.url;
                 err.type = args.type;
                 err.quality = args.quality;
-                return await this.env.analytics.sendReport(err);
+                return await this.env.analytics.sendReport(err.error_id);
             }
         }
     }
