@@ -179,13 +179,13 @@ class ErrorHandler {
             if(stderr.includes("ERROR")) {
                 foundError = true;
                 console.error(stderr)
-                this.raiseUnhandledError(stderr, identifier);
+                this.raiseUnhandledError(stderr, stderr, identifier);
             }
         }
         return foundError;
     }
 
-    raiseUnhandledError(error, identifier) {
+    raiseUnhandledError(code, error, identifier) {
         const video = this.queryManager.getVideo(identifier);
         if(video == null) return;
         if(video.type === "playlist") return;
@@ -194,12 +194,15 @@ class ErrorHandler {
             error_id: Utils.getRandomID(8),
             unexpected: true,
             error: {
-                code: "Unhandled exception",
+                code: error === code ? "Unhandled error" : code,
                 description: error,
             }
         };
-        Sentry.captureMessage(error, scope => {
+        Sentry.captureMessage(error === code ? error : code, scope => {
             scope.setLevel(Sentry.Severity.Error);
+            if(code !== error) {
+                scope.setContext("error", {description: error});
+            }
             scope.setTag("url", video.url);
             scope.setTag("error_id", errorDef.error_id);
             if(video.selected_format_index != null) {
