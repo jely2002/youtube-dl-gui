@@ -400,11 +400,11 @@ async function init() {
 }
 
 function verifyURL() {
-    if(linkCopied) {
+    const value = $('#add-url').val()
+    if(linkCopied && (value == null || value.length === 0)) {
         parseURL($('#add-url').prop('placeholder'));
         $('#url-form').trigger('reset');
     } else if($('#url-form')[0].checkValidity()) {
-        const value = $('#add-url').val()
         if(value != null && value.length > 0) {
             parseURL(value);
             $('#url-form').trigger('reset');
