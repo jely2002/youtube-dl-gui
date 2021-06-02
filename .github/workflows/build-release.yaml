@@ -16,10 +16,7 @@ jobs:
       - name: Install npm modules
         run: npm ci
       - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1
-        with:
-          envkey_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          file_name: .env
+        run: echo ${{ secrets.SENTRY_DSN }} | base64 -d > .env
       - name: Build and publish artifact
         run: npm_config_yes=true npx electron-builder -p always
         env:
@@ -46,10 +43,10 @@ jobs:
       - name: Install npm modules
         run: npm ci
       - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1
-        with:
-          envkey_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          file_name: electron-builder.env
+        run: |
+          echo ${{ secrets.SENTRY_DSN }} > env.b64
+          certutil -decode env.b64 .env
+          del env.b64
       - name: Build and publish artifact
         run: env npm_config_yes=true npx electron-builder -p always
         env:
@@ -68,10 +65,7 @@ jobs:
       - name: Install npm modules
         run: npm ci
       - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1
-        with:
-          envkey_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          file_name: electron-builder.env
+        run: echo ${{ secrets.SENTRY_DSN }} | base64 -d > .env
       - name: Build and publish artifact
         run: npm_config_yes=true npx electron-builder -p always
         env:
