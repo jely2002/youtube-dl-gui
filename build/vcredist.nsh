@@ -5,7 +5,7 @@
     ReadRegDword $R2 HKLM "SOFTWARE\WOW6432Node\Microsoft\VisualStudio\10.0\VC\VCRedist\x64" "Installed"
     ${If} $R1 != "1"
         ${AndIf} $R2 != "1"
-            ${AndNotIf} ${Silent}
+            ${If} ${Silent}
                 File /oname=$PLUGINSDIR\vcredist_x86.exe "${BUILD_RESOURCES_DIR}\vcredist_x86.exe"
                 File /oname=$PLUGINSDIR\elevate.exe "${BUILD_RESOURCES_DIR}\elevate.exe"
                 ExecWait '"$PLUGINSDIR\elevate.exe" "$PLUGINSDIR\vcredist_x86.exe" /q /norestart'
