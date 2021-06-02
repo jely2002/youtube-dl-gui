@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The version to update to'
+        description: 'Version number'
         required: true
 
 jobs:
@@ -13,6 +13,4 @@ jobs:
     steps:
       - name: Run wingetcreate
         shell: pwsh
-        run: |
-          iwr https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
-          wingetcreate.exe update -s -i jely2002.youtube-dl-gui -u https://github.com/jely2002/youtube-dl-gui/releases/download/${{ github.event.inputs.version }}/YouTube-Downloader-GUI-Setup-${{ github.event.inputs.version }}.exe -v ${{ github.event.inputs.version }}  -t ${{ secrets.GITHUB_TOKEN }}
+        run: . { iwr https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe } | iex; wingetcreate.exe update -s -i jely2002.youtube-dl-gui -u https://github.com/jely2002/youtube-dl-gui/releases/download/v${{ github.event.inputs.version }}/YouTube-Downloader-GUI-Setup-${{ github.event.inputs.version }}.exe -v ${{ github.event.inputs.version }}  -t ${{ secrets.GITHUB_TOKEN }}
