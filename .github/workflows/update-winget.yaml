@@ -1,17 +1,18 @@
 name: Update winget package
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version to update to'
+        required: true
 
 jobs:
   wingetcreate-update:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Get version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
       - name: Run wingetcreate
         shell: pwsh
         run: |
           iwr https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
-          wingetcreate.exe update -s -i jely2002.youtube-dl-gui -u https://github.com/jely2002/youtube-dl-gui/releases/download/${{ steps.package-version.outputs.current-version }}/YouTube-Downloader-GUI-Setup-${{ steps.package-version.outputs.current-version }}.exe -v ${{ steps.package-version.outputs.current-version }}  -t ${{ secrets.GITHUB_TOKEN }}
+          wingetcreate.exe update -s -i jely2002.youtube-dl-gui -u https://github.com/jely2002/youtube-dl-gui/releases/download/${{ github.event.inputs.version }}/YouTube-Downloader-GUI-Setup-${{ github.event.inputs.version }}.exe -v ${{ github.event.inputs.version }}  -t ${{ secrets.GITHUB_TOKEN }}
