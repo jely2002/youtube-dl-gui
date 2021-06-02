@@ -1,4 +1,5 @@
 const Sentry = require("@sentry/electron");
+const Tracing = require("@sentry/tracing");
 const path = require("path");
 
 class Analytics {
@@ -13,7 +14,10 @@ class Analytics {
                 dsn: process.env.SENTRY_DSN,
                 release: "youtube-dl-gui@" + this.app.getVersion(),
                 sendDefaultPii: true,
-                environment: process.argv[2] === '--dev' ? "development" : "production"
+                environment: process.argv[2] === '--dev' ? "development" : "production",
+                integrations: [new Tracing.Integrations.BrowserTracing()],
+                tracesSampleRate: process.argv[2] === '--dev' ? 1.0 : 0.01,
+                autoSessionTracking: true
             });
             resolve();
         });

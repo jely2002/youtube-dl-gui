@@ -33,6 +33,8 @@
   },
   "dependencies": {
     "@sentry/electron": "^2.4.1",
+    "@sentry/node": "^5.27.6",
+    "@sentry/tracing": "^5.27.6",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "bootstrap-icons": "^1.3.0",

@@ -1,5 +1,6 @@
 const axios = require("axios");
 const fs = require("fs");
+const Sentry = require("@sentry/node");
 
 class BinaryUpdater {
 
@@ -10,22 +11,30 @@ class BinaryUpdater {
 
     //Checks for an update and download it if there is.
     async checkUpdate() {
+        const transaction = Sentry.startTransaction({ name: "checkUpdate" });
+        const span = transaction.startChild({ op: "task" });
         console.log("Checking for a new version of ytdl.");
         const localVersion = await this.getLocalVersion();
         const [remoteUrl, remoteVersion] = await this.getRemoteVersion();
         if(remoteVersion === localVersion) {
+            transaction.setTag("download", "up-to-data");
             console.log(`Binaries were already up-to-date! Version: ${localVersion}`);
         } else if(localVersion == null) {
+            transaction.setTag("download", "corrupted");
             console.log("Binaries may have been corrupted, downloading binaries to be on the safe side.");
             this.win.webContents.send("binaryLock", {lock: true, placeholder: `Re-installing ytdl version ${remoteVersion}...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         } else if(remoteVersion == null) {
+            transaction.setTag("download", "down");
             console.log("Unable to check for new updates, yt-dl.org may be down.");
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
+            transaction.setTag("download", "update");
             this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ytdl to version ${remoteVersion}...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         }
+        span.finish();
+        transaction.finish();
     }
 
     //Returns the currently downloaded version of youtube-dl
@@ -53,6 +62,7 @@ class BinaryUpdater {
 
     //Returns an array containing the latest available remote version and the download link to it.
     async getRemoteVersion() {
+
         const url = (this.paths.platform === "win32") ? "https://yt-dl.org/downloads/latest/youtube-dl.exe" : "https://yt-dl.org/downloads/latest/youtube-dl";
         try {
             await axios.get(url, {maxRedirects: 0})
