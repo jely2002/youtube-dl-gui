@@ -58,18 +58,6 @@ jobs:
         run: env npm_config_yes=true npx electron-builder --win portable -p always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
-          version: ${{ steps.package-version.outputs.current-version }}
   build-mac:
     runs-on: macos-latest
     steps:
@@ -88,15 +76,3 @@ jobs:
         run: npm_config_yes=true npx electron-builder -p always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: production
-          version: ${{ steps.package-version.outputs.current-version }}

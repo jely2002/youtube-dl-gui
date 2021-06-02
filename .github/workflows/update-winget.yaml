@@ -1,0 +1,16 @@
+name: Update winget package
+
+on: workflow_dispatch
+
+jobs:
+  wingetcreate-update:
+    runs-on: windows-latest
+    steps:
+      - name: Get version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+      - name: Run wingetcreate
+        shell: pwsh
+        run: |
+          iwr https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
+          wingetcreate.exe update -s -i jely2002.youtube-dl-gui -u https://github.com/jely2002/youtube-dl-gui/releases/download/${{ steps.package-version.outputs.current-version }}/YouTube-Downloader-GUI-Setup-${{ steps.package-version.outputs.current-version }}.exe -v ${{ steps.package-version.outputs.current-version }}  -t ${{ secrets.GITHUB_TOKEN }}
