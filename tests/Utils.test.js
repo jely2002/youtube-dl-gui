@@ -182,4 +182,128 @@ describe("parseAvailableFormats", () => {
     });
 })
 
+describe("resolvePlaylistPlaceholders", () => {
+    it("fails gracefully if metadata is null", () => {
+        const result = Utils.resolvePlaylistPlaceholders("test__format %(playlist_id)", null);
+        expect(result).toBe("test__format %(playlist_id)");
+    })
+    it("parses format strings in the format and swaps them for metadata", () => {
+        const metadata = {
+            playlist_index: "test__playlist_index",
+            playlist_id: "test__playlist_id",
+            playlist_title: "test__playlist_title",
+            playlist: "test__playlist",
+            playlist_uploader: "test__playlist_uploader",
+            playlist_uploader_id: "test__playlist_uploader_id"
+        }
+        let format = "";
+        let expectedReturn = "";
+        Object.keys(metadata).forEach(key => expectedReturn += `${metadata[key]},`);
+        Object.keys(metadata).forEach(key => format += `%(${key}),`);
+        const result = Utils.resolvePlaylistPlaceholders(format, metadata);
+        expect(result).toBe(expectedReturn);
+    })
+})
 
+describe("generatePlaylistMetadata", () => {
+    it("returns an empty array when there are no entries", () => {
+        expect(Utils.generatePlaylistMetadata({})).toEqual([]);
+    })
+    it("returns metadata for every video", () => {
+        const query = {
+            extractor_key: "YoutubeTab",
+            uploader: "test__uploader",
+            uploader_id: "test__uploader_id",
+            _type: "playlist",
+            entries:[
+                {
+                    webpage_url: "test__url",
+                },
+                {
+                    url: "test__yt_id",
+                    ie_key: "Youtube"
+                }
+            ],
+            uploader_url: "test__uploader_url",
+            extractor: "youtube:tab",
+            webpage_url_basename: "playlist",
+            id: "test__playlist_id",
+            title: "test__playlist_title",
+            webpage_url: "test__playlist_url"
+        }
+        const result = Utils.generatePlaylistMetadata(query);
+        const expectedResult = (index, url) => {
+            return {
+                video_url: url,
+                playlist_url: "test__playlist_url",
+                playlist_index: index,
+                playlist_id: "test__playlist_id",
+                playlist_title: "test__playlist_title",
+                playlist: "test__playlist_title",
+                playlist_uploader: "test__uploader",
+                playlist_uploader_id: "test__uploader_id"
+            }
+        }
+        expect(result).toHaveLength(2);
+        expect(result).toEqual([expectedResult(0, "test__url"), expectedResult(1, "https://youtube.com/watch?v=test__yt_id")])
+    })
+    it("returns the id for playlist when the title is null", () => {
+        const query = {
+            extractor_key: "YoutubeTab",
+            uploader: "test__uploader",
+            uploader_id: "test__uploader_id",
+            _type: "playlist",
+            entries:[
+                {
+                    url: "test__url",
+                }
+            ],
+            uploader_url: "test__uploader_url",
+            extractor: "youtube:tab",
+            webpage_url_basename: "playlist",
+            id: "test__playlist_id",
+            webpage_url: "test__playlist_url"
+        }
+        const result = Utils.generatePlaylistMetadata(query);
+        const expectedResult = {
+                video_url: "test__url",
+                playlist_url: "test__playlist_url",
+                playlist_index: 0,
+                playlist_id: "test__playlist_id",
+                playlist_title: undefined,
+                playlist: "test__playlist_id",
+                playlist_uploader: "test__uploader",
+                playlist_uploader_id: "test__uploader_id"
+        }
+        expect(result).toEqual([expectedResult])
+    })
+})
+
+describe('getVideoInPlaylistMetadata', () => {
+    it("gets metadata from only a video url", () => {
+        const video_url = "test__video_url";
+        const metadata = {video_url: "test__video_url"};
+        const result = Utils.getVideoInPlaylistMetadata(video_url, null, [metadata]);
+        expect(result).toBe(metadata);
+    })
+    it("gets metadata from a video and playlist url", () => {
+        const video_url = "test__video_url";
+        const playlist_url = "test__playlist_url";
+        const metadata = {video_url: "test__video_url", playlist_url: "test__playlist_url"};
+        const decoy = {video_url: "test__video_url", playlist_url: "another_playlist_url"};
+        const result = Utils.getVideoInPlaylistMetadata(video_url, playlist_url, [decoy, metadata]);
+        expect(result).toBe(metadata);
+    })
+    it("returns null if metadata is not iterable", () => {
+        const video_url = "test__video_url";
+        const playlist_url = "test__playlist_url";
+        const result = Utils.getVideoInPlaylistMetadata(video_url, playlist_url, null);
+        expect(result).toBe(null);
+    })
+    it("returns null if metadata is empty", () => {
+        const video_url = "test__video_url";
+        const playlist_url = "test__playlist_url";
+        const result = Utils.getVideoInPlaylistMetadata(video_url, playlist_url, []);
+        expect(result).toBe(null);
+    })
+})
