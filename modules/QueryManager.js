@@ -19,6 +19,7 @@ class QueryManager {
         this.window = window;
         this.environment = environment;
         this.managedVideos = [];
+        this.playlistMetadata = [];
     }
 
     async manage(url) {
@@ -61,6 +62,7 @@ class QueryManager {
     }
 
     managePlaylist(initialQuery, url) {
+        this.playlistMetadata = this.playlistMetadata.concat(Utils.generatePlaylistMetadata(initialQuery));
         let playlistVideo = new Video(url, "playlist", this.environment);
         this.addVideo(playlistVideo);
         const playlistQuery = new InfoQueryList(initialQuery, this.environment, new ProgressBar(this, playlistVideo));
@@ -145,6 +147,7 @@ class QueryManager {
     downloadAllVideos(args) {
         let videosToDownload = [];
         let unifiedPlaylists = [];
+        let videoMetadata = [];
         for(const videoObj of args.videos) {
             let video = this.getVideo(videoObj.identifier);
             if(video.videos == null) {
@@ -161,6 +164,10 @@ class QueryManager {
                         }
                     }
                 }
+                const videoMeta = Utils.getVideoInPlaylistMetadata(video.url, null, this.playlistMetadata);
+                if(videoMeta != null) {
+                    videoMetadata.push(videoMeta);
+                }
                 video.audioQuality = (video.audioQuality != null) ? video.audioQuality : "best";
                 videosToDownload.push(video);
             } else {
@@ -168,6 +175,10 @@ class QueryManager {
                 unifiedPlaylists.push(video);
                 this.getUnifiedVideos(video, video.videos, videoObj.type === "audio", videoObj.format, videoObj.downloadSubs);
                 for(const unifiedVideo of video.videos) {
+                    const videoMeta = Utils.getVideoInPlaylistMetadata(unifiedVideo.url, video.url, this.playlistMetadata);
+                    if(videoMeta != null) {
+                        videoMetadata.push(videoMeta);
+                    }
                     unifiedVideo.parentID = video.identifier;
                     unifiedVideo.parentSize = video.videos.length;
                     videosToDownload.push(unifiedVideo);
@@ -175,7 +186,7 @@ class QueryManager {
             }
         }
         let progressBar = new ProgressBar(this, "queue");
-        let downloadList = new DownloadQueryList(videosToDownload, this.environment, this, progressBar);
+        let downloadList = new DownloadQueryList(videosToDownload, videoMetadata, this.environment, this, progressBar);
         for(const unifiedPlaylist of unifiedPlaylists) { unifiedPlaylist.setQuery(downloadList) }
         downloadList.start().then(() => {
             for(const unifiedPlaylist of unifiedPlaylists) { unifiedPlaylist.downloaded = true }
@@ -217,10 +228,11 @@ class QueryManager {
     downloadUnifiedPlaylist(args) {
         const playlist = this.getVideo(args.identifier);
         const videos = playlist.videos;
+        const metadata = videos.map(vid => Utils.getVideoInPlaylistMetadata(vid.url, playlist.url, this.playlistMetadata)).filter(entry => entry != null);
         this.getUnifiedVideos(playlist, videos, args.type === "audio", args.format, playlist.downloadSubs);
         playlist.audioQuality = (playlist.audioQuality != null) ? playlist.audioQuality : "best";
         let progressBar = new ProgressBar(this, playlist);
-        playlist.setQuery(new DownloadQueryList(videos, this.environment, this, progressBar));
+        playlist.setQuery(new DownloadQueryList(videos, metadata, this.environment, this, progressBar));
         playlist.query.start().then(() => {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             playlist.downloaded = true;

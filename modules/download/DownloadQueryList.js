@@ -1,9 +1,11 @@
 const DownloadQuery = require('./DownloadQuery');
 const ProgressBar = require("../types/ProgressBar");
+const Utils = require("../Utils");
 
 class DownloadQueryList {
-    constructor(videos, environment, manager, progressBar) {
+    constructor(videos, playlistMetadata, environment, manager, progressBar) {
         this.videos = videos;
+        this.playlistMetadata = playlistMetadata;
         this.environment = environment;
         this.progressBar = progressBar;
         this.manager = manager;
@@ -25,7 +27,7 @@ class DownloadQueryList {
         return await new Promise(((resolve) => {
             for(let video of this.videos) {
                 let progressBar = new ProgressBar(this.manager, video);
-                let task = new DownloadQuery(video.webpage_url, video, this.environment, progressBar);
+                let task = new DownloadQuery(video.webpage_url, video, this.environment, progressBar, Utils.getVideoInPlaylistMetadata(video.url, null, this.playlistMetadata));
                 if(video.parentID != null && !this.parentProgress.some(e => e.id === video.parentID)) {
                     const bar = new ProgressBar(this.manager, video.parentID);
                     this.parentProgress.push({

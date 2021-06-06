@@ -1,14 +1,15 @@
 const Query = require("../types/Query")
 const path = require("path")
+const Utils = require("../Utils")
 
 class DownloadQuery extends Query {
-    constructor(url, video, environment, progressBar, unifiedPlaylist) {
+    constructor(url, video, environment, progressBar, playlistMeta) {
         super(environment, video.identifier);
+        this.playlistMeta = playlistMeta;
         this.url = url;
         this.video = video;
         this.progressBar = progressBar;
         this.format = video.formats[video.selected_format_index];
-        this.unifiedPlaylist = unifiedPlaylist;
     }
 
     cancel() {
@@ -17,7 +18,9 @@ class DownloadQuery extends Query {
 
     async connect() {
         let args = [];
-        let output = path.join(this.environment.paths.downloadPath, this.environment.settings.nameFormat);
+        console.log("DOWNLOADQUERY")
+        console.log(this.playlistMeta)
+        let output = path.join(this.environment.paths.downloadPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
         if(this.video.audioOnly) {
             let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
             args = [
@@ -85,7 +88,6 @@ class DownloadQuery extends Query {
         let result = null;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
-                if(this.unifiedPlaylist) return;
                 if (!liveData.includes("[download]")) return;
                 if (!initialReset) {
                     initialReset = true;
