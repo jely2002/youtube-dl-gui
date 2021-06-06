@@ -3,15 +3,20 @@ const Tracing = require("@sentry/tracing");
 const version = require('./package.json').version;
 const { contextBridge, ipcRenderer } = require('electron')
 
-Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    release: "youtube-dl-gui@" + version,
-    sendDefaultPii: true,
-    integrations: [new Tracing.Integrations.BrowserTracing()],
-    tracesSampleRate: process.argv[2] === '--dev' ? 1.0 : 0.01,
-    environment: process.argv[2] === '--dev' ? "development" : "production",
-    autoSessionTracking: true
-});
+function initSentry() {
+    if(process.argv[2] === '--dev' && !process.argv.includes("--sentry")) return;
+    Sentry.init({
+        dsn: process.env.SENTRY_DSN,
+        release: "youtube-dl-gui@" + version,
+        sendDefaultPii: true,
+        integrations: [new Tracing.Integrations.BrowserTracing()],
+        tracesSampleRate: process.argv[2] === '--dev' ? 1.0 : 0.01,
+        environment: process.argv[2] === '--dev' ? "development" : "production",
+        autoSessionTracking: true
+    });
+}
+
+initSentry();
 
 contextBridge.exposeInMainWorld(
     "main",

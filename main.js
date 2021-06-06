@@ -19,7 +19,7 @@ let analytics;
 let appStarting = true;
 
 analytics = new Analytics(app);
-analytics.initSentry().then(() => console.log("Sentry initialized"));
+analytics.initSentry().then((res) => console.log(res));
 
 function sendLogToRenderer(log, isErr) {
     if(win == null) return;

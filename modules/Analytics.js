@@ -10,16 +10,17 @@ class Analytics {
     initSentry() {
         return new Promise(resolve => {
             require('dotenv').config({path: this.app.isPackaged ? path.join(process.cwd(), "/resources/app.asar/.env") : path.resolve(process.cwd(), '.env')});
+            if(process.argv[2] === '--dev' && !process.argv.includes("--sentry")) resolve("Sentry disabled in dev mode, pass --sentry to enable.");
             Sentry.init({
                 dsn: process.env.SENTRY_DSN,
                 release: "youtube-dl-gui@" + this.app.getVersion(),
                 sendDefaultPii: true,
                 environment: process.argv[2] === '--dev' ? "development" : "production",
                 integrations: [new Tracing.Integrations.BrowserTracing()],
-                tracesSampleRate: process.argv[2] === '--dev' ? 1.0 : 0.01,
+                tracesSampleRate: 0.01,
                 autoSessionTracking: true
             });
-            resolve();
+            resolve("Sentry initialized");
         });
     }
 
