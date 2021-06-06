@@ -11,6 +11,11 @@ jobs:
   wingetcreate-update:
     runs-on: windows-latest
     steps:
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
       - name: Run wingetcreate
-        shell: pwsh
-        run: . { iwr https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe } | iex; wingetcreate.exe update -s -i jely2002.youtube-dl-gui -u https://github.com/jely2002/youtube-dl-gui/releases/download/v${{ github.event.inputs.version }}/YouTube-Downloader-GUI-Setup-${{ github.event.inputs.version }}.exe -v ${{ github.event.inputs.version }}  -t ${{ secrets.GITHUB_TOKEN }}
+        shell: cmd
+        run: |
+          curl https://aka.ms/wingetcreate/latest -L --output wingetcreate.exe
+          wingetcreate.exe update -s -i jely2002.youtube-dl-gui -u https://github.com/jely2002/youtube-dl-gui/releases/download/v${{ github.event.inputs.version }}/YouTube-Downloader-GUI-Setup-${{ github.event.inputs.version }}.exe -v ${{ github.event.inputs.version }}  -t ${{ secrets.GITHUB_TOKEN }}
