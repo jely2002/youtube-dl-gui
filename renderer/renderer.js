@@ -454,7 +454,6 @@ function addVideo(args) {
             .addClass('progress-bar-striped')
             .addClass('progress-bar-animated')
             .width("100%");
-        console.log(args.subtitles);
         if(args.subtitles) $(template).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
         $(template).find('img').prop("src", args.thumbnail);
         $(template).find('.info').addClass("d-none");
