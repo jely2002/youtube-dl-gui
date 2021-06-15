@@ -104,9 +104,13 @@ function startCriticalHandlers(env) {
             }
         })
 
-        let appUpdater = new AppUpdater(env, win);
-        env.appUpdater = appUpdater;
-        appUpdater.checkUpdate();
+
+            let appUpdater = new AppUpdater(env, win);
+            env.appUpdater = appUpdater;
+            if(!this.appPath.includes("\\AppData\\Local\\Temp\\")) {
+                //Don't check the app when it is in portable mode
+                appUpdater.checkUpdate();
+            }
 
         ipcMain.handle("installUpdate", () => {
             appUpdater.installUpdate();
