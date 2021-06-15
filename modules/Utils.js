@@ -194,17 +194,15 @@ class Utils {
     }
 
     static resolvePlaylistPlaceholders(format, metadata) {
-        if(metadata == null) {
-            console.error("No metadata was given for this playlist video.");
-            return format;
-        }
+        let actualMetadata = metadata;
+        if(metadata == null) actualMetadata = {};
         let formatParsed = format;
         const regex = new RegExp(/%\((\w+)\)(s?)/g);
         let z;
         while((z=regex.exec(formatParsed)) != null) {
             if(z[1] != null) {
-                if(metadata[z[1]] != null) {
-                    formatParsed = formatParsed.replace(z[0], metadata[z[1]]);
+                if(actualMetadata[z[1]] != null) {
+                    formatParsed = formatParsed.replace(z[0], actualMetadata[z[1]]);
                 }
             }
         }
