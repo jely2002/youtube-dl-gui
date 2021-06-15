@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog, Menu, globalShortcut, shell, clipbo
 const Environment = require('./modules/Environment');
 const path = require('path');
 const QueryManager = require("./modules/QueryManager");
-const ErrorHandler = require("./modules/ErrorHandler");
+const ErrorHandler = require("./modules/exceptions/ErrorHandler");
 const BinaryUpdater = require("./modules/BinaryUpdater");
 const AppUpdater = require("./modules/AppUpdater");
 const TaskList = require("./modules/persistence/TaskList");
