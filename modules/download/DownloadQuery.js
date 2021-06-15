@@ -18,8 +18,6 @@ class DownloadQuery extends Query {
 
     async connect() {
         let args = [];
-        console.log("DOWNLOADQUERY")
-        console.log(this.playlistMeta)
         let output = path.join(this.environment.paths.downloadPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
         if(this.video.audioOnly) {
             let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
