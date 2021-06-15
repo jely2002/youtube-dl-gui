@@ -6,7 +6,12 @@ class Filepaths {
     constructor(app) {
         this.app = app;
         this.platform = process.platform;
-        this.downloadPath = this.app.getPath('downloads');
+        try {
+            this.downloadPath = this.app.getPath('downloads');
+        } catch(e) {
+            console.warn("Using executable path as download location, as downloads was not found.");
+            this.downloadPath = this.app.getPath('exe');
+        }
         this.appPath = this.app.getAppPath();
     }
 
