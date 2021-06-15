@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu, globalShortcut, shell, clipboard } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, shell, clipboard } = require('electron');
 const Environment = require('./modules/Environment');
 const path = require('path');
 const QueryManager = require("./modules/QueryManager");
@@ -189,7 +189,6 @@ function createWindow(env) {
             contextIsolation: true
         }
     })
-    win.removeMenu()
     if(process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
@@ -208,7 +207,6 @@ app.on('ready', async () => {
     env = new Environment(app, analytics);
     await env.initialize();
     createWindow(env);
-    globalShortcut.register('Control+Shift+I', () => { win.webContents.openDevTools(); })
 })
 
 //Quit the application when all windows are closed, except for darwin
