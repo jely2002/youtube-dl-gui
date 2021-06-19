@@ -104,13 +104,12 @@ function startCriticalHandlers(env) {
             }
         })
 
-
-            let appUpdater = new AppUpdater(env, win);
-            env.appUpdater = appUpdater;
-            if(!this.appPath.includes("\\AppData\\Local\\Temp\\")) {
-                //Don't check the app when it is in portable mode
-                appUpdater.checkUpdate();
-            }
+        let appUpdater = new AppUpdater(env, win);
+        env.appUpdater = appUpdater;
+        if(!env.paths.appPath.includes("\\AppData\\Local\\Temp\\")) {
+            //Don't check the app when it is in portable mode
+            appUpdater.checkUpdate();
+        }
 
         ipcMain.handle("installUpdate", () => {
             appUpdater.installUpdate();
@@ -125,7 +124,7 @@ function startCriticalHandlers(env) {
         });
 
         ipcMain.handle('getSelectedSubtitles', (event, args) => {
-           return queryManager.getSelectedSubtitles(args.identifier);
+            return queryManager.getSelectedSubtitles(args.identifier);
         });
 
         ipcMain.handle('videoAction', async (event, args) => {
@@ -336,12 +335,12 @@ ipcMain.handle('cookieFile', async (event,clear) => {
 
 //Show a messagebox with a custom title and message
 ipcMain.handle('messageBox', (event, args) => {
-   dialog.showMessageBoxSync(win, {
-       title: args.title,
-       message: (args.message.startsWith("Youtube-dl returned an empty object")) ? "Youtube-dl returned an empty object" : args.message,
-       type: "none",
-       buttons: [],
-   });
+    dialog.showMessageBoxSync(win, {
+        title: args.title,
+        message: (args.message.startsWith("Youtube-dl returned an empty object")) ? "Youtube-dl returned an empty object" : args.message,
+        type: "none",
+        buttons: [],
+    });
 });
 
 
