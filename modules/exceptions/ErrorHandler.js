@@ -1,5 +1,6 @@
 const Sentry = require("@sentry/electron");
 const Utils = require("../Utils");
+const Path = require("path");
 const fs = require("fs").promises;
 
 class ErrorHandler {
@@ -96,8 +97,12 @@ class ErrorHandler {
 
     async loadErrorDefinitions() {
         try {
-           const data = await fs.readFile("modules/exceptions/errorDefinitions.json");
-           return JSON.parse(data.toString());
+            let path = Path.join(this.env.paths.packedPrefix, "/modules/exceptions/errorDefinitions.json");
+            if(!this.env.paths.app.isPackaged) {
+                path = "modules/exceptions/errorDefinitions.json"
+            }
+            const data = await fs.readFile(path);
+            return JSON.parse(data.toString());
         } catch (e) {
             console.error("Failed loading error definitions.")
             console.error(e);
