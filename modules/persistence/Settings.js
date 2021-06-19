@@ -55,7 +55,8 @@ class Settings {
                 data.downloadThumbnail,
                 data.keepUnmerged,
                 data.calculateTotalSize,
-                data.theme);
+                data.theme
+            );
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);

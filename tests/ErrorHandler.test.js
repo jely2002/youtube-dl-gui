@@ -135,6 +135,10 @@ async function instanceBuilder() {
             testSetting: true
         },
         paths: {
+            app: {
+                isPackaged: false
+            },
+            packedPrefix: "a/prefix",
             testPath: "a/path/yes.txt"
         }
     };
