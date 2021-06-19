@@ -96,7 +96,7 @@ async function init() {
 
     //Add url when user press on the + button
     $('#add-url-btn').on('click', () => {
-       verifyURL();
+        verifyURL();
     });
 
     $('body').on('click', '#install-btn', () => {
@@ -116,9 +116,9 @@ async function init() {
     $('#infoModal .img-overlay, #infoModal .info-img').on('click', () => {
         window.main.invoke("videoAction", {action: "downloadThumb", url: $('#infoModal .info-img').attr("src")});
     }).on('mouseover', () => {
-       $('#infoModal .info-img').addClass("darken");
+        $('#infoModal .info-img').addClass("darken");
     }).on('mouseout', () => {
-       $('#infoModal .info-img').removeClass("darken");
+        $('#infoModal .info-img').removeClass("darken");
     });
 
     $('#infoModal .dismiss').on('click', () => {
@@ -152,6 +152,7 @@ async function init() {
             updateApplication: $('#updateApplication').prop('checked'),
             autoFillClipboard: $('#autoFillClipboard').prop('checked'),
             outputFormat: $('#outputFormat').val(),
+            audioOutputFormat: $('#audioOutputFormat').val(),
             proxy: $('#proxySetting').val(),
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
             validateCertificate: $('#validateCertificate').prop('checked'),
@@ -179,7 +180,7 @@ async function init() {
     $('#nameFormat').on('change', function() {
         const value = this.selectedOptions[0].value
         if(value !== "custom") {
-           $('#nameFormatCustom').val(value).prop("disabled", true)
+            $('#nameFormatCustom').val(value).prop("disabled", true)
         } else {
             $('#nameFormatCustom').val(window.settings.nameFormat).prop("disabled", false)
         }
@@ -194,9 +195,10 @@ async function init() {
             $('#taskList').prop('checked', settings.taskList);
             $('#autoFillClipboard').prop('checked', settings.autoFillClipboard);
             $('#proxySetting').val(settings.proxy);
-            $('#nameFormatCustom').val(settings.nameFormat);
+            $('#nameFormatCustom').val(settings.nameFormat).prop("disabled", settings.nameFormatMode === "custom");
             $('#nameFormat').val(settings.nameFormatMode);
             $('#outputFormat').val(settings.outputFormat);
+            $('#audioOutputFormat').val(settings.audioOutputFormat);
             $('#downloadMetadata').prop('checked', settings.downloadMetadata);
             $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
             $('#keepUnmerged').prop('checked', settings.keepUnmerged);
@@ -401,11 +403,11 @@ async function init() {
 
 function verifyURL() {
     const value = $('#add-url').val()
-    if(linkCopied && (value == null || value.length === 0)) {
+    if (linkCopied && (value == null || value.length === 0)) {
         parseURL($('#add-url').prop('placeholder'));
         $('#url-form').trigger('reset');
-    } else if($('#url-form')[0].checkValidity()) {
-        if(value != null && value.length > 0) {
+    } else if ($('#url-form')[0].checkValidity()) {
+        if (value != null && value.length > 0) {
             parseURL(value);
             $('#url-form').trigger('reset');
         }
@@ -672,6 +674,7 @@ function updateProgress(args) {
             $(card).find('.progress-bar').attr('aria-valuenow', 100).css('width', "100%");
             $(card).find('.options').addClass("d-none").removeClass("d-flex");
             $(card).find('.info').addClass("d-none").removeClass("d-flex");
+            $(card).find('.progress-bar').removeClass("progress-bar-striped")
             $(card).find('.open .item').addClass("d-none");
             $(card).find('.open .folder').html("Show files in folder");
             $(card).find('.open').addClass("d-flex");
@@ -680,6 +683,7 @@ function updateProgress(args) {
             else $(card).find('.progress small').html((args.progress.isAudio ? "Audio" : "Video") + " downloaded - 100%");
             $(card).find('.progress-bar').attr('aria-valuenow', 100).css('width', "100%");
             $(card).find('.options').addClass("d-none").removeClass("d-flex");
+            $(card).find('.progress-bar').removeClass("progress-bar-striped")
             $(card).find('.open').addClass("d-flex");
             if(window.settings.nameFormatMode === "custom") $(card).find('.open .item').prop("disabled", true)
         }
@@ -695,8 +699,13 @@ function updateProgress(args) {
     } else if(args.progress.percentage != null) {
         if(parseFloat(args.progress.percentage.slice(0, -1)) > parseFloat($(card).find('.progress-bar').attr("aria-valuenow"))) {
             $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
-            if(args.progress.isAudio == null) $(card).find('.progress small').html("Downloading item - " + args.progress.percentage);
-            else $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
+            if(args.progress.percentage.slice(0, -1) === "100.0") {
+                $(card).find('.progress-bar').addClass("progress-bar-striped")
+                $(card).find('.progress small').html("Converting with FFmpeg");
+            } else {
+                if (args.progress.isAudio == null) $(card).find('.progress small').html("Downloading item - " + args.progress.percentage);
+                else $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
+            }
             if(!progressCooldown.includes(args.identifier)) {
                 progressCooldown.push(args.identifier);
                 $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta);
@@ -791,7 +800,7 @@ async function updateVideoSettings(identifier) {
 
 function updateAllVideoSettings() {
     $('.video-cards').children().each(function () {
-       updateVideoSettings($(this).prop("id"));
+        updateVideoSettings($(this).prop("id"));
     });
 }
 
@@ -956,7 +965,7 @@ function setError(code, description, unexpected, identifier, url) {
         if($(this).hasClass("remove-btn") || $(this).hasClass("info-btn")) {
             $(this).removeClass("disabled").find('i').removeClass("disabled");
         } else if($(this).hasClass("subtitle-btn")) {
-           changeSubsToRetry(url, card);
+            changeSubsToRetry(url, card);
         } else {
             $(this).addClass("disabled").find('i').addClass("disabled");
         }

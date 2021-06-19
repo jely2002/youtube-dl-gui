@@ -21,15 +21,19 @@ class DownloadQuery extends Query {
         let output = path.join(this.environment.paths.downloadPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
         if(this.video.audioOnly) {
             let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
+            const audioOutputFormat = this.environment.settings.audioOutputFormat;
+            console.log(audioOutputFormat);
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,
-                '--audio-format', 'mp3',
+                '--audio-format', audioOutputFormat,
                 '--ffmpeg-location', this.environment.paths.ffmpeg,
                 '--no-mtime',
-                '--embed-thumbnail',
                 '-o', output,
                 '--output-na-placeholder', ""
             ];
+            if(audioOutputFormat === "m4a" || audioOutputFormat === "mp3") {
+                args.push("--embed-thumbnail");
+            }
         } else {
             if (this.video.formats.length !== 0) {
                 let format;

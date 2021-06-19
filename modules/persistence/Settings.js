@@ -2,10 +2,11 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, proxy, autoFillClipboard, spoofUserAgent, validateCertificate, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
+    constructor(paths, env, outputFormat, audioOutputFormat, proxy, autoFillClipboard, spoofUserAgent, validateCertificate, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
+        this.audioOutputFormat = audioOutputFormat == null ? "mp3" : audioOutputFormat;
         this.proxy = proxy == null ? "" : proxy;
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
         this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
@@ -31,7 +32,30 @@ class Settings {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(paths, env, data.outputFormat, data.proxy, data.autoFillClipboard, data.spoofUserAgent, data.validateCertificate, data.taskList, data.nameFormat, data.nameFormatMode, data.sizeMode, data.splitMode, data.maxConcurrent, data.updateBinary, data.updateApplication, data.cookiePath, data.statSend, data.downloadMetadata, data.downloadThumbnail, data.keepUnmerged, data.calculateTotalSize, data.theme);
+            return new Settings(
+                paths,
+                env,
+                data.outputFormat,
+                data.audioOutputFormat,
+                data.proxy,
+                data.autoFillClipboard,
+                data.spoofUserAgent,
+                data.validateCertificate,
+                data.taskList,
+                data.nameFormat,
+                data.nameFormatMode,
+                data.sizeMode,
+                data.splitMode,
+                data.maxConcurrent,
+                data.updateBinary,
+                data.updateApplication,
+                data.cookiePath,
+                data.statSend,
+                data.downloadMetadata,
+                data.downloadThumbnail,
+                data.keepUnmerged,
+                data.calculateTotalSize,
+                data.theme);
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
@@ -43,6 +67,7 @@ class Settings {
 
     update(settings) {
         this.outputFormat = settings.outputFormat;
+        this.audioOutputFormat = settings.audioOutputFormat;
         this.proxy = settings.proxy;
         this.autoFillClipboard = settings.autoFillClipboard;
         this.spoofUserAgent = settings.spoofUserAgent;
@@ -71,6 +96,7 @@ class Settings {
     serialize() {
         return {
             outputFormat: this.outputFormat,
+            audioOutputFormat: this.audioOutputFormat,
             proxy: this.proxy,
             autoFillClipboard: this.autoFillClipboard,
             spoofUserAgent: this.spoofUserAgent,
