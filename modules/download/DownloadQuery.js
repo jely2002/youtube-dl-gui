@@ -22,7 +22,6 @@ class DownloadQuery extends Query {
         if(this.video.audioOnly) {
             let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
             const audioOutputFormat = this.environment.settings.audioOutputFormat;
-            console.log(audioOutputFormat);
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,
                 '--audio-format', audioOutputFormat,
