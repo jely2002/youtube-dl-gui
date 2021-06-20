@@ -15,7 +15,7 @@ class Environment {
         this.mainAudioQuality = "best";
         this.mainDownloadSubs = false;
         this.doneAction = "Do nothing";
-        this.paths = new Filepaths(app);
+        this.paths = new Filepaths(app, this);
         this.downloadLimiter = new Bottleneck({
             trackDoneStatus: true,
             maxConcurrent: 4,
@@ -45,6 +45,7 @@ class Environment {
         } else {
             this.pythonCommand = "python";
         }
+        await this.paths.validateDownloadPath();
     }
 
     changeMaxConcurrent(max) {

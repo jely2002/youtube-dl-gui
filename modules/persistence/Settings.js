@@ -2,11 +2,12 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, audioOutputFormat, proxy, autoFillClipboard, spoofUserAgent, validateCertificate, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
+    constructor(paths, env, outputFormat, audioOutputFormat, downloadPath, proxy, autoFillClipboard, spoofUserAgent, validateCertificate, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
         this.audioOutputFormat = audioOutputFormat == null ? "mp3" : audioOutputFormat;
+        this.downloadPath = downloadPath == null ? env.app.getPath("downloads") : downloadPath;
         this.proxy = proxy == null ? "" : proxy;
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
         this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
@@ -37,6 +38,7 @@ class Settings {
                 env,
                 data.outputFormat,
                 data.audioOutputFormat,
+                data.downloadPath,
                 data.proxy,
                 data.autoFillClipboard,
                 data.spoofUserAgent,
@@ -69,6 +71,7 @@ class Settings {
     update(settings) {
         this.outputFormat = settings.outputFormat;
         this.audioOutputFormat = settings.audioOutputFormat;
+        this.downloadPath = settings.downloadPath;
         this.proxy = settings.proxy;
         this.autoFillClipboard = settings.autoFillClipboard;
         this.spoofUserAgent = settings.spoofUserAgent;
@@ -98,6 +101,7 @@ class Settings {
         return {
             outputFormat: this.outputFormat,
             audioOutputFormat: this.audioOutputFormat,
+            downloadPath: this.downloadPath,
             proxy: this.proxy,
             autoFillClipboard: this.autoFillClipboard,
             spoofUserAgent: this.spoofUserAgent,

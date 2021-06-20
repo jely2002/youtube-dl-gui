@@ -294,14 +294,17 @@ ipcMain.handle('titlebarClick', (event, arg) => {
 //Show a dialog to select a folder, and return the selected value.
 ipcMain.handle('downloadFolder', async () => {
     await dialog.showOpenDialog(win, {
-        defaultPath: env.paths.downloadPath,
+        defaultPath:  env.settings.downloadPath,
         buttonLabel: "Set download location",
         properties: [
             'openDirectory',
             'createDirectory'
         ]
     }).then(result => {
-        if(result.filePaths[0] != null) env.paths.downloadPath = result.filePaths[0];
+        if(result.filePaths[0] != null) {
+            env.settings.downloadPath = result.filePaths[0];
+            env.settings.save();
+        }
     });
 });
 
@@ -316,7 +319,7 @@ ipcMain.handle('cookieFile', async (event,clear) => {
     }
     let result = await dialog.showOpenDialog(win, {
         buttonLabel: "Select file",
-        defaultPath: (env.settings.cookiePath != null) ? env.settings.cookiePath : env.paths.downloadPath,
+        defaultPath: (env.settings.cookiePath != null) ? env.settings.cookiePath : env.settings.downloadPath,
         properties: [
             'openFile',
             'createDirectory'

@@ -3,15 +3,10 @@ const mkdirp = require("mkdirp");
 const fs = require("fs");
 
 class Filepaths {
-    constructor(app) {
+    constructor(app, env) {
         this.app = app;
+        this.env = env;
         this.platform = process.platform;
-        try {
-            this.downloadPath = this.app.getPath('downloads');
-        } catch(e) {
-            console.warn("Using executable path as download location, as downloads was not found.");
-            this.downloadPath = this.app.getPath('exe');
-        }
         this.appPath = this.app.getAppPath();
     }
 
@@ -64,6 +59,27 @@ class Filepaths {
                 this.setPermissions()
                 break;
         }
+    }
+
+    async validateDownloadPath() {
+        const setPath = this.env.settings.downloadPath;
+        try {
+            await fs.promises.access(setPath);
+            this.env.settings.downloadPath = setPath;
+        } catch (e) {
+            console.log("The configured download path could not be found, switching to downloads folder.");
+            this.setDefaultDownloadPath();
+        }
+    }
+
+    setDefaultDownloadPath() {
+        try {
+            this.env.settings.downloadPath = this.app.getPath('downloads');
+        } catch(e) {
+            console.warn("Using executable path as download location, as downloads was not found.");
+            this.env.settings.downloadPath = this.app.getPath('exe');
+        }
+        this.appPath = this.app.getAppPath();
     }
 
     detectPlatform() {

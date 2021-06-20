@@ -343,7 +343,7 @@ class QueryManager {
     stopDownload(identifier) {
         let video = this.getVideo(identifier);
         if (video.query != null) {
-               video.query.cancel();
+            video.query.cancel();
         }
         this.removeVideo(video);
     }
@@ -436,7 +436,7 @@ class QueryManager {
     async saveInfo(identifier) {
         let video = this.getVideo(identifier);
         let result = await dialog.showSaveDialog(this.window, {
-            defaultPath: path.join(this.environment.paths.downloadPath, "metadata_" + video.url.slice(-11)),
+            defaultPath: path.join(this.environment.settings.downloadPath, "metadata_" + video.url.slice(-11)),
             buttonLabel: "Save metadata",
             filters: [
                 { name: "JSON", extensions: ["json"] },
@@ -451,7 +451,7 @@ class QueryManager {
 
     async saveThumb(link) {
         let result = await dialog.showSaveDialog(this.window, {
-            defaultPath: path.join(this.environment.paths.downloadPath, "thumb_" + path.basename(url.parse(link).pathname)),
+            defaultPath: path.join(this.environment.settings.downloadPath, "thumb_" + path.basename(url.parse(link).pathname)),
             buttonLabel: "Save thumbnail",
             filters: [
                 { name: "Images", extensions: ["jpeg", "jpg", "png", "webp", "tiff", "bmp"] },

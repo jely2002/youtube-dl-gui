@@ -41,7 +41,9 @@ class Video {
     setQuery(query) {
         this.query = query;
         //Set the download path when the video was downloaded
-        this.downloadedPath = this.environment.paths.downloadPath;
+        this.environment.paths.validateDownloadPath().then(() => {
+            this.downloadedPath = this.environment.settings.downloadPath;
+        })
     }
 
     serialize() {
