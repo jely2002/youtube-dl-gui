@@ -56,7 +56,9 @@ contextBridge.exposeInMainWorld(
                 "updateGlobalButtons",
                 "updateLinkPlaceholder",
                 "totalSize",
-                "binaryLock"
+                "binaryLock",
+                "addShortcut",
+                "downloadShortcut"
             ];
             if (validChannels.includes(channel)) {
                 ipcRenderer.on(channel, (event, arg) => {

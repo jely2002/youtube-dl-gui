@@ -38,6 +38,15 @@ async function init() {
         linkCopied = args.copied;
     });
 
+    // Verify the url when the addShortcut gets used
+    window.main.receive("addShortcut", (link) => {
+        verifyURL(link);
+    })
+
+    window.main.receive("downloadShortcut", () => {
+        $('#downloadBtn').click();
+    })
+
     //Init the when done dropdown
     $('.dropdown-toggle').dropdown();
     const availableOptions = await window.main.invoke('getDoneActions');
@@ -88,7 +97,7 @@ async function init() {
     //Add url when user presses enter, but prevent default behavior
     $(document).on("keydown", "form", function(event) {
         if(event.key == "Enter") {
-            verifyURL();
+            verifyURL($('#add-url').val());
             return false;
         }
         return true
@@ -96,7 +105,7 @@ async function init() {
 
     //Add url when user press on the + button
     $('#add-url-btn').on('click', () => {
-        verifyURL();
+        verifyURL($('#add-url').val());
     });
 
     $('body').on('click', '#install-btn', () => {
@@ -401,8 +410,7 @@ async function init() {
     });
 }
 
-function verifyURL() {
-    const value = $('#add-url').val()
+function verifyURL(value) {
     if (linkCopied && (value == null || value.length === 0)) {
         parseURL($('#add-url').prop('placeholder'));
         $('#url-form').trigger('reset');
