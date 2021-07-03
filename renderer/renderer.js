@@ -38,7 +38,7 @@ async function init() {
         linkCopied = args.copied;
     });
 
-    // Verify the url when the addShortcut gets used
+    //Verify the url when the addShortcut gets used
     window.main.receive("addShortcut", (link) => {
         verifyURL(link);
     })

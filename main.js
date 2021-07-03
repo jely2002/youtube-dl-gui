@@ -72,7 +72,7 @@ function startCriticalHandlers(env) {
             win.webContents.send("downloadShortcut");
         });
 
-        // Restore the videos from last session
+        //Restore the videos from last session
         ipcMain.handle("restoreTaskList", () => {
             taskList.restore()
         });
