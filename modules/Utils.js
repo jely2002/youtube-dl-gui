@@ -198,13 +198,13 @@ class Utils {
         if(metadata == null) actualMetadata = {};
         let formatParsed = format;
         const regex = new RegExp(/%\((\w+)\)(s?)/g);
-        let z;
-        while((z=regex.exec(formatParsed)) != null) {
-            if(z[1] != null) {
-                if(actualMetadata[z[1]] != null) {
-                    formatParsed = formatParsed.replace(z[0], actualMetadata[z[1]]);
-                }
-            }
+        const placeholders = format.matchAll(regex);
+        for(const match of placeholders) {
+            if(match == null) continue;
+            if(match[0] == null || match[1] == null) continue;
+            const placeholderValue = actualMetadata[match[1]];
+            if(placeholderValue == null) continue;
+            formatParsed = formatParsed.replace(match[0], placeholderValue)
         }
         return formatParsed;
     }
