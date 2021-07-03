@@ -305,6 +305,7 @@ class QueryManager {
 
     removeVideo(video) {
         this.managedVideos = this.managedVideos.filter(item => item.identifier !== video.identifier);
+        this.playlistMetadata = this.playlistMetadata.filter(item => item.video_url !== video.url && item.playlist_url !== video.url);
         this.window.webContents.send("videoAction", { action: "remove", identifier: video.identifier })
     }
 
@@ -518,10 +519,22 @@ class QueryManager {
 
     getTaskList() {
         const urlList = []
+        const filteredUrlList = [];
         for(const video of this.managedVideos) {
             urlList.push(video.url)
         }
-        return urlList
+        for(const video of this.playlistMetadata) {
+            for(let i = 0; i < urlList.length; i++) {
+                if(urlList[i] === video.video_url || urlList[i] === video.playlist_url) {
+                    urlList.splice(i, 1);
+                    i--;
+                    filteredUrlList.push(video.playlist_url);
+                } else {
+                    filteredUrlList.push(urlList[i]);
+                }
+            }
+        }
+        return [...new Set(filteredUrlList)]
     }
 
     loadTaskList(taskList) {
