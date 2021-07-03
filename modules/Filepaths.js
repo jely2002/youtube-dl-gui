@@ -67,7 +67,7 @@ class Filepaths {
             await fs.promises.access(setPath);
             this.env.settings.downloadPath = setPath;
         } catch (e) {
-            console.log("The configured download path could not be found, switching to downloads folder.");
+            console.warn("The configured download path could not be found, switching to downloads folder.");
             this.setDefaultDownloadPath();
         }
     }
@@ -76,10 +76,9 @@ class Filepaths {
         try {
             this.env.settings.downloadPath = this.app.getPath('downloads');
         } catch(e) {
-            console.warn("Using executable path as download location, as downloads was not found.");
-            this.env.settings.downloadPath = this.app.getPath('exe');
+            console.warn("Using home path as download location, as downloads was not found.");
+            this.env.settings.downloadPath = this.app.getPath('home');
         }
-        this.appPath = this.app.getAppPath();
     }
 
     detectPlatform() {

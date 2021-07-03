@@ -71,7 +71,6 @@ class Settings {
     update(settings) {
         this.outputFormat = settings.outputFormat;
         this.audioOutputFormat = settings.audioOutputFormat;
-        this.downloadPath = settings.downloadPath;
         this.proxy = settings.proxy;
         this.autoFillClipboard = settings.autoFillClipboard;
         this.spoofUserAgent = settings.spoofUserAgent;
@@ -88,7 +87,8 @@ class Settings {
         if(this.maxConcurrent !== settings.maxConcurrent) {
             this.maxConcurrent = settings.maxConcurrent;
             this.env.changeMaxConcurrent(settings.maxConcurrent);
-        }this.updateBinary = settings.updateBinary;
+        }
+        this.updateBinary = settings.updateBinary;
         this.updateApplication = settings.updateApplication;
         this.theme = settings.theme;
         this.save();
