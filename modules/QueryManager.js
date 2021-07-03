@@ -534,7 +534,12 @@ class QueryManager {
                 }
             }
         }
-        return [...new Set(filteredUrlList)]
+        const dedupedFilteredUrlList = [...new Set(filteredUrlList)];
+        if(dedupedFilteredUrlList.length === 0) {
+            return urlList;
+        } else {
+            return dedupedFilteredUrlList;
+        }
     }
 
     loadTaskList(taskList) {

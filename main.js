@@ -216,10 +216,14 @@ app.on('ready', async () => {
     createWindow(env);
 })
 
+app.on('before-quit', async () => {
+    await taskList.save();
+})
+
 //Quit the application when all windows are closed, except for darwin
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        taskList.save().finally(() => app.quit())
+        app.quit();
     }
 });
 
