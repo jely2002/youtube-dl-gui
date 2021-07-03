@@ -17,8 +17,8 @@ jobs:
       - name: Run wingetcreate
         env:
           APP_VERSION: ${{ github.event.inputs.version }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
         shell: cmd
         run: |
           curl https://aka.ms/wingetcreate/latest -L --output wingetcreate.exe
-          wingetcreate.exe update jely2002.youtube-dl-gui -s true -u https://github.com/jely2002/youtube-dl-gui/releases/download/v%APP_VERSION%/YouTube-Downloader-GUI-Setup-%APP_VERSION%.exe -v %APP_VERSION%  -t %GITHUB_TOKEN%
+          wingetcreate.exe update jely2002.youtube-dl-gui -s true -u https://github.com/jely2002/youtube-dl-gui/releases/download/v%APP_VERSION%/YouTube-Downloader-GUI-Setup-%APP_VERSION%.exe -v %APP_VERSION%  -t %WINGET_TOKEN%
