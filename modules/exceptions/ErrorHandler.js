@@ -50,6 +50,7 @@ class ErrorHandler {
     raiseUnhandledError(code, error, identifier) {
         const video = this.queryManager.getVideo(identifier);
         if(video == null) return;
+        if(code.includes("[debug]")) return;
         if(video.type === "playlist") return;
         let errorDef = {
             identifier: identifier,

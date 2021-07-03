@@ -18,6 +18,21 @@
     ]
   },
   {
+    "code": "Blocked in country",
+    "description": "The uploader has blocked this video in your country.",
+    "trigger": " The uploader has not made this video available in your country"
+  },
+  {
+    "code": "Blocked",
+    "description": "This video is blocked for an unspecified reason.",
+    "trigger": " The video is blocked"
+  },
+  {
+    "code": "Channel unavailable",
+    "description": "This channel is currently not available.",
+    "trigger": "This channel is not available"
+  },
+  {
     "code": "No connection could be made",
     "description": "The host or your internet/proxy connection is down.",
     "trigger": "getaddrinfo failed"
@@ -84,7 +99,10 @@
   {
     "code": "Unable to extract initial data",
     "description": "Please do try again in a moment.",
-    "trigger": "ERROR: Unable to extract yt initial data"
+    "trigger": [
+      "ERROR: Unable to extract yt initial data",
+      "Did not get any data blocks"
+      ]
   },
   {
     "code": "No write permission",
@@ -224,5 +242,20 @@
     "code": "Not premiered yet",
     "description": "This video hasn't premiered yet.",
     "trigger": "Premieres in"
+  },
+  {
+    "code": "Copyright claimed",
+    "description": "This video was blocked because of a copyright claim.",
+    "trigger": "who has blocked it on copyright grounds"
+  },
+  {
+    "code": "Cannot allocate memory",
+    "description": "FFmpeg has run out of memory, converting failed.",
+    "trigger": "Cannot allocate memory"
+  },
+  {
+    "code": "Livestream not started yet",
+    "description": "Wait for the livestream to start.",
+    "trigger": "This live event will begin in a few moments."
   }
 ]
