@@ -19,6 +19,10 @@ class ErrorHandler {
             console.error("An error has occurred but no error message was given.")
             return false;
         }
+        if(stderr.includes("WARNING")) {
+            console.warn(stderr);
+            return;
+        }
         for(const errorDef of this.errorDefinitions) {
             if(Array.isArray(errorDef.trigger)) {
                 for(const trigger of errorDef.trigger) {
