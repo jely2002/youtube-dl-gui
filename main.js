@@ -114,7 +114,7 @@ function startCriticalHandlers(env) {
 
         let appUpdater = new AppUpdater(env, win);
         env.appUpdater = appUpdater;
-        if(!env.paths.appPath.includes("\\AppData\\Local\\Temp\\")) {
+        if(!env.paths.appPath.includes("\\AppData\\Local\\Temp\\") && !env.paths.appPath.includes("WindowsApps")) {
             //Don't check the app when it is in portable mode
             appUpdater.checkUpdate();
         }

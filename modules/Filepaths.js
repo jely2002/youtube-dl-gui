@@ -6,15 +6,15 @@ class Filepaths {
     constructor(app, env) {
         this.app = app;
         this.env = env;
-        this.platform = process.platform;
         this.appPath = this.app.getAppPath();
+        this.platform = this.detectPlatform();
     }
 
      async generateFilepaths() {
         switch (this.detectPlatform()) {
             case "win32":
-                this.unpackedPrefix = "resources/app.asar.unpacked";
-                this.packedPrefix = "resources/app.asar";
+                this.unpackedPrefix = path.join(path.dirname(this.appPath), "app.asar.unpacked");
+                this.packedPrefix = this.appPath;
                 this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpeg.exe") : "binaries/ffmpeg.exe";
                 this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/youtube-dl.exe") : "binaries/youtube-dl.exe";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
@@ -22,11 +22,26 @@ class Filepaths {
                 this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
                 this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
                 break;
+            case "win32app":
+                const appDir = path.basename(path.join(this.appPath, "../../..")).replace(/_(.*)_/g, "_");
+                console.log(appDir)
+                this.binaryPath = path.join(this.app.getPath('home'), "AppData/Local/Packages/" + appDir + "/LocalCache/Roaming/open-video-downloader-app");
+                this.persistentPath = path.join(this.app.getPath("appData"), "open-video-downloader-app");
+                this.unpackedPrefix = path.join(path.dirname(this.appPath), "app.asar.unpacked");
+                this.packedPrefix = this.appPath;
+                await this.createAppDataFolder();
+                this.ffmpeg = path.join(this.binaryPath, "ffmpeg.exe");
+                this.ytdl = path.join(this.binaryPath, "youtube-dl.exe");
+                this.icon = path.join(this.packedPrefix, "renderer/img/icon.png");
+                this.settings = path.join(this.binaryPath, "userSettings");
+                this.taskList = path.join(this.binaryPath, "taskList");
+                this.ytdlVersion = path.join(this.binaryPath, "ytdlVersion");
+                break;
             case "win32portable":
                 this.persistentPath = path.join(this.app.getPath('appData'), "youtube-dl-gui-portable");
-                this.unpackedPrefix = "resources/app.asar.unpacked";
-                this.packedPrefix = "resources/app.asar";
-                await this.createPortableFolder();
+                this.unpackedPrefix = path.join(path.dirname(this.appPath), "app.asar.unpacked");
+                this.packedPrefix = this.appPath;
+                await this.createAppDataFolder();
                 this.ffmpeg = path.join(this.persistentPath, "ffmpeg.exe");
                 this.ytdl = path.join(this.persistentPath, "youtube-dl.exe");
                 this.icon = path.join(this.packedPrefix, "renderer/img/icon.png");
@@ -83,7 +98,8 @@ class Filepaths {
 
     detectPlatform() {
         if(this.appPath.includes("\\AppData\\Local\\Temp\\")) return "win32portable";
-        else return this.platform;
+        else if(this.appPath.includes("WindowsApps")) return "win32app"
+        else return process.platform;
     }
 
     setPermissions() {
@@ -95,12 +111,13 @@ class Filepaths {
         });
     }
 
-    async createPortableFolder() {
+    async createAppDataFolder() {
         await new Promise((resolve) => {
             mkdirp(this.persistentPath).then(made => {
                 if (made != null) {
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/youtube-dl.exe"), path.join(this.persistentPath, "youtube-dl.exe"));
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ffmpeg.exe"), path.join(this.persistentPath, "ffmpeg.exe"));
+                    fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/AtomicParsley.exe"), path.join(this.persistentPath, "AtomicParsley.exe"));
                     fs.copyFileSync(path.join(this.unpackedPrefix, "binaries/ytdlVersion"), path.join(this.persistentPath, "ytdlVersion"));
                 }
                 resolve();
