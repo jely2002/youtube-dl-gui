@@ -23,7 +23,6 @@ class Video {
     }
 
     setFilename(liveData) {
-        console.log(liveData)
         if(liveData.includes("[download] Destination: ")) {
             this.filename = path.basename(liveData.replace("[download] Destination: ", ""));
         } else if(liveData.includes("[ffmpeg] Merging formats into \"")) {

@@ -11,7 +11,7 @@ class Filepaths {
     }
 
      async generateFilepaths() {
-        switch (this.detectPlatform()) {
+        switch (this.platform) {
             case "win32":
                 this.unpackedPrefix = path.join(path.dirname(this.appPath), "app.asar.unpacked");
                 this.packedPrefix = this.appPath;
@@ -22,9 +22,8 @@ class Filepaths {
                 this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
                 this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
                 break;
-            case "win32app":
+            case "win32app": {
                 const appDir = path.basename(path.join(this.appPath, "../../..")).replace(/_(.*)_/g, "_");
-                console.log(appDir)
                 this.binaryPath = path.join(this.app.getPath('home'), "AppData/Local/Packages/" + appDir + "/LocalCache/Roaming/open-video-downloader-app");
                 this.persistentPath = path.join(this.app.getPath("appData"), "open-video-downloader-app");
                 this.unpackedPrefix = path.join(path.dirname(this.appPath), "app.asar.unpacked");
@@ -37,6 +36,7 @@ class Filepaths {
                 this.taskList = path.join(this.binaryPath, "taskList");
                 this.ytdlVersion = path.join(this.binaryPath, "ytdlVersion");
                 break;
+            }
             case "win32portable":
                 this.persistentPath = path.join(this.app.getPath('appData'), "youtube-dl-gui-portable");
                 this.unpackedPrefix = path.join(path.dirname(this.appPath), "app.asar.unpacked");

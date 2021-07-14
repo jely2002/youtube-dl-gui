@@ -55,7 +55,7 @@ describe('generate filepaths', () => {
             instance.createHomeFolder = jest.fn().mockResolvedValue(undefined);
             const joinSpy = jest.spyOn(path, 'join').mockReturnValue("path");
             await instance.generateFilepaths();
-            if(platform === "linux") expect(joinSpy).toBeCalledTimes(1);
+            if(platform === "linux" || platform === "win32") expect(joinSpy).toBeCalledTimes(1);
             else expect(joinSpy).not.toBeCalled();
             joinSpy.mockRestore();
         }
@@ -68,12 +68,12 @@ describe('generate filepaths', () => {
        await instance.generateFilepaths();
        expect(instance.createHomeFolder).toBeCalledTimes(1);
    });
-   it('calls create portable folder when this version is used', async () => {
+   it('calls create appdata folder when this version is used', async () => {
        const instance = instanceBuilder(true, true);
-       instance.platform = "win32";
-       instance.createPortableFolder = jest.fn().mockResolvedValue(undefined);
+       instance.platform = "win32portable";
+       instance.createAppDataFolder = jest.fn().mockResolvedValue(undefined);
        await instance.generateFilepaths();
-       expect(instance.createPortableFolder).toBeCalledTimes(1);
+       expect(instance.createAppDataFolder).toBeCalledTimes(1);
    })
    it('sets permissions on darwin and linux', async () => {
        const platforms = ["win32", "linux", "darwin"];
@@ -113,16 +113,16 @@ describe('create portable folder', () => {
         const instance = instanceBuilder(true);
         fs.copyFileSync = jest.fn();
         mkdirp.mockResolvedValue(null);
-        await instance.createPortableFolder();
+        await instance.createAppDataFolder();
         expect(fs.copyFileSync).not.toBeCalled();
     });
-    it('copies 3 files if the directory did not exist yet', async () => {
+    it('copies 4 files if the directory did not exist yet', async () => {
         const instance = instanceBuilder(true);
         fs.copyFileSync = jest.fn();
         const joinSpy = jest.spyOn(path, 'join').mockReturnValue("path");
         mkdirp.mockResolvedValue("path/to/made/directory");
-        await instance.createPortableFolder();
-        expect(fs.copyFileSync).toBeCalledTimes(3);
+        await instance.createAppDataFolder()
+        expect(fs.copyFileSync).toBeCalledTimes(4);
         joinSpy.mockRestore();
     });
 });
