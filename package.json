@@ -1,7 +1,7 @@
 {
   "name": "youtube-dl-gui",
   "version": "2.2.2",
-  "description": "youtube-dl-gui",
+  "description": "Open Video Downloader",
   "main": "main.js",
   "scripts": {
     "start": "electron . --dev",
@@ -61,7 +61,7 @@
       "include": "./build/vcredist.nsh",
       "packElevateHelper": false
     },
-    "productName": "YouTube Downloader GUI",
+    "productName": "Open Video Downloader",
     "copyright": "Copyright © 2020-2021 Jelle Glebbeek",
     "win": {
       "target": "nsis",
@@ -106,12 +106,12 @@
     },
     "linux": {
       "target": "AppImage",
-      "executableName": "youtube-dl-gui",
+      "executableName": "open-video-downloader",
       "icon": "renderer/img/icon.png",
       "synopsis": "A cross-platform GUI for youtube-dl",
       "category": "X-utility",
       "desktop": {
-        "Name": "YouTube-dl-GUI",
+        "Name": "Open-Video-Downloader",
         "Icon": "youtube-dl-gui",
         "Comment": "A cross-platform GUI for youtube-dl"
       },
