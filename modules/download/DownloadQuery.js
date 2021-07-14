@@ -89,6 +89,7 @@ class DownloadQuery extends Query {
         let result = null;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
+                this.video.setFilename(liveData);
                 if (!liveData.includes("[download]")) return;
                 if (!initialReset) {
                     initialReset = true;

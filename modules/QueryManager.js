@@ -351,32 +351,37 @@ class QueryManager {
 
     async openVideo(args) {
         let video = this.getVideo(args.identifier);
+        let file = video.filename;
+        let fallback = false;
         if(video.type === "playlist") {
             shell.openPath(video.downloadedPath);
             return;
         }
-        fs.readdir(video.downloadedPath, (err, files) => {
-            for(const file of files) {
-                if(file.substr(0, file.lastIndexOf(".")) === video.getFilename()) {
-                    if(args.type === "folder") {
-                        shell.showItemInFolder(path.join(video.downloadedPath, file));
-                    } else if(args.type === "item") {
-                        shell.openPath(path.join(video.downloadedPath, file));
-                    } else {
-                        console.error("Wrong openVideo type specified.")
+        if(file == null) {
+            fs.readdir(video.downloadedPath, (err, files) => {
+                for (const searchFile of files) {
+                    if (file.substr(0, file.lastIndexOf(".")) === video.getFilename()) {
+                        file = searchFile;
+                        break;
                     }
-                    return;
                 }
-            }
-            //Fallback
-            if(args.type === "folder") {
+                if(file == null) {
+                    fallback = true;
+                    file = video.getFilename() + ".mp4";
+                }
+            });
+        }
+        if(args.type === "folder") {
+            if(fallback) {
                 shell.openPath(video.downloadedPath);
-            } else if(args.type === "item") {
-                shell.openPath(path.join(video.downloadedPath, video.getFilename()) + ".mp4");
             } else {
-                console.error("Wrong openVideo type specified.")
+                shell.showItemInFolder(path.join(video.downloadedPath, file));
             }
-        });
+        } else if(args.type === "item") {
+            shell.openPath(path.join(video.downloadedPath, file));
+        } else {
+            console.error("Wrong openVideo type specified.")
+        }
     }
 
     getUnifiedAvailableSubtitles(videos) {

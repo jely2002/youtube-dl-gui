@@ -1,4 +1,5 @@
 const Utils = require("../Utils");
+const path = require("path");
 
 class Video {
     constructor(url, type, environment) {
@@ -17,7 +18,22 @@ class Video {
         this.hasMetadata = false;
         this.downloaded = false;
         this.error = false;
+        this.filename = null;
         this.identifier = Utils.getRandomID(32);
+    }
+
+    setFilename(liveData) {
+        console.log(liveData)
+        if(liveData.includes("[download] Destination: ")) {
+            this.filename = path.basename(liveData.replace("[download] Destination: ", ""));
+        } else if(liveData.includes("[ffmpeg] Merging formats into \"")) {
+            const noPrefix = liveData.replace("[ffmpeg] Merging formats into \"", "");
+            this.filename = path.basename(noPrefix.trim().slice(0, -1));
+        } else if(liveData.includes("[ffmpeg] Adding metadata to '")) {
+            const noPrefix = liveData.replace("[ffmpeg] Adding metadata to '", "");
+            this.filename = path.basename(noPrefix.trim().slice(0, -1));
+        }
+        console.log(this.filename)
     }
 
     getFilename() {
