@@ -2,7 +2,7 @@ const fs = require('fs').promises;
 const os = require("os");
 const Settings = require('../modules/persistence/Settings');
 const env = {version: "2.0.0-test1", app: {getPath: jest.fn().mockReturnValue("test/path")}};
-const defaultSettingsInstance = new Settings({settings: "tests/test-settings.json"}, env, "none", "mp3", "test/path", "", true, true, false, true, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s", "%(title).200s-(%(height)sp%(fps).0d).%(ext)s", "click", "49", 8, true, true, "C:\\Users\\user\\cookies.txt", false, true, false, false, true, "dark");
+const defaultSettingsInstance = new Settings({settings: "tests/test-settings.json"}, env, "none", "none", "test/path", "", true, true, false, true, "%(title).200s-(%(height)sp%(fps).0d).%(ext)s", "%(title).200s-(%(height)sp%(fps).0d).%(ext)s", "click", "49", 8, true, true, "C:\\Users\\user\\cookies.txt", false, true, false, false, true, "dark");
 const defaultSettings = "{\"outputFormat\":\"none\",\"audioOutputFormat\":\"none\",\"downloadPath\":\"test/path\",\"proxy\":\"\",\"autoFillClipboard\":true,\"spoofUserAgent\":true,\"validateCertificate\":false,\"taskList\":true,\"nameFormat\":\"%(title).200s-(%(height)sp%(fps).0d).%(ext)s\",\"nameFormatMode\":\"%(title).200s-(%(height)sp%(fps).0d).%(ext)s\",\"sizeMode\":\"click\",\"splitMode\":\"49\",\"maxConcurrent\":8,\"defaultConcurrent\":8,\"updateBinary\":true,\"updateApplication\":true,\"statSend\":false,\"downloadMetadata\":true,\"downloadThumbnail\":false,\"keepUnmerged\":false,\"calculateTotalSize\":true,\"theme\":\"dark\",\"version\":\"2.0.0-test1\"}"
 
 describe('Load settings from file', () => {

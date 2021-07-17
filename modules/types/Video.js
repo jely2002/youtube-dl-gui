@@ -32,7 +32,6 @@ class Video {
             const noPrefix = liveData.replace("[ffmpeg] Adding metadata to '", "");
             this.filename = path.basename(noPrefix.trim().slice(0, -1));
         }
-        console.log(this.filename)
     }
 
     getFilename() {
