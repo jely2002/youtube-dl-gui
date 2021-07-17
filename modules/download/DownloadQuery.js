@@ -24,12 +24,14 @@ class DownloadQuery extends Query {
             const audioOutputFormat = this.environment.settings.audioOutputFormat;
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,
-                '--audio-format', audioOutputFormat,
                 '--ffmpeg-location', this.environment.paths.ffmpeg,
                 '--no-mtime',
                 '-o', output,
                 '--output-na-placeholder', ""
             ];
+            if(audioOutputFormat !== "none") {
+                args.push('--audio-format', audioOutputFormat);
+            }
             if(audioOutputFormat === "m4a" || audioOutputFormat === "mp3") {
                 args.push("--embed-thumbnail");
             }
