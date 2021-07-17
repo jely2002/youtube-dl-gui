@@ -6,7 +6,7 @@ class Settings {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
-        this.audioOutputFormat = audioOutputFormat == null ? "mp3" : audioOutputFormat;
+        this.audioOutputFormat = audioOutputFormat == null ? "none" : audioOutputFormat;
         this.downloadPath = downloadPath == null ? env.app.getPath("downloads") : downloadPath;
         this.proxy = proxy == null ? "" : proxy;
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
