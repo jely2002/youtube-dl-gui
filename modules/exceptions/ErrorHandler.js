@@ -28,6 +28,7 @@ class ErrorHandler {
                 for(const trigger of errorDef.trigger) {
                     if(stderr.includes(trigger)) {
                         if(errorDef.code === "ffmpeg not found" && process.argv[2] === '--dev') return false; //Do not raise a 'ffmpeg not found' error when in dev mode
+                        if(errorDef.code === "Thumbnail embedding not supported") return false; //Do not raise an error when thumbnails can't be embedded due to unsupported container
                         foundError = true;
                         errorDef.trigger = trigger;
                         this.raiseError(errorDef, identifier);
@@ -36,6 +37,7 @@ class ErrorHandler {
                 }
             } else if(stderr.includes(errorDef.trigger)) {
                 if(errorDef.code === "ffmpeg not found" && process.argv[2] === '--dev') return false; //Do not raise a 'ffmpeg not found' error when in dev mode
+                if(errorDef.code === "Thumbnail embedding not supported") return false; //Do not raise an error when thumbnails can't be embedded due to unsupported container
                 foundError = true;
                 this.raiseError(errorDef, identifier);
                 break;

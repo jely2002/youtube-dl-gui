@@ -1,5 +1,6 @@
 const Query = require("../types/Query")
 const path = require("path")
+const fs = require("fs");
 const Utils = require("../Utils")
 
 class DownloadQuery extends Query {
@@ -24,13 +25,15 @@ class DownloadQuery extends Query {
             const audioOutputFormat = this.environment.settings.audioOutputFormat;
             args = [
                 '--extract-audio', '--audio-quality', numeralAudioQuality,
-                '--audio-format', audioOutputFormat,
                 '--ffmpeg-location', this.environment.paths.ffmpeg,
                 '--no-mtime',
                 '-o', output,
                 '--output-na-placeholder', ""
             ];
-            if(audioOutputFormat === "m4a" || audioOutputFormat === "mp3") {
+            if(audioOutputFormat !== "none") {
+                args.push('--audio-format', audioOutputFormat);
+            }
+            if(audioOutputFormat === "m4a" || audioOutputFormat === "mp3" || audioOutputFormat === "none") {
                 args.push("--embed-thumbnail");
             }
         } else {
@@ -118,7 +121,26 @@ class DownloadQuery extends Query {
             this.environment.errorHandler.checkError(exception, this.video.identifier);
             return exception;
         }
+
+        if(this.environment.settings.audioOutputFormat === "none") {
+            await this.removeThumbnail();
+        }
         return result;
+    }
+
+    async removeThumbnail() {
+        const filename = this.video.filename;
+        if(filename != null) {
+            const filenameExt = path.basename(filename, path.extname(filename)) + ".jpg";
+            const filenameAbs = path.join(this.video.downloadedPath, filenameExt);
+            try {
+                await fs.promises.unlink(filenameAbs);
+            } catch(e) {
+                console.error("Unable to remove failed image embed.");
+                console.error(filenameExt);
+                console.error(filenameAbs);
+            }
+        }
     }
 }
 module.exports = DownloadQuery;

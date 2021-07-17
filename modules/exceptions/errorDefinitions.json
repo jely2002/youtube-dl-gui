@@ -257,5 +257,10 @@
     "code": "Livestream not started yet",
     "description": "Wait for the livestream to start.",
     "trigger": "This live event will begin in a few moments."
+  },
+  {
+    "code": "Thumbnail embedding not supported",
+    "description": "Only mp3 and m4a/mp4 are supported for thumbnail embedding for now.",
+    "trigger": "ERROR: Only mp3 and m4a/mp4 are supported for thumbnail embedding for now."
   }
 ]
