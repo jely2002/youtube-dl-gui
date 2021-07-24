@@ -174,6 +174,7 @@ async function init() {
             calculateTotalSize: $('#calculateTotalSize').prop('checked'),
             sizeMode: $('#sizeSetting').val(),
             splitMode: $('#splitMode').val(),
+            rateLimit: $('#ratelimitSetting').val(),
             maxConcurrent: parseInt($('#maxConcurrent').val()),
             theme: $('#theme').val()
         }
@@ -203,6 +204,7 @@ async function init() {
             $('#validateCertificate').prop('checked', settings.validateCertificate);
             $('#taskList').prop('checked', settings.taskList);
             $('#autoFillClipboard').prop('checked', settings.autoFillClipboard);
+            $('#ratelimitSetting').val(settings.rateLimit);
             $('#proxySetting').val(settings.proxy);
             $('#nameFormatCustom').val(settings.nameFormat).prop("disabled", settings.nameFormatMode === "custom");
             $('#nameFormat').val(settings.nameFormatMode);

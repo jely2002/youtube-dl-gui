@@ -39,6 +39,12 @@ class Query {
             args.push("--cookies");
             args.push(this.environment.settings.cookiePath);
         }
+
+        if(this.environment.settings.rateLimit !== "") {
+            args.push("--limit-rate");
+            args.push(this.environment.settings.rateLimit + "K");
+        }
+
         args.push(url) //Url must always be added as the final argument
 
         let command = this.environment.paths.ytdl; //Set the command to be executed

@@ -2,13 +2,14 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, audioOutputFormat, downloadPath, proxy, autoFillClipboard, spoofUserAgent, validateCertificate, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
+    constructor(paths, env, outputFormat, audioOutputFormat, downloadPath, proxy, rateLimit, autoFillClipboard, spoofUserAgent, validateCertificate, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
         this.audioOutputFormat = audioOutputFormat == null ? "none" : audioOutputFormat;
         this.downloadPath = downloadPath == null ? env.app.getPath("downloads") : downloadPath;
         this.proxy = proxy == null ? "" : proxy;
+        this.rateLimit = rateLimit == null ? "" : rateLimit;
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
         this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
         this.validateCertificate = validateCertificate == null ? false : validateCertificate;
@@ -40,6 +41,7 @@ class Settings {
                 data.audioOutputFormat,
                 data.downloadPath,
                 data.proxy,
+                data.rateLimit,
                 data.autoFillClipboard,
                 data.spoofUserAgent,
                 data.validateCertificate,
@@ -72,6 +74,7 @@ class Settings {
         this.outputFormat = settings.outputFormat;
         this.audioOutputFormat = settings.audioOutputFormat;
         this.proxy = settings.proxy;
+        this.rateLimit = settings.rateLimit;
         this.autoFillClipboard = settings.autoFillClipboard;
         this.spoofUserAgent = settings.spoofUserAgent;
         this.validateCertificate = settings.validateCertificate;
@@ -103,6 +106,7 @@ class Settings {
             audioOutputFormat: this.audioOutputFormat,
             downloadPath: this.downloadPath,
             proxy: this.proxy,
+            rateLimit: this.rateLimit,
             autoFillClipboard: this.autoFillClipboard,
             spoofUserAgent: this.spoofUserAgent,
             validateCertificate: this.validateCertificate,
