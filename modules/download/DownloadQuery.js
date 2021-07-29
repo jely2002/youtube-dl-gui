@@ -30,6 +30,10 @@ class DownloadQuery extends Query {
                 '-o', output,
                 '--output-na-placeholder', ""
             ];
+            if(this.video.selectedEncoding !== "none") {
+                args.push("-f");
+                args.push("bestaudio[acodec=" + this.video.selectedEncoding + "]/bestaudio");
+            }
             if(audioOutputFormat !== "none") {
                 args.push('--audio-format', audioOutputFormat);
             }
@@ -93,7 +97,10 @@ class DownloadQuery extends Query {
         let result = null;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
-                this.video.setFilename(liveData);
+                const perLine = liveData.split("\n");
+                for(const line of perLine) {
+                    this.video.setFilename(line);
+                }
                 if (!liveData.includes("[download]")) return;
                 if (!initialReset) {
                     initialReset = true;
@@ -122,24 +129,24 @@ class DownloadQuery extends Query {
             this.environment.errorHandler.checkError(exception, this.video.identifier);
             return exception;
         }
-
-        if(this.environment.settings.audioOutputFormat === "none") {
-            await this.removeThumbnail();
+        if(this.video.audioOnly) {
+            await this.removeThumbnail(".jpg");
         }
         return result;
     }
 
-    async removeThumbnail() {
+    async removeThumbnail(extension) {
         const filename = this.video.filename;
         if(filename != null) {
-            const filenameExt = path.basename(filename, path.extname(filename)) + ".jpg";
+            const filenameExt = path.basename(filename, path.extname(filename)) + extension;
             const filenameAbs = path.join(this.video.downloadedPath, filenameExt);
             try {
                 await fs.promises.unlink(filenameAbs);
             } catch(e) {
-                console.error("Unable to remove failed image embed.");
-                console.error(filenameExt);
-                console.error(filenameAbs);
+                console.log("No left-over thumbnail found to remove. (" + filenameExt + ")")
+                if(extension !== ".webp") {
+                    await this.removeThumbnail(".webp");
+                }
             }
         }
     }

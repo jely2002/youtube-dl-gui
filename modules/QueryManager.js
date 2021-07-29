@@ -69,8 +69,14 @@ class QueryManager {
         playlistQuery.start().then((videos) => {
             if(videos.length > this.environment.settings.splitMode) {
                 let totalFormats = [];
+                let totalAudioCodecs = [];
                 playlistVideo.videos = videos;
                 for(const video of videos) {
+                    for(const audioCodec of video.audioCodecs) {
+                        if(!totalAudioCodecs.includes(audioCodec)) {
+                            totalAudioCodecs.push(audioCodec);
+                        }
+                    }
                     for(const format of video.formats) {
                         format.display_name = Format.getDisplayName(format.height, format.fps);
                         totalFormats.push(format);
@@ -89,6 +95,7 @@ class QueryManager {
                         formats: totalFormats,
                         subtitles: this.environment.mainDownloadSubs,
                         thumb: videos[0].thumbnail,
+                        audioCodecs: totalAudioCodecs,
                         title: title,
                         length: videos.length,
                         uploader: uploader,
@@ -125,6 +132,7 @@ class QueryManager {
             subtitles: video.downloadSubs,
             loadSize: this.environment.settings.sizeMode === "full",
             hasFilesizes: video.hasFilesizes,
+            audioCodecs: video.audioCodecs,
             formats: formats,
             selected_format_index: (video.hasMetadata) ? video.selected_format_index : null,
             thumbnail: video.thumbnail

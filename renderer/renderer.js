@@ -564,41 +564,11 @@ async function addVideo(args) {
             $(template).find('.custom-select.download-type').prop("disabled", true);
             $(template).find('.subtitle-btn, .subtitle-btn i').addClass("disabled");
         }
-        for(const format of args.formats) {
-            //Add the quality (1080p60)
-            let option = new Option(format.display_name, format.display_name);
-            $(template).find('.custom-select.download-quality').append(option);
-            $(option).addClass("video");
 
-            //Add the encoding (vp9) associated with the quality (1080p60)
-            for(const encoding of format.encodings) {
-                let encodingOption = new Option(encoding, encoding);
-                $(template).find('.custom-select.download-encoding').append(encodingOption);
-                $(encodingOption).addClass(format.display_name);
-            }
-        }
+       setCodecs(template, args.audioCodecs, args.formats);
 
         $(template).find('.custom-select.download-quality').on('change', function () {
-            const newValue = this.value;
-            const encodingValue = $(template).find('.custom-select.download-encoding :selected').val();
-            for(const elem of $(template).find('.custom-select.download-encoding option')) {
-                if($(elem).hasClass(newValue)) {
-                    $(elem).show();
-                } else if(!$(elem).hasClass("none")) {
-                    $(elem).hide();
-                }
-            }
-            let foundElement = false;
-            for(const elem of $(template).find('.custom-select.download-encoding option')) {
-                if($(elem).val() === encodingValue && $(elem).hasClass(newValue)) {
-                    $(elem).attr('selected','selected');
-                    foundElement = true;
-                    break;
-                }
-            }
-            if(!foundElement) {
-                $(template).find('.custom-select.download-encoding').val("none");
-            }
+           updateCodecs(template, this.value);
         });
 
         $(template).find('.custom-select.download-type').change();
@@ -768,7 +738,29 @@ async function setUnifiedPlaylist(args) {
         $(card).find('.download-btn i, .download-btn, .subtitle-btn, .subtitle-btn i').addClass("disabled");
     });
 
-    for(const format of args.formats) {
+    setCodecs(card, args.audioCodecs, args.formats);
+
+    $(card).find('.custom-select.download-quality').on('change', function () {
+        updateCodecs(card, this.value);
+    });
+
+    $(card).find('.custom-select.download-type').change();
+
+    $(card).find('.open .folder').on('click', () => {
+        window.main.invoke("videoAction", {action: "open", identifier: args.identifier, type: "folder"});
+    });
+    updateVideoSettings(args.identifier);
+}
+
+function setCodecs(card, audioCodecs, formats) {
+    //Add the audio encoding
+    for(const audioCodec of audioCodecs) {
+        let codecOption = new Option(audioCodec, audioCodec);
+        $(card).find('.custom-select.download-encoding').append(codecOption);
+        $(codecOption).addClass("audio");
+    }
+
+    for(const format of formats) {
         //Add the quality (1080p60)
         let option = new Option(format.display_name, format.display_name);
         $(card).find('.custom-select.download-quality').append(option);
@@ -781,36 +773,30 @@ async function setUnifiedPlaylist(args) {
             $(encodingOption).addClass(format.display_name);
         }
     }
+}
 
-    $(card).find('.custom-select.download-quality').on('change', function () {
-        const newValue = this.value;
-        const encodingValue = $(card).find('.custom-select.download-encoding :selected').val();
-        for(const elem of $(card).find('.custom-select.download-encoding option')) {
-            if($(elem).hasClass(newValue)) {
-                $(elem).show();
-            } else if(!$(elem).hasClass("none")) {
-                $(elem).hide();
-            }
+function updateCodecs(card, newValue) {
+    const encodingValue = $(card).find('.custom-select.download-encoding :selected').val();
+    for(const elem of $(card).find('.custom-select.download-encoding option')) {
+        if($(elem).hasClass("audio") && (newValue === "best" || newValue === "worst")) {
+            $(elem).show();
+        } else if($(elem).hasClass(newValue)) {
+            $(elem).show();
+        } else if(!$(elem).hasClass("none")) {
+            $(elem).hide();
         }
-        let foundElement = false;
-        for(const elem of $(card).find('.custom-select.download-encoding option')) {
-            if($(elem).val() === encodingValue && $(elem).hasClass(newValue)) {
-                $(elem).attr('selected','selected');
-                foundElement = true;
-                break;
-            }
+    }
+    let foundElement = false;
+    for(const elem of $(card).find('.custom-select.download-encoding option')) {
+        if($(elem).val() === encodingValue && $(elem).hasClass(newValue)) {
+            $(elem).attr('selected','selected');
+            foundElement = true;
+            break;
         }
-        if(!foundElement) {
-            $(card).find('.custom-select.download-encoding').val("none");
-        }
-    });
-
-    $(card).find('.custom-select.download-type').change();
-
-    $(card).find('.open .folder').on('click', () => {
-        window.main.invoke("videoAction", {action: "open", identifier: args.identifier, type: "folder"});
-    });
-    updateVideoSettings(args.identifier);
+    }
+    if(!foundElement) {
+        $(card).find('.custom-select.download-encoding').val("none");
+    }
 }
 
 function updateProgress(args) {
@@ -941,7 +927,7 @@ async function updateVideoSettings(identifier) {
         const formats = [];
         $(card).find('.custom-select.download-quality option.video').each(function() {
             formats.push(this.value);
-        })
+        });
         if(formats.includes(qualityValue)) {
             $(card).find('.custom-select.download-quality').val(qualityValue);
         } else {
@@ -964,6 +950,7 @@ async function updateVideoSettings(identifier) {
             $(elem).toggle(isAudio)
         }
     }
+    updateCodecs(card, $(card).find('.custom-select.download-quality').val())
     if($(card).hasClass("unified")) return;
     await settingExists();
     if(oldQuality != null && oldType != null && (oldQuality !== $(card).find('.custom-select.download-quality').val() || oldType !== $(card).find('.custom-select.download-type').val())) {
