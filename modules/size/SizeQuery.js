@@ -12,13 +12,15 @@ class SizeQuery extends Query {
     }
 
     async connect() {
-        let formatArgument = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+        const encoding = this.video.selectedEncoding === "none" ? "" : "[vcodec=" + this.video.selectedEncoding + "]"
+        let formatArgument = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.audioQuality}audio/bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
         if (this.format.fps == null) {
-            formatArgument = `bestvideo[height=${this.format.height}]+${this.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+            formatArgument = `bestvideo[height=${this.format.height}]${encoding}+${this.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
         }
         if(this.audioOnly) {
             formatArgument = `bestvideo+${this.format}audio/bestvideo+bestaudio/best`;
         }
+
         let output = await this.environment.metadataLimiter.schedule(() => this.start(this.video.url, ["-J", "--flat-playlist", "-f", formatArgument]));
         let data = JSON.parse(output);
         let totalSize = 0;

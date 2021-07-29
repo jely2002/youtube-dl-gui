@@ -36,6 +36,7 @@ describe('Serialization', () => {
            height: 1440,
            fps: 30,
            filesize: 999,
+           encodings: [],
            filesize_label: "400 MB",
            display_name: "1440p30"
        });

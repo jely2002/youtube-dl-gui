@@ -119,6 +119,9 @@ async function init() {
     }).on('change', '.custom-select.download-quality', function() {
         const card = $(this).closest('.video-card');
         updateSize($(card).prop('id'), false);
+    }).on('change', '.custom-select.download-encoding', function() {
+        const card = $(this).closest('.video-card');
+        updateSize($(card).prop('id'), false);
     });
 
     $('#download-quality, #download-type').on('change', () => updateAllVideoSettings());
@@ -166,6 +169,7 @@ async function init() {
             proxy: $('#proxySetting').val(),
             spoofUserAgent: $('#spoofUserAgent').prop('checked'),
             validateCertificate: $('#validateCertificate').prop('checked'),
+            enableEncoding: $('#enableEncoding').prop('checked'),
             taskList: $('#taskList').prop('checked'),
             nameFormatMode: $('#nameFormat').val(),
             nameFormat: $('#nameFormatCustom').val(),
@@ -181,6 +185,7 @@ async function init() {
         }
         window.settings = settings;
         window.main.invoke("settingsAction", {action: "save", settings});
+        updateEncodingDropdown(settings.enableEncoding);
         toggleWhiteMode(settings.theme);
     });
 
@@ -203,6 +208,7 @@ async function init() {
             $('#updateApplication').prop('checked', settings.updateApplication);
             $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
             $('#validateCertificate').prop('checked', settings.validateCertificate);
+            $('#enableEncoding').prop('checked', settings.enableEncoding);
             $('#taskList').prop('checked', settings.taskList);
             $('#autoFillClipboard').prop('checked', settings.autoFillClipboard);
             $('#ratelimitSetting').val(settings.rateLimit);
@@ -304,6 +310,7 @@ async function init() {
                         identifier: card.id,
                         url: $(card).find('.url').val(),
                         format: $(card).find('.custom-select.download-quality').val(),
+                        encoding: $(card).find('.custom-select.download-encoding').val(),
                         type: $(card).find('.custom-select.download-type').val(),
                         downloadSubs: !$(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
                     })
@@ -311,12 +318,13 @@ async function init() {
                     videos.push({
                         identifier: card.id,
                         format: $(card).find('.custom-select.download-quality').val(),
+                        encoding: $(card).find('.custom-select.download-encoding').val(),
                         type: $(card).find('.custom-select.download-type').val(),
                         downloadSubs: !$(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
                     })
                 }
                 $(card).find('.progress').addClass("d-flex");
-                $(card).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
+                $(card).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s").show();
                 $(card).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
                 $(card).find('.options').addClass("d-flex");
                 $(card).find('select').addClass("d-none");
@@ -459,6 +467,13 @@ function showToast(toastInfo) {
     if($(`#${toastInfo.type}`).is(':visible')) $(`#${toastInfo.type}`).toast('show').css('visibility', 'visible');
 }
 
+function updateEncodingDropdown(enabled) {
+    $('.video-cards').children().each(function() {
+        $(this).find('.metadata.left').toggle(!enabled);
+        $(this).find('.custom-select.download-encoding').toggle(enabled);
+    })
+}
+
 function updateGlobalDownloadQuality() {
     const formats = [];
     const currentFormats = [];
@@ -500,7 +515,8 @@ function parseFormatString(string) {
     };
 }
 
-function addVideo(args) {
+async function addVideo(args) {
+    await settingExists();
     let template = $('.template.video-card').clone();
     $(template).removeClass('template');
     $(template).prop('id', args.identifier);
@@ -517,6 +533,12 @@ function addVideo(args) {
         $(template).find('.info').addClass("d-none");
         $(template).find('.progress small').html("Setting up environment")
         $(template).find('.metadata.left').html('<strong>Duration: </strong>' + ((args.duration == null) ? "Unknown" : args.duration));
+        if(window.settings.enableEncoding) {
+            $(template).find('.metadata.left').hide();
+        } else {
+            $(template).find('.custom-select.download-encoding').hide();
+        }
+
         if(!args.hasFilesizes) {
             $(template).find('.metadata.right').html('<strong>Size: </strong>Unknown');
         } else if(args.loadSize) {
@@ -543,10 +565,43 @@ function addVideo(args) {
             $(template).find('.subtitle-btn, .subtitle-btn i').addClass("disabled");
         }
         for(const format of args.formats) {
+            //Add the quality (1080p60)
             let option = new Option(format.display_name, format.display_name);
             $(template).find('.custom-select.download-quality').append(option);
             $(option).addClass("video");
+
+            //Add the encoding (vp9) associated with the quality (1080p60)
+            for(const encoding of format.encodings) {
+                let encodingOption = new Option(encoding, encoding);
+                $(template).find('.custom-select.download-encoding').append(encodingOption);
+                $(encodingOption).addClass(format.display_name);
+            }
         }
+
+        $(template).find('.custom-select.download-quality').on('change', function () {
+            const newValue = this.value;
+            const encodingValue = $(template).find('.custom-select.download-encoding :selected').val();
+            for(const elem of $(template).find('.custom-select.download-encoding option')) {
+                if($(elem).hasClass(newValue)) {
+                    $(elem).show();
+                } else if(!$(elem).hasClass("none")) {
+                    $(elem).hide();
+                }
+            }
+            let foundElement = false;
+            for(const elem of $(template).find('.custom-select.download-encoding option')) {
+                if($(elem).val() === encodingValue && $(elem).hasClass(newValue)) {
+                    $(elem).attr('selected','selected');
+                    foundElement = true;
+                    break;
+                }
+            }
+            if(!foundElement) {
+                $(template).find('.custom-select.download-encoding').val("none");
+            }
+        });
+
+        $(template).find('.custom-select.download-type').change();
 
         //Initialize remove video popover
         $(template).find('.remove-btn').popover();
@@ -565,6 +620,7 @@ function addVideo(args) {
                 url: args.url,
                 identifier: args.identifier,
                 format: $(template).find('.custom-select.download-quality').val(),
+                encoding: $(template).find('.custom-select.download-encoding').val(),
                 type: $(template).find('.custom-select.download-type').val(),
                 downloadType: "single"
             }
@@ -572,7 +628,7 @@ function addVideo(args) {
             $('#downloadBtn, #clearBtn').prop("disabled", true);
             updateGlobalDownloadQuality();
             $(template).find('.progress').addClass("d-flex");
-            $(template).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
+            $(template).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s").show();
             $(template).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
             $(template).find('.options').addClass("d-flex");
             $(template).find('select').addClass("d-none");
@@ -648,15 +704,21 @@ function removeVideo(card) {
     }
 }
 
-function setUnifiedPlaylist(args) {
+async function setUnifiedPlaylist(args) {
+    await settingExists();
     const card = getCard(args.identifier);
     $(card).addClass("unified");
     $(card).append(`<input type="hidden" class="url" value="${args.url}">`);
     $(card).find('.progress').addClass("d-none").removeClass("d-flex");
     $(card).find('.options').addClass("d-flex");
     $(card).find('.info').addClass("d-none").removeClass("d-flex");
-    $(card).find('.metadata.left').html('<strong>Playlist size: </strong>' + args.length);
-    if(args.uploader != null) $(card).find('.metadata.right').html('<strong>Uploader: </strong>' + args.uploader);
+    $(card).find('.metadata.right').html('<strong>Playlist size: </strong>' + args.length);
+    $(card).find('.metadata.left').html('<strong>Uploader: </strong>' + (args.uploader == null ? "Unknown" : args.uploader));
+    if(window.settings.enableEncoding) {
+        $(card).find('.metadata.left').hide();
+    } else {
+        $(card).find('.custom-select.download-encoding').hide();
+    }
     if(args.subtitles) $(card).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
     $(card).find('img').prop("src", args.thumb);
     $(card).find('.card-title')
@@ -692,6 +754,7 @@ function setUnifiedPlaylist(args) {
             identifier: args.identifier,
             format: $(card).find('.custom-select.download-quality').val(),
             type: $(card).find('.custom-select.download-type').val(),
+            encoding: $(card).find('.custom-select.download-encoding').val(),
             downloadType: "unified"
         }
         window.main.invoke("videoAction", downloadArgs);
@@ -706,10 +769,44 @@ function setUnifiedPlaylist(args) {
     });
 
     for(const format of args.formats) {
+        //Add the quality (1080p60)
         let option = new Option(format.display_name, format.display_name);
         $(card).find('.custom-select.download-quality').append(option);
         $(option).addClass("video");
+
+        //Add the encoding (vp9) associated with the quality (1080p60)
+        for(const encoding of format.encodings) {
+            let encodingOption = new Option(encoding, encoding);
+            $(card).find('.custom-select.download-encoding').append(encodingOption);
+            $(encodingOption).addClass(format.display_name);
+        }
     }
+
+    $(card).find('.custom-select.download-quality').on('change', function () {
+        const newValue = this.value;
+        const encodingValue = $(card).find('.custom-select.download-encoding :selected').val();
+        for(const elem of $(card).find('.custom-select.download-encoding option')) {
+            if($(elem).hasClass(newValue)) {
+                $(elem).show();
+            } else if(!$(elem).hasClass("none")) {
+                $(elem).hide();
+            }
+        }
+        let foundElement = false;
+        for(const elem of $(card).find('.custom-select.download-encoding option')) {
+            if($(elem).val() === encodingValue && $(elem).hasClass(newValue)) {
+                $(elem).attr('selected','selected');
+                foundElement = true;
+                break;
+            }
+        }
+        if(!foundElement) {
+            $(card).find('.custom-select.download-encoding').val("none");
+        }
+    });
+
+    $(card).find('.custom-select.download-type').change();
+
     $(card).find('.open .folder').on('click', () => {
         window.main.invoke("videoAction", {action: "open", identifier: args.identifier, type: "folder"});
     });
@@ -767,7 +864,7 @@ function updateProgress(args) {
             if(!progressCooldown.includes(args.identifier)) {
                 progressCooldown.push(args.identifier);
                 $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta);
-                $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed);
+                $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed).show();
                 setTimeout(() => {
                     progressCooldown = progressCooldown.filter(item => item !== args.identifier);
                 }, 200);
@@ -806,6 +903,7 @@ function updateSize(identifier, clicked) {
         action: "getSize",
         identifier: identifier,
         formatLabel: formatLabel,
+        encoding: $(card).find('.custom-select.download-encoding').val(),
         audioOnly: $(card).find('.custom-select.download-type').val() === "audio",
         videoOnly: $(card).find('.custom-select.download-type').val() === "videoOnly",
         clicked: clicked

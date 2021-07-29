@@ -140,6 +140,13 @@ class Utils {
             if(dataFormat.height == null) continue;
             let format = new Format(dataFormat.height, dataFormat.fps, null, null);
             if(!detectedFormats.includes(format.getDisplayName())) {
+                for(const dataFormat of metadata.formats) {
+                    const vcodec = dataFormat.vcodec;
+                    if(dataFormat.height !== format.height || dataFormat.fps !== format.fps) continue;
+                    if(vcodec == null || vcodec === "none") continue;
+                    if(format.encodings.includes(vcodec)) continue;
+                    format.encodings.push(vcodec);
+                }
                 formats.push(format);
                 detectedFormats.push(format.getDisplayName());
             }

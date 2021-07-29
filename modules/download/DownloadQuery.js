@@ -39,15 +39,16 @@ class DownloadQuery extends Query {
         } else {
             if (this.video.formats.length !== 0) {
                 let format;
+                const encoding = this.video.selectedEncoding === "none" ? "" : "[vcodec=" + this.video.selectedEncoding + "]"
                 if(this.video.videoOnly) {
-                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]/bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`;
+                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}/bestvideo[height=${this.format.height}][fps=${this.format.fps}]/bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`;
                     if (this.format.fps == null) {
-                        format = `bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`
+                        format = `bestvideo[height=${this.format.height}]${encoding}/bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`
                     }
                 } else {
-                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
                     if (this.format.fps == null) {
-                        format = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+                        format = `bestvideo[height=${this.format.height}]${encoding}+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
                     }
                 }
                 args = [
