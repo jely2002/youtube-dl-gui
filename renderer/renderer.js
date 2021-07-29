@@ -71,6 +71,7 @@ async function init() {
                 $('.empty').show();
                 resetTotalProgress();
                 $('#downloadBtn, #clearBtn').prop("disabled", true);
+                updateGlobalDownloadQuality();
             } else {
                 $('.empty').hide();
             }
@@ -335,6 +336,7 @@ async function init() {
         }
         window.main.invoke('videoAction', args)
         $('#downloadBtn, #clearBtn').prop("disabled", true);
+        updateGlobalDownloadQuality();
         $('#totalProgress .progress-bar').remove();
         $('#totalProgress').prepend('<div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>')
         $('#totalProgress small').html(`Downloading - item 0 of ${videos.length} completed`);
@@ -358,7 +360,10 @@ async function init() {
         else $('.windowbar').removeClass("fullscreen");
     });
 
-    window.main.receive("updateGlobalButtons", (arg) => updateButtons(arg));
+    window.main.receive("updateGlobalButtons", (arg) => {
+        updateButtons(arg);
+        updateGlobalDownloadQuality(arg);
+    });
 
     window.main.receive("binaryLock", (args) => {
         if(args.lock === true) {
@@ -454,6 +459,47 @@ function showToast(toastInfo) {
     if($(`#${toastInfo.type}`).is(':visible')) $(`#${toastInfo.type}`).toast('show').css('visibility', 'visible');
 }
 
+function updateGlobalDownloadQuality() {
+    const formats = [];
+    const currentFormats = [];
+    $('.video-cards').children().each(function() {
+        if($(this).find('.download-btn i').hasClass("disabled")) return;
+        $(this).find('.custom-select.download-quality option.video').each(function() {
+            formats.push($(this).val());
+        })
+    })
+    const sortedFormats = [...new Set(formats)];
+    sortedFormats.sort((a, b) => {
+        const aParsed = parseFormatString(a);
+        const bParsed = parseFormatString(b);
+        return parseInt(bParsed.height, 10) - parseInt(aParsed.height, 10) || parseInt(bParsed.fps, 10) - parseInt(aParsed.fps, 10);
+    });
+    $('#download-quality option.video').each(function() {
+        currentFormats.push(this.value);
+        if(!sortedFormats.includes(this.value)) {
+            $(this).remove();
+        }
+    })
+    for(const format of sortedFormats) {
+        const option = new Option(format, format);
+        if(!currentFormats.includes(format)) {
+            $('#download-quality').append(option);
+            $(option).addClass("video");
+        }
+    }
+}
+
+function parseFormatString(string) {
+    let split = string.split("p");
+    let height = split[0];
+    let fps = split[1];
+    if(fps === "") fps = null;
+    return {
+        fps: fps,
+        height: height
+    };
+}
+
 function addVideo(args) {
     let template = $('.template.video-card').clone();
     $(template).removeClass('template');
@@ -524,6 +570,7 @@ function addVideo(args) {
             }
             window.main.invoke("videoAction", downloadArgs)
             $('#downloadBtn, #clearBtn').prop("disabled", true);
+            updateGlobalDownloadQuality();
             $(template).find('.progress').addClass("d-flex");
             $(template).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s");
             $(template).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
@@ -649,6 +696,7 @@ function setUnifiedPlaylist(args) {
         }
         window.main.invoke("videoAction", downloadArgs);
         $('#downloadBtn, #clearBtn').prop("disabled", true);
+        updateGlobalDownloadQuality();
         $(card).find('.progress').addClass("d-flex");
         $(card).find('.metadata.left, .metadata.right').empty();
         $(card).find('.info').addClass("d-flex").removeClass("d-none");
@@ -780,18 +828,37 @@ function updateSize(identifier, clicked) {
 
 async function updateVideoSettings(identifier) {
     const card = getCard(identifier);
-    const qualityValue = $('#download-quality').find(':selected').val();
-    const typeValue = $('#download-type').find(':selected').val();
+    const qualityValue = $('#download-quality').val();
+    const typeValue = $('#download-type').val();
     const oldQuality = $(card).find('.custom-select.download-quality');
     const oldType = $(card).find('.custom-select.download-type').val();
     $(card).find('.custom-select.download-type').val(typeValue);
     const classValue = typeValue === "videoOnly" ? "video" : typeValue;
+    let isAudio = typeValue === "audio";
     if(qualityValue === "best") {
         $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${classValue}:first`).val());
     } else if(qualityValue === "worst") {
         $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${classValue}:last`).val());
+    } else if(!isAudio) {
+        const formats = [];
+        $(card).find('.custom-select.download-quality option.video').each(function() {
+            formats.push(this.value);
+        })
+        if(formats.includes(qualityValue)) {
+            $(card).find('.custom-select.download-quality').val(qualityValue);
+        } else {
+            const search = parseFormatString(qualityValue);
+            const closest = formats.reduce((a, b) => {
+                const parsedA = parseFormatString(a);
+                const parsedB = parseFormatString(b);
+                return Math.abs(parsedB.height - search.height) < Math.abs(parsedA.height - search.height) ? b : a;
+            });
+            $(card).find('.custom-select.download-quality').val(closest);
+        }
+    } else if(isAudio) {
+        $('#download-quality').val("best");
+        $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${classValue}:first`).val());
     }
-    let isAudio = typeValue === "audio";
     for(const elem of $(card).find('option')) {
         if($(elem).hasClass("video")) {
             $(elem).toggle(!isAudio)
@@ -809,6 +876,12 @@ async function updateVideoSettings(identifier) {
 }
 
 function updateAllVideoSettings() {
+    let isAudio = $('#download-type').val() === "audio";
+    for(const elem of $('#download-quality option')) {
+        if($(elem).hasClass("video")) {
+            $(elem).toggle(!isAudio)
+        }
+    }
     $('.video-cards').children().each(function () {
         updateVideoSettings($(this).prop("id"));
     });
