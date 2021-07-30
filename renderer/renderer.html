@@ -99,12 +99,18 @@
                         <option value="audio">Audio only</option>
                         <option value="videoOnly">Video only</option>
                     </select>
+                    <select class="custom-select download-encoding">
+                        <option class="none" value="none" selected>Video codec</option>
+                    </select>
                     <p class="metadata left"></p>
                 </div>
                 <div class="col-6">
                     <select class="custom-select download-quality">
                         <option class="audio" value="best" selected>Best</option>
                         <option class="audio" value="worst">Worst</option>
+                    </select>
+                    <select class="custom-select download-audio-encoding">
+                        <option class="none" value="none" selected>Audio codec</option>
                     </select>
                     <p class="metadata right"></p>
                 </div>
@@ -348,6 +354,10 @@
                 <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="validateCertificate">
                     <label class="check-label" for="validateCertificate">Validate HTTPS certificates</label>
+                </div>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="enableEncoding">
+                    <label class="check-label" for="enableEncoding">Show available codecs to download</label>
                 </div>
                 <div>
                     <label for="splitMode" class="form-label">Split playlists into separate videos when:</label>

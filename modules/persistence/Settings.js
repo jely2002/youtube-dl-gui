@@ -2,7 +2,7 @@ const os = require("os");
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, audioOutputFormat, downloadPath, proxy, rateLimit, autoFillClipboard, spoofUserAgent, validateCertificate, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
+    constructor(paths, env, outputFormat, audioOutputFormat, downloadPath, proxy, rateLimit, autoFillClipboard, spoofUserAgent, validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
@@ -13,6 +13,7 @@ class Settings {
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
         this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
         this.validateCertificate = validateCertificate == null ? false : validateCertificate;
+        this.enableEncoding = enableEncoding == null ? false : enableEncoding;
         this.taskList = taskList == null ? true : taskList;
         this.nameFormat = nameFormat == null ? "%(title).200s-(%(height)sp%(fps).0d).%(ext)s" : nameFormat;
         this.nameFormatMode = nameFormatMode == null ? "%(title).200s-(%(height)sp%(fps).0d).%(ext)s" : nameFormatMode;
@@ -45,6 +46,7 @@ class Settings {
                 data.autoFillClipboard,
                 data.spoofUserAgent,
                 data.validateCertificate,
+                data.enableEncoding,
                 data.taskList,
                 data.nameFormat,
                 data.nameFormatMode,
@@ -78,6 +80,7 @@ class Settings {
         this.autoFillClipboard = settings.autoFillClipboard;
         this.spoofUserAgent = settings.spoofUserAgent;
         this.validateCertificate = settings.validateCertificate;
+        this.enableEncoding = settings.enableEncoding;
         this.taskList = settings.taskList;
         this.nameFormat = settings.nameFormat;
         this.nameFormatMode = settings.nameFormatMode;
@@ -110,6 +113,7 @@ class Settings {
             autoFillClipboard: this.autoFillClipboard,
             spoofUserAgent: this.spoofUserAgent,
             validateCertificate: this.validateCertificate,
+            enableEncoding: this.enableEncoding,
             taskList: this.taskList,
             nameFormat: this.nameFormat,
             nameFormatMode: this.nameFormatMode,

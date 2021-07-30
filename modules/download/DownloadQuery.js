@@ -30,6 +30,10 @@ class DownloadQuery extends Query {
                 '-o', output,
                 '--output-na-placeholder', ""
             ];
+            if(this.video.selectedAudioEncoding !== "none") {
+                args.push("-f");
+                args.push("bestaudio[acodec=" + this.video.selectedAudioEncoding + "]/bestaudio");
+            }
             if(audioOutputFormat !== "none") {
                 args.push('--audio-format', audioOutputFormat);
             }
@@ -39,15 +43,17 @@ class DownloadQuery extends Query {
         } else {
             if (this.video.formats.length !== 0) {
                 let format;
+                const encoding = this.video.selectedEncoding === "none" ? "" : "[vcodec=" + this.video.selectedEncoding + "]";
+                const audioEncoding = this.video.selectedAudioEncoding === "none" ? "" : "[acodec=" + this.video.selectedAudioEncoding + "]";
                 if(this.video.videoOnly) {
-                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]/bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`;
+                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}/bestvideo[height=${this.format.height}][fps=${this.format.fps}]/bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`;
                     if (this.format.fps == null) {
-                        format = `bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`
+                        format = `bestvideo[height=${this.format.height}]${encoding}/bestvideo[height=${this.format.height}]/best[height=${this.format.height}]/bestvideo/best`
                     }
                 } else {
-                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
+                    format = `bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.video.audioQuality}audio${audioEncoding}/bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`;
                     if (this.format.fps == null) {
-                        format = `bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
+                        format = `bestvideo[height=${this.format.height}]${encoding}+${this.video.audioQuality}audio${audioEncoding}/bestvideo[height=${this.format.height}]${encoding}+${this.video.audioQuality}audio/bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio/best[height=${this.format.height}]/bestvideo+bestaudio/best`
                     }
                 }
                 args = [
@@ -92,7 +98,10 @@ class DownloadQuery extends Query {
         let result = null;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
-                this.video.setFilename(liveData);
+                const perLine = liveData.split("\n");
+                for(const line of perLine) {
+                    this.video.setFilename(line);
+                }
                 if (!liveData.includes("[download]")) return;
                 if (!initialReset) {
                     initialReset = true;
@@ -121,24 +130,24 @@ class DownloadQuery extends Query {
             this.environment.errorHandler.checkError(exception, this.video.identifier);
             return exception;
         }
-
-        if(this.environment.settings.audioOutputFormat === "none") {
-            await this.removeThumbnail();
+        if(this.video.audioOnly) {
+            await this.removeThumbnail(".jpg");
         }
         return result;
     }
 
-    async removeThumbnail() {
+    async removeThumbnail(extension) {
         const filename = this.video.filename;
         if(filename != null) {
-            const filenameExt = path.basename(filename, path.extname(filename)) + ".jpg";
+            const filenameExt = path.basename(filename, path.extname(filename)) + extension;
             const filenameAbs = path.join(this.video.downloadedPath, filenameExt);
             try {
                 await fs.promises.unlink(filenameAbs);
             } catch(e) {
-                console.error("Unable to remove failed image embed.");
-                console.error(filenameExt);
-                console.error(filenameAbs);
+                console.log("No left-over thumbnail found to remove. (" + filenameExt + ")")
+                if(extension !== ".webp") {
+                    await this.removeThumbnail(".webp");
+                }
             }
         }
     }

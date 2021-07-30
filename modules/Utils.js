@@ -129,6 +129,22 @@ class Utils {
         return filesizeDetected
     }
 
+    static parseAvailableAudioCodecs(metadata) {
+        let codecs = [];
+        if(metadata.formats == null) {
+            console.error("No audio codecs could be found.")
+            return codecs;
+        }
+        for(let dataFormat of metadata.formats) {
+            if(dataFormat.height != null) continue;
+            const acodec = dataFormat.acodec;
+            if(acodec == null || acodec === "none") continue;
+            if(codecs.includes(acodec)) continue;
+            codecs.push(acodec);
+            }
+        return codecs;
+    }
+
     static parseAvailableFormats(metadata) {
         let formats = [];
         let detectedFormats = [];
@@ -140,6 +156,13 @@ class Utils {
             if(dataFormat.height == null) continue;
             let format = new Format(dataFormat.height, dataFormat.fps, null, null);
             if(!detectedFormats.includes(format.getDisplayName())) {
+                for(const dataFormat of metadata.formats) {
+                    const vcodec = dataFormat.vcodec;
+                    if(dataFormat.height !== format.height || dataFormat.fps !== format.fps) continue;
+                    if(vcodec == null || vcodec === "none") continue;
+                    if(format.encodings.includes(vcodec)) continue;
+                    format.encodings.push(vcodec);
+                }
                 formats.push(format);
                 detectedFormats.push(format.getDisplayName());
             }

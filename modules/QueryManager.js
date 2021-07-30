@@ -69,8 +69,14 @@ class QueryManager {
         playlistQuery.start().then((videos) => {
             if(videos.length > this.environment.settings.splitMode) {
                 let totalFormats = [];
+                let totalAudioCodecs = [];
                 playlistVideo.videos = videos;
                 for(const video of videos) {
+                    for(const audioCodec of video.audioCodecs) {
+                        if(!totalAudioCodecs.includes(audioCodec)) {
+                            totalAudioCodecs.push(audioCodec);
+                        }
+                    }
                     for(const format of video.formats) {
                         format.display_name = Format.getDisplayName(format.height, format.fps);
                         totalFormats.push(format);
@@ -89,6 +95,7 @@ class QueryManager {
                         formats: totalFormats,
                         subtitles: this.environment.mainDownloadSubs,
                         thumb: videos[0].thumbnail,
+                        audioCodecs: totalAudioCodecs,
                         title: title,
                         length: videos.length,
                         uploader: uploader,
@@ -125,6 +132,7 @@ class QueryManager {
             subtitles: video.downloadSubs,
             loadSize: this.environment.settings.sizeMode === "full",
             hasFilesizes: video.hasFilesizes,
+            audioCodecs: video.audioCodecs,
             formats: formats,
             selected_format_index: (video.hasMetadata) ? video.selected_format_index : null,
             thumbnail: video.thumbnail
@@ -134,6 +142,8 @@ class QueryManager {
 
     downloadVideo(args) {
         let downloadVideo = this.getVideo(args.identifier);
+        downloadVideo.selectedEncoding = args.encoding;
+        downloadVideo.selectedAudioEncoding = args.audioEncoding;
         downloadVideo.audioOnly = args.type === "audio";
         downloadVideo.videoOnly = args.type === "videoOnly";
         if(!downloadVideo.audioOnly) {
@@ -162,6 +172,8 @@ class QueryManager {
         let videoMetadata = [];
         for(const videoObj of args.videos) {
             let video = this.getVideo(videoObj.identifier);
+            video.selectedEncoding = videoObj.encoding;
+            video.selectedAudioEncoding = videoObj.audioEncoding;
             if(video.videos == null) {
                 if(video.downloaded || video.type !== "single") continue;
                 video.audioOnly = videoObj.type === "audio";
@@ -253,8 +265,10 @@ class QueryManager {
         });
     }
 
-    async getSize(identifier, formatLabel, audioOnly, videoOnly, clicked) {
+    async getSize(identifier, formatLabel, audioOnly, videoOnly, clicked, encoding, audioEncoding) {
         const video = this.getVideo(identifier);
+        video.selectedEncoding = encoding;
+        video.selectedAudioEncoding = audioEncoding;
         const cachedSize = this.getCachedSize(video, formatLabel, audioOnly, videoOnly);
         if(cachedSize != null) {
             //The size for this format was already looked up

@@ -24,7 +24,8 @@ class Video {
 
     setFilename(liveData) {
         if(liveData.includes("[download] Destination: ")) {
-            this.filename = path.basename(liveData.replace("[download] Destination: ", ""));
+            const replaced = liveData.replace("[download] Destination: ", "");
+            this.filename = path.basename(replaced);
         } else if(liveData.includes("[ffmpeg] Merging formats into \"")) {
             const noPrefix = liveData.replace("[ffmpeg] Merging formats into \"", "");
             this.filename = path.basename(noPrefix.trim().slice(0, -1));
@@ -106,6 +107,7 @@ class Video {
 
         this.hasFilesizes = Utils.hasFilesizes(metadata)
         this.formats = Utils.parseAvailableFormats(metadata);
+        this.audioCodecs = Utils.parseAvailableAudioCodecs(metadata);
         this.selected_format_index = this.selectHighestQuality();
     }
 

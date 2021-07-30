@@ -5,6 +5,7 @@ class Format {
         this.fps = fps;
         this.filesize = filesize;
         this.filesize_label = filesize_label;
+        this.encodings = [];
     }
 
     getDisplayName() {
@@ -21,7 +22,8 @@ class Format {
             fps: this.fps,
             filesize: this.filesize,
             filesize_label: this.filesize_label,
-            display_name: this.getDisplayName()
+            display_name: this.getDisplayName(),
+            encodings: this.encodings
         };
     }
 
