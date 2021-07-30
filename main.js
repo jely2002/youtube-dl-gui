@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu, shell, clipboard, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, Menu, shell, clipboard } = require('electron');
 const Environment = require('./modules/Environment');
 const path = require('path');
 const QueryManager = require("./modules/QueryManager");
@@ -27,6 +27,8 @@ function sendLogToRenderer(log, isErr) {
 }
 
 function startCriticalHandlers(env) {
+     env.win = win;
+
     win.on('maximize', () => {
         win.webContents.send("maximized", true)
     });
@@ -63,14 +65,6 @@ function startCriticalHandlers(env) {
 
     if(appStarting) {
         appStarting = false;
-
-        globalShortcut.register('Shift+CommandOrControl+V', async () => {
-            win.webContents.send("addShortcut", clipboard.readText());
-        });
-
-        globalShortcut.register('Shift+CommandOrControl+D', async () => {
-            win.webContents.send("downloadShortcut");
-        });
 
         //Restore the videos from last session
         ipcMain.handle("restoreTaskList", () => {

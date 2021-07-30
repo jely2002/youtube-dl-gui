@@ -262,10 +262,6 @@
                     <input type="range" class="form-range w-50 d-block align-middle" min="1" max="32" id="maxConcurrent">
                     <button type="button" class="btn btn-dark" id="defaultConcurrent">Reset to default</button>
                 </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="autoFillClipboard">
-                    <label class="check-label" for="autoFillClipboard">Automatically fill in copied links</label>
-                </div>
                 <hr/>
                 <h3>Appearance</h3>
                 <div class="mb-4">
@@ -294,6 +290,16 @@
                 <div class="mb-4">
                     <label for="ratelimitSetting" class="form-label">Rate-limit per video (KB/s)</label>
                     <input id="ratelimitSetting" class="form-control" type="number" value="" placeholder="Rate-limit in KB/s">
+                </div>
+                <hr/>
+                <h3>Input</h3>
+                    <div class="mb-1">
+                        <input class="check-input" type="checkbox" value="" id="autoFillClipboard">
+                        <label class="check-label" for="autoFillClipboard">Automatically fill in copied links</label>
+                    </div>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="globalShortcut">
+                    <label class="check-label" for="globalShortcut">Enable global paste & download shortcuts</label>
                 </div>
                 <hr/>
                 <h3>Output</h3>

@@ -164,6 +164,7 @@ async function init() {
             updateBinary: $('#updateBinary').prop('checked'),
             updateApplication: $('#updateApplication').prop('checked'),
             autoFillClipboard: $('#autoFillClipboard').prop('checked'),
+            globalShortcut: $('#globalShortcut').prop('checked'),
             outputFormat: $('#outputFormat').val(),
             audioOutputFormat: $('#audioOutputFormat').val(),
             proxy: $('#proxySetting').val(),
@@ -211,6 +212,7 @@ async function init() {
             $('#enableEncoding').prop('checked', settings.enableEncoding);
             $('#taskList').prop('checked', settings.taskList);
             $('#autoFillClipboard').prop('checked', settings.autoFillClipboard);
+            $('#globalShortcut').prop('checked', settings.globalShortcut);
             $('#ratelimitSetting').val(settings.rateLimit);
             $('#proxySetting').val(settings.proxy);
             $('#nameFormatCustom').val(settings.nameFormat).prop("disabled", settings.nameFormatMode === "custom");

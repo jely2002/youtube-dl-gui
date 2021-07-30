@@ -1,8 +1,9 @@
 const os = require("os");
+const { globalShortcut, clipboard } = require('electron');
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, audioOutputFormat, downloadPath, proxy, rateLimit, autoFillClipboard, spoofUserAgent, validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
+    constructor(paths, env, outputFormat, audioOutputFormat, downloadPath, proxy, rateLimit, autoFillClipboard, globalShortcut, spoofUserAgent, validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
@@ -11,6 +12,7 @@ class Settings {
         this.proxy = proxy == null ? "" : proxy;
         this.rateLimit = rateLimit == null ? "" : rateLimit;
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
+        this.globalShortcut = globalShortcut == null ? true : globalShortcut;
         this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
         this.validateCertificate = validateCertificate == null ? false : validateCertificate;
         this.enableEncoding = enableEncoding == null ? false : enableEncoding;
@@ -29,6 +31,7 @@ class Settings {
         this.cookiePath = cookiePath;
         this.statSend = statSend == null ? false : statSend;
         this.theme = theme == null ? "dark" : theme;
+        this.setGlobalShortcuts();
     }
 
     static async loadFromFile(paths, env) {
@@ -44,6 +47,7 @@ class Settings {
                 data.proxy,
                 data.rateLimit,
                 data.autoFillClipboard,
+                data.globalShortcut,
                 data.spoofUserAgent,
                 data.validateCertificate,
                 data.enableEncoding,
@@ -78,6 +82,7 @@ class Settings {
         this.proxy = settings.proxy;
         this.rateLimit = settings.rateLimit;
         this.autoFillClipboard = settings.autoFillClipboard;
+        this.globalShortcut = settings.globalShortcut;
         this.spoofUserAgent = settings.spoofUserAgent;
         this.validateCertificate = settings.validateCertificate;
         this.enableEncoding = settings.enableEncoding;
@@ -101,6 +106,7 @@ class Settings {
 
         //Prevent installing already downloaded updates on app close.
         this.env.appUpdater.setUpdateSetting(settings.updateApplication);
+        this.setGlobalShortcuts();
     }
 
     serialize() {
@@ -111,6 +117,7 @@ class Settings {
             proxy: this.proxy,
             rateLimit: this.rateLimit,
             autoFillClipboard: this.autoFillClipboard,
+            globalShortcut: this.globalShortcut,
             spoofUserAgent: this.spoofUserAgent,
             validateCertificate: this.validateCertificate,
             enableEncoding: this.enableEncoding,
@@ -136,6 +143,24 @@ class Settings {
 
     save() {
         fs.writeFile(this.paths.settings, JSON.stringify(this.serialize()), "utf8").then(() => console.log("Saved settings file."));
+    }
+
+    setGlobalShortcuts() {
+        if(globalShortcut == null) return;
+        if(!this.globalShortcut) {
+            globalShortcut.unregisterAll();
+        } else {
+            if(!globalShortcut.isRegistered("Shift+CommandOrControl+V")) {
+                globalShortcut.register('Shift+CommandOrControl+V', async () => {
+                    this.env.win.webContents.send("addShortcut", clipboard.readText());
+                });
+            }
+            if(!globalShortcut.isRegistered("Shift+CommandOrControl+D")) {
+                globalShortcut.register('Shift+CommandOrControl+D', async () => {
+                    this.env.win.webContents.send("downloadShortcut");
+                });
+            }
+        }
     }
 }
 
