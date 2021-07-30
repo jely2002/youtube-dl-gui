@@ -143,6 +143,7 @@ class QueryManager {
     downloadVideo(args) {
         let downloadVideo = this.getVideo(args.identifier);
         downloadVideo.selectedEncoding = args.encoding;
+        downloadVideo.selectedAudioEncoding = args.audioEncoding;
         downloadVideo.audioOnly = args.type === "audio";
         downloadVideo.videoOnly = args.type === "videoOnly";
         if(!downloadVideo.audioOnly) {
@@ -172,6 +173,7 @@ class QueryManager {
         for(const videoObj of args.videos) {
             let video = this.getVideo(videoObj.identifier);
             video.selectedEncoding = videoObj.encoding;
+            video.selectedAudioEncoding = videoObj.audioEncoding;
             if(video.videos == null) {
                 if(video.downloaded || video.type !== "single") continue;
                 video.audioOnly = videoObj.type === "audio";
@@ -263,9 +265,10 @@ class QueryManager {
         });
     }
 
-    async getSize(identifier, formatLabel, audioOnly, videoOnly, clicked, encoding) {
+    async getSize(identifier, formatLabel, audioOnly, videoOnly, clicked, encoding, audioEncoding) {
         const video = this.getVideo(identifier);
         video.selectedEncoding = encoding;
+        video.selectedAudioEncoding = audioEncoding;
         const cachedSize = this.getCachedSize(video, formatLabel, audioOnly, videoOnly);
         if(cachedSize != null) {
             //The size for this format was already looked up

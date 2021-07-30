@@ -311,6 +311,7 @@ async function init() {
                         url: $(card).find('.url').val(),
                         format: $(card).find('.custom-select.download-quality').val(),
                         encoding: $(card).find('.custom-select.download-encoding').val(),
+                        audioEncoding: $(card).find('.custom-select.download-audio-encoding').val(),
                         type: $(card).find('.custom-select.download-type').val(),
                         downloadSubs: !$(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
                     })
@@ -319,6 +320,7 @@ async function init() {
                         identifier: card.id,
                         format: $(card).find('.custom-select.download-quality').val(),
                         encoding: $(card).find('.custom-select.download-encoding').val(),
+                        audioEncoding: $(card).find('.custom-select.download-audio-encoding').val(),
                         type: $(card).find('.custom-select.download-type').val(),
                         downloadSubs: !$(card).find('.subtitle-btn i').hasClass("bi-card-text-strike")
                     })
@@ -469,8 +471,8 @@ function showToast(toastInfo) {
 
 function updateEncodingDropdown(enabled) {
     $('.video-cards').children().each(function() {
-        $(this).find('.metadata.left').toggle(!enabled);
-        $(this).find('.custom-select.download-encoding').toggle(enabled);
+        $(this).find('.metadata').toggle(!enabled);
+        $(this).find('.custom-select.download-encoding, .custom-select.download-audio-encoding').toggle(enabled);
     })
 }
 
@@ -534,9 +536,9 @@ async function addVideo(args) {
         $(template).find('.progress small').html("Setting up environment")
         $(template).find('.metadata.left').html('<strong>Duration: </strong>' + ((args.duration == null) ? "Unknown" : args.duration));
         if(window.settings.enableEncoding) {
-            $(template).find('.metadata.left').hide();
+            $(template).find('.metadata').hide();
         } else {
-            $(template).find('.custom-select.download-encoding').hide();
+            $(template).find('.custom-select.download-encoding, .custom-select.download-audio-encoding').hide();
         }
 
         if(!args.hasFilesizes) {
@@ -549,6 +551,7 @@ async function addVideo(args) {
 
         $(template).find('.custom-select.download-type').on('change', function () {
             let isAudio = this.selectedOptions[0].value === "audio";
+            disableEncodingDropdowns(this.selectedOptions[0].value, template);
             for(const elem of $(template).find('option')) {
                 if($(elem).hasClass("video")) {
                     $(elem).toggle(!isAudio)
@@ -591,6 +594,7 @@ async function addVideo(args) {
                 identifier: args.identifier,
                 format: $(template).find('.custom-select.download-quality').val(),
                 encoding: $(template).find('.custom-select.download-encoding').val(),
+                audioEncoding: $(template).find('.custom-select.download-audio-encoding').val(),
                 type: $(template).find('.custom-select.download-type').val(),
                 downloadType: "single"
             }
@@ -685,7 +689,7 @@ async function setUnifiedPlaylist(args) {
     $(card).find('.metadata.right').html('<strong>Playlist size: </strong>' + args.length);
     $(card).find('.metadata.left').html('<strong>Uploader: </strong>' + (args.uploader == null ? "Unknown" : args.uploader));
     if(window.settings.enableEncoding) {
-        $(card).find('.metadata.left').hide();
+        $(card).find('.metadata').hide();
     } else {
         $(card).find('.custom-select.download-encoding').hide();
     }
@@ -707,6 +711,7 @@ async function setUnifiedPlaylist(args) {
     });
 
     $(card).find('.custom-select.download-type').on('change', function () {
+        disableEncodingDropdowns(this.selectedOptions[0].value, card);
         let isAudio = this.selectedOptions[0].value === "audio";
         for(const elem of $(card).find('option')) {
             if($(elem).hasClass("video")) {
@@ -725,6 +730,7 @@ async function setUnifiedPlaylist(args) {
             format: $(card).find('.custom-select.download-quality').val(),
             type: $(card).find('.custom-select.download-type').val(),
             encoding: $(card).find('.custom-select.download-encoding').val(),
+            audioEncoding: $(card).find('.custom-select.download-audio-encoding').val(),
             downloadType: "unified"
         }
         window.main.invoke("videoAction", downloadArgs);
@@ -756,8 +762,7 @@ function setCodecs(card, audioCodecs, formats) {
     //Add the audio encoding
     for(const audioCodec of audioCodecs) {
         let codecOption = new Option(audioCodec, audioCodec);
-        $(card).find('.custom-select.download-encoding').append(codecOption);
-        $(codecOption).addClass("audio");
+        $(card).find('.custom-select.download-audio-encoding').append(codecOption);
     }
 
     for(const format of formats) {
@@ -778,9 +783,7 @@ function setCodecs(card, audioCodecs, formats) {
 function updateCodecs(card, newValue) {
     const encodingValue = $(card).find('.custom-select.download-encoding :selected').val();
     for(const elem of $(card).find('.custom-select.download-encoding option')) {
-        if($(elem).hasClass("audio") && (newValue === "best" || newValue === "worst")) {
-            $(elem).show();
-        } else if($(elem).hasClass(newValue)) {
+        if($(elem).hasClass(newValue)) {
             $(elem).show();
         } else if(!$(elem).hasClass("none")) {
             $(elem).hide();
@@ -890,6 +893,7 @@ function updateSize(identifier, clicked) {
         identifier: identifier,
         formatLabel: formatLabel,
         encoding: $(card).find('.custom-select.download-encoding').val(),
+        audioEncoding: $(card).find('.custom-select.download-audio-encoding').val(),
         audioOnly: $(card).find('.custom-select.download-type').val() === "audio",
         videoOnly: $(card).find('.custom-select.download-type').val() === "videoOnly",
         clicked: clicked
@@ -943,6 +947,7 @@ async function updateVideoSettings(identifier) {
         $('#download-quality').val("best");
         $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${classValue}:first`).val());
     }
+    disableEncodingDropdowns(typeValue, card);
     for(const elem of $(card).find('option')) {
         if($(elem).hasClass("video")) {
             $(elem).toggle(!isAudio)
@@ -958,6 +963,13 @@ async function updateVideoSettings(identifier) {
     } else if(window.settings.sizeMode === "full") {
         updateSize(identifier, false);
     }
+}
+
+function disableEncodingDropdowns(typeValue, card) {
+    let isAudio = typeValue === "audio";
+    let isVideoOnly = typeValue === "videoOnly";
+    $(card).find(".custom-select.download-encoding").prop("disabled", isAudio && !isVideoOnly);
+    $(card).find(".custom-select.download-audio-encoding").prop("disabled", !isAudio && isVideoOnly);
 }
 
 function updateAllVideoSettings() {
