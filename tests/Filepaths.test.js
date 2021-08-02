@@ -68,12 +68,13 @@ describe('generate filepaths', () => {
        await instance.generateFilepaths();
        expect(instance.createHomeFolder).toBeCalledTimes(1);
    });
-   it('calls create appdata folder when this version is used', async () => {
+   it('calls create portable folder when this version is used', async () => {
        const instance = instanceBuilder(true, true);
        instance.platform = "win32portable";
-       instance.createAppDataFolder = jest.fn().mockResolvedValue(undefined);
+       process.env.PORTABLE_EXECUTABLE_DIR = "test/dir/for/portable/executable";
+       instance.createPortableFolder = jest.fn().mockResolvedValue(undefined);
        await instance.generateFilepaths();
-       expect(instance.createAppDataFolder).toBeCalledTimes(1);
+       expect(instance.createPortableFolder).toBeCalledTimes(1);
    })
    it('sets permissions on darwin and linux', async () => {
        const platforms = ["win32", "linux", "darwin"];
