@@ -124,7 +124,12 @@ async function init() {
         updateSize($(card).prop('id'), false);
     });
 
-    $('#download-quality, #download-type').on('change', () => updateAllVideoSettings());
+    $('#download-quality').on('change', () => updateAllVideoSettings());
+
+    $('#download-type').on('change', () => {
+        updateAllVideoSettings();
+        sendSettings();
+    });
 
     $('#infoModal .img-overlay, #infoModal .info-img').on('click', () => {
         window.main.invoke("videoAction", {action: "downloadThumb", url: $('#infoModal .info-img').attr("src")});
@@ -160,35 +165,7 @@ async function init() {
 
     $('#settingsModal .apply').on('click', () => {
         $('#settingsModal').modal("hide");
-        let settings = {
-            updateBinary: $('#updateBinary').prop('checked'),
-            updateApplication: $('#updateApplication').prop('checked'),
-            autoFillClipboard: $('#autoFillClipboard').prop('checked'),
-            noPlaylist: $('#noPlaylist').prop('checked'),
-            globalShortcut: $('#globalShortcut').prop('checked'),
-            outputFormat: $('#outputFormat').val(),
-            audioOutputFormat: $('#audioOutputFormat').val(),
-            proxy: $('#proxySetting').val(),
-            spoofUserAgent: $('#spoofUserAgent').prop('checked'),
-            validateCertificate: $('#validateCertificate').prop('checked'),
-            enableEncoding: $('#enableEncoding').prop('checked'),
-            taskList: $('#taskList').prop('checked'),
-            nameFormatMode: $('#nameFormat').val(),
-            nameFormat: $('#nameFormatCustom').val(),
-            downloadMetadata: $('#downloadMetadata').prop('checked'),
-            downloadThumbnail: $('#downloadThumbnail').prop('checked'),
-            keepUnmerged: $('#keepUnmerged').prop('checked'),
-            calculateTotalSize: $('#calculateTotalSize').prop('checked'),
-            sizeMode: $('#sizeSetting').val(),
-            splitMode: $('#splitMode').val(),
-            rateLimit: $('#ratelimitSetting').val(),
-            maxConcurrent: parseInt($('#maxConcurrent').val()),
-            theme: $('#theme').val()
-        }
-        window.settings = settings;
-        window.main.invoke("settingsAction", {action: "save", settings});
-        updateEncodingDropdown(settings.enableEncoding);
-        toggleWhiteMode(settings.theme);
+        sendSettings();
     });
 
     $('#maxConcurrent').on('input', () => {
@@ -410,6 +387,9 @@ async function init() {
             case "setUnified":
                 setUnifiedPlaylist(arg);
                 break;
+            case "setDownloadType":
+                $('#download-type').val(arg.type).change();
+                break;
         }
     });
 
@@ -429,6 +409,39 @@ async function init() {
             node = node.parentNode;
         }
     });
+}
+
+function sendSettings() {
+    let settings = {
+        updateBinary: $('#updateBinary').prop('checked'),
+        updateApplication: $('#updateApplication').prop('checked'),
+        autoFillClipboard: $('#autoFillClipboard').prop('checked'),
+        noPlaylist: $('#noPlaylist').prop('checked'),
+        globalShortcut: $('#globalShortcut').prop('checked'),
+        outputFormat: $('#outputFormat').val(),
+        audioOutputFormat: $('#audioOutputFormat').val(),
+        proxy: $('#proxySetting').val(),
+        spoofUserAgent: $('#spoofUserAgent').prop('checked'),
+        validateCertificate: $('#validateCertificate').prop('checked'),
+        enableEncoding: $('#enableEncoding').prop('checked'),
+        taskList: $('#taskList').prop('checked'),
+        nameFormatMode: $('#nameFormat').val(),
+        nameFormat: $('#nameFormatCustom').val(),
+        downloadMetadata: $('#downloadMetadata').prop('checked'),
+        downloadThumbnail: $('#downloadThumbnail').prop('checked'),
+        keepUnmerged: $('#keepUnmerged').prop('checked'),
+        calculateTotalSize: $('#calculateTotalSize').prop('checked'),
+        sizeMode: $('#sizeSetting').val(),
+        splitMode: $('#splitMode').val(),
+        rateLimit: $('#ratelimitSetting').val(),
+        maxConcurrent: parseInt($('#maxConcurrent').val()),
+        downloadType: $('#download-type').val(),
+        theme: $('#theme').val()
+    }
+    window.settings = settings;
+    window.main.invoke("settingsAction", {action: "save", settings});
+    updateEncodingDropdown(settings.enableEncoding);
+    toggleWhiteMode(settings.theme);
 }
 
 function verifyURL(value) {

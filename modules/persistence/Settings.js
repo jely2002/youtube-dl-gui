@@ -7,7 +7,7 @@ class Settings {
         paths, env, outputFormat, audioOutputFormat, downloadPath,
         proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, spoofUserAgent,
         validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
-        sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath,
+        sizeMode, splitMode, maxConcurrent, updateBinary, downloadType, updateApplication, cookiePath,
         statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme
     ) {
         this.paths = paths;
@@ -34,6 +34,7 @@ class Settings {
         this.splitMode = splitMode == null? "49" : splitMode;
         this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? Math.round(os.cpus().length / 2) : maxConcurrent; //Max concurrent is standard half of the system's available cores
         this.updateBinary = updateBinary == null ? true : updateBinary;
+        this.downloadType = downloadType == null ? "video" : downloadType;
         this.updateApplication = updateApplication == null ? true : updateApplication;
         this.cookiePath = cookiePath;
         this.statSend = statSend == null ? false : statSend;
@@ -66,6 +67,7 @@ class Settings {
                 data.splitMode,
                 data.maxConcurrent,
                 data.updateBinary,
+                data.downloadType,
                 data.updateApplication,
                 data.cookiePath,
                 data.statSend,
@@ -109,6 +111,7 @@ class Settings {
             this.env.changeMaxConcurrent(settings.maxConcurrent);
         }
         this.updateBinary = settings.updateBinary;
+        this.downloadType = settings.downloadType;
         this.updateApplication = settings.updateApplication;
         this.theme = settings.theme;
         this.save();
@@ -139,6 +142,7 @@ class Settings {
             maxConcurrent: this.maxConcurrent,
             defaultConcurrent: Math.round(os.cpus().length / 2),
             updateBinary: this.updateBinary,
+            downloadType: this.downloadType,
             updateApplication: this.updateApplication,
             cookiePath: this.cookiePath,
             statSend: this.statSend,

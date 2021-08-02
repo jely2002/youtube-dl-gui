@@ -61,6 +61,9 @@ function startCriticalHandlers(env) {
         taskList.load();
     }
 
+    //Send the saved download type to the renderer
+    win.webContents.send("videoAction", {action: "setDownloadType", type: env.settings.downloadType});
+
     env.errorHandler = new ErrorHandler(win, queryManager, env);
 
     if(appStarting) {
