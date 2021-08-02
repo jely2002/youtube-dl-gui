@@ -3,7 +3,13 @@ const { globalShortcut, clipboard } = require('electron');
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, audioOutputFormat, downloadPath, proxy, rateLimit, autoFillClipboard, globalShortcut, spoofUserAgent, validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
+    constructor(
+        paths, env, outputFormat, audioOutputFormat, downloadPath,
+        proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, spoofUserAgent,
+        validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
+        sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath,
+        statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme
+    ) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
@@ -12,6 +18,7 @@ class Settings {
         this.proxy = proxy == null ? "" : proxy;
         this.rateLimit = rateLimit == null ? "" : rateLimit;
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
+        this.noPlaylist = noPlaylist == null ? false : noPlaylist;
         this.globalShortcut = globalShortcut == null ? true : globalShortcut;
         this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
         this.validateCertificate = validateCertificate == null ? false : validateCertificate;
@@ -47,6 +54,7 @@ class Settings {
                 data.proxy,
                 data.rateLimit,
                 data.autoFillClipboard,
+                data.noPlaylist,
                 data.globalShortcut,
                 data.spoofUserAgent,
                 data.validateCertificate,
@@ -82,6 +90,7 @@ class Settings {
         this.proxy = settings.proxy;
         this.rateLimit = settings.rateLimit;
         this.autoFillClipboard = settings.autoFillClipboard;
+        this.noPlaylist = settings.noPlaylist;
         this.globalShortcut = settings.globalShortcut;
         this.spoofUserAgent = settings.spoofUserAgent;
         this.validateCertificate = settings.validateCertificate;
@@ -117,6 +126,7 @@ class Settings {
             proxy: this.proxy,
             rateLimit: this.rateLimit,
             autoFillClipboard: this.autoFillClipboard,
+            noPlaylist: this.noPlaylist,
             globalShortcut: this.globalShortcut,
             spoofUserAgent: this.spoofUserAgent,
             validateCertificate: this.validateCertificate,
@@ -142,7 +152,9 @@ class Settings {
     }
 
     save() {
-        fs.writeFile(this.paths.settings, JSON.stringify(this.serialize()), "utf8").then(() => console.log("Saved settings file."));
+        fs.writeFile(this.paths.settings, JSON.stringify(this.serialize()), "utf8").then(() => {
+            console.log("Saved settings file.")
+        });
     }
 
     setGlobalShortcuts() {
