@@ -205,6 +205,7 @@ function createWindow(env) {
 }
 
 app.on('ready', async () => {
+    app.setAppUserModelId("com.jelleglebbeek.youtube-dl-gui");
     env = new Environment(app, analytics);
     await env.initialize();
     createWindow(env);
