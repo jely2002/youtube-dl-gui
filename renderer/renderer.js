@@ -388,7 +388,7 @@ async function init() {
                 setUnifiedPlaylist(arg);
                 break;
             case "setDownloadType":
-                $('#download-type').val(arg.type).change();
+                $('#download-type').val(arg.type);
                 break;
         }
     });
@@ -411,7 +411,8 @@ async function init() {
     });
 }
 
-function sendSettings() {
+async function sendSettings() {
+    await settingExists();
     let settings = {
         updateBinary: $('#updateBinary').prop('checked'),
         updateApplication: $('#updateApplication').prop('checked'),
