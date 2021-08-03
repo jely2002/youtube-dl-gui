@@ -204,6 +204,7 @@ select {
 }
 
 .video-card {
+    position: relative;
     max-width: 700px;
     min-height: 140px;
     max-height: 155px;
@@ -212,6 +213,18 @@ select {
     padding: 0.75em 0 0.75em 0.75em;
     border-radius: 3px;
     box-shadow: 0 0.1em 0.15em var(--tertiary-bg-color);
+}
+
+.video-card .handle {
+    position: absolute;
+    left: 0.25rem;
+    top: calc(50% + 2rem);
+    margin: -2rem 0;
+    padding: 2rem 0;
+    transform: translateY(-50%) scale(1.5);
+    filter: brightness(55%);
+    cursor: move;
+    z-index: 100;
 }
 
 .video-card p {
@@ -266,7 +279,7 @@ select {
     color: var(--font-color);
 }
 
-.video-card i:hover {
+.video-card i:hover :not(.bi-grip-vertical) {
     transition: 150ms color;
     filter: brightness(55%);
 }

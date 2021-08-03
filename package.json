@@ -46,6 +46,7 @@
     "jquery": "^3.5.1",
     "mkdirp": "^1.0.4",
     "popper.js": "^1.16.1",
+    "sortablejs": "^1.14.0",
     "user-agents": "^1.0.586",
     "windowbar": "^1.7.4"
   },

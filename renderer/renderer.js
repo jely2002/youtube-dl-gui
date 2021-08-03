@@ -48,6 +48,15 @@ async function init() {
         $('#downloadBtn').click();
     })
 
+    //Init draggable cards
+    const dragArea = document.querySelector(".video-cards");
+    new Sortable(dragArea, {
+        animation: 200,
+        sort: true,
+        draggable: ".video-card",
+        handle: ".handle"
+    });
+
     //Init the when done dropdown
     $('.dropdown-toggle').dropdown();
     const availableOptions = await window.main.invoke('getDoneActions');
