@@ -46,6 +46,11 @@
     ]
   },
   {
+    "code": "URL not found",
+    "description": "This is an incorrect or non-existing URL.",
+    "trigger": "[Errno 11001]"
+  },
+  {
     "code": "Private or non-existent playlist",
     "description": "This playlist does not exist or is&nbsp;<span onclick=\"$('#authModal').modal('show');\" class=\"openAuth\">private</span>.",
     "trigger": "ERROR: The playlist does not exist"
@@ -195,7 +200,7 @@
   },
   {
     "code": "Binaries missing/corrupted",
-    "description": "Please restart the app, or disable antivirus.",
+    "description": "Please restart the app and disable antivirus.",
     "trigger": [
       "Command failed with ENOENT: resources\\app.asar.unpacked\\binaries\\youtube-dl.exe",
       "Command failed with ENOENT: binaries/youtube-dl.exe",
