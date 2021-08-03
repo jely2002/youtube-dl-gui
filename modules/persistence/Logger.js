@@ -41,11 +41,10 @@ class Logger {
         }
         const date = new Date().toLocaleString()
             .replace(", ", "-")
-            .replaceAll("/", "-")
-            .replaceAll(":", "-")
-            .replace(/:.. /," ");
+            .replace(/\//g, "-")
+            .replace(/:/g, "-")
         let result = await dialog.showSaveDialog(this.environment.win, {
-            defaultPath: path.join(this.environment.settings.downloadPath, "ytdl-log-" + date),
+            defaultPath: path.join(this.environment.settings.downloadPath, "ytdl-log-" + date.slice(0, date.length - 6)),
             buttonLabel: "Save metadata",
             filters: [
                 { name: "txt", extensions: ["txt"] },
