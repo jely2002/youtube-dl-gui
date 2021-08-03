@@ -136,8 +136,9 @@ async function init() {
 
     $('#download-quality').on('change', () => updateAllVideoSettings());
 
-    $('#download-type').on('change', () => {
+    $('#download-type').on('change', async () => {
         updateAllVideoSettings();
+        await getSettings();
         sendSettings();
     });
 
@@ -196,36 +197,9 @@ async function init() {
         }
     })
 
-    $('#settingsBtn').on('click', () => {
-        window.main.invoke("settingsAction", {action: "get"}).then((settings) => {
-            $('#updateBinary').prop('checked', settings.updateBinary);
-            $('#updateApplication').prop('checked', settings.updateApplication);
-            $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
-            $('#validateCertificate').prop('checked', settings.validateCertificate);
-            $('#enableEncoding').prop('checked', settings.enableEncoding);
-            $('#taskList').prop('checked', settings.taskList);
-            $('#autoFillClipboard').prop('checked', settings.autoFillClipboard);
-            $('#noPlaylist').prop('checked', settings.noPlaylist);
-            $('#globalShortcut').prop('checked', settings.globalShortcut);
-            $('#ratelimitSetting').val(settings.rateLimit);
-            $('#proxySetting').val(settings.proxy);
-            $('#nameFormatCustom').val(settings.nameFormat).prop("disabled", settings.nameFormatMode === "custom");
-            $('#nameFormat').val(settings.nameFormatMode);
-            $('#outputFormat').val(settings.outputFormat);
-            $('#audioOutputFormat').val(settings.audioOutputFormat);
-            $('#downloadMetadata').prop('checked', settings.downloadMetadata);
-            $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
-            $('#keepUnmerged').prop('checked', settings.keepUnmerged);
-            $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
-            $('#maxConcurrent').val(settings.maxConcurrent);
-            $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.maxConcurrent})</strong>`);
-            $('#sizeSetting').val(settings.sizeMode);
-            $('#splitMode').val(settings.splitMode);
-            $('#settingsModal').modal("show");
-            $('#theme').val(settings.theme);
-            $('#version').html("<strong>Version: </strong>" + settings.version);
-            window.settings = settings;
-        });
+    $('#settingsBtn').on('click', async () => {
+        await getSettings();
+        $('#settingsModal').modal("show");
     });
 
     $('#defaultConcurrent').on('click', () => {
@@ -409,6 +383,7 @@ async function init() {
                 break;
             case "setDownloadType":
                 $('#download-type').val(arg.type);
+                updateAllVideoSettings();
                 break;
         }
     });
@@ -429,40 +404,6 @@ async function init() {
             node = node.parentNode;
         }
     });
-}
-
-async function sendSettings() {
-    await settingExists();
-    let settings = {
-        updateBinary: $('#updateBinary').prop('checked'),
-        updateApplication: $('#updateApplication').prop('checked'),
-        autoFillClipboard: $('#autoFillClipboard').prop('checked'),
-        noPlaylist: $('#noPlaylist').prop('checked'),
-        globalShortcut: $('#globalShortcut').prop('checked'),
-        outputFormat: $('#outputFormat').val(),
-        audioOutputFormat: $('#audioOutputFormat').val(),
-        proxy: $('#proxySetting').val(),
-        spoofUserAgent: $('#spoofUserAgent').prop('checked'),
-        validateCertificate: $('#validateCertificate').prop('checked'),
-        enableEncoding: $('#enableEncoding').prop('checked'),
-        taskList: $('#taskList').prop('checked'),
-        nameFormatMode: $('#nameFormat').val(),
-        nameFormat: $('#nameFormatCustom').val(),
-        downloadMetadata: $('#downloadMetadata').prop('checked'),
-        downloadThumbnail: $('#downloadThumbnail').prop('checked'),
-        keepUnmerged: $('#keepUnmerged').prop('checked'),
-        calculateTotalSize: $('#calculateTotalSize').prop('checked'),
-        sizeMode: $('#sizeSetting').val(),
-        splitMode: $('#splitMode').val(),
-        rateLimit: $('#ratelimitSetting').val(),
-        maxConcurrent: parseInt($('#maxConcurrent').val()),
-        downloadType: $('#download-type').val(),
-        theme: $('#theme').val()
-    }
-    window.settings = settings;
-    window.main.invoke("settingsAction", {action: "save", settings});
-    updateEncodingDropdown(settings.enableEncoding);
-    toggleWhiteMode(settings.theme);
 }
 
 function verifyURL(value) {
@@ -519,9 +460,11 @@ function updateGlobalDownloadQuality() {
     const currentFormats = [];
     $('.video-cards').children().each(function() {
         if($(this).find('.download-btn i').hasClass("disabled")) return;
-        $(this).find('.custom-select.download-quality option.video').each(function() {
-            formats.push($(this).val());
-        })
+        if($(this).find('.custom-select.download-type').val() !== "audio") {
+            $(this).find('.custom-select.download-quality option.video').each(function () {
+                formats.push($(this).val());
+            })
+        }
     })
     const sortedFormats = [...new Set(formats)];
     sortedFormats.sort((a, b) => {
@@ -556,7 +499,7 @@ function parseFormatString(string) {
 }
 
 async function addVideo(args) {
-    await settingExists();
+    await getSettings();
     let template = $('.template.video-card').clone();
     $(template).removeClass('template');
     $(template).prop('id', args.identifier);
@@ -606,10 +549,10 @@ async function addVideo(args) {
             $(template).find('.subtitle-btn, .subtitle-btn i').addClass("disabled");
         }
 
-       setCodecs(template, args.audioCodecs, args.formats);
+        setCodecs(template, args.audioCodecs, args.formats);
 
         $(template).find('.custom-select.download-quality').on('change', function () {
-           updateCodecs(template, this.value);
+            updateCodecs(template, this.value);
         });
 
         $(template).find('.custom-select.download-type').change();
@@ -718,7 +661,7 @@ function removeVideo(card) {
 }
 
 async function setUnifiedPlaylist(args) {
-    await settingExists();
+    await getSettings();
     const card = getCard(args.identifier);
     $(card).addClass("unified");
     $(card).append(`<input type="hidden" class="url" value="${args.url}">`);
@@ -966,7 +909,11 @@ async function updateVideoSettings(identifier) {
     if(qualityValue === "best") {
         $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${classValue}:first`).val());
     } else if(qualityValue === "worst") {
-        $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${classValue}:last`).val());
+        if(isAudio) {
+            $(card).find('.custom-select.download-quality').val("worst");
+        } else {
+            $(card).find('.custom-select.download-quality').val($(card).find(`.custom-select.download-quality option.${classValue}:last`).val());
+        }
     } else if(!isAudio) {
         const formats = [];
         $(card).find('.custom-select.download-quality option.video').each(function() {
@@ -997,7 +944,7 @@ async function updateVideoSettings(identifier) {
     }
     updateCodecs(card, $(card).find('.custom-select.download-quality').val())
     if($(card).hasClass("unified")) return;
-    await settingExists();
+    await getSettings();
     if(oldQuality != null && oldType != null && (oldQuality !== $(card).find('.custom-select.download-quality').val() || oldType !== $(card).find('.custom-select.download-type').val())) {
         updateSize(identifier, false);
     } else if(window.settings.sizeMode === "full") {
@@ -1024,14 +971,72 @@ function updateAllVideoSettings() {
     });
 }
 
-async function settingExists() {
-    if(window.settings == null) {
-        window.settings = await window.main.invoke("settingsAction", {action: "get"});
+async function getSettings() {
+    const settings = await window.main.invoke("settingsAction", {action: "get"});
+    $('#updateBinary').prop('checked', settings.updateBinary);
+    $('#updateApplication').prop('checked', settings.updateApplication);
+    $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
+    $('#validateCertificate').prop('checked', settings.validateCertificate);
+    $('#enableEncoding').prop('checked', settings.enableEncoding);
+    $('#taskList').prop('checked', settings.taskList);
+    $('#autoFillClipboard').prop('checked', settings.autoFillClipboard);
+    $('#noPlaylist').prop('checked', settings.noPlaylist);
+    $('#globalShortcut').prop('checked', settings.globalShortcut);
+    $('#ratelimitSetting').val(settings.rateLimit);
+    $('#proxySetting').val(settings.proxy);
+    $('#nameFormatCustom').val(settings.nameFormat).prop("disabled", settings.nameFormatMode === "custom");
+    $('#nameFormat').val(settings.nameFormatMode);
+    $('#outputFormat').val(settings.outputFormat);
+    $('#audioOutputFormat').val(settings.audioOutputFormat);
+    $('#downloadMetadata').prop('checked', settings.downloadMetadata);
+    $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
+    $('#keepUnmerged').prop('checked', settings.keepUnmerged);
+    $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
+    $('#maxConcurrent').val(settings.maxConcurrent);
+    $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.maxConcurrent})</strong>`);
+    $('#sizeSetting').val(settings.sizeMode);
+    $('#splitMode').val(settings.splitMode);
+    $('#theme').val(settings.theme);
+    $('#version').html("<strong>Version: </strong>" + settings.version);
+    window.settings = settings;
+}
+
+function sendSettings() {
+    let settings = {
+        updateBinary: $('#updateBinary').prop('checked'),
+        updateApplication: $('#updateApplication').prop('checked'),
+        autoFillClipboard: $('#autoFillClipboard').prop('checked'),
+        noPlaylist: $('#noPlaylist').prop('checked'),
+        globalShortcut: $('#globalShortcut').prop('checked'),
+        outputFormat: $('#outputFormat').val(),
+        audioOutputFormat: $('#audioOutputFormat').val(),
+        proxy: $('#proxySetting').val(),
+        spoofUserAgent: $('#spoofUserAgent').prop('checked'),
+        validateCertificate: $('#validateCertificate').prop('checked'),
+        enableEncoding: $('#enableEncoding').prop('checked'),
+        taskList: $('#taskList').prop('checked'),
+        nameFormatMode: $('#nameFormat').val(),
+        nameFormat: $('#nameFormatCustom').val(),
+        downloadMetadata: $('#downloadMetadata').prop('checked'),
+        downloadThumbnail: $('#downloadThumbnail').prop('checked'),
+        keepUnmerged: $('#keepUnmerged').prop('checked'),
+        calculateTotalSize: $('#calculateTotalSize').prop('checked'),
+        sizeMode: $('#sizeSetting').val(),
+        splitMode: $('#splitMode').val(),
+        rateLimit: $('#ratelimitSetting').val(),
+        maxConcurrent: parseInt($('#maxConcurrent').val()),
+        downloadType: $('#download-type').val(),
+        theme: $('#theme').val()
     }
+    console.log(settings)
+    window.settings = settings;
+    window.main.invoke("settingsAction", {action: "save", settings});
+    updateEncodingDropdown(settings.enableEncoding);
+    toggleWhiteMode(settings.theme);
 }
 
 async function updateTotalSize() {
-    await settingExists();
+    await getSettings();
     if(!window.settings.calculateTotalSize) return;
     let total = 0;
     for(const elem of sizeCache) {

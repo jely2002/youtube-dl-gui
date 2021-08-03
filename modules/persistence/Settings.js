@@ -156,6 +156,7 @@ class Settings {
     }
 
     save() {
+        console.log(this.serialize());
         fs.writeFile(this.paths.settings, JSON.stringify(this.serialize()), "utf8").then(() => {
             console.log("Saved settings file.")
         });
