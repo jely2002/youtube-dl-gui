@@ -104,6 +104,7 @@ class Query {
                     resolve("done");
                 });
                 this.process.stderr.on("data", (data) => {
+                    cb(data.toString());
                     if(this.environment.errorHandler.checkError(data.toString(), this.identifier)) {
                         cb("killed");
                         resolve("killed");

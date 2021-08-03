@@ -321,6 +321,7 @@ class QueryManager {
         this.managedVideos = this.managedVideos.filter(item => item.identifier !== video.identifier);
         this.playlistMetadata = this.playlistMetadata.filter(item => item.video_url !== video.url && item.playlist_url !== video.url);
         this.window.webContents.send("videoAction", { action: "remove", identifier: video.identifier })
+        this.environment.logger.clear(video.identifier);
     }
 
     onError(identifier) {

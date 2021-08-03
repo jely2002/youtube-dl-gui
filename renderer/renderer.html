@@ -222,6 +222,27 @@
     </div>
 </div>
 
+<div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="logModalLabel" aria-hidden="true">
+    <div class="modal-xl modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logModalLabel">Download Log</h5>
+                <button type="button" class="close dismiss" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="log p-3 rounded w-100">Loading log...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" title="Save as file" class="btn save btn-dark">Save as file</button>
+                <button type="button" class="btn btn-dark dismiss" >Close</button>
+            </div>
+            <span class="identifier d-none"></span>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
     <div class="modal-xl modal-dialog modal-dialog-centered">
         <div class="modal-content">

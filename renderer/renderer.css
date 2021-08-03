@@ -500,6 +500,27 @@ option.audio {
     }
 }
 
+/* LOG MODAL */
+#logModal {
+    padding: 0 5rem;
+}
+
+#logModal .modal-dialog {
+    max-width: 1200px;
+    margin: 1.75rem auto !important;
+}
+
+#logModal .log {
+    overflow-y: auto;
+    max-height: 550px;
+    border-color: var(--tertiary-bg-color);
+    background-color: var(--secondary-bg-color);
+}
+
+#logModal .log p {
+    margin-bottom: 0.5rem;
+}
+
 /* INFO MODAL */
 #info-description {
     resize: none;

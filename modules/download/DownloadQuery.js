@@ -106,6 +106,16 @@ class DownloadQuery extends Query {
                 const perLine = liveData.split("\n");
                 for(const line of perLine) {
                     this.video.setFilename(line);
+                    if(line.lastIndexOf("[download]") !== line.indexOf("[download]")) {
+                        const splitLines = line.split("[");
+                        for(const splitLine of splitLines) {
+                            if(splitLine.trim() !== "") {
+                                this.environment.logger.log(this.video.identifier, "[" + splitLine.trim());
+                            }
+                        }
+                    } else {
+                        this.environment.logger.log(this.video.identifier, line);
+                    }
                 }
                 if (!liveData.includes("[download]")) return;
                 if (!initialReset) {

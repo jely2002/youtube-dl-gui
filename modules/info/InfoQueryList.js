@@ -13,7 +13,7 @@ class InfoQueryList {
     }
 
     async start() {
-        let result = await new Promise(((resolve) => {
+        return await new Promise(((resolve) => {
             let totalMetadata = [];
             let playlistUrls = Utils.extractPlaylistUrls(this.query);
             for (const videoData of playlistUrls[1]) {
@@ -43,7 +43,6 @@ class InfoQueryList {
                 });
             }
         }));
-        return result;
     }
 
     createVideo(data, url) {

@@ -74,6 +74,16 @@ function startCriticalHandlers(env) {
             taskList.restore()
         });
 
+        //Send the log for a specific download to renderer
+        ipcMain.handle("getLog", (event, identifier) => {
+            return env.logger.get(identifier);
+        });
+
+        //Save the log when renderer asks main
+        ipcMain.handle("saveLog", (event, identifier) => {
+            return env.logger.save(identifier);
+        })
+
         //Catch all console.log calls, print them to stdout and send them to the renderer devtools.
         console.log = (arg) => {
             process.stdout.write(arg + "\n");

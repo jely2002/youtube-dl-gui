@@ -3,6 +3,7 @@ let linkCopied = false;
 let progressCooldown = [];
 let sizeCooldown = [];
 let sizeCache = [];
+let logUpdateTask;
 
 (function () { init(); })();
 
@@ -147,6 +148,11 @@ async function init() {
         $('#authModal').modal("hide");
     });
 
+    $('#logModal .dismiss').on('click', () => {
+        $('#logModal').modal("hide");
+        clearInterval(logUpdateTask);
+    });
+
     $('#subsModal .dismiss').on('click', () => {
         $('#subsModal').modal("hide");
     });
@@ -248,7 +254,11 @@ async function init() {
     })
 
     $('#infoModal .json').on('click', () => {
-        window.main.invoke('videoAction', {action: "downloadInfo", identifier: $('#infoModal .identifier').html()})
+        window.main.invoke('videoAction', {action: "downloadInfo", identifier: $('#infoModal .identifier').html()});
+    });
+
+    $('#logModal .save').on('click', () => {
+        window.main.invoke('saveLog', $('#logModal .identifier').html());
     });
 
     $('#clearBtn').on('click', () => {
@@ -308,10 +318,11 @@ async function init() {
                 }
                 $(card).find('.progress').addClass("d-flex");
                 $(card).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s").show();
-                $(card).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
+                $(card).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown").show();
                 $(card).find('.options').addClass("d-flex");
                 $(card).find('select').addClass("d-none");
                 $(card).find('.download-btn, .download-btn i, .subtitle-btn, .subtitle-btn i').addClass("disabled");
+                changeDownloadIconToLog(card);
                 if($(card).hasClass("unified")) {
                     $(card).find('.metadata.left, .metadata.right').empty();
                     $(card).find('.info').addClass("d-flex").removeClass("d-none");
@@ -621,10 +632,11 @@ async function addVideo(args) {
             updateGlobalDownloadQuality();
             $(template).find('.progress').addClass("d-flex");
             $(template).find('.metadata.left').html('<strong>Speed: </strong>' + "0.00MiB/s").show();
-            $(template).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown");
+            $(template).find('.metadata.right').html('<strong>ETA: </strong>' + "Unknown").show();
             $(template).find('.options').addClass("d-flex");
             $(template).find('select').addClass("d-none");
             $(template).find('.download-btn i, .download-btn, .subtitle-btn, .subtitle-btn i').addClass("disabled");
+            changeDownloadIconToLog(template);
         });
 
         $(template).find('.subtitle-btn').on('click', () => {
@@ -760,6 +772,7 @@ async function setUnifiedPlaylist(args) {
         $(card).find('.metadata.info').html('Downloading playlist...');
         $(card).find('select').addClass("d-none");
         $(card).find('.download-btn i, .download-btn, .subtitle-btn, .subtitle-btn i').addClass("disabled");
+        changeDownloadIconToLog(card);
     });
 
     setCodecs(card, args.audioCodecs, args.formats);
@@ -870,7 +883,7 @@ function updateProgress(args) {
             }
             if(!progressCooldown.includes(args.identifier)) {
                 progressCooldown.push(args.identifier);
-                $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta);
+                $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta).show();
                 $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed).show();
                 setTimeout(() => {
                     progressCooldown = progressCooldown.filter(item => item !== args.identifier);
@@ -1155,12 +1168,60 @@ function changeSubsToRetry(url, card) {
         .find('i').removeClass("disabled");
 }
 
+function changeDownloadIconToLog(card) {
+    if(card == null) return;
+    $(card).find('.download-btn i')
+        .unbind()
+        .removeClass("bi-download")
+        .removeClass("disabled")
+        .addClass("bi-journal-text")
+        .on('click', () => {
+            const id = $(card).prop('id');
+            $('#logModal').modal("show").find('.identifier').html(id);
+            $('#logModal .log').html("Loading log...");
+            openLog(id);
+            logUpdateTask = setInterval(() => openLog(id), 1000);
+        });
+    $(card).find('.download-btn')
+        .unbind()
+        .removeClass("disabled");
+}
+
+function openLog(identifier) {
+    const logBox = $('#logModal .log');
+    window.main.invoke("getLog", identifier).then(log => {
+        if(log == null) {
+            $(logBox).val("No log was found for this video.")
+        } else {
+            let fullLog = "";
+            for(const line of log) {
+                if(line.startsWith("WARNING")) {
+                    const pre = line.slice(0, line.indexOf("W")) + "<strong>" + line.slice(line.indexOf("W"));
+                    const suffixed = pre.slice(0, pre.indexOf(":") + 1) + "</strong>" + pre.slice(pre.indexOf(":") + 1);
+                    fullLog += "<p class='text-warning'>" + suffixed + "</p>";
+                } else if(line.startsWith("ERROR")) {
+                    const pre = line.slice(0, line.indexOf("E")) + "<strong>" + line.slice(line.indexOf("E"));
+                    const suffixed = pre.slice(0, pre.indexOf(":") + 1) + "</strong>" + pre.slice(pre.indexOf(":") + 1);
+                    fullLog += "<p class='text-danger'>" + suffixed + "</p>";
+                } else if(line.startsWith("[")) {
+                    const pre = line.slice(0, line.indexOf("[")) + "<strong>" + line.slice(line.indexOf("["));
+                    const suffixed = pre.slice(0, pre.indexOf("]") + 1) + "</strong>" + pre.slice(pre.indexOf("]") + 1);
+                    fullLog += "<p>" + suffixed + "</p>";
+                } else {
+                    fullLog += "<p><strong>" + line + "</strong></p>";
+                }
+            }
+            $(logBox).html(fullLog);
+        }
+    })
+}
+
 function setError(code, description, unexpected, identifier, url) {
     let card = getCard(identifier);
     $(card).append(`<input type="hidden" class="url" value="${url}">`);
     $(card).find('.progress-bar').removeClass("progress-bar-striped").removeClass("progress-bar-animated").css("width", "100%").css('background-color', 'var(--error-color)');
     $(card).find('.buttons').children().each(function() {
-        if($(this).hasClass("remove-btn") || $(this).hasClass("info-btn")) {
+        if($(this).hasClass("remove-btn") || $(this).hasClass("info-btn") || $(this).find("i").hasClass("bi-journal-text")) {
             $(this).removeClass("disabled").find('i').removeClass("disabled");
         } else if($(this).hasClass("subtitle-btn")) {
             changeSubsToRetry(url, card);
