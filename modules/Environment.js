@@ -2,6 +2,7 @@ const Bottleneck = require("bottleneck");
 const Filepaths = require("./Filepaths");
 const Settings = require("./persistence/Settings");
 const DetectPython = require("./DetectPython");
+const Logger = require("./persistence/Logger");
 const fs = require("fs").promises;
 
 class Environment {
@@ -15,6 +16,7 @@ class Environment {
         this.mainAudioQuality = "best";
         this.mainDownloadSubs = false;
         this.doneAction = "Do nothing";
+        this.logger = new Logger(this);
         this.paths = new Filepaths(app, this);
         this.downloadLimiter = new Bottleneck({
             trackDoneStatus: true,

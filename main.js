@@ -61,6 +61,9 @@ function startCriticalHandlers(env) {
         taskList.load();
     }
 
+    //Send the saved download type to the renderer
+    win.webContents.send("videoAction", {action: "setDownloadType", type: env.settings.downloadType});
+
     env.errorHandler = new ErrorHandler(win, queryManager, env);
 
     if(appStarting) {
@@ -70,6 +73,16 @@ function startCriticalHandlers(env) {
         ipcMain.handle("restoreTaskList", () => {
             taskList.restore()
         });
+
+        //Send the log for a specific download to renderer
+        ipcMain.handle("getLog", (event, identifier) => {
+            return env.logger.get(identifier);
+        });
+
+        //Save the log when renderer asks main
+        ipcMain.handle("saveLog", (event, identifier) => {
+            return env.logger.save(identifier);
+        })
 
         //Catch all console.log calls, print them to stdout and send them to the renderer devtools.
         console.log = (arg) => {
@@ -205,6 +218,7 @@ function createWindow(env) {
 }
 
 app.on('ready', async () => {
+    app.setAppUserModelId("com.jelleglebbeek.youtube-dl-gui");
     env = new Environment(app, analytics);
     await env.initialize();
     createWindow(env);

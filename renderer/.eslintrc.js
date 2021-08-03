@@ -1,4 +1,7 @@
 module.exports = {
+    "globals": {
+        "Sortable": "readonly"
+    },
     "env": {
         "browser": true,
         "es2021": true,
@@ -148,7 +151,7 @@ module.exports = {
         "no-multiple-empty-lines": "error",
         "no-negated-condition": "off",
         "no-nested-ternary": "error",
-        "no-new": "error",
+        "no-new": "off",
         "no-new-func": "error",
         "no-new-object": "error",
         "no-new-wrappers": "error",

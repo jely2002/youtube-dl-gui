@@ -21,10 +21,15 @@ class DownloadQuery extends Query {
         let args = [];
         let output = path.join(this.environment.settings.downloadPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
         if(this.video.audioOnly) {
-            let numeralAudioQuality = (this.video.audioQuality === "best") ? "0" : "9";
+            let audioQuality = this.video.audioQuality;
+            if(audioQuality === "best") {
+                audioQuality = "0";
+            } else if(audioQuality === "worst") {
+                audioQuality = "9";
+            }
             const audioOutputFormat = this.environment.settings.audioOutputFormat;
             args = [
-                '--extract-audio', '--audio-quality', numeralAudioQuality,
+                '--extract-audio', '--audio-quality', audioQuality,
                 '--ffmpeg-location', this.environment.paths.ffmpeg,
                 '--no-mtime',
                 '-o', output,
@@ -101,6 +106,16 @@ class DownloadQuery extends Query {
                 const perLine = liveData.split("\n");
                 for(const line of perLine) {
                     this.video.setFilename(line);
+                    if(line.lastIndexOf("[download]") !== line.indexOf("[download]")) {
+                        const splitLines = line.split("[");
+                        for(const splitLine of splitLines) {
+                            if(splitLine.trim() !== "") {
+                                this.environment.logger.log(this.video.identifier, "[" + splitLine.trim());
+                            }
+                        }
+                    } else {
+                        this.environment.logger.log(this.video.identifier, line);
+                    }
                 }
                 if (!liveData.includes("[download]")) return;
                 if (!initialReset) {

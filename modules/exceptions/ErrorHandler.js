@@ -19,7 +19,7 @@ class ErrorHandler {
             console.error("An error has occurred but no error message was given.")
             return false;
         }
-        if(stderr.includes("WARNING")) {
+        if(stderr.trim().startsWith("WARNING:")) {
             console.warn(stderr);
             return;
         }

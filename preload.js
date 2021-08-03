@@ -40,7 +40,9 @@ contextBridge.exposeInMainWorld(
                 "getDoneActions",
                 "setDoneAction",
                 "getSubtitles",
-                "getSelectedSubtitles"
+                "getSelectedSubtitles",
+                "getLog",
+                "saveLog"
             ];
             if (validChannels.includes(channel)) {
                 return await ipcRenderer.invoke(channel, data);

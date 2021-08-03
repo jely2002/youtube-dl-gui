@@ -3,7 +3,13 @@ const { globalShortcut, clipboard } = require('electron');
 const fs = require("fs").promises;
 
 class Settings {
-    constructor(paths, env, outputFormat, audioOutputFormat, downloadPath, proxy, rateLimit, autoFillClipboard, globalShortcut, spoofUserAgent, validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode, sizeMode, splitMode, maxConcurrent, updateBinary, updateApplication, cookiePath, statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme) {
+    constructor(
+        paths, env, outputFormat, audioOutputFormat, downloadPath,
+        proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, spoofUserAgent,
+        validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
+        sizeMode, splitMode, maxConcurrent, updateBinary, downloadType, updateApplication, cookiePath,
+        statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme
+    ) {
         this.paths = paths;
         this.env = env
         this.outputFormat = outputFormat == null ? "none" : outputFormat;
@@ -12,6 +18,7 @@ class Settings {
         this.proxy = proxy == null ? "" : proxy;
         this.rateLimit = rateLimit == null ? "" : rateLimit;
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
+        this.noPlaylist = noPlaylist == null ? false : noPlaylist;
         this.globalShortcut = globalShortcut == null ? true : globalShortcut;
         this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
         this.validateCertificate = validateCertificate == null ? false : validateCertificate;
@@ -27,6 +34,7 @@ class Settings {
         this.splitMode = splitMode == null? "49" : splitMode;
         this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? Math.round(os.cpus().length / 2) : maxConcurrent; //Max concurrent is standard half of the system's available cores
         this.updateBinary = updateBinary == null ? true : updateBinary;
+        this.downloadType = downloadType == null ? "video" : downloadType;
         this.updateApplication = updateApplication == null ? true : updateApplication;
         this.cookiePath = cookiePath;
         this.statSend = statSend == null ? false : statSend;
@@ -47,6 +55,7 @@ class Settings {
                 data.proxy,
                 data.rateLimit,
                 data.autoFillClipboard,
+                data.noPlaylist,
                 data.globalShortcut,
                 data.spoofUserAgent,
                 data.validateCertificate,
@@ -58,6 +67,7 @@ class Settings {
                 data.splitMode,
                 data.maxConcurrent,
                 data.updateBinary,
+                data.downloadType,
                 data.updateApplication,
                 data.cookiePath,
                 data.statSend,
@@ -82,6 +92,7 @@ class Settings {
         this.proxy = settings.proxy;
         this.rateLimit = settings.rateLimit;
         this.autoFillClipboard = settings.autoFillClipboard;
+        this.noPlaylist = settings.noPlaylist;
         this.globalShortcut = settings.globalShortcut;
         this.spoofUserAgent = settings.spoofUserAgent;
         this.validateCertificate = settings.validateCertificate;
@@ -100,6 +111,7 @@ class Settings {
             this.env.changeMaxConcurrent(settings.maxConcurrent);
         }
         this.updateBinary = settings.updateBinary;
+        this.downloadType = settings.downloadType;
         this.updateApplication = settings.updateApplication;
         this.theme = settings.theme;
         this.save();
@@ -117,6 +129,7 @@ class Settings {
             proxy: this.proxy,
             rateLimit: this.rateLimit,
             autoFillClipboard: this.autoFillClipboard,
+            noPlaylist: this.noPlaylist,
             globalShortcut: this.globalShortcut,
             spoofUserAgent: this.spoofUserAgent,
             validateCertificate: this.validateCertificate,
@@ -129,6 +142,7 @@ class Settings {
             maxConcurrent: this.maxConcurrent,
             defaultConcurrent: Math.round(os.cpus().length / 2),
             updateBinary: this.updateBinary,
+            downloadType: this.downloadType,
             updateApplication: this.updateApplication,
             cookiePath: this.cookiePath,
             statSend: this.statSend,
@@ -142,7 +156,10 @@ class Settings {
     }
 
     save() {
-        fs.writeFile(this.paths.settings, JSON.stringify(this.serialize()), "utf8").then(() => console.log("Saved settings file."));
+        console.log(this.serialize());
+        fs.writeFile(this.paths.settings, JSON.stringify(this.serialize()), "utf8").then(() => {
+            console.log("Saved settings file.")
+        });
     }
 
     setGlobalShortcuts() {

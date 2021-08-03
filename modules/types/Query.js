@@ -45,6 +45,12 @@ class Query {
             args.push(this.environment.settings.rateLimit + "K");
         }
 
+        if(this.environment.settings.noPlaylist) {
+            args.push("--no-playlist");
+        } else {
+            args.push("--yes-playlist")
+        }
+
         args.push(url) //Url must always be added as the final argument
 
         let command = this.environment.paths.ytdl; //Set the command to be executed
@@ -98,6 +104,7 @@ class Query {
                     resolve("done");
                 });
                 this.process.stderr.on("data", (data) => {
+                    cb(data.toString());
                     if(this.environment.errorHandler.checkError(data.toString(), this.identifier)) {
                         cb("killed");
                         resolve("killed");

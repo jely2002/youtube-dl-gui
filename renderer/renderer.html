@@ -11,6 +11,7 @@
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script src="lib/select2.min.js"></script>
+    <script src="../node_modules/sortablejs/Sortable.min.js"></script>
 </head>
 <body>
 
@@ -79,6 +80,7 @@
 
 <div class="template video-card" id="id">
     <div class="row mx-auto">
+        <div class="handle"><i class="bi bi-grip-vertical"></i></div>
         <div class="col-4">
             <img class="mt-1" alt="Video thumbnail" nonce="imgErr" src="img/plain-placeholder.png" onerror="this.onerror=null;this.src='img/plain-placeholder.png';">
         </div>
@@ -108,6 +110,13 @@
                     <select class="custom-select download-quality">
                         <option class="audio" value="best" selected>Best</option>
                         <option class="audio" value="worst">Worst</option>
+                        <option class="audio" value="320k">320k</option>
+                        <option class="audio" value="256k">256k</option>
+                        <option class="audio" value="224k">224k</option>
+                        <option class="audio" value="192k">192k</option>
+                        <option class="audio" value="160k">160k</option>
+                        <option class="audio" value="128k">128k</option>
+                        <option class="audio" value="96k">96k</option>
                     </select>
                     <select class="custom-select download-audio-encoding">
                         <option class="none" value="none" selected>Audio codec</option>
@@ -215,6 +224,27 @@
     </div>
 </div>
 
+<div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="logModalLabel" aria-hidden="true">
+    <div class="modal-xl modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logModalLabel">Download Log</h5>
+                <button type="button" class="close dismiss" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="log p-3 rounded w-100">Loading log...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" title="Save as file" class="btn save btn-dark">Save as file</button>
+                <button type="button" class="btn btn-dark dismiss" >Close</button>
+            </div>
+            <span class="identifier d-none"></span>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
     <div class="modal-xl modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -293,10 +323,14 @@
                 </div>
                 <hr/>
                 <h3>Input</h3>
-                    <div class="mb-1">
-                        <input class="check-input" type="checkbox" value="" id="autoFillClipboard">
-                        <label class="check-label" for="autoFillClipboard">Automatically fill in copied links</label>
-                    </div>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="autoFillClipboard">
+                    <label class="check-label" for="autoFillClipboard">Automatically fill in copied links</label>
+                </div>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="noPlaylist">
+                    <label class="check-label" for="noPlaylist">Download only video when link contains list & video</label>
+                </div>
                 <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="globalShortcut">
                     <label class="check-label" for="globalShortcut">Enable global paste & download shortcuts</label>
