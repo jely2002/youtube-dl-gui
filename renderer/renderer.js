@@ -675,7 +675,7 @@ async function setUnifiedPlaylist(args) {
     if(window.settings.enableEncoding) {
         $(card).find('.metadata').hide();
     } else {
-        $(card).find('.custom-select.download-encoding').hide();
+        $(card).find('.custom-select.download-encoding, .custom-select.download-audio-encoding').hide();
     }
     if(args.subtitles) $(card).find('.subtitle-btn i').removeClass("bi-card-text-strike").addClass("bi-card-text").attr("title", "Subtitles enabled");
     $(card).find('img').prop("src", args.thumb);
@@ -726,7 +726,6 @@ async function setUnifiedPlaylist(args) {
         $(card).find('.metadata.info').html('Downloading playlist...');
         $(card).find('select').addClass("d-none");
         $(card).find('.download-btn i, .download-btn, .subtitle-btn, .subtitle-btn i').addClass("disabled");
-        changeDownloadIconToLog(card);
     });
 
     setCodecs(card, args.audioCodecs, args.formats);
@@ -1030,7 +1029,6 @@ function sendSettings() {
         downloadType: $('#download-type').val(),
         theme: $('#theme').val()
     }
-    console.log(settings)
     window.settings = settings;
     window.main.invoke("settingsAction", {action: "save", settings});
     updateEncodingDropdown(settings.enableEncoding);
