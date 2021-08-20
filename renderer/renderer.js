@@ -588,7 +588,9 @@ async function addVideo(args) {
             $(template).find('.options').addClass("d-flex");
             $(template).find('select').addClass("d-none");
             $(template).find('.download-btn i, .download-btn, .subtitle-btn, .subtitle-btn i').addClass("disabled");
-            changeDownloadIconToLog(template);
+            if(!$(template).hasClass("unified")) {
+                changeDownloadIconToLog(template);
+            }
         });
 
         $(template).find('.subtitle-btn').on('click', () => {
