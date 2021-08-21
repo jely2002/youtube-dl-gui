@@ -375,7 +375,7 @@ class QueryManager {
         if(file == null) {
             fs.readdir(video.downloadedPath, (err, files) => {
                 for (const searchFile of files) {
-                    if (file.substr(0, file.lastIndexOf(".")) === video.getFilename()) {
+                    if (searchFile.substr(0, searchFile.lastIndexOf(".")) === video.getFilename()) {
                         file = searchFile;
                         break;
                     }
