@@ -9,7 +9,7 @@ class Analytics {
 
     initSentry() {
         return new Promise(resolve => {
-            require('dotenv').config({path: this.app.isPackaged ? path.join(process.cwd(), "/resources/app.asar/.env") : path.resolve(process.cwd(), '.env')});
+            require('dotenv').config({path: this.app.isPackaged ? path.join(this.app.getAppPath(), ".env") : path.resolve(process.cwd(), '.env')});
             if(process.argv[2] === '--dev' && !process.argv.includes("--sentry")) resolve("Sentry disabled in dev mode, pass --sentry to enable.");
             Sentry.init({
                 dsn: process.env.SENTRY_DSN,
