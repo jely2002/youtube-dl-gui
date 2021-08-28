@@ -93,6 +93,7 @@ describe('generate filepaths', () => {
 describe('create home folder', () => {
     it('does not copy the files if the folder already exists', async () => {
         const instance = instanceBuilder(true);
+        instance.unpackedPrefix = "test/unpacked/prefix";
         fs.copyFileSync = jest.fn();
         mkdirp.mockResolvedValue(null);
         await instance.createHomeFolder();
@@ -112,6 +113,7 @@ describe('create home folder', () => {
 describe('create portable folder', () => {
     it('does not copy the files if the folder already exists', async () => {
         const instance = instanceBuilder(true);
+        instance.unpackedPrefix = "test/unpacked/prefix";
         fs.copyFileSync = jest.fn();
         mkdirp.mockResolvedValue(null);
         await instance.createAppDataFolder();

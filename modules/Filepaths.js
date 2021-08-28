@@ -67,7 +67,7 @@ class Filepaths {
                 this.unpackedPrefix = this.appPath + ".unpacked";
                 if(this.app.isPackaged) await this.createHomeFolder()
                 this.ytdl = this.app.isPackaged ? path.join(this.persistentPath, "youtube-dl-unix") : "binaries/youtube-dl-unix";
-                this.ffmpeg = this.app.isPackaged ? path.join(this.persistentPath, "ffmpeg") : "binaries/ffmpeg";
+                this.ffmpeg = this.app.isPackaged ? path.join(this.persistentPath, "ffmpeg-linux") : "binaries/ffmpeg-linux";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.persistentPath, "userSettings") : "userSettings";
                 this.taskList = this.app.isPackaged ? path.join(this.persistentPath, "taskList") : "taskList";
