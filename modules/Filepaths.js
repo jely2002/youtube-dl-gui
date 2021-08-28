@@ -112,7 +112,7 @@ class Filepaths {
     }
 
     async createAppDataFolder() {
-        const from = path.join(this.unpackedPrefix + "binaries");
+        const from = path.join(this.unpackedPrefix, "binaries");
         const toCopy = ["youtube-dl.exe", "ffmpeg.exe", "ytdlVersion", "AtomicParsley.exe"];
         await this.copyFiles(from, this.persistentPath, toCopy);
     }
@@ -121,7 +121,7 @@ class Filepaths {
         try {
             await fs.promises.access(process.env.PORTABLE_EXECUTABLE_DIR, fs.constants.W_OK);
             if(await this.migrateExistingAppDataFolder()) return;
-            const from = path.join(this.unpackedPrefix + "binaries");
+            const from = path.join(this.unpackedPrefix, "binaries");
             const toCopy = ["youtube-dl.exe", "ffmpeg.exe", "ytdlVersion", "AtomicParsley.exe"];
             await this.copyFiles(from, this.persistentPath, toCopy);
         } catch (e) {
@@ -149,7 +149,7 @@ class Filepaths {
     }
 
     async createHomeFolder() {
-        const from = path.join(this.unpackedPrefix + "binaries");
+        const from = path.join(this.unpackedPrefix, "binaries");
         const toCopy = ["youtube-dl-unix", "ffmpeg-linux", "ytdlVersion"];
         await this.copyFiles(from, this.persistentPath, toCopy);
     }
