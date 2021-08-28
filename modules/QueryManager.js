@@ -390,12 +390,25 @@ class QueryManager {
             if(fallback) {
                 shell.openPath(video.downloadedPath);
             } else {
-                shell.showItemInFolder(path.join(video.downloadedPath, file));
+                shell.showItemInFolder(await this.verifyOpenVideoFilepath(video, file));
             }
         } else if(args.type === "item") {
-            shell.openPath(path.join(video.downloadedPath, file));
+            shell.openPath(await this.verifyOpenVideoFilepath(video, file));
         } else {
             console.error("Wrong openVideo type specified.")
+        }
+    }
+
+    async verifyOpenVideoFilepath(video, file) {
+        const videoPath = path.join(video.downloadedPath, file);
+        try {
+            await fs.promises.access(videoPath)
+            return path.join(video.downloadedPath, file);
+        } catch (e) {
+            let extension = file.substring(file.lastIndexOf('.'), file.length);
+            if(!extension) extension = '.mp4';
+            //Fallback to original method if file doesnt exist.
+            return path.join(video.downloadedPath, video.getFilename() + extension);
         }
     }
 
