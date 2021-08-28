@@ -48,6 +48,7 @@ class Filepaths {
                 this.settings = path.join(this.persistentPath, "userSettings");
                 this.taskList = path.join(this.persistentPath, "taskList");
                 this.ytdlVersion = path.join(this.persistentPath, "ytdlVersion");
+                this.checkFfmpeg();
                 break;
             case "darwin":
                 this.packedPrefix = this.appPath;
@@ -71,6 +72,7 @@ class Filepaths {
                 this.settings = this.app.isPackaged ? path.join(this.persistentPath, "userSettings") : "userSettings";
                 this.taskList = this.app.isPackaged ? path.join(this.persistentPath, "taskList") : "taskList";
                 this.ytdlVersion = this.app.isPackaged ? path.join(this.persistentPath, "ytdlVersion") :"binaries/ytdlVersion";
+                this.checkFfmpeg();
                 this.setPermissions()
                 break;
         }
@@ -100,6 +102,17 @@ class Filepaths {
         if(process.env.PORTABLE_EXECUTABLE_DIR != null) return "win32portable";
         else if(this.appPath.includes("WindowsApps")) return "win32app"
         else return process.platform;
+    }
+
+    checkFfmpeg() {
+        try {
+            fs.promises.access(this.ffmpeg, fs.constants.F_OK).catch(() => {
+                const from = path.join(this.unpackedPrefix, "binaries");
+                fs.copyFileSync(path.join(from, path.basename(this.ffmpeg)), this.ffmpeg);
+            })
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     setPermissions() {
