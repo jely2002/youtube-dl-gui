@@ -19,16 +19,16 @@ describe('init sentry', () => {
    it("loads dotenv with packaged path", () => {
        const dotenvMock = jest.spyOn(dotenv, 'config').mockImplementation(() => {});
        const instance = instanceBuiler(true);
+       instance.app.getAppPath = jest.fn(() => "app/path");
        instance.initSentry();
        expect(dotenvMock).toBeCalledTimes(1);
-       expect(dotenvMock).toBeCalledWith({path: path.join(process.cwd(), "/resources/app.asar/.env")});
    });
     it("loads dotenv with test path", () => {
         const dotenvMock = jest.spyOn(dotenv, 'config').mockImplementation(() => {});
         const instance = instanceBuiler(false);
+        instance.app.getAppPath = jest.fn(() => "app/path");
         instance.initSentry();
         expect(dotenvMock).toBeCalledTimes(1);
-        expect(dotenvMock).toBeCalledWith({path: path.resolve(process.cwd(), '.env')})
     });
    it("inits sentry in dev mode", () => {
        process.argv = ["", "", "--dev"];
