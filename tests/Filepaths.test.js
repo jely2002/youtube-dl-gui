@@ -128,6 +128,17 @@ describe('create portable folder', () => {
     });
 });
 
+describe('checkFfmpeg', () => {
+    it('should do nothing when ffmpeg exists', () => {
+        const instance = instanceBuilder(true);
+        instance.ffmpeg = "ffmpeg/path";
+        fs.copyFileSync = jest.fn();
+        fs.promises.access = jest.fn().mockResolvedValue(true);
+        instance.checkFfmpeg();
+        expect(fs.copyFileSync).toBeCalledTimes(0);
+    });
+});
+
 
 
 function instanceBuilder(packaged, portable) {
