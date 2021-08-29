@@ -62,7 +62,7 @@ class BinaryUpdater {
 
     //Returns an array containing the latest available remote version and the download link to it.
     async getRemoteVersion() {
-        const url = (this.paths.platform === "win32") ? "https://yt-dl.org/downloads/latest/youtube-dl.exe" : "https://yt-dl.org/downloads/latest/youtube-dl";
+        const url = (process.platform === "win32") ? "https://yt-dl.org/downloads/latest/youtube-dl.exe" : "https://yt-dl.org/downloads/latest/youtube-dl";
         try {
             await axios.get(url, {maxRedirects: 0})
         } catch (err) {
