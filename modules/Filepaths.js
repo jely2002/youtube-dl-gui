@@ -67,7 +67,7 @@ class Filepaths {
                 this.unpackedPrefix = this.appPath + ".unpacked";
                 if(this.app.isPackaged) await this.createHomeFolder()
                 this.ytdl = this.app.isPackaged ? path.join(this.persistentPath, "youtube-dl-unix") : "binaries/youtube-dl-unix";
-                this.ffmpeg = this.app.isPackaged ? path.join(this.persistentPath, "ffmpeg-linux") : "binaries/ffmpeg-linux";
+                this.ffmpeg = this.app.isPackaged ? path.join(this.persistentPath, "ffmpeg") : "binaries/ffmpeg";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.persistentPath, "userSettings") : "userSettings";
                 this.taskList = this.app.isPackaged ? path.join(this.persistentPath, "taskList") : "taskList";
@@ -108,7 +108,7 @@ class Filepaths {
         try {
             fs.promises.access(this.ffmpeg, fs.constants.F_OK).catch(() => {
                 const from = path.join(this.unpackedPrefix, "binaries");
-                fs.copyFileSync(path.join(from, path.basename(this.ffmpeg)), this.ffmpeg);
+                fs.copyFileSync(path.join(from, "ffmpeg-linux"), this.ffmpeg);
             })
         } catch (e) {
             console.error(e);
@@ -181,8 +181,10 @@ class Filepaths {
     }
 
     copyFile(from, to, filename) {
+        const fromFile = path.join(from, filename);
+        const toFile = path.join(to, filename === "ffmpeg-linux" ? "ffmpeg" : filename);
         try {
-            fs.copyFileSync(path.join(from, filename), path.join(to, filename));
+            fs.copyFileSync(fromFile, toFile);
         } catch (e) {
             console.error("Could not copy " + filename + " to " + to + ".");
         }
