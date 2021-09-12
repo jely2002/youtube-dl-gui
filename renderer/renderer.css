@@ -3,6 +3,7 @@
     --bg-color: #212121;
     --secondary-bg-color: #292929;
     --tertiary-bg-color: #191919;
+    --active-color: #3d3d3d;
     --font-color: #fff;
     --highlight-color: #5cb85c;
     --secondary-highlight-color: #52a552;
@@ -14,6 +15,7 @@
     --bg-color: #ffffff;
     --secondary-bg-color: #eaeaea;
     --tertiary-bg-color: #dcdcdc;
+    --active-color: #f1f1f1;
     --font-color: #3c3c3c;
     --scroll-bar-color: #dcdcdc;
 }
@@ -491,6 +493,28 @@ option.audio {
 #settingsModal .help-button:hover {
     filter: brightness(0.4);
     transition: 200ms;
+}
+
+#settingsModal .tab-button {
+    border: none;
+    text-decoration: none;
+    background-color: transparent;
+    text-align: left;
+    color: var(--font-color);
+    margin-right: 4rem;
+}
+
+#settingsModal .tab-button:hover {
+    color: var(--highlight-color);
+}
+
+#settingsModal .tab-button.active {
+    background-color: var(--active-color);
+}
+
+#settingsModal .tab-button-icon {
+    display: inline-block;
+    margin-right: .4rem;
 }
 
 #nameFormatCustom {
