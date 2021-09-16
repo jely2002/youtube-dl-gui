@@ -20,6 +20,7 @@ class Query {
     async start(url, args, cb) {
         if(this.stopped) return "killed";
         args.push("--no-cache-dir");
+        args.push("--ignore-config");
 
         if(this.environment.settings.spoofUserAgent) {
             args.push("--user-agent"); //Add random user agent to slow down user agent profiling
