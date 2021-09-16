@@ -540,7 +540,9 @@ async function addVideo(args) {
                     $(elem).toggle(isAudio)
                 }
             }
-            $(template).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
+            if (args.formats.length > 0) {
+                $(template).find('.custom-select.download-quality').val(isAudio ? "best" : args.formats[args.selected_format_index].display_name).change();
+            }
         });
 
         if(args.formats.length === 0) {
