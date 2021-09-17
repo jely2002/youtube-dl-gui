@@ -276,138 +276,167 @@
                 <a class="help-button" target="_blank" href="https://github.com/jely2002/youtube-dl-gui/wiki/Settings" title="Help for settings"><i class="bi bi-question-circle"></i></a>
                 <button type="button" class="close dismiss" aria-label="Close">&times;</button>
             </div>
-            <div class="modal-body">
-                <h3>Performance</h3>
-                <div class="mb-4">
-                    <label for="sizeSetting" class="form-label">Download size calculation</label>
-                    <select class="custom-select d-block rounded w-auto mb-2" id="sizeSetting">
-                        <option value="full" selected>Automatically calculate</option>
-                        <option value="click">Click to calculate</option>
-                    </select>
-                    <input class="check-input" type="checkbox" value="" id="calculateTotalSize">
-                    <label class="check-label" for="calculateTotalSize">Calculate total download size</label>
+            <div class="modal-body d-flex align-items-start">
+                <div class="nav flex-column nav-pills me-6" id="tab" role="tablist" aria-orientation="vertical">
+                    <button class="tab-button active" id="tab-home-tab" data-toggle="pill" data-target="#tab-performance" type="button" role="tab" aria-controls="tab-performance" aria-selected="true">
+                        <span class="tab-button-icon bi bi-speedometer2"></span>
+                        Performance
+                    </button>
+                    <button class="tab-button" id="tab-appearance-tab" data-toggle="pill" data-target="#tab-appearance" type="button" role="tab" aria-controls="tab-appearance" aria-selected="false">
+                        <span class="tab-button-icon bi bi-eye"></span>
+                        Appearance
+                    </button>
+                    <button class="tab-button" id="tab-auto-update-tab" data-toggle="pill" data-target="#tab-auto-update" type="button" role="tab" aria-controls="tab-auto-update" aria-selected="false">
+                        <span class="tab-button-icon bi bi-arrow-clockwise"></span>
+                        Auto-update
+                    </button>
+                    <button class="tab-button" id="tab-network-tab" data-toggle="pill" data-target="#tab-network" type="button" role="tab" aria-controls="tab-network" aria-selected="false">
+                        <span class="tab-button-icon bi bi-wifi"></span>
+                        Network
+                    </button>
+                    <button class="tab-button" id="tab-input-tab" data-toggle="pill" data-target="#tab-input" type="button" role="tab" aria-controls="tab-input" aria-selected="false">
+                        <span class="tab-button-icon bi bi-box-arrow-in-down"></span>
+                        Input
+                    </button>
+                    <button class="tab-button" id="tab-output-tab" data-toggle="pill" data-target="#tab-output" type="button" role="tab" aria-controls="tab-output" aria-selected="false">
+                        <span class="tab-button-icon bi bi-box-arrow-up"></span>
+                        Output
+                    </button>
                 </div>
-                <div class="mb-4">
-                    <label for="maxConcurrent" id="concurrentLabel" class="form-label d-inline-block">Max concurrent jobs</label>
-                    <input type="range" class="form-range w-50 d-block align-middle" min="1" max="32" id="maxConcurrent">
-                    <button type="button" class="btn btn-dark" id="defaultConcurrent">Reset to default</button>
-                </div>
-                <hr/>
-                <h3>Appearance</h3>
-                <div class="mb-4">
-                    <label for="theme" class="form-label">Theme</label>
-                    <select class="custom-select d-block rounded w-auto mb-2" id="theme">
-                        <option value="dark" selected>Dark</option>
-                        <option value="light">Light</option>
-                    </select>
-                </div>
-                <hr/>
-                <h3>Auto-update</h3>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="updateBinary">
-                    <label class="check-label" for="updateBinary">Auto-update ytdl binary</label>
-                </div>
-                <div >
-                    <input class="check-input" type="checkbox" value="" id="updateApplication">
-                    <label class="check-label" for="updateApplication">Auto-update app</label>
-                </div>
-                <hr/>
-                <h3>Network</h3>
-                <div class="mb-4">
-                    <label for="proxySetting" class="form-label">Proxy (if empty no proxy will be used)</label>
-                    <input id="proxySetting" class="form-control" type="text" value="" placeholder="HTTPS/SOCKS proxy URL">
-                </div>
-                <div class="mb-4">
-                    <label for="ratelimitSetting" class="form-label">Rate-limit per video (KB/s)</label>
-                    <input id="ratelimitSetting" class="form-control" type="number" value="" placeholder="Rate-limit in KB/s">
-                </div>
-                <hr/>
-                <h3>Input</h3>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="autoFillClipboard">
-                    <label class="check-label" for="autoFillClipboard">Automatically fill in copied links</label>
-                </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="noPlaylist">
-                    <label class="check-label" for="noPlaylist">Download only video when link contains list & video</label>
-                </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="globalShortcut">
-                    <label class="check-label" for="globalShortcut">Enable global paste & download shortcuts</label>
-                </div>
-                <hr/>
-                <h3>Output</h3>
-                <div class="mb-3">
-                    <label for="outputFormat" class="form-label">Attempt to use output format:</label>
-                    <select class="custom-select d-block rounded w-auto mb-2" id="outputFormat">
-                        <option value="none" selected>Auto</option>
-                        <option value="mp4">MP4</option>
-                        <option value="mkv">MKV</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="audioOutputFormat" class="form-label">Force audio-only downloads to use output format:</label>
-                    <select class="custom-select d-block rounded w-auto mb-2" id="audioOutputFormat">
-                        <option value="none" selected>Auto</option>
-                        <option value="mp3">MP3</option>
-                        <option value="m4a">M4A</option>
-                        <option value="opus">Opus</option>
-                        <option value="vorbis">Vorbis</option>
-                        <option value="wav">WAV</option>
-                        <option value="aac">AAC</option>
-                        <option value="flac">FLAC</option>
-                    </select>
-                </div>
-                <div class="mb-1">
-                    <label for="nameFormat" class="form-label">Filename format:</label>
-                    <select class="custom-select d-block rounded w-auto mb-2" id="nameFormat">
-                        <option value="%(title).200s-(%(height)sp%(fps).0d).%(ext)s" selected>Title + quality</option>
-                        <option value="%(title).200s.%(ext)s">Title</option>
-                        <option value="custom">Custom</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <input id="nameFormatCustom" class="form-control" type="text" value="%(title).200s-(%(height)sp%(fps).0d).%(ext)s" disabled>
-                </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="downloadMetadata">
-                    <label class="check-label" for="downloadMetadata">Save metadata</label>
-                </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="downloadThumbnail">
-                    <label class="check-label" for="downloadThumbnail">Save thumbnail as file</label>
-                </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="keepUnmerged">
-                    <label class="check-label" for="keepUnmerged">Keep unmerged files</label>
-                </div>
-                <hr/>
-                <h3>Advanced</h3>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="taskList">
-                    <label class="check-label" for="taskList">Restore the queue after a restart</label>
-                </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="spoofUserAgent">
-                    <label class="check-label" for="spoofUserAgent">Spoof user-agent</label>
-                </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="validateCertificate">
-                    <label class="check-label" for="validateCertificate">Validate HTTPS certificates</label>
-                </div>
-                <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="enableEncoding">
-                    <label class="check-label" for="enableEncoding">Show available codecs to download</label>
-                </div>
-                <div>
-                    <label for="splitMode" class="form-label">Split playlists into separate videos when:</label>
-                    <select class="custom-select d-block rounded w-auto mb-2" id="splitMode">
-                        <option value="0">never split</option>
-                        <option value="49" selected>less than 50 videos</option>
-                        <option value="99">less than 100 videos</option>
-                        <option value="149">less than 150 videos</option>
-                        <option value="199">less than 200 videos</option>
-                    </select>
+                <div class="tab-content" id="tabContent">
+                    <div class="tab-pane fade active show" id="tab-performance" role="tabpanel" aria-labelledby="tab-performance">
+                        <div class="mb-4">
+                            <label for="sizeSetting" class="form-label">Download size calculation</label>
+                            <select class="custom-select d-block rounded w-auto mb-2" id="sizeSetting">
+                                <option value="full" selected>Automatically calculate</option>
+                                <option value="click">Click to calculate</option>
+                            </select>
+                            <input class="check-input" type="checkbox" value="" id="calculateTotalSize">
+                            <label class="check-label" for="calculateTotalSize">Calculate total download size</label>
+                        </div>
+                        <div class="mb-4">
+                            <label for="maxConcurrent" id="concurrentLabel" class="form-label d-inline-block">Max concurrent jobs</label>
+                            <input type="range" class="form-range w-50 d-block align-middle" min="1" max="32" id="maxConcurrent">
+                            <button type="button" class="btn btn-dark" id="defaultConcurrent">Reset to default</button>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-appearance" role="tabpanel" aria-labelledby="tab-appearance-tab">
+                        <div class="mb-4">
+                            <label for="theme" class="form-label">Theme</label>
+                            <select class="custom-select d-block rounded w-auto mb-2" id="theme">
+                                <option value="dark" selected>Dark</option>
+                                <option value="light">Light</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-auto-update" role="tabpanel" aria-labelledby="tab-auto-update-tab">
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="updateBinary">
+                            <label class="check-label" for="updateBinary">Auto-update ytdl binary</label>
+                        </div>
+                        <div>
+                            <input class="check-input" type="checkbox" value="" id="updateApplication">
+                            <label class="check-label" for="updateApplication">Auto-update app</label>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-network" role="tabpanel" aria-labelledby="tab-network-tab">
+                        <div class="mb-4">
+                            <label for="proxySetting" class="form-label">Proxy (if empty no proxy will be used)</label>
+                            <input id="proxySetting" class="form-control" type="text" value="" placeholder="HTTPS/SOCKS proxy URL">
+                        </div>
+                        <div class="mb-4">
+                            <label for="ratelimitSetting" class="form-label">Rate-limit per video (KB/s)</label>
+                            <input id="ratelimitSetting" class="form-control" type="number" value="" placeholder="Rate-limit in KB/s">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-input" role="tabpanel" aria-labelledby="tab-input-tab">
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="autoFillClipboard">
+                            <label class="check-label" for="autoFillClipboard">Automatically fill in copied links</label>
+                        </div>
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="noPlaylist">
+                            <label class="check-label" for="noPlaylist">Download only video when link contains list & video</label>
+                        </div>
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="globalShortcut">
+                            <label class="check-label" for="globalShortcut">Enable global paste & download shortcuts</label>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-output" role="tabpanel" aria-labelledby="tab-output-tab">
+                        <div class="mb-3">
+                            <label for="outputFormat" class="form-label">Attempt to use output format:</label>
+                            <select class="custom-select d-block rounded w-auto mb-2" id="outputFormat">
+                                <option value="none" selected>Auto</option>
+                                <option value="mp4">MP4</option>
+                                <option value="mkv">MKV</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="audioOutputFormat" class="form-label">Force audio-only downloads to use output format:</label>
+                            <select class="custom-select d-block rounded w-auto mb-2" id="audioOutputFormat">
+                                <option value="none" selected>Auto</option>
+                                <option value="mp3">MP3</option>
+                                <option value="m4a">M4A</option>
+                                <option value="opus">Opus</option>
+                                <option value="vorbis">Vorbis</option>
+                                <option value="wav">WAV</option>
+                                <option value="aac">AAC</option>
+                                <option value="flac">FLAC</option>
+                            </select>
+                        </div>
+                        <div class="mb-1">
+                            <label for="nameFormat" class="form-label">Filename format:</label>
+                            <select class="custom-select d-block rounded w-auto mb-2" id="nameFormat">
+                            <option value="%(title).200s-(%(height)sp%(fps).0d).%(ext)s" selected>Title + quality</option>
+                            <option value="%(title).200s.%(ext)s">Title</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                        </div>
+                        <div class="mb-4">
+                            <input id="nameFormatCustom" class="form-control" type="text" value="%(title).200s-(%(height)sp%(fps).0d).%(ext)s" disabled>
+                        </div>
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="downloadMetadata">
+                            <label class="check-label" for="downloadMetadata">Save metadata</label>
+                        </div>
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="downloadThumbnail">
+                            <label class="check-label" for="downloadThumbnail">Save thumbnail as file</label>
+                        </div>
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="keepUnmerged">
+                            <label class="check-label" for="keepUnmerged">Keep unmerged files</label>
+                        </div>
+                        <hr/>
+                        <h3>Advanced</h3>
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="taskList">
+                            <label class="check-label" for="taskList">Restore the queue after a restart</label>
+                        </div>
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="spoofUserAgent">
+                            <label class="check-label" for="spoofUserAgent">Spoof user-agent</label>
+                        </div>
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="validateCertificate">
+                            <label class="check-label" for="validateCertificate">Validate HTTPS certificates</label>
+                        </div>
+                        <div class="mb-1">
+                            <input class="check-input" type="checkbox" value="" id="enableEncoding">
+                            <label class="check-label" for="enableEncoding">Show available codecs to download</label>
+                        </div>
+                        <div>
+                            <label for="splitMode" class="form-label">Split playlists into separate videos when:</label>
+                            <select class="custom-select d-block rounded w-auto mb-2" id="splitMode">
+                                <option value="0">never split</option>
+                                <option value="49" selected>less than 50 videos</option>
+                                <option value="99">less than 100 videos</option>
+                                <option value="149">less than 150 videos</option>
+                                <option value="199">less than 200 videos</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
