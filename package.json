@@ -27,7 +27,7 @@
   "license": "AGPL-3.0-only",
   "devDependencies": {
     "electron": "^11.2.0",
-    "electron-builder": "^22.9.1",
+    "electron-builder": "^22.11.7",
     "eslint": "^7.21.0",
     "jest": "^26.6.3"
   },
