@@ -388,8 +388,12 @@
                     <label class="check-label" for="taskList">Restore the queue after a restart</label>
                 </div>
                 <div class="mb-1">
-                    <input class="check-input" type="checkbox" value="" id="spoofUserAgent">
-                    <label class="check-label" for="spoofUserAgent">Spoof user-agent</label>
+                    <label class="check-label" for="userAgent">User Agent</label>
+                    <select class="custom-select d-block rounded w-auto mb-2" id="userAgent">
+                        <option value="spoof" selected>Spoof</option>
+                        <option value="empty">Empty</option>
+                        <option value="default">Default</option>
+                    </select>
                 </div>
                 <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="validateCertificate">

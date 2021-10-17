@@ -22,9 +22,12 @@ class Query {
         args.push("--no-cache-dir");
         args.push("--ignore-config");
 
-        if(this.environment.settings.spoofUserAgent) {
+        if(this.environment.settings.userAgent === "spoof") {
             args.push("--user-agent"); //Add random user agent to slow down user agent profiling
             args.push(new UserAgent({ deviceCategory: 'desktop' }).toString());
+        } else if(this.environment.settings.userAgent === "empty") {
+            args.push("--user-agent");
+            args.push("''"); //Add an empty user agent string to workaround VR video issues
         }
 
         if(this.environment.settings.proxy != null && this.environment.settings.proxy.length > 0) {

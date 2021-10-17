@@ -978,7 +978,7 @@ async function getSettings() {
     const settings = await window.main.invoke("settingsAction", {action: "get"});
     $('#updateBinary').prop('checked', settings.updateBinary);
     $('#updateApplication').prop('checked', settings.updateApplication);
-    $('#spoofUserAgent').prop('checked', settings.spoofUserAgent);
+    $('#userAgent').val(settings.userAgent);
     $('#validateCertificate').prop('checked', settings.validateCertificate);
     $('#enableEncoding').prop('checked', settings.enableEncoding);
     $('#taskList').prop('checked', settings.taskList);
@@ -1014,7 +1014,7 @@ function sendSettings() {
         outputFormat: $('#outputFormat').val(),
         audioOutputFormat: $('#audioOutputFormat').val(),
         proxy: $('#proxySetting').val(),
-        spoofUserAgent: $('#spoofUserAgent').prop('checked'),
+        userAgent: $('#userAgent').val(),
         validateCertificate: $('#validateCertificate').prop('checked'),
         enableEncoding: $('#enableEncoding').prop('checked'),
         taskList: $('#taskList').prop('checked'),

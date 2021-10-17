@@ -5,7 +5,7 @@ const fs = require("fs").promises;
 class Settings {
     constructor(
         paths, env, outputFormat, audioOutputFormat, downloadPath,
-        proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, spoofUserAgent,
+        proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, userAgent,
         validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
         sizeMode, splitMode, maxConcurrent, updateBinary, downloadType, updateApplication, cookiePath,
         statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme
@@ -20,7 +20,7 @@ class Settings {
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
         this.noPlaylist = noPlaylist == null ? false : noPlaylist;
         this.globalShortcut = globalShortcut == null ? true : globalShortcut;
-        this.spoofUserAgent = spoofUserAgent == null ? true : spoofUserAgent;
+        this.userAgent = userAgent == null ? "spoof" : userAgent;
         this.validateCertificate = validateCertificate == null ? false : validateCertificate;
         this.enableEncoding = enableEncoding == null ? false : enableEncoding;
         this.taskList = taskList == null ? true : taskList;
@@ -57,7 +57,7 @@ class Settings {
                 data.autoFillClipboard,
                 data.noPlaylist,
                 data.globalShortcut,
-                data.spoofUserAgent,
+                data.userAgent,
                 data.validateCertificate,
                 data.enableEncoding,
                 data.taskList,
@@ -94,7 +94,7 @@ class Settings {
         this.autoFillClipboard = settings.autoFillClipboard;
         this.noPlaylist = settings.noPlaylist;
         this.globalShortcut = settings.globalShortcut;
-        this.spoofUserAgent = settings.spoofUserAgent;
+        this.userAgent = settings.userAgent;
         this.validateCertificate = settings.validateCertificate;
         this.enableEncoding = settings.enableEncoding;
         this.taskList = settings.taskList;
@@ -131,7 +131,7 @@ class Settings {
             autoFillClipboard: this.autoFillClipboard,
             noPlaylist: this.noPlaylist,
             globalShortcut: this.globalShortcut,
-            spoofUserAgent: this.spoofUserAgent,
+            userAgent: this.userAgent,
             validateCertificate: this.validateCertificate,
             enableEncoding: this.enableEncoding,
             taskList: this.taskList,
@@ -156,7 +156,6 @@ class Settings {
     }
 
     save() {
-        console.log(this.serialize());
         fs.writeFile(this.paths.settings, JSON.stringify(this.serialize()), "utf8").then(() => {
             console.log("Saved settings file.")
         });
