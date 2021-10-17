@@ -13,36 +13,67 @@ class BinaryUpdater {
     async checkUpdate() {
         const transaction = Sentry.startTransaction({ name: "checkUpdate" });
         const span = transaction.startChild({ op: "task" });
-        console.log("Checking for a new version of ytdl.");
+        console.log("Checking for a new version of yt-dlp.");
         const localVersion = await this.getLocalVersion();
-        const [remoteUrl, remoteVersion] = await this.getRemoteVersion();
+        const { remoteUrl, remoteVersion } = await this.getRemoteVersion();
         if(remoteVersion === localVersion) {
             transaction.setTag("download", "up-to-data");
             console.log(`Binaries were already up-to-date! Version: ${localVersion}`);
         } else if(localVersion == null) {
             transaction.setTag("download", "corrupted");
-            console.log("Binaries may have been corrupted, downloading binaries to be on the safe side.");
+            console.log("Downloading missing yt-dlp binary.");
             this.win.webContents.send("binaryLock", {lock: true, placeholder: `Re-installing ytdl version ${remoteVersion}...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         } else if(remoteVersion == null) {
             transaction.setTag("download", "down");
-            console.log("Unable to check for new updates, yt-dl.org may be down.");
+            console.log("Unable to check for new updates, GitHub may be down.");
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
             transaction.setTag("download", "update");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ytdl to version ${remoteVersion}...`})
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version ${remoteVersion}...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         }
         span.finish();
         transaction.finish();
     }
 
-    //Returns the currently downloaded version of youtube-dl
-    async getLocalVersion() {
+    async getRemoteVersion() {
+        try {
+            const url = process.platform === "win32" ? "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" : "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
+            await axios.get(url, {
+                  responseType: 'document',
+                  maxRedirects: 0,
+              })
+        } catch (err) {
+            const res = err.response;
+            if (err.response == null) {
+                console.error('An error occurred while retrieving the latest yt-dlp version data.')
+                return null;
+            }
+            if (res.status === 302) {
+                const versionRegex = res.data.match(/[0-9]+\.[0-9]+\.[0-9]+/);
+                const urlRegex = res.data.match(/(?<=").+?(?=")/);
+                return {
+                    remoteVersion: versionRegex ? versionRegex[0] : null,
+                    remoteUrl: urlRegex ? urlRegex[0] : null,
+                };
+            } else {
+                console.error('Did not get redirect for the latest version link. Status: ' + err.response.status);
+                return null;
+            }
+        }
+        return null;
+    }
+
+    //Returns the currently downloaded version of yt-dlp
+   async getLocalVersion() {
         let data;
         try {
             const result = await fs.promises.readFile(this.paths.ytdlVersion);
             data = JSON.parse(result);
+            if (!data.ytdlp) {
+                data = null;
+            }
         } catch (err) {
             console.error(err);
             data = null;
@@ -55,28 +86,9 @@ class BinaryUpdater {
         if(data == null) {
             return null;
         } else {
-            console.log("Current version: " + data.version);
+            console.log("Current yt-dlp version: " + data.version);
             return data.version;
         }
-    }
-
-    //Returns an array containing the latest available remote version and the download link to it.
-    async getRemoteVersion() {
-        const url = (process.platform === "win32") ? "https://yt-dl.org/downloads/latest/youtube-dl.exe" : "https://yt-dl.org/downloads/latest/youtube-dl";
-        try {
-            await axios.get(url, {maxRedirects: 0})
-        } catch (err) {
-            if(err == null || err.response == null) {
-                console.error(err);
-                return [null, null];
-            } else if (err.response.status !== 302) {
-                console.error('Did not get redirect for the latest version link. Status: ' + err.response.status);
-                return [null, null];
-            } else {
-                return [err.response.headers.location, /yt-dl\.org\/downloads\/(\d{4}\.\d\d\.\d\d(\.\d)?)\/youtube-dl/.exec(err.response.headers.location)[1]];
-            }
-        }
-        return [null, null];
     }
 
     //Downloads the file at the given url and saves it to the ytdl path.
@@ -102,7 +114,10 @@ class BinaryUpdater {
 
     //Writes the new version number to the ytdlVersion file
     async writeVersionInfo(version) {
-        const data = {version: version};
+        const data = {
+            version: version,
+            ytdlp: true
+        };
         await fs.promises.writeFile(this.paths.ytdlVersion, JSON.stringify(data));
         console.log("New version data written to ytdlVersion.");
     }
