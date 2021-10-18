@@ -160,6 +160,7 @@ class QueryManager {
         downloadVideo.query.connect().then(() => {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             if(downloadVideo.error) return;
+            if(this.environment.settings.downloadJsonMetadata) this.saveInfo(downloadVideo.identifier, false);
             downloadVideo.downloaded = true;
             downloadVideo.query.progressBar.done(downloadVideo.audioOnly);
             this.updateGlobalButtons();
@@ -467,17 +468,22 @@ class QueryManager {
         this.window.webContents.send("videoAction", args);
     }
 
-    async saveInfo(identifier) {
-        let video = this.getVideo(identifier);
-        let result = await dialog.showSaveDialog(this.window, {
-            defaultPath: path.join(this.environment.settings.downloadPath, "metadata_" + video.url.slice(-11)),
-            buttonLabel: "Save metadata",
-            filters: [
-                { name: "JSON", extensions: ["json"] },
-                { name: "All Files", extensions: ["*"] },
-            ],
-            properties: ["createDirectory"]
-        });
+    async saveInfo(infoVideo, askPath=true) {
+        let video = infoVideo;
+        if(video.url == null) video = this.getVideo(infoVideo);
+        if (video.url == null) return;
+        let result = { filePath: path.join(this.environment.settings.downloadPath, "metadata_" + video.url.slice(-11)) + ".json",  };
+        if (askPath) {
+            result = await dialog.showSaveDialog(this.window, {
+                defaultPath: path.join(this.environment.settings.downloadPath, "metadata_" + video.url.slice(-11)),
+                buttonLabel: "Save metadata",
+                filters: [
+                    {name: "JSON", extensions: ["json"]},
+                    {name: "All Files", extensions: ["*"]},
+                ],
+                properties: ["createDirectory"]
+            });
+        }
         if(!result.canceled) {
             fs.writeFileSync(result.filePath, JSON.stringify(video.serialize(), null, 3));
         }

@@ -65,6 +65,7 @@ class DownloadQueryList {
                     }
                     this.progressBar.updatePlaylist(this.done - this.cancelled, this.length - this.cancelled);
                     if(!video.error) {
+                        if(this.environment.settings.downloadJsonMetadata) this.manager.saveInfo(video, false);
                         video.downloaded = true;
                         video.query.progressBar.done(video.audioOnly);
                     }

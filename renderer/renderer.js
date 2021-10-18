@@ -992,6 +992,7 @@ async function getSettings() {
     $('#outputFormat').val(settings.outputFormat);
     $('#audioOutputFormat').val(settings.audioOutputFormat);
     $('#downloadMetadata').prop('checked', settings.downloadMetadata);
+    $('#downloadJsonMetadata').prop('checked', settings.downloadJsonMetadata);
     $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
     $('#keepUnmerged').prop('checked', settings.keepUnmerged);
     $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
@@ -1021,6 +1022,7 @@ function sendSettings() {
         nameFormatMode: $('#nameFormat').val(),
         nameFormat: $('#nameFormatCustom').val(),
         downloadMetadata: $('#downloadMetadata').prop('checked'),
+        downloadJsonMetadata: $('#downloadJsonMetadata').prop('checked'),
         downloadThumbnail: $('#downloadThumbnail').prop('checked'),
         keepUnmerged: $('#keepUnmerged').prop('checked'),
         calculateTotalSize: $('#calculateTotalSize').prop('checked'),

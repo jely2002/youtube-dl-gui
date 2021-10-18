@@ -8,7 +8,8 @@ class Settings {
         proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, userAgent,
         validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
         sizeMode, splitMode, maxConcurrent, updateBinary, downloadType, updateApplication, cookiePath,
-        statSend, downloadMetadata, downloadThumbnail, keepUnmerged, calculateTotalSize, theme
+        statSend, downloadMetadata, downloadJsonMetadata, downloadThumbnail, keepUnmerged,
+        calculateTotalSize, theme
     ) {
         this.paths = paths;
         this.env = env
@@ -27,6 +28,7 @@ class Settings {
         this.nameFormat = nameFormat == null ? "%(title).200s-(%(height)sp%(fps).0d).%(ext)s" : nameFormat;
         this.nameFormatMode = nameFormatMode == null ? "%(title).200s-(%(height)sp%(fps).0d).%(ext)s" : nameFormatMode;
         this.downloadMetadata = downloadMetadata == null ? true : downloadMetadata;
+        this.downloadJsonMetadata = downloadJsonMetadata == null ? false : downloadJsonMetadata;
         this.downloadThumbnail = downloadThumbnail == null ? false : downloadThumbnail;
         this.keepUnmerged = keepUnmerged == null ? false : keepUnmerged;
         this.calculateTotalSize = calculateTotalSize == null ? true : calculateTotalSize;
@@ -72,6 +74,7 @@ class Settings {
                 data.cookiePath,
                 data.statSend,
                 data.downloadMetadata,
+                data.downloadJsonMetadata,
                 data.downloadThumbnail,
                 data.keepUnmerged,
                 data.calculateTotalSize,
@@ -101,6 +104,7 @@ class Settings {
         this.nameFormat = settings.nameFormat;
         this.nameFormatMode = settings.nameFormatMode;
         this.downloadMetadata = settings.downloadMetadata;
+        this.downloadJsonMetadata = settings.downloadJsonMetadata;
         this.downloadThumbnail = settings.downloadThumbnail;
         this.keepUnmerged = settings.keepUnmerged;
         this.calculateTotalSize = settings.calculateTotalSize;
@@ -147,6 +151,7 @@ class Settings {
             cookiePath: this.cookiePath,
             statSend: this.statSend,
             downloadMetadata: this.downloadMetadata,
+            downloadJsonMetadata: this.downloadJsonMetadata,
             downloadThumbnail: this.downloadThumbnail,
             keepUnmerged: this.keepUnmerged,
             calculateTotalSize: this.calculateTotalSize,
