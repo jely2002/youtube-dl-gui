@@ -386,6 +386,36 @@
                     <label class="check-label" for="keepUnmerged">Keep unmerged files</label>
                 </div>
                 <hr/>
+                <h3>Sponsorblock</h3>
+                <div class="mb-3">
+                    <label for="subsLang" class="form-label d-block">Sections to mark as chapter:</label>
+                    <select class="w-75 mb-2" id="sponsorblockMark" multiple>
+                        <option value="sponsor">Sponsor</option>
+                        <option value="selfpromo">Self-promotion</option>
+                        <option value="interaction">Interaction reminder</option>
+                        <option value="intro">Intermission / Intro animation</option>
+                        <option value="outro">Endcards / Credits</option>
+                        <option value="preview">Preview / Recap</option>
+                        <option value="music_offtopic">Music off-topic</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="autoGenSubsLang" class="form-label d-block">Sections to remove:</label>
+                    <select class="w-75 mb-2" id="sponsorblockRemove" multiple>
+                        <option value="sponsor">Sponsor</option>
+                        <option value="selfpromo">Self-promotion</option>
+                        <option value="interaction">Interaction reminder</option>
+                        <option value="intro">Intermission / Intro animation</option>
+                        <option value="outro">Endcards / Credits</option>
+                        <option value="preview">Preview / Recap</option>
+                        <option value="music_offtopic">Music off-topic</option>
+                    </select>
+                </div>
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="sponsorblockApi">
+                    <label class="check-label" for="sponsorblockApi">Sponsorblock API location</label>
+                </div>
+                <hr/>
                 <h3>Advanced</h3>
                 <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="taskList">

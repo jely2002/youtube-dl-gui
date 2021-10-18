@@ -125,6 +125,15 @@ class DownloadQuery extends Query {
         if(this.environment.settings.downloadThumbnail) {
             args.push('--write-thumbnail');
         }
+        if(this.environment.settings.sponsorblockMark !== "") {
+            args.push("--sponsorblock-mark");
+            args.push(this.environment.settings.sponsorblockMark);
+        }
+
+        if(this.environment.settings.sponsorblockRemove !== "") {
+            args.push("--sponsorblock-remove");
+            args.push(this.environment.settings.sponsorblockRemove);
+        }
         if(this.environment.settings.keepUnmerged) args.push('--keep-video');
         let destinationCount = 0;
         let initialReset = false;

@@ -8,8 +8,8 @@ class Settings {
         proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, userAgent,
         validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
         sizeMode, splitMode, maxConcurrent, updateBinary, downloadType, updateApplication, cookiePath,
-        statSend, downloadMetadata, downloadJsonMetadata, downloadThumbnail, keepUnmerged,
-        calculateTotalSize, theme
+        statSend, sponsorblockMark, sponsorblockRemove, sponsorblockApi, downloadMetadata, downloadJsonMetadata,
+        downloadThumbnail, keepUnmerged, calculateTotalSize, theme
     ) {
         this.paths = paths;
         this.env = env
@@ -27,6 +27,9 @@ class Settings {
         this.taskList = taskList == null ? true : taskList;
         this.nameFormat = nameFormat == null ? "%(title).200s-(%(height)sp%(fps).0d).%(ext)s" : nameFormat;
         this.nameFormatMode = nameFormatMode == null ? "%(title).200s-(%(height)sp%(fps).0d).%(ext)s" : nameFormatMode;
+        this.sponsorblockMark = sponsorblockMark == null ? "" : sponsorblockMark;
+        this.sponsorblockRemove = sponsorblockRemove == null ? "" : sponsorblockRemove;
+        this.sponsorblockApi = sponsorblockApi == null ? "https://sponsor.ajay.app" : sponsorblockApi;
         this.downloadMetadata = downloadMetadata == null ? true : downloadMetadata;
         this.downloadJsonMetadata = downloadJsonMetadata == null ? false : downloadJsonMetadata;
         this.downloadThumbnail = downloadThumbnail == null ? false : downloadThumbnail;
@@ -73,6 +76,9 @@ class Settings {
                 data.updateApplication,
                 data.cookiePath,
                 data.statSend,
+                data.sponsorblockMark,
+                data.sponsorblockRemove,
+                data.sponsorblockApi,
                 data.downloadMetadata,
                 data.downloadJsonMetadata,
                 data.downloadThumbnail,
@@ -103,6 +109,9 @@ class Settings {
         this.taskList = settings.taskList;
         this.nameFormat = settings.nameFormat;
         this.nameFormatMode = settings.nameFormatMode;
+        this.sponsorblockMark = settings.sponsorblockMark;
+        this.sponsorblockRemove = settings.sponsorblockRemove;
+        this.sponsorblockApi = settings.sponsorblockApi;
         this.downloadMetadata = settings.downloadMetadata;
         this.downloadJsonMetadata = settings.downloadJsonMetadata;
         this.downloadThumbnail = settings.downloadThumbnail;
@@ -150,6 +159,9 @@ class Settings {
             updateApplication: this.updateApplication,
             cookiePath: this.cookiePath,
             statSend: this.statSend,
+            sponsorblockMark: this.sponsorblockMark,
+            sponsorblockRemove: this.sponsorblockRemove,
+            sponsorblockApi: this.sponsorblockApi,
             downloadMetadata: this.downloadMetadata,
             downloadJsonMetadata: this.downloadJsonMetadata,
             downloadThumbnail: this.downloadThumbnail,

@@ -267,5 +267,10 @@
     "code": "Thumbnail embedding not supported",
     "description": "Only mp3 and m4a/mp4 are supported for thumbnail embedding for now.",
     "trigger": "ERROR: Only mp3 and m4a/mp4 are supported for thumbnail embedding for now."
+  },
+  {
+    "code": "SponsorBlock API unreachable",
+    "description": "Unable to communicate with SponsorBlock API, please try again.",
+    "trigger": "ERROR: Unable to communicate with SponsorBlock API"
   }
 ]
