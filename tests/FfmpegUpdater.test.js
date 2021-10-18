@@ -55,9 +55,11 @@ describe('getRemoteVersion', () => {
         });
     });
     it('returns object with the links and the version', async () => {
-        const axiosGetSpy = jest.spyOn(axios, 'get').mockReturnValue({
-            status: 200,
+        const axiosGetSpy = jest.spyOn(axios, 'get').mockResolvedValue({
             data: { version: "4.2.1", bin: { "windows-32": { ffmpeg: "ffmpeg/link", ffprobe: "ffprobe/link" } } },
+        });
+        Object.defineProperty(process, "platform", {
+            value: "win32"
         });
         const instance = new FfmpegUpdater({platform: "win32"});
         const result = await instance.getRemoteVersion();
