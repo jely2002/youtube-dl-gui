@@ -61,7 +61,7 @@ class Utils {
         for(const entry of infoQueryResult.entries) {
             let url;
             if (entry.url == null) url = entry.webpage_url;
-            else url = (entry.ie_key != null && entry.ie_key === "Youtube") ? "https://youtube.com/watch?v=" + entry.url : entry.url;
+            else url = entry.url;
             if(entry.formats != null && entry.formats.length > 0) {
                 entry.url = url;
                 alreadyDone.push(entry);

@@ -106,10 +106,6 @@ describe('extractPlaylistUrls', () => {
    it('uses the webpage_url when url is null', () => {
       expect(Utils.extractPlaylistUrls({entries: [{webpage_url: "url"}]})).toContainEqual(["url"]);
    });
-   it('generates a youtube link when only the id is available', () => {
-      expect(Utils.extractPlaylistUrls({entries: [{ie_key: "Youtube", url: "K4DyBUG242c"}]})).toContainEqual(["https://youtube.com/watch?v=K4DyBUG242c"]);
-      expect(Utils.extractPlaylistUrls({entries: [{ie_key: "Vimeo", url: "K4DyBUG242c"}]})).not.toContainEqual(["https://youtube.com/watch?v=K4DyBUG242c"]);
-   });
 });
 
 describe('detectInfoType', () => {
