@@ -104,8 +104,8 @@ async function init() {
     //Initialize select2
     $("#subsLang").select2({width: '75%', placeholder: "Select subtitles", language: {noResults: () => "No subtitles found"}});
     $("#autoGenSubsLang").select2({width: '75%', placeholder: "Select auto-generated subtitles", language: {noResults: () => "No subtitles found"}} );
-    $("#sponsorblockMark").select2({width: '75%', placeholder: "Select sections of a video to mark" });
-    $("#sponsorblockRemove").select2({width: '75%', placeholder: "Select sections of a video to remove" });
+    $("#sponsorblockMark").select2({width: '75%', placeholder: "Select sections of a video to mark"});
+    $("#sponsorblockRemove").select2({width: '75%', placeholder: "Select sections of a video to remove"});
 
     //Add url when user presses enter, but prevent default behavior
     $(document).on("keydown", "form", function(event) {

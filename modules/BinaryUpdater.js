@@ -1,6 +1,8 @@
 const axios = require("axios");
 const fs = require("fs");
 const Sentry = require("@sentry/node");
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 class BinaryUpdater {
 
