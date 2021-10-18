@@ -68,9 +68,6 @@
       "target": "nsis",
       "icon": "renderer/img/icon.ico",
       "files": [
-        "!**/binaries/ffmpeg",
-        "!**/binaries/ffmpeg-linux",
-        "!**/binaries/yt-dlp-unix",
         "!**/renderer/img/icon.icns",
         "!README.md",
         "!.github${/*}",
@@ -89,9 +86,6 @@
       "category": "public.app-category.utilities",
       "identity": null,
       "files": [
-        "!**/binaries/ffmpeg.exe",
-        "!**/binaries/ffmpeg-linux",
-        "!**/binaries/yt-dlp.exe",
         "!**/binaries/AtomicParsley.exe",
         "!**/renderer/img/icon.ico",
         "!README.md",
@@ -117,9 +111,6 @@
         "Comment": "A cross-platform GUI for youtube-dl"
       },
       "files": [
-        "!**/binaries/ffmpeg",
-        "!**/binaries/ffmpeg.exe",
-        "!**/binaries/yt-dlp.exe",
         "!**/binaries/AtomicParsley.exe",
         "!**/renderer/img/icon.icns",
         "!**/renderer/img/icon.ico",

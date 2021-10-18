@@ -9,6 +9,7 @@ const TaskList = require("./modules/persistence/TaskList");
 const DoneAction = require("./modules/DoneAction");
 const ClipboardWatcher = require("./modules/ClipboardWatcher");
 const Analytics = require("./modules/Analytics");
+const FfmpegUpdater = require('./modules/FfmpegUpdater');
 
 let win
 let env
@@ -50,12 +51,16 @@ function startCriticalHandlers(env) {
     taskList = new TaskList(env.paths, queryManager)
 
     if(env.settings.updateBinary) {
-        let binaryUpdater = new BinaryUpdater(env.paths, win);
-        win.webContents.send("binaryLock", {lock: true, placeholder: `Checking for a new version of ytdl...`})
-        binaryUpdater.checkUpdate().finally(() => {
-            win.webContents.send("binaryLock", {lock: false});
-            taskList.load();
-            clipboardWatcher.startPolling();
+        const binaryUpdater = new BinaryUpdater(env.paths, win);
+        const ffmpegUpdater = new FfmpegUpdater(env.paths, win);
+        win.webContents.send("binaryLock", {lock: true, placeholder: `Checking for a new version of ffmpeg...`})
+        ffmpegUpdater.checkUpdate().finally(() => {
+            win.webContents.send("binaryLock", {lock: true, placeholder: `Checking for a new version of yt-dlp...`})
+            binaryUpdater.checkUpdate().finally(() => {
+                win.webContents.send("binaryLock", {lock: false});
+                taskList.load();
+                clipboardWatcher.startPolling();
+            });
         });
     } else if(env.settings.taskList) {
         taskList.load();

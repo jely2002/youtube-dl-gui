@@ -11,6 +11,10 @@ class BinaryUpdater {
 
     //Checks for an update and download it if there is.
     async checkUpdate() {
+        if (await this.checkPreInstalled()) {
+            console.log("yt-dlp already installed, skipping auto-install.")
+            return;
+        }
         const transaction = Sentry.startTransaction({ name: "checkUpdate" });
         const span = transaction.startChild({ op: "task" });
         console.log("Checking for a new version of yt-dlp.");
@@ -22,7 +26,7 @@ class BinaryUpdater {
         } else if(localVersion == null) {
             transaction.setTag("download", "corrupted");
             console.log("Downloading missing yt-dlp binary.");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Re-installing ytdl version ${remoteVersion}...`})
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing yt-dlp version: ${remoteVersion}...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         } else if(remoteVersion == null) {
             transaction.setTag("download", "down");
@@ -30,11 +34,21 @@ class BinaryUpdater {
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
             transaction.setTag("download", "update");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version ${remoteVersion}...`})
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version: ${remoteVersion}...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         }
         span.finish();
         transaction.finish();
+    }
+
+    async checkPreInstalled() {
+        try {
+            await exec("yt-dlp");
+            await exec("ytdlp");
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     async getRemoteVersion() {
