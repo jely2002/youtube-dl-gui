@@ -79,6 +79,7 @@ class Filepaths {
                 this.setPermissions()
                 break;
         }
+        await this.removeLeftOver();
     }
 
     async validateDownloadPath() {
@@ -105,6 +106,13 @@ class Filepaths {
         if(process.env.PORTABLE_EXECUTABLE_DIR != null) return "win32portable";
         else if(this.appPath.includes("WindowsApps")) return "win32app"
         else return process.platform;
+    }
+
+    async removeLeftOver() {
+        const filename = process.platform === "win32" ? "youtube-dl.exe" : "youtube-dl-unix";
+        if (fs.existsSync(path.join(this.ffmpeg, filename))) {
+            await fs.promises.unlink(path.join(this.ffmpeg, filename));
+        }
     }
 
     setPermissions() {
