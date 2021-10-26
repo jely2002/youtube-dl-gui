@@ -109,7 +109,8 @@ class Filepaths {
 
     setPermissions() {
         fs.readdirSync(this.ffmpeg).forEach(file => {
-            fs.chmod(file, 0o755, (err) => {
+            if (file === "userSettings" || file === "ytdlVersion" || file === "taskList" || file === "ffmpegVersion") return;
+            fs.chmod(path.join(this.ffmpeg, file), 0o755, (err) => {
                 if(err) console.error(err);
             });
         });
