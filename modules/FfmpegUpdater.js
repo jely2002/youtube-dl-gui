@@ -4,6 +4,8 @@ const Sentry = require("@sentry/node");
 const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+const os = require("os");
+const AdmZip = require("adm-zip");
 
 class FfmpegUpdater {
 
@@ -61,7 +63,8 @@ class FfmpegUpdater {
     async getRemoteVersion() {
         try {
             const res = await axios.get("https://ffbinaries.com/api/v1/version/latest");
-            let platform = "windows-32";
+            let platform = "windows-64";
+            if (os.arch() === "x32" || os.arch() === "ia32") platform = "windows-32";
             if (process.platform === "darwin") platform = "osx-64";
             else if (process.platform === "linux") platform = "linux-32";
             return {
@@ -104,8 +107,12 @@ class FfmpegUpdater {
 
     //Downloads the file at the given url and saves it to the ffmpeg path.
     async downloadUpdate(url, filename) {
-        const writer = fs.createWriteStream(path.join(this.paths.ffmpeg, filename));
-        return await axios.get(url, {responseType: 'stream'}).then(response => {
+        const downloadPath = path.join(this.paths.ffmpeg, "downloads");
+        if (!fs.existsSync(downloadPath)) {
+            fs.mkdirSync(downloadPath);
+        }
+        const writer = fs.createWriteStream(path.join(downloadPath, filename));
+        await axios.get(url, {responseType: 'stream'}).then(response => {
             return new Promise((resolve, reject) => {
                 response.data.pipe(writer);
                 let error = null;
@@ -120,6 +127,9 @@ class FfmpegUpdater {
                 });
             });
         });
+        const zipFile = new AdmZip(path.join(downloadPath, filename), {});
+        zipFile.extractEntryTo(filename, this.paths.ffmpeg, false, true, false, filename);
+        fs.rmdirSync(path.join(this.paths.ffmpeg, "downloads"), { recursive: true, force: true });
     }
 
     //Writes the new version number to the ytdlVersion file
