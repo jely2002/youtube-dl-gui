@@ -21,15 +21,14 @@ beforeEach(() => {
 describe('set executable permissions', () => {
    it('sets the chmod of ytdl and ffmpeg to 0o755', () => {
        const instance = instanceBuilder(true);
-       instance.ytdl = "ytdl/path/test.exe";
-       instance.ffmpeg = "ffmpeg/path/test.exe";
-       fs.readdirSync = jest.fn().mockReturnValue([instance.ytdl, instance.ffmpeg]);
+       instance.ffmpeg = "ffmpeg/path/";
+       const ytdlp = "yt-dlp.exe";
+       const taskList = "taskList";
+       fs.readdirSync = jest.fn().mockReturnValue([ytdlp, taskList]);
        instance.setPermissions();
-       expect(fs.chmod).toBeCalledTimes(2);
-       expect(fs.chmod.mock.calls[0]).toContain(instance.ytdl);
+       expect(fs.chmod).toBeCalledTimes(1);
+       expect(fs.chmod.mock.calls[0]).toContain(path.join(instance.ffmpeg, ytdlp));
        expect(fs.chmod.mock.calls[0]).toContain(493);
-       expect(fs.chmod.mock.calls[1]).toContain(instance.ffmpeg);
-       expect(fs.chmod.mock.calls[1]).toContain(493);
    });
 });
 
@@ -55,6 +54,7 @@ describe('generate filepaths', () => {
             instance.setPermissions = jest.fn();
             instance.createFolder = jest.fn().mockResolvedValue(undefined);
             const joinSpy = jest.spyOn(path, 'join').mockReturnValue("path");
+            jest.spyOn(instance, 'removeLeftOver').mockImplementation(() => Promise.resolve());
             await instance.generateFilepaths();
             if(platform === "linux" || platform === "win32") expect(joinSpy).toBeCalledTimes(1);
             else expect(joinSpy).not.toBeCalled();
@@ -91,25 +91,36 @@ describe('generate filepaths', () => {
    });
 });
 
-/*describe('create portable folder', () => {
-    it('does not copy the files if the folder already exists', async () => {
+describe('removeLeftOver', () => {
+    it('removes youtube-dl.exe on win32', async () => {
+        Object.defineProperty(process, "platform", {
+            value: "win32"
+        });
         const instance = instanceBuilder(true);
-        instance.unpackedPrefix = "test/unpacked/prefix";
-        fs.copyFileSync = jest.fn();
-        mkdirp.mockResolvedValue(null);
-        await instance.createAppDataFolder();
-        expect(fs.copyFileSync).not.toBeCalled();
+        instance.ffmpeg = "ffmpeg/path";
+        fs.existsSync = jest.fn().mockImplementation(() => true);
+        fs.promises.unlink = jest.fn().mockImplementation(() => Promise.resolve());
+
+        await instance.removeLeftOver();
+
+        expect(fs.promises.unlink).toBeCalledTimes(1);
+        expect(fs.promises.unlink).toBeCalledWith(path.join("ffmpeg/path", "youtube-dl.exe"));
     });
-    it('copies 4 files if the directory did not exist yet', async () => {
+    it('removes youtube-dl-unix on other systems', async () => {
+        Object.defineProperty(process, "platform", {
+            value: "darwin"
+        });
         const instance = instanceBuilder(true);
-        fs.copyFileSync = jest.fn();
-        const joinSpy = jest.spyOn(path, 'join').mockReturnValue("path");
-        mkdirp.mockResolvedValue("path/to/made/directory");
-        await instance.createAppDataFolder()
-        expect(fs.copyFileSync).toBeCalledTimes(4);
-        joinSpy.mockRestore();
+        instance.ffmpeg = "ffmpeg/path";
+        fs.existsSync = jest.fn().mockImplementation(() => true);
+        fs.promises.unlink = jest.fn().mockImplementation(() => Promise.resolve());
+
+        await instance.removeLeftOver();
+
+        expect(fs.promises.unlink).toBeCalledTimes(1);
+        expect(fs.promises.unlink).toBeCalledWith(path.join("ffmpeg/path", "youtube-dl-unix"));
     });
-});*/
+});
 
 function instanceBuilder(packaged, portable) {
     const app = {

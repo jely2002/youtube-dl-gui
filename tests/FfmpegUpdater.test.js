@@ -2,6 +2,7 @@ const FfmpegUpdater = require("../modules/FfmpegUpdater");
 const fs = require("fs");
 const axios = require("axios");
 const { PassThrough } = require('stream');
+const os = require('os');
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -48,6 +49,7 @@ describe("getLocalVersion", () => {
 describe('getRemoteVersion', () => {
     it('returns null on error', () => {
         const axiosGetSpy = jest.spyOn(axios, 'get').mockRejectedValue({response: null});
+        jest.spyOn(os, 'arch').mockReturnValue('x64');
         const instance = new FfmpegUpdater({platform: "darwin"});
         return instance.getRemoteVersion().then((data) => {
             expect(data).toEqual(null);
@@ -58,6 +60,7 @@ describe('getRemoteVersion', () => {
         const axiosGetSpy = jest.spyOn(axios, 'get').mockResolvedValue({
             data: { version: "4.2.1", bin: { "windows-32": { ffmpeg: "ffmpeg/link", ffprobe: "ffprobe/link" } } },
         });
+        jest.spyOn(os, 'arch').mockReturnValue('ia32');
         Object.defineProperty(process, "platform", {
             value: "win32"
         });
@@ -116,34 +119,5 @@ describe('checkUpdate', () => {
             expect(downloadUpdateSpy).toBeCalledTimes(2);
             expect(instance.win.webContents.send).toBeCalledTimes(1);
         });
-    });
-});
-
-describe("downloadUpdate", () => {
-    it('does not write version info and rejects on error', async () => {
-        const mockReadable = new PassThrough();
-        const mockWriteable = new PassThrough();
-        jest.spyOn(fs, 'createWriteStream').mockReturnValueOnce(mockWriteable);
-        jest.spyOn(axios, 'get').mockResolvedValue({ data: mockReadable });
-        setTimeout(() => {
-            mockWriteable.emit('error', "Test error");
-        }, 100);
-        const instance = new FfmpegUpdater({ ffmpeg: "path/to/ffmpeg" });
-        const versionInfoSpy = jest.spyOn(instance, 'writeVersionInfo').mockImplementation(() => {});
-        const actualPromise = instance.downloadUpdate("link", "v2.0.0");
-        await expect(actualPromise).rejects.toEqual("Test error");
-        expect(versionInfoSpy).not.toBeCalled();
-    });
-    it('resolves when successful', async () => {
-        const mockReadable = new PassThrough();
-        const mockWriteable = new PassThrough();
-        jest.spyOn(fs, 'createWriteStream').mockReturnValueOnce(mockWriteable);
-        jest.spyOn(axios, 'get').mockResolvedValue({ data: mockReadable });
-        setTimeout(() => {
-            mockWriteable.emit('close');
-        }, 100);
-        const instance = new FfmpegUpdater({ ffmpeg: "path/to/ffmpeg" });
-        const actualPromise = instance.downloadUpdate("an/example/url", "ffmpeg.exe");
-        await expect(actualPromise).resolves.toBeTruthy();
     });
 });
