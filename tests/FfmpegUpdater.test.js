@@ -106,7 +106,7 @@ describe('checkUpdate', () => {
         jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue(["link", "v2.0.0"]);
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).toBeCalledTimes(2);
-            expect(instance.win.webContents.send).toBeCalledTimes(1);
+            expect(instance.win.webContents.send).toBeCalledTimes(2);
         });
     });
     it('downloads the latest remote version when local version is different', () => {
@@ -117,7 +117,7 @@ describe('checkUpdate', () => {
         jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteUrl: "link", remoteVersion: "2021.10.10" });
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).toBeCalledTimes(2);
-            expect(instance.win.webContents.send).toBeCalledTimes(1);
+            expect(instance.win.webContents.send).toBeCalledTimes(2);
         });
     });
 });

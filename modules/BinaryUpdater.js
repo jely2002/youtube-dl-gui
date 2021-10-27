@@ -2,6 +2,7 @@ const axios = require("axios");
 const fs = require("fs");
 const Sentry = require("@sentry/node");
 const util = require('util');
+const Utils = require('./Utils');
 const exec = util.promisify(require('child_process').exec);
 
 class BinaryUpdater {
@@ -9,6 +10,7 @@ class BinaryUpdater {
     constructor(paths, win) {
         this.paths = paths;
         this.win = win;
+        this.action = "Installing";
     }
 
     //Checks for an update and download it if there is.
@@ -28,7 +30,7 @@ class BinaryUpdater {
         } else if(localVersion == null) {
             transaction.setTag("download", "corrupted");
             console.log("Downloading missing yt-dlp binary.");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing yt-dlp version: ${remoteVersion}...`})
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing yt-dlp version: ${remoteVersion}. Preparing...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         } else if(remoteVersion == null) {
             transaction.setTag("download", "down");
@@ -36,7 +38,8 @@ class BinaryUpdater {
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
             transaction.setTag("download", "update");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version: ${remoteVersion}...`})
+            this.action = "Updating to";
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version: ${remoteVersion}. Preparing...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
         }
         span.finish();
@@ -110,21 +113,28 @@ class BinaryUpdater {
     //Downloads the file at the given url and saves it to the ytdl path.
     async downloadUpdate(remoteUrl, remoteVersion) {
         const writer = fs.createWriteStream(this.paths.ytdl);
-        return await axios.get(remoteUrl, {responseType: 'stream'}).then(response => {
-            return new Promise((resolve, reject) => {
-                response.data.pipe(writer);
-                let error = null;
-                writer.on('error', err => {
-                    error = err;
-                    reject(err);
-                });
-                writer.on('close', async () => {
-                    if (!error) {
-                        await this.writeVersionInfo(remoteVersion);
-                        resolve(true);
-                    }
-                });
+        const { data, headers } = await axios.get(remoteUrl, {responseType: 'stream'});
+        const totalLength = +headers['content-length'];
+        const total = Utils.convertBytes(totalLength);
+        let received = 0;
+        return await new Promise((resolve, reject) => {
+            let error = null;
+            data.on('data', (chunk)  => {
+                received += chunk.length;
+                const percentage = ((received / totalLength) * 100).toFixed(0) + '%';
+                this.win.webContents.send("binaryLock", {lock: true, placeholder: `${this.action} yt-dlp ${remoteVersion} - ${percentage} of ${total}`})
             });
+            writer.on('error', err => {
+                error = err;
+                reject(err);
+            });
+            writer.on('close', async () => {
+                if (!error) {
+                    await this.writeVersionInfo(remoteVersion);
+                    resolve(true);
+                }
+            });
+            data.pipe(writer);
         });
     }
 

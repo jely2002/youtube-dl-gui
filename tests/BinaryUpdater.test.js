@@ -136,7 +136,7 @@ describe("downloadUpdate", () => {
         const mockReadable = new PassThrough();
         const mockWriteable = new PassThrough();
         jest.spyOn(fs, 'createWriteStream').mockReturnValueOnce(mockWriteable);
-        jest.spyOn(axios, 'get').mockResolvedValue({ data: mockReadable });
+        jest.spyOn(axios, 'get').mockResolvedValue({ data: mockReadable, headers: { "content-length": 1200 } });
         setTimeout(() => {
             mockWriteable.emit('error', "Test error");
         }, 100);
@@ -150,7 +150,7 @@ describe("downloadUpdate", () => {
         const mockReadable = new PassThrough();
         const mockWriteable = new PassThrough();
         jest.spyOn(fs, 'createWriteStream').mockReturnValueOnce(mockWriteable);
-        jest.spyOn(axios, 'get').mockResolvedValue({ data: mockReadable });
+        jest.spyOn(axios, 'get').mockResolvedValue({ data: mockReadable, headers: { "content-length": 1200 } });
         setTimeout(() => {
             mockWriteable.emit('close');
         }, 100);

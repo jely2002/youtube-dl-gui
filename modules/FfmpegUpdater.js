@@ -6,12 +6,14 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const os = require("os");
 const AdmZip = require("adm-zip");
+const Utils = require('./Utils');
 
 class FfmpegUpdater {
 
     constructor(paths, win) {
         this.paths = paths;
         this.win = win;
+        this.action = "Installing";
     }
 
     //Checks for an update and download it if there is.
@@ -31,9 +33,10 @@ class FfmpegUpdater {
         } else if(localVersion == null) {
             transaction.setTag("download", "corrupted");
             console.log("Downloading missing ffmpeg binary.");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing ffmpeg version: ${remoteVersion}...`})
-            await this.downloadUpdate(remoteFfmpegUrl, "ffmpeg" + this.getFileExtension());
-            await this.downloadUpdate(remoteFfprobeUrl, "ffprobe" + this.getFileExtension());
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing ffmpeg version: ${remoteVersion}. Preparing...`})
+            await this.downloadUpdate(remoteFfmpegUrl, remoteVersion, "ffmpeg" + this.getFileExtension());
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing ffprobe version: ${remoteVersion}. Preparing...`})
+            await this.downloadUpdate(remoteFfprobeUrl, remoteVersion, "ffprobe" + this.getFileExtension());
             await this.writeVersionInfo(remoteVersion);
         } else if(remoteVersion == null) {
             transaction.setTag("download", "down");
@@ -41,9 +44,11 @@ class FfmpegUpdater {
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
             transaction.setTag("download", "update");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ffmpeg to version: ${remoteVersion}...`})
-            await this.downloadUpdate(remoteFfmpegUrl, "ffmpeg" + this.getFileExtension());
-            await this.downloadUpdate(remoteFfprobeUrl, "ffprobe" + this.getFileExtension());
+            this.action = "Updating to";
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ffmpeg to version: ${remoteVersion}. Preparing...`})
+            await this.downloadUpdate(remoteFfmpegUrl, remoteVersion, "ffmpeg" + this.getFileExtension());
+            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ffprobe to version: ${remoteVersion}. Preparing...`})
+            await this.downloadUpdate(remoteFfprobeUrl, remoteVersion, "ffprobe" + this.getFileExtension());
             await this.writeVersionInfo(remoteVersion);
         }
         span.finish();
@@ -106,27 +111,37 @@ class FfmpegUpdater {
     }
 
     //Downloads the file at the given url and saves it to the ffmpeg path.
-    async downloadUpdate(url, filename) {
+    async downloadUpdate(url, version, filename) {
         const downloadPath = path.join(this.paths.ffmpeg, "downloads");
         if (!fs.existsSync(downloadPath)) {
             fs.mkdirSync(downloadPath);
         }
         const writer = fs.createWriteStream(path.join(downloadPath, filename));
-        await axios.get(url, {responseType: 'stream'}).then(response => {
-            return new Promise((resolve, reject) => {
-                response.data.pipe(writer);
-                let error = null;
-                writer.on('error', err => {
-                    error = err;
-                    reject(err);
-                });
-                writer.on('close', async () => {
-                    if (!error) {
-                        resolve(true);
-                    }
-                });
+
+        const { data, headers } = await axios.get(url, {responseType: 'stream'});
+        const totalLength = +headers['content-length'];
+        const total = Utils.convertBytes(totalLength);
+        const artifact = filename.replace(".exe", "");
+        let received = 0;
+        await new Promise((resolve, reject) => {
+            let error = null;
+            data.on('data', (chunk)  => {
+                received += chunk.length;
+                const percentage = ((received / totalLength) * 100).toFixed(0) + '%';
+                this.win.webContents.send("binaryLock", {lock: true, placeholder: `${this.action} ${artifact} ${version} - ${percentage} of ${total}`})
             });
+            writer.on('error', err => {
+                error = err;
+                reject(err);
+            });
+            writer.on('close', async () => {
+                if (!error) {
+                    resolve(true);
+                }
+            });
+            data.pipe(writer);
         });
+        this.win.webContents.send("binaryLock", {lock: true, placeholder: `${this.action} ${artifact} ${version} - Extracting binaries...`})
         const zipFile = new AdmZip(path.join(downloadPath, filename), {});
         zipFile.extractEntryTo(filename, this.paths.ffmpeg, false, true, false, filename);
         fs.rmdirSync(path.join(this.paths.ffmpeg, "downloads"), { recursive: true, force: true });
