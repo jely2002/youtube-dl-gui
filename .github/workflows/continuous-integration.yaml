@@ -24,6 +24,8 @@ jobs:
           node-version: '12'
       - name: Install npm modules
         run: npm install
+      - name: Install electron
+        run: npm install -g electron
       - name: Run Jest
         run: npm run test
       - name: Upload coverage to codecov
