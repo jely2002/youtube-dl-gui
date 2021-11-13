@@ -38,6 +38,8 @@ const defaultSettings = {
   version: '2.0.0-test1',
 };
 
+jest.mock('electron');
+
 describe('Load settings from file', () => {
   beforeEach(() => {
     jest.clearAllMocks();
