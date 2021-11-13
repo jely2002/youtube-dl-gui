@@ -169,7 +169,7 @@ class DownloadQuery extends Query {
                 let liveDataArray = liveData.split(" ").filter((el) => {
                     return el !== ""
                 });
-                if (liveDataArray.length > 8) return;
+                if (liveDataArray.length > 10) return;
                 liveDataArray = liveDataArray.filter((el) => {
                     return el !== "\n"
                 });
