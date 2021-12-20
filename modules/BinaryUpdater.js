@@ -32,6 +32,7 @@ class BinaryUpdater {
             console.log("Downloading missing yt-dlp binary.");
             this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing yt-dlp version: ${remoteVersion}. Preparing...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
+            this.paths.setPermissions()
         } else if(remoteVersion == null) {
             transaction.setTag("download", "down");
             console.log("Unable to check for new updates, GitHub may be down.");
@@ -41,6 +42,7 @@ class BinaryUpdater {
             this.action = "Updating to";
             this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version: ${remoteVersion}. Preparing...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
+            this.paths.setPermissions()
         }
         span.finish();
         transaction.finish();
