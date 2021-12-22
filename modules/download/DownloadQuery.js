@@ -70,7 +70,7 @@ class DownloadQuery extends Query {
                     }
                 } else {
                     format = `
-                    bestvideo[height=${this.format.height}][fps=${this.format.fps}][ext=mp4]${encoding}+${this.video.audioQuality}audio${audioEncoding}
+                    bestvideo[height=${this.format.height}][fps=${this.format.fps}][ext=mp4]${encoding}+${this.video.audioQuality}audio[ext=m4a]${audioEncoding}
                     /bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.video.audioQuality}audio${audioEncoding}
                     /bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.video.audioQuality}audio
                     /bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio
@@ -80,7 +80,7 @@ class DownloadQuery extends Query {
                     /best`;
                     if (this.format.fps == null) {
                         format = `
-                        bestvideo[height=${this.format.height}][ext=mp4]${encoding}+${this.video.audioQuality}audio${audioEncoding}
+                        bestvideo[height=${this.format.height}][ext=mp4]${encoding}+${this.video.audioQuality}audio[ext=m4a]${audioEncoding}
                         /bestvideo[height=${this.format.height}]${encoding}+${this.video.audioQuality}audio${audioEncoding}
                         /bestvideo[height=${this.format.height}]${encoding}+${this.video.audioQuality}audio
                         /bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio
