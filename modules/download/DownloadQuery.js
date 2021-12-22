@@ -38,6 +38,9 @@ class DownloadQuery extends Query {
             if(this.video.selectedAudioEncoding !== "none") {
                 args.push("-f");
                 args.push("bestaudio[acodec=" + this.video.selectedAudioEncoding + "]/bestaudio");
+            } else if(audioOutputFormat === "m4a") {
+                args.push("-f");
+                args.push("bestaudio[ext=m4a]/bestaudio");
             }
             if(audioOutputFormat !== "none") {
                 args.push('--audio-format', audioOutputFormat);
