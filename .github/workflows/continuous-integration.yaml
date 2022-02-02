@@ -2,7 +2,8 @@ name: CI
 on:
   push:
     paths-ignore:
-      - '**/.github/**'
+      - '**/.github/ISSUE_TEMPLATE/**'
+      - '**/.github/FUNDING.yml'
 jobs:
   lint:
     runs-on: ubuntu-latest
