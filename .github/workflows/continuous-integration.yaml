@@ -23,13 +23,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '12'
-      - name: Install electron globaly
-        run: npm install -g electron
       - name: Install npm modules
         run: npm install
       - name: Run Jest
         run: |
-          npm install
+          npm uninstall electron
+          npm install electron
           npm run test
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
