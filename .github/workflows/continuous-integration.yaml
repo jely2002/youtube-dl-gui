@@ -23,6 +23,8 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '12'
+      - name: Install electron globaly
+        run: npm install -g electron
       - name: Install npm modules
         run: npm install
       - name: Run Jest

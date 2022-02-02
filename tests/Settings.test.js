@@ -1,5 +1,8 @@
 const fs = require('fs').promises;
 const os = require('os');
+
+jest.mock('electron');
+
 const Settings = require('../modules/persistence/Settings');
 const env = {version: '2.0.0-test1', app: {getPath: jest.fn().mockReturnValue('test/path')}};
 const defaultSettingsInstance = new Settings({settings: 'tests/test-settings.json'}, env, 'none', 'none', 'test/path', '', '', true, false, true, 'spoof', false, false, true, '%(title).200s-(%(height)sp%(fps).0d).%(ext)s', '%(title).200s-(%(height)sp%(fps).0d).%(ext)s', 'click', '49', 8, true, 'video', true, 'C:\\Users\\user\\cookies.txt', false, '', '', 'https://sponsor.ajay.app', true, false, false, false, true, 'dark');
@@ -38,11 +41,10 @@ const defaultSettings = {
   version: '2.0.0-test1',
 };
 
-jest.mock('electron');
-
 describe('Load settings from file', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.mock('electron');
     fs.writeFile = jest.fn().mockResolvedValue('');
     console.log = jest.fn().mockImplementation(() => {
     });
