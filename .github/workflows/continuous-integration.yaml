@@ -25,12 +25,7 @@ jobs:
           node-version: '12'
       - name: Install npm modules
         run: npm install
-      - name: Check if electron is installed
-        run: cat node_modules/electron/path.txt
       - name: Run Jest
-        run: |
-          npm uninstall electron
-          npm install electron
-          npm run test
+        run: npm run test
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
