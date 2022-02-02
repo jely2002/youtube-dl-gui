@@ -1,7 +1,17 @@
 const fs = require('fs').promises;
 const os = require('os');
+const { globalShortcut, clipboard } = require('electron');
 
-jest.mock('electron');
+jest.mock('electron', () => ({
+  clipboard: {
+    readText: jest.fn()
+  },
+  globalShortcut: {
+    unregisterAll: jest.fn(),
+    isRegistered: jest.fn(),
+    register: jest.fn(),
+  }
+}));
 
 const Settings = require('../modules/persistence/Settings');
 const env = {version: '2.0.0-test1', app: {getPath: jest.fn().mockReturnValue('test/path')}};
@@ -44,7 +54,6 @@ const defaultSettings = {
 describe('Load settings from file', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.mock('electron');
     fs.writeFile = jest.fn().mockResolvedValue('');
     console.log = jest.fn().mockImplementation(() => {
     });
