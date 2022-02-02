@@ -25,6 +25,8 @@ jobs:
           node-version: '12'
       - name: Install npm modules
         run: npm install
+      - name: Check if electron is installed
+        run: cat node_modules/electron/path.txt
       - name: Run Jest
         run: |
           npm uninstall electron
