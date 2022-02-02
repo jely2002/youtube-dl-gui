@@ -89,6 +89,7 @@ describe('checkUpdate', () => {
         const win = {webContents: {send: jest.fn()}};
         const instance = new BinaryUpdater({platform: "win32"}, win);
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate');
+        instance.paths.setPermissions = jest.fn();
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("v2.0.0");
         jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue(["link", "v2.0.0"]);
         return instance.checkUpdate().then(() => {
@@ -100,6 +101,7 @@ describe('checkUpdate', () => {
         const win = {webContents: {send: jest.fn()}};
         const instance = new BinaryUpdater({platform: "win32"}, win);
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate');
+        instance.paths.setPermissions = jest.fn();
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("v2.0.0");
         jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue([null, null]);
         return instance.checkUpdate().then(() => {
@@ -111,6 +113,7 @@ describe('checkUpdate', () => {
         const win = {webContents: {send: jest.fn()}};
         const instance = new BinaryUpdater({platform: "win32"}, win);
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate').mockResolvedValue("");
+        instance.paths.setPermissions = jest.fn();
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue(null);
         jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue(["link", "v2.0.0"]);
         return instance.checkUpdate().then(() => {
@@ -122,6 +125,7 @@ describe('checkUpdate', () => {
         const win = {webContents: {send: jest.fn()}};
         const instance = new BinaryUpdater({platform: "win32", ytdl: "a/path/to"}, win);
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate').mockResolvedValue("");
+        instance.paths.setPermissions = jest.fn();
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("2021.03.10");
         jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteUrl: "link", remoteVersion: "2021.10.10" });
         return instance.checkUpdate().then(() => {
