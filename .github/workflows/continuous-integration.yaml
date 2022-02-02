@@ -28,6 +28,8 @@ jobs:
       - name: Install npm modules
         run: npm install
       - name: Run Jest
-        run: npm run test
+        run: |
+          npm install
+          npm run test
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v1
