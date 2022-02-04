@@ -14,7 +14,9 @@ class ClipboardWatcher {
 
     resetPlaceholder() {
         const standard = "Enter a video/playlist URL to add to the queue";
-        this.win.webContents.send("updateLinkPlaceholder", {text: standard, copied: false});
+        if (this.win != null) {
+            this.win.webContents.send("updateLinkPlaceholder", {text: standard, copied: false});
+        }
     }
 
     poll() {
@@ -25,7 +27,9 @@ class ClipboardWatcher {
                 this.previous = text;
                 const isURL = text.match(this.urlRegex);
                 if (isURL) {
-                    this.win.webContents.send("updateLinkPlaceholder", {text: text, copied: true});
+                    if (this.win != null) {
+                        this.win.webContents.send("updateLinkPlaceholder", {text: text, copied: true});
+                    }
                 } else {
                     this.resetPlaceholder();
                 }
