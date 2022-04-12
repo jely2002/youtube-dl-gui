@@ -23,15 +23,18 @@ class Video {
     }
 
     setFilename(liveData) {
-        if(liveData.includes("[download] Destination: ")) {
-            const replaced = liveData.replace("[download] Destination: ", "");
-            this.filename = path.basename(replaced);
-        } else if(liveData.includes("[ffmpeg] Merging formats into \"")) {
-            const noPrefix = liveData.replace("[ffmpeg] Merging formats into \"", "");
-            this.filename = path.basename(noPrefix.trim().slice(0, -1));
-        } else if(liveData.includes("[ffmpeg] Adding metadata to '")) {
-            const noPrefix = liveData.replace("[ffmpeg] Adding metadata to '", "");
-            this.filename = path.basename(noPrefix.trim().slice(0, -1));
+        if(liveData.includes("Destination: ")) {
+            const searchStr = "Destination: ";
+            const postPrefixIndex = liveData.indexOf(searchStr) + searchStr.length;
+            this.filename = path.basename(liveData.slice(postPrefixIndex));
+        } else if(liveData.includes("Merging formats into \"")) {
+            const searchStr = "Merging formats into \"";
+            const postPrefixIndex = liveData.indexOf(searchStr) + searchStr.length;
+            this.filename = path.basename(liveData.slice(postPrefixIndex, -1));
+        } else if(liveData.includes("Adding metadata to \"")) {
+            const searchStr = "Adding metadata to \"";
+            const postPrefixIndex = liveData.indexOf(searchStr) + searchStr.length;
+            this.filename = path.basename(liveData.slice(postPrefixIndex, -1));
         }
     }
 
