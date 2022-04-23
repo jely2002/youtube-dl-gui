@@ -172,10 +172,10 @@ class DownloadQuery extends Query {
                 let liveDataArray = liveData.split(" ").filter((el) => {
                     return el !== ""
                 });
-                if (liveDataArray.length > 10) return;
                 liveDataArray = liveDataArray.filter((el) => {
                     return el !== "\n"
                 });
+                if (liveDataArray.length > 10) return;
                 let percentage = liveDataArray[1];
                 let speed = liveDataArray[5];
                 let eta = liveDataArray[7];
