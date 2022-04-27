@@ -36,6 +36,7 @@ async function init() {
     //Updates the placeholder to a copied link
     window.main.receive("updateLinkPlaceholder", (args) => {
         $('#add-url').prop("placeholder", args.text);
+        $('#add-url').focus();
         linkCopied = args.copied;
     });
 
