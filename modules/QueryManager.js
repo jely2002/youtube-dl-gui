@@ -373,7 +373,24 @@ class QueryManager {
             shell.openPath(video.downloadedPath);
             return;
         }
-        if(file == null) {
+
+        new Promise((resolve) => {
+            // The file sometimes contains a string starting with a .f and 3 digits 
+            // like .f140 or .f251 between the actual file name and file extension.
+            if (file != null) {
+                let parts = file.split(".");
+                if (parts.length > 2) {
+                    let fIndex = parts.length - 2;
+                    let fElement = parts[fIndex];
+                    if (fElement.indexOf("f") === 0 && fElement.length === 4) {
+                        parts.splice(fIndex, 1);
+                        file = parts.join(".");
+                    }
+                }
+            }
+            
+            // After fixing the file name the file extension is still sometimes 
+            // incorrect so the program has to look for these files as well.
             fs.readdir(video.downloadedPath, (err, files) => {
                 for (const searchFile of files) {
                     if (searchFile.substr(0, searchFile.lastIndexOf(".")) === video.getFilename()) {
@@ -381,23 +398,27 @@ class QueryManager {
                         break;
                     }
                 }
+
                 if(file == null) {
                     fallback = true;
                     file = video.getFilename() + ".mp4";
                 }
+
+                resolve();
             });
-        }
-        if(args.type === "folder") {
-            if(fallback) {
-                shell.openPath(video.downloadedPath);
+        }).then(() => {
+            if(args.type === "folder") {
+                if(fallback) {
+                    shell.openPath(video.downloadedPath);
+                } else {
+                    this.verifyOpenVideoFilepath(video, file).then(fullPath => shell.showItemInFolder(fullPath));
+                }
+            } else if(args.type === "item") {
+                this.verifyOpenVideoFilepath(video, file).then(path => shell.openPath(path));
             } else {
-                shell.showItemInFolder(await this.verifyOpenVideoFilepath(video, file));
+                console.error("Wrong openVideo type specified.")
             }
-        } else if(args.type === "item") {
-            shell.openPath(await this.verifyOpenVideoFilepath(video, file));
-        } else {
-            console.error("Wrong openVideo type specified.")
-        }
+        });
     }
 
     async verifyOpenVideoFilepath(video, file) {
