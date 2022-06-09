@@ -63,20 +63,20 @@ describe('getRemoteVersion', () => {
         });
     });
     it('returns array with the link and the version', () => {
-        const redirectURL = "https://github.com/yt-dlp/yt-dlp/releases/download/2021.10.10/yt-dlp.exe"
+        const redirectUrl = "https://github.com/yt-dlp/yt-dlp/releases/tag/2021.10.10"
+        const binaryUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
         const axiosGetSpy = jest.spyOn(axios, 'get').mockRejectedValue({
             response: {
                 status: 302,
-                data: "<a href=\"https://github.com/yt-dlp/yt-dlp/releases/download/2021.10.10/yt-dlp.exe\">",
                 headers: {
-                    location: redirectURL
+                    location: redirectUrl
                 }
             }
         });
         const instance = new BinaryUpdater({platform: "win32"});
         return instance.getRemoteVersion().then((data) => {
             expect(data).toEqual({
-                remoteUrl: redirectURL,
+                remoteUrl: binaryUrl,
                 remoteVersion: "2021.10.10"
             });
             expect(axiosGetSpy).toBeCalledTimes(1);
