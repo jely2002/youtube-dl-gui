@@ -67,7 +67,6 @@ describe('getRemoteVersion', () => {
         const axiosGetSpy = jest.spyOn(axios, 'get').mockRejectedValue({
             response: {
                 status: 302,
-                data: "<a href=\"https://github.com/yt-dlp/yt-dlp/releases/download/2021.10.10/yt-dlp.exe\">",
                 headers: {
                     location: redirectURL
                 }
