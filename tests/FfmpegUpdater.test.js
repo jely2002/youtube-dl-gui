@@ -58,7 +58,7 @@ describe('getRemoteVersion', () => {
     });
     it('returns object with the links and the version', async () => {
         const axiosGetSpy = jest.spyOn(axios, 'get').mockResolvedValue({
-            data: { version: "4.2.1", bin: { "windows-32": { ffmpeg: "ffmpeg/link", ffprobe: "ffprobe/link" } } },
+            data: { version: "4.4.1", bin: { "windows-64": { ffmpeg: "ffmpeg/link", ffprobe: "ffprobe/link" } } },
         });
         jest.spyOn(os, 'arch').mockReturnValue('ia32');
         Object.defineProperty(process, "platform", {
@@ -69,7 +69,7 @@ describe('getRemoteVersion', () => {
         expect(result).toEqual({
             remoteFfmpegUrl: "ffmpeg/link",
             remoteFfprobeUrl: "ffprobe/link",
-            remoteVersion: "4.2.1"
+            remoteVersion: "4.4.1"
         });
         expect(axiosGetSpy).toBeCalledTimes(1);
     });

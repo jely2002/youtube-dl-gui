@@ -69,7 +69,6 @@ class FfmpegUpdater {
         try {
             const res = await axios.get("https://ffbinaries.com/api/v1/version/latest");
             let platform = "windows-64";
-            if (os.arch() === "x32" || os.arch() === "ia32") platform = "windows-32";
             if (process.platform === "darwin") platform = "osx-64";
             else if (process.platform === "linux") platform = "linux-32";
             return {
@@ -86,7 +85,7 @@ class FfmpegUpdater {
         }
     }
 
-    //Returns the currently downloaded version of yt-dlp
+   //Returns the currently downloaded version of yt-dlp
    async getLocalVersion() {
         let data;
         try {
