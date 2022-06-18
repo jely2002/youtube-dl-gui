@@ -90,7 +90,16 @@
       ]
     },
     "mac": {
-      "target": "dmg",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal",
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
       "icon": "renderer/img/icon.icns",
       "category": "public.app-category.utilities",
       "identity": null,
