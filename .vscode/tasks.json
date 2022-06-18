@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "install",
+      "group": "clean",
+      "problemMatcher": [],
+      "label": "npm: install",
+      "detail": "install dependencies from package"
+    },
+    {
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": [],
+      "label": "npm: lint",
+      "detail": "eslint {**/modules/**/*.js,/*.js} && eslint renderer/*.js"
+    },
+    {
+      "type": "npm",
+      "script": "test",
+      "group": "test",
+      "problemMatcher": [],
+      "label": "npm: test",
+      "detail": "jest --coverage",
+      "dependsOn": "npm: lint"
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": [],
+      "label": "npm: build",
+      "detail": "electron-builder",
+      "dependsOn": "npm: test"
+    }
+  ]
+}
