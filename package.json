@@ -6,9 +6,9 @@
   "scripts": {
     "start": "electron . --dev",
     "build": "electron-builder",
-    "lint": "eslint {**/modules/**/*.js,/*.js} && eslint renderer/*.js",
+    "lint": "eslint {**/modules/**/*.js,./*.js} && eslint renderer/*.js",
     "test": "jest --coverage",
-    "quick-test": "jest && eslint {**/modules/**/*.js,/*.js} && eslint renderer/*.js"
+    "quick-test": "jest && eslint {**/modules/**/*.js,./*.js} && eslint renderer/*.js"
   },
   "jest": {
     "collectCoverageFrom": [
