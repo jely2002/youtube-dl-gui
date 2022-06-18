@@ -363,4 +363,8 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/git,node,yarn,visualstudiocode,intellij+all,macos,windows,linux
 
-/.env
+# Application local files
+.env
+taskList
+userSettings
+binaries/
