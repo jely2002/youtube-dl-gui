@@ -56,7 +56,7 @@ class Filepaths {
                 this.packedPrefix = this.appPath;
                 this.unpackedPrefix = this.appPath + ".unpacked";
                 this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries") : "binaries";
-                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/yt-dlp-unix") : "binaries/yt-dlp-unix";
+                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/yt-dlp_macos") : "binaries/yt-dlp_macos";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
                 this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
@@ -69,7 +69,7 @@ class Filepaths {
                 this.packedPrefix = this.appPath;
                 this.unpackedPrefix = this.appPath + ".unpacked";
                 if(this.app.isPackaged) await this.createFolder(this.persistentPath);
-                this.ytdl = this.app.isPackaged ? path.join(this.persistentPath, "yt-dlp-unix") : "binaries/yt-dlp-unix";
+                this.ytdl = this.app.isPackaged ? path.join(this.persistentPath, "yt-dlp") : "binaries/yt-dlp";
                 this.ffmpeg = this.app.isPackaged ? this.persistentPath : "binaries";
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.persistentPath, "userSettings") : "userSettings";
