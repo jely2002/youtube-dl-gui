@@ -117,9 +117,14 @@ class DownloadQuery extends Query {
                 this.video.subLanguages.forEach(lang => langs += lang + ",")
                 args.push(langs.slice(0, -1));
             }
-            if (this.environment.settings.outputFormat !== "none") {
+            const outputFormat = this.environment.settings.outputFormat;
+            if (outputFormat !== "none") {
                 args.push("--merge-output-format");
-                args.push(this.environment.settings.outputFormat);
+                args.push(outputFormat);
+            }
+            if(["mp4", "mkv", "none"].includes(outputFormat)) {
+                args.push('--embed-chapters');
+                args.push("--embed-thumbnail");
             }
         }
         if(this.environment.settings.downloadMetadata) {
