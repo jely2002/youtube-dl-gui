@@ -16,12 +16,12 @@ class Filepaths {
                 this.unpackedPrefix = path.join(path.dirname(this.appPath), "app.asar.unpacked");
                 this.packedPrefix = this.appPath;
                 this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries") : "binaries";
-                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/yt-dlp.exe") : "binaries/yt-dlp.exe";
+                this.ytdl = path.join(this.ffmpeg, "yt-dlp.exe");
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
                 this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
-                this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
-                this.ffmpegVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpegVersion") :"binaries/ffmpegVersion";
+                this.ytdlVersion = path.join(this.ffmpeg, "ytdlVersion");
+                this.ffmpegVersion = path.join(this.ffmpeg, "ffmpegVersion");
                 break;
             case "win32app": {
                 const appDir = path.basename(path.join(this.appPath, "../../..")).replace(/_(.*)_/g, "_");
@@ -31,12 +31,12 @@ class Filepaths {
                 this.packedPrefix = this.appPath;
                 await this.createFolder(this.persistentPath);
                 this.ffmpeg = this.binaryPath;
-                this.ytdl = path.join(this.binaryPath, "yt-dlp.exe");
+                this.ytdl = path.join(this.ffmpeg, "yt-dlp.exe");
                 this.icon = path.join(this.packedPrefix, "renderer/img/icon.png");
-                this.settings = path.join(this.binaryPath, "userSettings");
-                this.taskList = path.join(this.binaryPath, "taskList");
-                this.ytdlVersion = path.join(this.binaryPath, "ytdlVersion");
-                this.ffmpegVersion = path.join(this.binaryPath, "ffmpegVersion");
+                this.settings = path.join(this.ffmpeg, "userSettings");
+                this.taskList = path.join(this.ffmpeg, "taskList");
+                this.ytdlVersion = path.join(this.ffmpeg, "ytdlVersion");
+                this.ffmpegVersion = path.join(this.ffmpeg, "ffmpegVersion");
                 break;
             }
             case "win32portable":
@@ -45,23 +45,23 @@ class Filepaths {
                 this.packedPrefix = this.appPath;
                 await this.createPortableFolder();
                 this.ffmpeg = this.persistentPath;
-                this.ytdl = path.join(this.persistentPath, "yt-dlp.exe");
+                this.ytdl = path.join(this.ffmpeg, "yt-dlp.exe");
                 this.icon = path.join(this.packedPrefix, "renderer/img/icon.png");
-                this.settings = path.join(this.persistentPath, "userSettings");
-                this.taskList = path.join(this.persistentPath, "taskList");
-                this.ytdlVersion = path.join(this.persistentPath, "ytdlVersion");
-                this.ffmpegVersion = path.join(this.persistentPath, "ffmpegVersion");
+                this.settings = path.join(this.ffmpeg, "userSettings");
+                this.taskList = path.join(this.ffmpeg, "taskList");
+                this.ytdlVersion = path.join(this.ffmpeg, "ytdlVersion");
+                this.ffmpegVersion = path.join(this.ffmpeg, "ffmpegVersion");
                 break;
             case "darwin":
                 this.packedPrefix = this.appPath;
                 this.unpackedPrefix = this.appPath + ".unpacked";
                 this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries") : "binaries";
-                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/yt-dlp-unix") : "binaries/yt-dlp-unix";
+                this.ytdl = path.join(this.ffmpeg, "yt-dlp_macos");
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
                 this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
-                this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
-                this.ffmpegVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpegVersion") :"binaries/ffmpegVersion";
+                this.ytdlVersion = path.join(this.ffmpeg, "ytdlVersion");
+                this.ffmpegVersion = path.join(this.ffmpeg, "ffmpegVersion");
                 this.setPermissions()
                 break;
             case "linux":
@@ -69,13 +69,13 @@ class Filepaths {
                 this.packedPrefix = this.appPath;
                 this.unpackedPrefix = this.appPath + ".unpacked";
                 if(this.app.isPackaged) await this.createFolder(this.persistentPath);
-                this.ytdl = this.app.isPackaged ? path.join(this.persistentPath, "yt-dlp-unix") : "binaries/yt-dlp-unix";
                 this.ffmpeg = this.app.isPackaged ? this.persistentPath : "binaries";
+                this.ytdl = path.join(this.ffmpeg, "yt-dlp");
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.persistentPath, "userSettings") : "userSettings";
                 this.taskList = this.app.isPackaged ? path.join(this.persistentPath, "taskList") : "taskList";
-                this.ytdlVersion = this.app.isPackaged ? path.join(this.persistentPath, "ytdlVersion") :"binaries/ytdlVersion";
-                this.ffmpegVersion = this.app.isPackaged ? path.join(this.persistentPath, "ffmpegVersion") :"binaries/ffmpegVersion";
+                this.ytdlVersion = path.join(this.ffmpeg, "ytdlVersion");
+                this.ffmpegVersion = path.join(this.ffmpeg, "ffmpegVersion");
                 this.setPermissions()
                 break;
         }
@@ -116,12 +116,17 @@ class Filepaths {
     }
 
     setPermissions() {
-        fs.readdirSync(this.ffmpeg).forEach(file => {
-            if (file === "userSettings" || file === "ytdlVersion" || file === "taskList" || file === "ffmpegVersion") return;
-            fs.chmod(path.join(this.ffmpeg, file), 0o755, (err) => {
-                if(err) console.error(err);
-            });
-        });
+        if (!fs.existsSync(this.ffmpeg)) {
+            fs.mkdirSync(this.ffmpeg, {recursive: true, mode: 0o744});
+        }
+        for (const file of fs.readdirSync(this.ffmpeg)) {
+            if (file === "userSettings" || file === "ytdlVersion" || file === "taskList" || file === "ffmpegVersion") continue;
+            try {
+                fs.chmodSync(path.join(this.ffmpeg, file), 0o755);
+            } catch (err) {
+                console.error(`Cannot set permissions for ${file}. Error: ${err}`);
+            }
+        }
     }
 
     async createPortableFolder() {

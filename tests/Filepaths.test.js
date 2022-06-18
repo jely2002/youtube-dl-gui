@@ -7,7 +7,7 @@ jest.mock('mkdirp');
 
 beforeEach(() => {
     jest.clearAllMocks();
-    fs.chmod = jest.fn();
+    fs.chmodSync = jest.fn();
     jest.doMock('mkdirp', () => {
         const originalModule = jest.requireActual('mkdirp')
         return {
@@ -24,11 +24,12 @@ describe('set executable permissions', () => {
        instance.ffmpeg = "ffmpeg/path/";
        const ytdlp = "yt-dlp.exe";
        const taskList = "taskList";
+       fs.existsSync = jest.fn(v => instance.ffmpeg === v);
        fs.readdirSync = jest.fn().mockReturnValue([ytdlp, taskList]);
        instance.setPermissions();
-       expect(fs.chmod).toBeCalledTimes(1);
-       expect(fs.chmod.mock.calls[0]).toContain(path.join(instance.ffmpeg, ytdlp));
-       expect(fs.chmod.mock.calls[0]).toContain(493);
+       expect(fs.chmodSync).toBeCalledTimes(1);
+       expect(fs.chmodSync.mock.calls[0]).toContain(path.join(instance.ffmpeg, ytdlp));
+       expect(fs.chmodSync.mock.calls[0]).toContain(493);
    });
 });
 
@@ -56,7 +57,9 @@ describe('generate filepaths', () => {
             const joinSpy = jest.spyOn(path, 'join').mockReturnValue("path");
             jest.spyOn(instance, 'removeLeftOver').mockImplementation(() => Promise.resolve());
             await instance.generateFilepaths();
-            if(platform === "linux" || platform === "win32") expect(joinSpy).toBeCalledTimes(1);
+            if(platform === "linux") expect(joinSpy).toBeCalledTimes(4);
+            else if(platform === "darwin") expect(joinSpy).toBeCalledTimes(3);
+            else if(platform === "win32") expect(joinSpy).toBeCalledTimes(4);
             else expect(joinSpy).not.toBeCalled();
             joinSpy.mockRestore();
         }
@@ -128,5 +131,6 @@ function instanceBuilder(packaged, portable) {
         getPath: jest.fn(() => "path/to/downloads"),
         getAppPath: jest.fn(() => portable ? "\\AppData\\Local\\Temp\\" : "path/to/application")
     }
+    fs.existsSync = jest.fn(v => app.getPath() === v);
     return new Filepaths(app);
 }
