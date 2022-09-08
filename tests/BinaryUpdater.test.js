@@ -74,6 +74,7 @@ describe('getRemoteVersion', () => {
             }
         });
         const instance = new BinaryUpdater({platform: "win32"});
+        instance.platform = "win32";
         return instance.getRemoteVersion().then((data) => {
             expect(data).toEqual({
                 remoteUrl: binaryUrl,

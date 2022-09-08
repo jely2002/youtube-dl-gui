@@ -11,6 +11,7 @@ class BinaryUpdater {
         this.paths = paths;
         this.win = win;
         this.action = "Installing";
+        this.platform = process.platform;
     }
 
     //Checks for an update and download it if there is.
@@ -60,7 +61,7 @@ class BinaryUpdater {
 
     async getRemoteVersion() {
         const releaseUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/"
-        const binaryUrl = process.platform === "win32" ? "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" : "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
+        const binaryUrl = this.platform === "win32" ? "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" : "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
         try {
             await axios.get(releaseUrl, {
                   responseType: 'document',
