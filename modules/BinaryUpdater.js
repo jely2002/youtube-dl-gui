@@ -72,11 +72,10 @@ class BinaryUpdater {
                 return null;
             }
             if (res.status === 302) {
-                const versionRegex = res.data.match(/[0-9]+\.[0-9]+\.[0-9]+/);
-                const urlRegex = res.data.match(/(?<=").+?(?=")/);
+                const versionRegex = res.headers.location.match(/[0-9]+\.[0-9]+\.[0-9]+/);
                 return {
                     remoteVersion: versionRegex ? versionRegex[0] : null,
-                    remoteUrl: urlRegex ? urlRegex[0] : null,
+                    remoteUrl: res.headers.location,
                 };
             } else {
                 console.error('Did not get redirect for the latest version link. Status: ' + err.response.status);
