@@ -12,6 +12,7 @@ class BinaryUpdater {
         this.win = win;
         this.action = "Installing";
         this.platform = process.platform;
+        this.systemVersion = null;
     }
 
     //Checks for an update and download it if there is.
@@ -93,7 +94,7 @@ class BinaryUpdater {
         if (this.platform === "win32") {
             return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
         } else if (this.platform === "darwin") {
-            if (process.getSystemVersion() < "10.15"){
+            if (this.getSystemVersion() < "10.15"){
                 return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp";
             } else {
                 return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
@@ -101,6 +102,13 @@ class BinaryUpdater {
         } else {
             return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp";
         }
+    }
+
+    getSystemVersion() {
+        if (!this.systemVersion) {
+            this.systemVersion = process.getSystemVersion()
+        }
+        return this.systemVersion;
     }
 
     //Returns the currently downloaded version of yt-dlp

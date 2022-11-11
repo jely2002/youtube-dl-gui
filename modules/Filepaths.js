@@ -8,6 +8,7 @@ class Filepaths {
         this.env = env;
         this.appPath = this.app.getAppPath();
         this.platform = this.detectPlatform();
+        this.systemVersion = null
     }
 
      async generateFilepaths() {
@@ -83,11 +84,18 @@ class Filepaths {
     }
 
     getMacOSPathYtDlp() {
-        if (process.getSystemVersion() < "10.15"){
+        if (this.getSystemVersion() < "10.15"){
             return "binaries/yt-dlp_macos_legacy";
         } else {
             return "binaries/yt-dlp_macos";
         }
+    }
+
+    getSystemVersion() {
+        if (!this.systemVersion) {
+            this.systemVersion = process.getSystemVersion()
+        }
+        return this.systemVersion;
     }
 
     async validateDownloadPath() {

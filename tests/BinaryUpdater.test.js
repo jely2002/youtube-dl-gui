@@ -49,6 +49,7 @@ describe('getRemoteVersion', () => {
     it('returns a null array when not redirected', () => {
         const axiosGetSpy = jest.spyOn(axios, 'get').mockRejectedValue({response: {status: 200}});
         const instance = new BinaryUpdater({platform: "win32"});
+        instance.platform = "win32";
         return instance.getRemoteVersion().then((data) => {
             expect(data).toEqual(null);
             expect(axiosGetSpy).toBeCalledTimes(1);
@@ -57,6 +58,8 @@ describe('getRemoteVersion', () => {
     it('returns a null array on error', () => {
         const axiosGetSpy = jest.spyOn(axios, 'get').mockRejectedValue({response: null});
         const instance = new BinaryUpdater({platform: "darwin"});
+        instance.platform = "darwin";
+        instance.systemVersion = "13.0";
         return instance.getRemoteVersion().then((data) => {
             expect(data).toEqual(null);
             expect(axiosGetSpy).toBeCalledTimes(1);
