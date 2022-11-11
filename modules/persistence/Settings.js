@@ -37,7 +37,7 @@ class Settings {
         this.calculateTotalSize = calculateTotalSize == null ? true : calculateTotalSize;
         this.sizeMode = sizeMode == null ? "click" : sizeMode;
         this.splitMode = splitMode == null? "49" : splitMode;
-        this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? Math.round(os.cpus().length / 2) : maxConcurrent; //Max concurrent is standard half of the system's available cores
+        this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? this.getDefaultMaxConcurrent() : maxConcurrent; //Max concurrent is standard half of the system's available cores
         this.updateBinary = updateBinary == null ? true : updateBinary;
         this.downloadType = downloadType == null ? "video" : downloadType;
         this.updateApplication = updateApplication == null ? true : updateApplication;
@@ -45,6 +45,17 @@ class Settings {
         this.statSend = statSend == null ? false : statSend;
         this.theme = theme == null ? "dark" : theme;
         this.setGlobalShortcuts();
+    }
+
+    getDefaultMaxConcurrent() {
+        let halfOfCpus = Math.round(os.cpus().length / 2);
+
+        //When os.cpus() returns an empty list, default to 4
+        if (halfOfCpus <= 0) {
+            halfOfCpus = 4;
+        }
+
+        return halfOfCpus;
     }
 
     static async loadFromFile(paths, env) {
@@ -153,7 +164,7 @@ class Settings {
             sizeMode: this.sizeMode,
             splitMode: this.splitMode,
             maxConcurrent: this.maxConcurrent,
-            defaultConcurrent: Math.round(os.cpus().length / 2),
+            defaultConcurrent: this.getDefaultMaxConcurrent(),
             updateBinary: this.updateBinary,
             downloadType: this.downloadType,
             updateApplication: this.updateApplication,
