@@ -12,6 +12,7 @@ class BinaryUpdater {
         this.win = win;
         this.action = "Installing";
         this.platform = process.platform;
+        this.systemVersion = null;
     }
 
     //Checks for an update and download it if there is.
@@ -61,7 +62,7 @@ class BinaryUpdater {
 
     async getRemoteVersion() {
         const releaseUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/"
-        const binaryUrl = this.platform === "win32" ? "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" : "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
+        const binaryUrl = this.getBinaryUrl()
         try {
             await axios.get(releaseUrl, {
                   responseType: 'document',
@@ -87,6 +88,27 @@ class BinaryUpdater {
             }
         }
         return null;
+    }
+
+    getBinaryUrl() {
+        if (this.platform === "win32") {
+            return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
+        } else if (this.platform === "darwin") {
+            if (this.getSystemVersion() < "10.15"){
+                return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp";
+            } else {
+                return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
+            }
+        } else {
+            return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp";
+        }
+    }
+
+    getSystemVersion() {
+        if (!this.systemVersion) {
+            this.systemVersion = process.getSystemVersion()
+        }
+        return this.systemVersion;
     }
 
     //Returns the currently downloaded version of yt-dlp
