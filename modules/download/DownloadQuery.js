@@ -20,6 +20,7 @@ class DownloadQuery extends Query {
     async connect() {
         let args = [];
         let output = path.join(this.environment.settings.downloadPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+        const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
         if(this.video.audioOnly) {
             let audioQuality = this.video.audioQuality;
             if(audioQuality === "best") {
@@ -33,7 +34,8 @@ class DownloadQuery extends Query {
                 '--ffmpeg-location', this.environment.paths.ffmpeg,
                 '--no-mtime',
                 '-o', output,
-                '--output-na-placeholder', ""
+                '--output-na-placeholder', "",
+                '--progress-template', PROGRESS_TEMPLATE
             ];
             if(this.video.selectedAudioEncoding !== "none") {
                 args.push("-f");
@@ -97,14 +99,16 @@ class DownloadQuery extends Query {
                     "-o", output,
                     '--ffmpeg-location', this.environment.paths.ffmpeg,
                     '--no-mtime',
-                    '--output-na-placeholder', ""
+                    '--output-na-placeholder', "",
+                    '--progress-template', PROGRESS_TEMPLATE
                 ];
             } else {
                 args = [
                     "-o", output,
                     '--ffmpeg-location', this.environment.paths.ffmpeg,
                     '--no-mtime',
-                    '--output-na-placeholder', ""
+                    '--output-na-placeholder', "",
+                    '--progress-template', PROGRESS_TEMPLATE
                 ];
             }
             if (this.video.downloadSubs && this.video.subLanguages.length > 0) {
@@ -177,8 +181,8 @@ class DownloadQuery extends Query {
                     return el !== "\n"
                 });
                 let percentage = liveDataArray[1];
-                let speed = liveDataArray[5];
-                let eta = liveDataArray[7];
+                let speed = liveDataArray[2];
+                let eta = liveDataArray[3];
                 this.progressBar.updateDownload(percentage, eta, speed, this.video.audioOnly ? true : this.video.downloadingAudio);
             }));
         } catch (exception) {
