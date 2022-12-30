@@ -91,11 +91,14 @@ class BinaryUpdater {
     }
 
     getBinaryUrl() {
+        console.info("platform - " + this.platform)
         if (this.platform === "win32") {
             return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
         } else if (this.platform === "darwin") {
-            if (this.getSystemVersion() < "10.15"){
-                return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp";
+            let systemVersion = this.getSystemVersion();
+            console.info("systemVersion - " + this.systemVersion)
+            if (systemVersion < "10.15"){
+                return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos_legacy";
             } else {
                 return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
             }
