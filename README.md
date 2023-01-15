@@ -50,6 +50,8 @@ Feel free to [request a new feature](https://github.com/StefanLobbenmeier/youtub
 ## Demo gif
 <img src="ytdlgui_demo.gif" alt="demo" width="500"/>  
 
+## Credit
+Big thanks to the original author [jely2002](https://github.com/jely2002), who unfortunately stopped maintaining the original repository: https://github.com/jely2002/youtube-dl-gui
 
 ## Liability & License notice
 Youtube-dl-gui and its maintainers cannot be held liable for misuse of this application, as stated in the [AGPL-3.0 license (section 16)](https://github.com/StefanLobbenmeier/youtube-dl-gui/blob/master/LICENSE).  
