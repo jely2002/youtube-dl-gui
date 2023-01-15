@@ -1,7 +1,8 @@
 <img src="https://raw.githubusercontent.com/StefanLobbenmeier/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="100"/>
 
 # Open Video Downloader (youtube-dl-gui)
-![version badge](https://img.shields.io/github/v/release/StefanLobbenmeier/youtube-dl-gui?label=latest-release) ![GitHub](https://img.shields.io/github/license/StefanLobbenmeier/youtube-dl-gui)
+![version badge](https://img.shields.io/github/v/release/StefanLobbenmeier/youtube-dl-gui?label=latest-release)
+![GitHub](https://img.shields.io/github/license/StefanLobbenmeier/youtube-dl-gui)
 ![coverage badge](https://img.shields.io/codecov/c/github/StefanLobbenmeier/youtube-dl-gui)
 ![downloads](https://img.shields.io/github/downloads/StefanLobbenmeier/youtube-dl-gui/total)
 ![CI badge](https://img.shields.io/github/actions/workflow/status/StefanLobbenmeier/youtube-dl-gui/continuous-integration.yaml)
