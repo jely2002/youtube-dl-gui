@@ -1,7 +1,7 @@
-<img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="100"/>
+<img src="https://raw.githubusercontent.com/StefanLobbenmeier/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="100"/>
 
-# Open Video Downloader (youtube-dl-gui) <br> ![version badge](https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release) ![GitHub](https://img.shields.io/github/license/jely2002/youtube-dl-gui) ![coverage badge](https://img.shields.io/codecov/c/github/jely2002/youtube-dl-gui) ![downloads](https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total) ![CI badge](https://img.shields.io/github/workflow/status/jely2002/youtube-dl-gui/CI?label=CI) 
-[https://jely2002.github.io/youtube-dl-gui](https://jely2002.github.io/youtube-dl-gui)
+# Open Video Downloader (youtube-dl-gui) <br> ![version badge](https://img.shields.io/github/v/release/StefanLobbenmeier/youtube-dl-gui?label=latest-release) ![GitHub](https://img.shields.io/github/license/StefanLobbenmeier/youtube-dl-gui) ![coverage badge](https://img.shields.io/codecov/c/github/StefanLobbenmeier/youtube-dl-gui) ![downloads](https://img.shields.io/github/downloads/StefanLobbenmeier/youtube-dl-gui/total) ![CI badge](https://img.shields.io/github/workflow/status/StefanLobbenmeier/youtube-dl-gui/CI?label=CI) 
+[https://StefanLobbenmeier.github.io/youtube-dl-gui](https://StefanLobbenmeier.github.io/youtube-dl-gui)
 
 A cross-platform GUI for youtube-dl made in Electron and node.js
 
