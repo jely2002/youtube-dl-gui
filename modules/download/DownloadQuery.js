@@ -2,6 +2,7 @@ const Query = require("../types/Query")
 const path = require("path")
 const fs = require("fs");
 const Utils = require("../Utils")
+const Filepaths = require("../Filepaths");
 
 class DownloadQuery extends Query {
     constructor(url, video, environment, progressBar, playlistMeta) {
@@ -19,7 +20,12 @@ class DownloadQuery extends Query {
 
     async connect() {
         let args = [];
-        let output = path.join(this.environment.settings.downloadPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+
+        let tempFolder = this.environment.settings.downloadPath + "/temp[%(id)s]";
+        let output = path.join(tempFolder, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+          
+        console.log(output)
+     
         if(this.video.audioOnly) {
             let audioQuality = this.video.audioQuality;
             if(audioQuality === "best") {
@@ -143,6 +149,9 @@ class DownloadQuery extends Query {
         let result = null;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
+                
+                console.log(liveData);
+                
                 const perLine = liveData.split("\n");
                 for(const line of perLine) {
                     this.video.setFilename(line);
@@ -162,7 +171,16 @@ class DownloadQuery extends Query {
                     initialReset = true;
                     this.progressBar.reset();
                 }
-                if (liveData.includes("Destination")) destinationCount += 1;
+                
+                if (liveData.includes("Destination"))
+                { 
+                    destinationCount += 1;
+
+                    this.video.downloadedPath = liveData.replace("[ExtractAudio] Destination: ", "");
+                    this.video.downloadedPath = this.video.downloadedPath.split(']')[0] + "]";
+                    console.log(this.video.downloadedPath);
+                }
+
                 if (destinationCount > 1) {
                     if (destinationCount === 2 && !this.video.audioOnly && !this.video.downloadingAudio) {
                         this.video.downloadingAudio = true;
@@ -185,9 +203,17 @@ class DownloadQuery extends Query {
             this.environment.errorHandler.checkError(exception, this.video.identifier);
             return exception;
         }
+
+        //this.video.downloadedPath += "\\temp[" + this.video.id+ "]" 
+
+        //console.log(this.video.downloadedPath);
+
         if(this.video.audioOnly) {
             await this.removeThumbnail(".jpg");
         }
+
+        //this.environment.paths.copyFile(this.video.path, this.environment.settings.downloadPath, this.video.filename);
+
         return result;
     }
 

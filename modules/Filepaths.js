@@ -182,7 +182,7 @@ class Filepaths {
         try {
             fs.copyFileSync(fromFile, toFile);
         } catch (e) {
-            console.error("Could not copy " + filename + " to " + to + ".");
+            console.error("Could not copy " + filename + " to " + to + " : " + e);
         }
     }
 }
