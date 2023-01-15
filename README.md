@@ -6,7 +6,7 @@
 ![downloads](https://img.shields.io/github/downloads/StefanLobbenmeier/youtube-dl-gui/total)
 ![CI badge](https://img.shields.io/github/actions/workflow/status/StefanLobbenmeier/youtube-dl-gui/continuous-integration.yaml)
 
-[https://StefanLobbenmeier.github.io/youtube-dl-gui](https://StefanLobbenmeier.github.io/youtube-dl-gui)
+https://github.com/StefanLobbenmeier/youtube-dl-gui
 
 A cross-platform GUI for youtube-dl made in Electron and node.js
 
