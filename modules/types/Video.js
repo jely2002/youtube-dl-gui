@@ -32,6 +32,9 @@ class Video {
         } else if(liveData.includes("[ffmpeg] Adding metadata to '")) {
             const noPrefix = liveData.replace("[ffmpeg] Adding metadata to '", "");
             this.filename = path.basename(noPrefix.trim().slice(0, -1));
+        } else if(liveData.includes("[ExtractAudio] Destination: ")) {
+            const replaced = liveData.replace("[ExtractAudio] Destination: ", "");
+            this.filename = path.basename(replaced);
         }
     }
 
