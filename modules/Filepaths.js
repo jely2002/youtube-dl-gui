@@ -185,6 +185,16 @@ class Filepaths {
             console.error("Could not copy " + filename + " to " + to + " : " + e);
         }
     }
+
+    moveFile(from, to, filename) {
+        const fromFile = path.join(from, filename);
+        const toFile = path.join(to, filename);
+        try {
+            fs.renameSync(fromFile, toFile);
+        } catch (e) {
+            console.error("Could not move " + filename + " to " + to + " : " + e);
+        }
+    }
 }
 
 module.exports = Filepaths;
