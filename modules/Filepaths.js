@@ -202,20 +202,21 @@ class Filepaths {
     IndexFileIfAlreadyExists(filePath)
     {
         let newFilePath = filePath;
+
+        let splitPath = newFilePath.split('.');            
+        let fileExt = "";
+        let fileName = newFilePath;
+        
+        if(splitPath.length > 1)
+        {
+            fileExt = "." + splitPath[splitPath.length - 1]
+            fileName = fileName.replace(fileExt, "");
+        }
+
         let index = 0;
 
         while(fs.existsSync(newFilePath))
         {
-            let splitPath = newFilePath.split('.');            
-            let fileExt = "";
-            let fileName = newFilePath;
-
-            if(splitPath.length > 1)
-            {
-               fileExt = "." + splitPath[splitPath.length - 1]
-               fileName = fileName.replace(fileExt, "");
-            }
-
             index = index + 1;         
             newFilePath = fileName + "(" + index + ")" + fileExt;
         }
