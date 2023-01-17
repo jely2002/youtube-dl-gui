@@ -26,7 +26,6 @@ class DownloadQuery extends Query {
         let output = path.join(tempFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
           
         let args = [];
-     
         if(this.video.audioOnly) {
             let audioQuality = this.video.audioQuality;
             if(audioQuality === "best") {
@@ -175,10 +174,7 @@ class DownloadQuery extends Query {
                     this.progressBar.reset();
                 }
                 
-                if (liveData.includes("Destination"))
-                { 
-                    destinationCount += 1;
-                }
+                if (liveData.includes("Destination")) destinationCount += 1;
 
                 if (destinationCount > 1) {
                     if (destinationCount === 2 && !this.video.audioOnly && !this.video.downloadingAudio) {
