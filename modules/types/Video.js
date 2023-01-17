@@ -48,11 +48,6 @@ class Video {
             const noPrefix = liveData.replace("[Metadata] Adding metadata to '", "");
             this.filename = path.basename(noPrefix.trim().slice(0, -1));
         } 
-        else if(liveData.includes("[ExtractAudio] Destination: ")) 
-        {
-            const replaced = liveData.replace("[ExtractAudio] Destination: ", "");
-            this.filename = path.basename(replaced);
-        }
     }
 
     getFilename() {
