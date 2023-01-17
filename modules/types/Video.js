@@ -28,6 +28,8 @@ class Video {
             const replaced = liveData.replace("[download] Destination: ", "");
             this.filename = path.basename(replaced);
         } 
+
+
         else if(liveData.includes("[ffmpeg] Merging formats into \""))
         {
             const noPrefix = liveData.replace("[ffmpeg] Merging formats into \"", "");
@@ -38,14 +40,11 @@ class Video {
             const noPrefix = liveData.replace("[ffmpeg] Adding metadata to '", "");
             this.filename = path.basename(noPrefix.trim().slice(0, -1));
         } 
+
+
         else if(liveData.includes("[Merger] Merging formats into \""))
         {
             const noPrefix = liveData.replace("[Merger] Merging formats into \"", "");
-            this.filename = path.basename(noPrefix.trim().slice(0, -1));
-        } 
-        else if(liveData.includes("[Metadata] Adding metadata to '"))
-        {
-            const noPrefix = liveData.replace("[Metadata] Adding metadata to '", "");
             this.filename = path.basename(noPrefix.trim().slice(0, -1));
         } 
         else if(liveData.includes("[ExtractAudio] Destination: ")) 
@@ -53,6 +52,13 @@ class Video {
             const replaced = liveData.replace("[ExtractAudio] Destination: ", "");
             this.filename = path.basename(replaced);
         }
+
+        
+        else if(liveData.includes("[Metadata] Adding metadata to '"))
+        {
+            const noPrefix = liveData.replace("[Metadata] Adding metadata to '", "");
+            this.filename = path.basename(noPrefix.trim().slice(0, -1));
+        } 
     }
 
     getFilename() {
