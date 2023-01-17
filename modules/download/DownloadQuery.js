@@ -21,10 +21,9 @@ class DownloadQuery extends Query {
 
     async connect() {
 
-        let videoID = this.url.replace("https://www.youtube.com/watch?v=", "");
-
-        let tempFolder = this.environment.settings.downloadPath + "/temp[" + videoID + "]";
-        let output = path.join(tempFolder, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+        let tempFolderName = "temp[" + this.identifier + "]";
+        let tempFolderPath = this.environment.settings.downloadPath + "/" + tempFolderName;
+        let output = path.join(tempFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
           
         let args = [];
      
@@ -146,6 +145,9 @@ class DownloadQuery extends Query {
             args.push(this.environment.settings.sponsorblockRemove);
         }
         if(this.environment.settings.keepUnmerged) args.push('--keep-video');
+
+        args.push('-k');
+
         let destinationCount = 0;
         let initialReset = false;
         let result = null;
@@ -201,13 +203,14 @@ class DownloadQuery extends Query {
             return exception;
         }
 
-        this.video.downloadedPath = tempFolder; 
+        this.video.downloadedPath = tempFolderPath; 
 
         if(this.video.audioOnly) {
             await this.removeThumbnail(".jpg");
         }
 
         this.environment.paths.moveFile(this.video.downloadedPath, this.environment.settings.downloadPath, this.video.filename);
+        this.RemoveTempFolder(tempFolderPath, tempFolderName);
 
         return result;
     }
@@ -224,6 +227,21 @@ class DownloadQuery extends Query {
                 if(extension !== ".webp") {
                     await this.removeThumbnail(".webp");
                 }
+            }
+        }
+    }
+
+    RemoveTempFolder(folderPath, folderName) 
+    {
+        if(folderPath != null) 
+        {
+            try 
+            {
+                fs.rmdirSync(folderPath, {recursive : true, force : true});
+            } 
+            catch(e) 
+            {
+                console.log("No left-over Temp Folder found to remove. (" + folderName + ")")
             }
         }
     }
