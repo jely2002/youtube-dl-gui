@@ -207,8 +207,6 @@ class DownloadQuery extends Query {
             await this.removeThumbnail(".jpg");
         }
 
-        //console.log(this.video.filename);
-
         this.environment.paths.moveFile(this.video.downloadedPath, this.environment.settings.downloadPath, this.video.filename);
 
         return result;
