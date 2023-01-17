@@ -188,12 +188,39 @@ class Filepaths {
 
     moveFile(from, to, filename) {
         const fromFile = path.join(from, filename);
-        const toFile = path.join(to, filename);
+        let toFile = path.join(to, filename);
+
+        toFile = this.IndexFileIfAlreadyExists(toFile);
+
         try {
             fs.renameSync(fromFile, toFile);
         } catch (e) {
             console.error("Could not move " + filename + " to " + to + " : " + e);
         }
+    }
+
+    IndexFileIfAlreadyExists(filePath)
+    {
+        let newFilePath = filePath;
+        let index = 0;
+
+        while(fs.existsSync(newFilePath))
+        {
+            let splitPath = newFilePath.split('.');            
+            let fileExt = "";
+            let fileName = newFilePath;
+
+            if(splitPath.length > 1)
+            {
+               fileExt = "." + splitPath[splitPath.length - 1]
+               fileName = fileName.replace(fileExt, "");
+            }
+
+            index = index + 1;         
+            newFilePath = fileName + "(" + index + ")" + fileExt;
+        }
+
+        return newFilePath;
     }
 }
 
