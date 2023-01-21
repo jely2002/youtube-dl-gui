@@ -11,6 +11,8 @@ class BinaryUpdater {
         this.paths = paths;
         this.win = win;
         this.action = "Installing";
+        this.platform = process.platform;
+        this.systemVersion = null;
     }
 
     //Checks for an update and download it if there is.
@@ -59,9 +61,10 @@ class BinaryUpdater {
     }
 
     async getRemoteVersion() {
+        const releaseUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/"
+        const binaryUrl = this.getBinaryUrl()
         try {
-            const url = process.platform === "win32" ? "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" : "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
-            await axios.get(url, {
+            await axios.get(releaseUrl, {
                   responseType: 'document',
                   maxRedirects: 0,
               })
@@ -72,11 +75,12 @@ class BinaryUpdater {
                 return null;
             }
             if (res.status === 302) {
-                const versionRegex = res.data.match(/[0-9]+\.[0-9]+\.[0-9]+/);
-                const urlRegex = res.data.match(/(?<=").+?(?=")/);
+                const directUrl = res.headers.location;
+                const versionRegex = directUrl.match(/[0-9]+\.[0-9]+\.[0-9]+/);
+
                 return {
                     remoteVersion: versionRegex ? versionRegex[0] : null,
-                    remoteUrl: urlRegex ? urlRegex[0] : null,
+                    remoteUrl: binaryUrl,
                 };
             } else {
                 console.error('Did not get redirect for the latest version link. Status: ' + err.response.status);
@@ -84,6 +88,30 @@ class BinaryUpdater {
             }
         }
         return null;
+    }
+
+    getBinaryUrl() {
+        console.info("platform - " + this.platform)
+        if (this.platform === "win32") {
+            return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
+        } else if (this.platform === "darwin") {
+            let systemVersion = this.getSystemVersion();
+            console.info("systemVersion - " + this.systemVersion)
+            if (systemVersion < "10.15"){
+                return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos_legacy";
+            } else {
+                return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
+            }
+        } else {
+            return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp";
+        }
+    }
+
+    getSystemVersion() {
+        if (!this.systemVersion) {
+            this.systemVersion = process.getSystemVersion()
+        }
+        return this.systemVersion;
     }
 
     //Returns the currently downloaded version of yt-dlp

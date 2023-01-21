@@ -15,8 +15,6 @@ jobs:
           node-version: '12'
       - name: Install npm modules
         run: npm ci
-      - name: Make envfile
-        run: echo ${{ secrets.SENTRY_DSN }} | base64 -d > .env
       - name: Build and publish artifact
         run: npm_config_yes=true npx electron-builder -p always
         env:
@@ -24,12 +22,6 @@ jobs:
       - name: Get version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: production
           version: ${{ steps.package-version.outputs.current-version }}
@@ -42,11 +34,6 @@ jobs:
           node-version: '12'
       - name: Install npm modules
         run: npm ci
-      - name: Make envfile
-        run: |
-          echo ${{ secrets.SENTRY_DSN }} > env.b64
-          certutil -decode env.b64 .env
-          del env.b64
       - name: Build and publish artifact
         run: env npm_config_yes=true npx electron-builder -p always
         env:
@@ -64,8 +51,6 @@ jobs:
           node-version: '12'
       - name: Install npm modules
         run: npm ci
-      - name: Make envfile
-        run: echo ${{ secrets.SENTRY_DSN }} | base64 -d > .env
       - name: Build and publish artifact
         run: npm_config_yes=true npx electron-builder -p always
         env:

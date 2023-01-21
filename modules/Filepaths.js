@@ -8,6 +8,7 @@ class Filepaths {
         this.env = env;
         this.appPath = this.app.getAppPath();
         this.platform = this.detectPlatform();
+        this.systemVersion = null
     }
 
      async generateFilepaths() {
@@ -56,7 +57,7 @@ class Filepaths {
                 this.packedPrefix = this.appPath;
                 this.unpackedPrefix = this.appPath + ".unpacked";
                 this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries") : "binaries";
-                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/yt-dlp-unix") : "binaries/yt-dlp-unix";
+                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, this.getMacOSPathYtDlp()) : this.getMacOSPathYtDlp();
                 this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
                 this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
                 this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
@@ -80,6 +81,21 @@ class Filepaths {
                 break;
         }
         await this.removeLeftOver();
+    }
+
+    getMacOSPathYtDlp() {
+        if (this.getSystemVersion() < "10.15"){
+            return "binaries/yt-dlp_macos_legacy";
+        } else {
+            return "binaries/yt-dlp_macos";
+        }
+    }
+
+    getSystemVersion() {
+        if (!this.systemVersion) {
+            this.systemVersion = process.getSystemVersion()
+        }
+        return this.systemVersion;
     }
 
     async validateDownloadPath() {
