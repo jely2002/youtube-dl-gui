@@ -23,9 +23,14 @@ class DownloadQuery extends Query {
 
         const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
 
-        let tempFolderName = "temp[" + this.identifier + "]";
-        let tempFolderPath = this.environment.settings.downloadPath + "/" + tempFolderName;
-        let output = path.join(tempFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+        let VideoDataFolderName = this.video.getFilename() + "_Data";
+        if(this.environment.settings.avoidFailingToSaveDuplicateFileName)
+            VideoDataFolderName += "[" + this.video.identifier + "]";
+        else
+            VideoDataFolderName += "[" + this.video.GetURLID() + "]";
+
+        let VideoDataFolderPath = this.environment.settings.downloadPath + "/" + VideoDataFolderName;
+        let output = path.join(VideoDataFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
               
         let args = [];
         
@@ -149,9 +154,9 @@ class DownloadQuery extends Query {
             args.push("--sponsorblock-remove");
             args.push(this.environment.settings.sponsorblockRemove);
         }
-        if(this.environment.settings.keepUnmerged) args.push('--keep-video');
+        //if(this.environment.settings.keepUnmerged) args.push('--keep-video');
 
-        args.push('-k');
+        args.push('--keep-video');
 
         let destinationCount = 0;
         let initialReset = false;
@@ -201,14 +206,16 @@ class DownloadQuery extends Query {
             return exception;
         }
 
-        this.video.downloadedPath = tempFolderPath; 
+        this.video.downloadedPath = VideoDataFolderPath; 
 
         if(this.video.audioOnly) {
             await this.removeThumbnail(".jpg");
         }
 
-        this.environment.paths.moveFile(this.video.downloadedPath, this.environment.settings.downloadPath, this.video.filename);
-        this.RemoveTempFolder(tempFolderPath, tempFolderName);
+        this.environment.paths.moveFile(VideoDataFolderPath, this.environment.settings.downloadPath, this.video.filename);
+        
+        if(!this.environment.settings.keepUnmerged)
+            this.RemoveVideoDataFolder(VideoDataFolderPath, VideoDataFolderName);
 
         return result;
     }
@@ -229,7 +236,7 @@ class DownloadQuery extends Query {
         }
     }
 
-    RemoveTempFolder(folderPath, folderName) 
+    RemoveVideoDataFolder(folderPath, folderName) 
     {
         if(folderPath != null) 
         {

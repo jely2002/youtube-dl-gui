@@ -9,7 +9,7 @@ class Settings {
         validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
         sizeMode, splitMode, maxConcurrent, updateBinary, downloadType, updateApplication, cookiePath,
         statSend, sponsorblockMark, sponsorblockRemove, sponsorblockApi, downloadMetadata, downloadJsonMetadata,
-        downloadThumbnail, keepUnmerged, calculateTotalSize, theme
+        downloadThumbnail, keepUnmerged, avoidFailingToSaveDuplicateFileName, calculateTotalSize, theme
     ) {
         this.paths = paths;
         this.env = env
@@ -34,6 +34,7 @@ class Settings {
         this.downloadJsonMetadata = downloadJsonMetadata == null ? false : downloadJsonMetadata;
         this.downloadThumbnail = downloadThumbnail == null ? false : downloadThumbnail;
         this.keepUnmerged = keepUnmerged == null ? false : keepUnmerged;
+        this.avoidFailingToSaveDuplicateFileName = avoidFailingToSaveDuplicateFileName == null ? false : avoidFailingToSaveDuplicateFileName;
         this.calculateTotalSize = calculateTotalSize == null ? true : calculateTotalSize;
         this.sizeMode = sizeMode == null ? "click" : sizeMode;
         this.splitMode = splitMode == null? "49" : splitMode;
@@ -94,6 +95,7 @@ class Settings {
                 data.downloadJsonMetadata,
                 data.downloadThumbnail,
                 data.keepUnmerged,
+                data.avoidFailingToSaveDuplicateFileName,
                 data.calculateTotalSize,
                 data.theme
             );
@@ -127,6 +129,7 @@ class Settings {
         this.downloadJsonMetadata = settings.downloadJsonMetadata;
         this.downloadThumbnail = settings.downloadThumbnail;
         this.keepUnmerged = settings.keepUnmerged;
+        this.avoidFailingToSaveDuplicateFileName = settings.avoidFailingToSaveDuplicateFileName;
         this.calculateTotalSize = settings.calculateTotalSize;
         this.sizeMode = settings.sizeMode;
         this.splitMode = settings.splitMode;
@@ -177,6 +180,7 @@ class Settings {
             downloadJsonMetadata: this.downloadJsonMetadata,
             downloadThumbnail: this.downloadThumbnail,
             keepUnmerged: this.keepUnmerged,
+            avoidFailingToSaveDuplicateFileName: this.avoidFailingToSaveDuplicateFileName,
             calculateTotalSize: this.calculateTotalSize,
             theme: this.theme,
             version: this.env.version

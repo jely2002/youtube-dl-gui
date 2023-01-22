@@ -1000,6 +1000,7 @@ async function getSettings() {
     $('#downloadJsonMetadata').prop('checked', settings.downloadJsonMetadata);
     $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
     $('#keepUnmerged').prop('checked', settings.keepUnmerged);
+    $('#avoidFailingToSaveDuplicateFileName').prop('checked', settings.avoidFailingToSaveDuplicateFileName);
     $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
     $('#maxConcurrent').val(settings.maxConcurrent);
     $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.maxConcurrent})</strong>`);
@@ -1033,6 +1034,7 @@ function sendSettings() {
         downloadJsonMetadata: $('#downloadJsonMetadata').prop('checked'),
         downloadThumbnail: $('#downloadThumbnail').prop('checked'),
         keepUnmerged: $('#keepUnmerged').prop('checked'),
+        avoidFailingToSaveDuplicateFileName: $('#avoidFailingToSaveDuplicateFileName').prop('checked'),
         calculateTotalSize: $('#calculateTotalSize').prop('checked'),
         sizeMode: $('#sizeSetting').val(),
         splitMode: $('#splitMode').val(),

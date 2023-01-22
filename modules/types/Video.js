@@ -148,5 +148,10 @@ class Video {
             }
         }
     }
+
+    GetURLID()
+    {
+        return this.url.replace("https://www.youtube.com/watch?v=", "");
+    }   
 }
 module.exports = Video;
