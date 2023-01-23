@@ -152,9 +152,7 @@ class DownloadQuery extends Query {
             args.push("--sponsorblock-remove");
             args.push(this.environment.settings.sponsorblockRemove);
         }
-        //if(this.environment.settings.keepUnmerged) args.push('--keep-video');
-
-        args.push('--keep-video');
+        if(this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName) args.push('--keep-video');
 
         let destinationCount = 0;
         let initialReset = false;
