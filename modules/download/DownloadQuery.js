@@ -23,12 +23,12 @@ class DownloadQuery extends Query {
 
         const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
 
-        let VideoDataFolderName = this.video.getFilename() + "_Data";
-        if(this.environment.settings.avoidFailingToSaveDuplicateFileName)
-            VideoDataFolderName += "[" + this.video.identifier + "]";
+        let downloadFolderPath = this.environment.settings.downloadPath;
 
-        let VideoDataFolderPath = this.environment.settings.downloadPath + "/" + VideoDataFolderName;
-        let output = path.join(VideoDataFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+        if(this.environment.settings.avoidFailingToSaveDuplicateFileName)
+            downloadFolderPath += "/" + "[" + this.video.identifier + "]";
+
+        let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
               
         let args = [];
         
@@ -152,7 +152,9 @@ class DownloadQuery extends Query {
             args.push("--sponsorblock-remove");
             args.push(this.environment.settings.sponsorblockRemove);
         }
-        if(this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName) args.push('--keep-video');
+
+        if(this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName)
+            args.push('--keep-video');
 
         let destinationCount = 0;
         let initialReset = false;
@@ -201,18 +203,19 @@ class DownloadQuery extends Query {
             this.environment.errorHandler.checkError(exception, this.video.identifier);
             return exception;
         }
-
-        this.video.downloadedPath = VideoDataFolderPath; 
-
+        
         if(this.video.audioOnly) {
             await this.removeThumbnail(".jpg");
         }
 
-        this.environment.paths.moveFile(VideoDataFolderPath, this.environment.settings.downloadPath, this.video.filename);
+        if(this.environment.settings.avoidFailingToSaveDuplicateFileName)
+        {
+            this.environment.paths.moveFile(downloadFolderPath, this.environment.settings.downloadPath, this.video.getFilename());
+            
+            if(!this.environment.settings.keepUnmerged)
+                this.RemoveVideoDataFolder(downloadFolderPath, tempFolderName);
+        }
         
-        if(!this.environment.settings.keepUnmerged)
-            this.RemoveVideoDataFolder(VideoDataFolderPath, VideoDataFolderName);
-
         return result;
     }
 
