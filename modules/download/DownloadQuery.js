@@ -26,8 +26,6 @@ class DownloadQuery extends Query {
         let VideoDataFolderName = this.video.getFilename() + "_Data";
         if(this.environment.settings.avoidFailingToSaveDuplicateFileName)
             VideoDataFolderName += "[" + this.video.identifier + "]";
-        else
-            VideoDataFolderName += "[" + this.video.GetURLID() + "]";
 
         let VideoDataFolderPath = this.environment.settings.downloadPath + "/" + VideoDataFolderName;
         let output = path.join(VideoDataFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
