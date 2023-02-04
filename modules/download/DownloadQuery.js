@@ -2,7 +2,6 @@ const Query = require("../types/Query")
 const path = require("path")
 const fs = require("fs");
 const Utils = require("../Utils")
-const Filepaths = require("../Filepaths");
 const console = require("console");
 
 class DownloadQuery extends Query {
@@ -20,18 +19,16 @@ class DownloadQuery extends Query {
     }
 
     async connect() {
-
-        const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
-
         let downloadFolderPath = this.environment.settings.downloadPath;
 
-        if(this.environment.settings.avoidFailingToSaveDuplicateFileName)
-            downloadFolderPath += "/" + "[" + this.video.identifier + "]";
+        if(this.environment.settings.avoidFailingToSaveDuplicateFileName) {
+            downloadFolderPath += `/[${this.video.identifier}]`;
+        }
 
-        let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
-              
         let args = [];
-        
+        let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+        const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
+
         if(this.video.audioOnly) {
             let audioQuality = this.video.audioQuality;
             if(audioQuality === "best") {
@@ -153,15 +150,15 @@ class DownloadQuery extends Query {
             args.push(this.environment.settings.sponsorblockRemove);
         }
 
-        if(this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName)
+        if(this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName) {
             args.push('--keep-video');
+        }
 
         let destinationCount = 0;
         let initialReset = false;
         let result = null;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
-                
                 const perLine = liveData.split("\n");
                 for(const line of perLine) {
                     this.video.setFilename(line);
@@ -182,7 +179,7 @@ class DownloadQuery extends Query {
                     initialReset = true;
                     this.progressBar.reset();
                 }
-                
+
                 if (liveData.includes("Destination")) destinationCount += 1;
 
                 if (destinationCount > 1) {
@@ -203,19 +200,19 @@ class DownloadQuery extends Query {
             this.environment.errorHandler.checkError(exception, this.video.identifier);
             return exception;
         }
-        
+
         if(this.video.audioOnly) {
             await this.removeThumbnail(".jpg");
         }
 
-        if(this.environment.settings.avoidFailingToSaveDuplicateFileName)
-        {
+        if(this.environment.settings.avoidFailingToSaveDuplicateFileName) {
             this.environment.paths.moveFile(downloadFolderPath, this.environment.settings.downloadPath, this.video.getFilename());
-            
-            if(!this.environment.settings.keepUnmerged)
-                this.RemoveVideoDataFolder(downloadFolderPath, tempFolderName);
+
+            if(!this.environment.settings.keepUnmerged) {
+                this.removeVideoDataFolder(downloadFolderPath);
+            }
         }
-        
+
         return result;
     }
 
@@ -235,17 +232,12 @@ class DownloadQuery extends Query {
         }
     }
 
-    RemoveVideoDataFolder(folderPath, folderName) 
-    {
-        if(folderPath != null) 
-        {
-            try 
-            {
+    removeVideoDataFolder(folderPath) {
+        if(folderPath != null) {
+            try {
                 fs.rmdirSync(folderPath, {recursive : true, force : true});
-            } 
-            catch(e) 
-            {
-                console.log("No left-over Temp Folder found to remove. (" + folderName + ")")
+            } catch(e) {
+                console.log("No left-over Temp Folder found to remove. (" + folderPath + ")")
             }
         }
     }
