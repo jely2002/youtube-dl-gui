@@ -206,7 +206,7 @@ class Filepaths {
         const fromFile = path.join(from, filename);
         let toFile = path.join(to, filename);
 
-        toFile = this.IndexFileIfAlreadyExists(toFile);
+        toFile = this.indexFileIfAlreadyExists(toFile);
 
         try {
             fs.renameSync(fromFile, toFile);
@@ -215,25 +215,22 @@ class Filepaths {
         }
     }
 
-    IndexFileIfAlreadyExists(filePath)
-    {
+    indexFileIfAlreadyExists(filePath) {
         let newFilePath = filePath;
 
-        let splitPath = newFilePath.split('.');            
+        let splitPath = newFilePath.split('.');
         let fileExt = "";
         let fileName = newFilePath;
-        
-        if(splitPath.length > 1)
-        {
+
+        if(splitPath.length > 1) {
             fileExt = "." + splitPath[splitPath.length - 1]
             fileName = fileName.replace(fileExt, "");
         }
 
         let index = 0;
 
-        while(fs.existsSync(newFilePath))
-        {
-            index = index + 1;         
+        while(fs.existsSync(newFilePath)) {
+            index += 1;
             newFilePath = fileName + "(" + index + ")" + fileExt;
         }
 
