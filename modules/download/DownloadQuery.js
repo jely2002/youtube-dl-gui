@@ -2,6 +2,8 @@ const Query = require("../types/Query")
 const path = require("path")
 const fs = require("fs");
 const Utils = require("../Utils")
+const Filepaths = require("../Filepaths");
+const console = require("console");
 
 class DownloadQuery extends Query {
     constructor(url, video, environment, progressBar, playlistMeta) {
@@ -18,9 +20,18 @@ class DownloadQuery extends Query {
     }
 
     async connect() {
-        let args = [];
-        let output = path.join(this.environment.settings.downloadPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+
         const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
+
+        let downloadFolderPath = this.environment.settings.downloadPath;
+
+        if(this.environment.settings.avoidFailingToSaveDuplicateFileName)
+            downloadFolderPath += "/" + "[" + this.video.identifier + "]";
+
+        let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+              
+        let args = [];
+        
         if(this.video.audioOnly) {
             let audioQuality = this.video.audioQuality;
             if(audioQuality === "best") {
@@ -141,12 +152,16 @@ class DownloadQuery extends Query {
             args.push("--sponsorblock-remove");
             args.push(this.environment.settings.sponsorblockRemove);
         }
-        if(this.environment.settings.keepUnmerged) args.push('--keep-video');
+
+        if(this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName)
+            args.push('--keep-video');
+
         let destinationCount = 0;
         let initialReset = false;
         let result = null;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
+                
                 const perLine = liveData.split("\n");
                 for(const line of perLine) {
                     this.video.setFilename(line);
@@ -161,12 +176,15 @@ class DownloadQuery extends Query {
                         this.environment.logger.log(this.video.identifier, line);
                     }
                 }
+
                 if (!liveData.includes("[download]")) return;
                 if (!initialReset) {
                     initialReset = true;
                     this.progressBar.reset();
                 }
+                
                 if (liveData.includes("Destination")) destinationCount += 1;
+
                 if (destinationCount > 1) {
                     if (destinationCount === 2 && !this.video.audioOnly && !this.video.downloadingAudio) {
                         this.video.downloadingAudio = true;
@@ -185,9 +203,19 @@ class DownloadQuery extends Query {
             this.environment.errorHandler.checkError(exception, this.video.identifier);
             return exception;
         }
+        
         if(this.video.audioOnly) {
             await this.removeThumbnail(".jpg");
         }
+
+        if(this.environment.settings.avoidFailingToSaveDuplicateFileName)
+        {
+            this.environment.paths.moveFile(downloadFolderPath, this.environment.settings.downloadPath, this.video.getFilename());
+            
+            if(!this.environment.settings.keepUnmerged)
+                this.RemoveVideoDataFolder(downloadFolderPath, tempFolderName);
+        }
+        
         return result;
     }
 
@@ -203,6 +231,21 @@ class DownloadQuery extends Query {
                 if(extension !== ".webp") {
                     await this.removeThumbnail(".webp");
                 }
+            }
+        }
+    }
+
+    RemoveVideoDataFolder(folderPath, folderName) 
+    {
+        if(folderPath != null) 
+        {
+            try 
+            {
+                fs.rmdirSync(folderPath, {recursive : true, force : true});
+            } 
+            catch(e) 
+            {
+                console.log("No left-over Temp Folder found to remove. (" + folderName + ")")
             }
         }
     }

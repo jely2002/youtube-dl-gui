@@ -198,8 +198,46 @@ class Filepaths {
         try {
             fs.copyFileSync(fromFile, toFile);
         } catch (e) {
-            console.error("Could not copy " + filename + " to " + to + ".");
+            console.error("Could not copy " + filename + " to " + to + " : " + e);
         }
+    }
+
+    moveFile(from, to, filename) {
+        const fromFile = path.join(from, filename);
+        let toFile = path.join(to, filename);
+
+        toFile = this.IndexFileIfAlreadyExists(toFile);
+
+        try {
+            fs.renameSync(fromFile, toFile);
+        } catch (e) {
+            console.error("Could not move " + filename + " to " + to + " : " + e);
+        }
+    }
+
+    IndexFileIfAlreadyExists(filePath)
+    {
+        let newFilePath = filePath;
+
+        let splitPath = newFilePath.split('.');            
+        let fileExt = "";
+        let fileName = newFilePath;
+        
+        if(splitPath.length > 1)
+        {
+            fileExt = "." + splitPath[splitPath.length - 1]
+            fileName = fileName.replace(fileExt, "");
+        }
+
+        let index = 0;
+
+        while(fs.existsSync(newFilePath))
+        {
+            index = index + 1;         
+            newFilePath = fileName + "(" + index + ")" + fileExt;
+        }
+
+        return newFilePath;
     }
 }
 
