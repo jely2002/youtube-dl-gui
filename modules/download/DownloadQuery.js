@@ -154,6 +154,11 @@ class DownloadQuery extends Query {
             args.push('--keep-video');
         }
 
+        if(this.environment.settings.retries) {
+            args.push('--retries');
+            args.push(this.environment.settings.retries);
+        }
+
         let destinationCount = 0;
         let initialReset = false;
         let result = null;

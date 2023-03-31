@@ -7,7 +7,7 @@ class Settings {
         paths, env, outputFormat, audioOutputFormat, downloadPath,
         proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, userAgent,
         validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
-        sizeMode, splitMode, maxConcurrent, updateBinary, downloadType, updateApplication, cookiePath,
+        sizeMode, splitMode, maxConcurrent, retries, fileAccessRetries, updateBinary, downloadType, updateApplication, cookiePath,
         statSend, sponsorblockMark, sponsorblockRemove, sponsorblockApi, downloadMetadata, downloadJsonMetadata,
         downloadThumbnail, keepUnmerged, avoidFailingToSaveDuplicateFileName, calculateTotalSize, theme
     ) {
@@ -39,6 +39,8 @@ class Settings {
         this.sizeMode = sizeMode == null ? "click" : sizeMode;
         this.splitMode = splitMode == null? "49" : splitMode;
         this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? this.getDefaultMaxConcurrent() : maxConcurrent; //Max concurrent is standard half of the system's available cores
+        this.retries = retries || 10;
+        this.fileAccessRetries = fileAccessRetries || 3;
         this.updateBinary = updateBinary == null ? true : updateBinary;
         this.downloadType = downloadType == null ? "video" : downloadType;
         this.updateApplication = updateApplication == null ? true : updateApplication;
@@ -83,6 +85,8 @@ class Settings {
                 data.sizeMode,
                 data.splitMode,
                 data.maxConcurrent,
+                data.retries,
+                data.fileAccessRetries,
                 data.updateBinary,
                 data.downloadType,
                 data.updateApplication,
@@ -137,6 +141,8 @@ class Settings {
             this.maxConcurrent = settings.maxConcurrent;
             this.env.changeMaxConcurrent(settings.maxConcurrent);
         }
+        this.retries = settings.retries;
+        this.fileAccessRetries = settings.fileAccessRetries;
         this.updateBinary = settings.updateBinary;
         this.downloadType = settings.downloadType;
         this.updateApplication = settings.updateApplication;
@@ -167,6 +173,8 @@ class Settings {
             sizeMode: this.sizeMode,
             splitMode: this.splitMode,
             maxConcurrent: this.maxConcurrent,
+            retries: this.retries,
+            fileAccessRetries: this.fileAccessRetries,
             defaultConcurrent: this.getDefaultMaxConcurrent(),
             updateBinary: this.updateBinary,
             downloadType: this.downloadType,
