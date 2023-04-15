@@ -6,7 +6,7 @@ describe('Connect the InfoQuery', () => {
     });
     it('Checks the error when applicable', async () => {
         const [env, instance] = instanceBuilder();
-        env.metadataLimiter.schedule.mockRejectedValue({ stderr: "test-error"});
+        env.metadataLimiter.schedule.mockRejectedValue({ stderr: "test-error" });
         const result = instance.connect();
         await result;
         expect(env.errorHandler.checkError).toBeCalledWith("test-error", "test__id");
@@ -41,7 +41,8 @@ function instanceBuilder() {
         },
         errorHandler: {
             checkError: jest.fn()
-        }
+        },
+        settings: {}
     };
     return [env, new InfoQuery("http://url.link", "test__id", env)];
 }

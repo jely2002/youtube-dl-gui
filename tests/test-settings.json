@@ -16,6 +16,8 @@
   "sizeMode": "click",
   "splitMode": "49",
   "maxConcurrent": 8,
+  "retries": 6,
+  "fileAccessRetries": 2,
   "defaultConcurrent": 8,
   "updateBinary": true,
   "downloadType": "video",

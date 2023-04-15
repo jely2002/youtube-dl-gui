@@ -1003,6 +1003,8 @@ async function getSettings() {
     $('#avoidFailingToSaveDuplicateFileName').prop('checked', settings.avoidFailingToSaveDuplicateFileName);
     $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
     $('#maxConcurrent').val(settings.maxConcurrent);
+    $('#settingsModal #retries').val(settings.retries);
+    $('#settingsModal #fileAccessRetries').val(settings.fileAccessRetries);
     $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.maxConcurrent})</strong>`);
     $('#sizeSetting').val(settings.sizeMode);
     $('#splitMode').val(settings.splitMode);
@@ -1040,6 +1042,8 @@ function sendSettings() {
         splitMode: $('#splitMode').val(),
         rateLimit: $('#ratelimitSetting').val(),
         maxConcurrent: parseInt($('#maxConcurrent').val()),
+        retries: $('#settingsModal #retries').val(),
+        fileAccessRetries: $('#settingsModal #fileAccessRetries').val(),
         downloadType: $('#download-type').val(),
         theme: $('#theme').val()
     }
