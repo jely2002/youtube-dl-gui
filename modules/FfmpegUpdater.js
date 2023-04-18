@@ -7,6 +7,7 @@ const exec = util.promisify(require('child_process').exec);
 const os = require("os");
 const AdmZip = require("adm-zip");
 const Utils = require('./Utils');
+const {Agent} = require("https");
 
 class FfmpegUpdater {
 
@@ -67,7 +68,10 @@ class FfmpegUpdater {
 
     async getRemoteVersion() {
         try {
-            const res = await axios.get("https://ffbinaries.com/api/v1/version/latest");
+            const httpsAgent = new Agent({
+                rejectUnauthorized: false
+            });
+            const res = await axios.get("https://ffbinaries.com/api/v1/version/latest", {httpsAgent});
             let platform = "windows-64";
             if (os.arch() === "x32" || os.arch() === "ia32") platform = "windows-32";
             if (process.platform === "darwin") platform = "osx-64";
@@ -118,7 +122,10 @@ class FfmpegUpdater {
         }
         const writer = fs.createWriteStream(path.join(downloadPath, filename));
 
-        const { data, headers } = await axios.get(url, {responseType: 'stream'});
+        const httpsAgent = new Agent({
+            rejectUnauthorized: false
+        });
+        const { data, headers } = await axios.get(url, {responseType: 'stream', httpsAgent});
         const totalLength = +headers['content-length'];
         const total = Utils.convertBytes(totalLength);
         const artifact = filename.replace(".exe", "");
