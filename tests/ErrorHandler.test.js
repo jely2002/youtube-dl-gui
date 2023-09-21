@@ -1,34 +1,5 @@
 const ErrorHandler = require("../modules/exceptions/ErrorHandler");
 const Utils = require("../modules/Utils");
-const Sentry = require("@sentry/electron");
-
-jest.mock('@sentry/electron', () => ({
-    Severity: { Error: "error", Warn: "warn" },
-    captureMessage: jest.fn()
-}));
-
-beforeEach(() => {
-   Sentry.captureMessage.mockImplementation((code, scope) => scope({setLevel: jest.fn(), setContext: jest.fn(), setTag: jest.fn()}));
-   jest.clearAllMocks();
-});
-
-describe('reportError', () => {
-    it('calls sendReport with the appropriate error', async () => {
-        const instance = await instanceBuilder();
-        instance.unhandledErrors.push({
-            identifier: "test__identifier",
-            unexpected: true,
-            error: {
-                code: "Unhandled exception",
-                description: "test__unhandled",
-            }
-        });
-        instance.queryManager.getVideo.mockReturnValue({ url: "http://a.url" });
-        instance.env.analytics.sendReport.mockResolvedValue("test__id");
-        await expect(instance.reportError({type: "single", quality: "best", identifier: "test__identifier"})).resolves.toBeTruthy();
-        expect(instance.env.analytics.sendReport).toBeCalledTimes(1);
-    });
-});
 
 describe('raiseError', () => {
    it('does not raise an error if the video type is playlist', async () => {
@@ -78,12 +49,6 @@ describe('raiseUnhandledError', () => {
         });
         randomIDSpy.mockRestore();
     });
-    it('reports the error to sentry', async () => {
-        const instance = await instanceBuilder();
-        instance.queryManager.getVideo.mockReturnValue({type: "single", identifier: "test__identifier"});
-        instance.raiseUnhandledError("test__unhandled", "test__unhandled_desc", "test__identifier");
-        expect(Sentry.captureMessage).toBeCalledTimes(1);
-    });
     it('sends the error to the renderer process', async () => {
         const instance = await instanceBuilder();
         instance.queryManager.getVideo.mockReturnValue({type: "single", identifier: "test__identifier"});
@@ -128,9 +93,6 @@ describe('checkError', () => {
 
 async function instanceBuilder() {
     const env = {
-        analytics: {
-            sendReport: jest.fn()
-        },
         settings: {
             testSetting: true
         },

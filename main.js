@@ -8,7 +8,6 @@ const AppUpdater = require("./modules/AppUpdater");
 const TaskList = require("./modules/persistence/TaskList");
 const DoneAction = require("./modules/DoneAction");
 const ClipboardWatcher = require("./modules/ClipboardWatcher");
-const Analytics = require("./modules/Analytics");
 const FfmpegUpdater = require('./modules/FfmpegUpdater');
 
 let win
@@ -16,11 +15,7 @@ let env
 let queryManager
 let clipboardWatcher
 let taskList
-let analytics;
 let appStarting = true;
-
-analytics = new Analytics(app);
-analytics.initSentry().then((res) => console.log(res));
 
 function sendLogToRenderer(log, isErr) {
     if(win == null) return;
@@ -108,10 +103,6 @@ function startCriticalHandlers(env) {
                 else win.flashFrame(true);
                 win.setProgressBar(-1);
             }
-        });
-
-        ipcMain.handle('errorReport', async (event, args) => {
-            return await env.errorHandler.reportError(args);
         });
 
         ipcMain.handle('settingsAction', (event, args) => {
@@ -224,7 +215,7 @@ function createWindow(env) {
 
 app.on('ready', async () => {
     app.setAppUserModelId("com.jelleglebbeek.youtube-dl-gui");
-    env = new Environment(app, analytics);
+    env = new Environment(app);
     await env.initialize();
     createWindow(env);
 })
