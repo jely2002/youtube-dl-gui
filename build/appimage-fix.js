@@ -11,7 +11,7 @@ function isLinux(targets) {
 
 async function afterPack({targets, appOutDir}) {
     if (!isLinux(targets)) return;
-    const script = '#!/bin/bash\n"${BASH_SOURCE%/*}"/' + appName + '.bin "$@" --no-sandbox',
+    const script = '#!/bin/bash\n"${BASH_SOURCE%/*}"/' + appName + '.bin "$@" --no-sandbox --ozone-platform-hint=auto',
         scriptPath = path.join(appOutDir, appName);
 
     new Promise((resolve) => {
