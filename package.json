@@ -89,13 +89,10 @@
     "mac": {
       "target": [
         {
-          "target": "mas",
+          "target": "dmg",
           "arch": [
             "universal"
           ]
-        },
-        {
-          "target": "mas-dev"
         }
       ],
       "icon": "renderer/img/icon.icns",
