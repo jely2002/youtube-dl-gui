@@ -87,7 +87,17 @@
       ]
     },
     "mac": {
-      "target": "dmg",
+      "target": [
+        {
+          "target": "mas",
+          "arch": [
+            "universal"
+          ]
+        },
+        {
+          "target": "mas-dev"
+        }
+      ],
       "icon": "renderer/img/icon.icns",
       "category": "public.app-category.utilities",
       "identity": null,
