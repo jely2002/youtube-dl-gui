@@ -1,6 +1,5 @@
 const execa = require('execa');
 const UserAgent = require('user-agents');
-const Sentry = require("@sentry/node");
 
 class Query {
     constructor(environment, identifier) {
@@ -64,13 +63,9 @@ class Query {
             command = this.environment.pythonCommand;
         }
         if(cb == null) {
-            const transaction = Sentry.startTransaction({ name: "infoQuery" });
-            const span = transaction.startChild({ op: "task" });
             //Return the data after the query has completed fully.
             try {
                 const {stdout} = await execa(command, args);
-                span.finish();
-                transaction.finish();
                 return stdout
             } catch(e) {
                 if(!this.environment.errorHandler.checkError(e.stderr, this.identifier)) {
@@ -78,13 +73,9 @@ class Query {
                         this.environment.errorHandler.raiseUnhandledError("Unhandled error (execa)", JSON.stringify(e, null, 2), this.identifier);
                     }
                 }
-                span.finish();
-                transaction.finish();
                 return "{}";
             }
         } else {
-            const transaction = Sentry.startTransaction({ name: "liveQuery" });
-            const span = transaction.startChild({ op: "task" });
             //Return data while the query is running (live)
             //Return "done" when the query has finished
             return await new Promise((resolve) => {
@@ -95,15 +86,9 @@ class Query {
                 });
                 this.process.stdout.on('close', () => {
                     if(this.process.killed) {
-                        transaction.setTag("result", "killed");
-                        span.finish();
-                        transaction.finish();
                         cb("killed");
                         resolve("killed");
                     }
-                    transaction.setTag("result", "done");
-                    span.finish();
-                    transaction.finish();
                     cb("done");
                     resolve("done");
                 });
@@ -112,9 +97,6 @@ class Query {
                     if(this.environment.errorHandler.checkError(data.toString(), this.identifier)) {
                         cb("killed");
                         resolve("killed");
-                        transaction.setTag("result", "killed");
-                        span.finish();
-                        transaction.finish();
                     }
                     console.error(data.toString())
                 })

@@ -1,6 +1,5 @@
 const axios = require("axios");
 const fs = require("fs");
-const Sentry = require("@sentry/node");
 const util = require('util');
 const Utils = require('./Utils');
 const exec = util.promisify(require('child_process').exec);
@@ -21,33 +20,25 @@ class BinaryUpdater {
             console.log("yt-dlp already installed, skipping auto-install.")
             return;
         }
-        const transaction = Sentry.startTransaction({ name: "checkUpdate" });
-        const span = transaction.startChild({ op: "task" });
         console.log("Checking for a new version of yt-dlp.");
         const localVersion = await this.getLocalVersion();
         const { remoteUrl, remoteVersion } = await this.getRemoteVersion();
         if(remoteVersion === localVersion) {
-            transaction.setTag("download", "up-to-data");
             console.log(`Binaries were already up-to-date! Version: ${localVersion}`);
         } else if(localVersion == null) {
-            transaction.setTag("download", "corrupted");
             console.log("Downloading missing yt-dlp binary.");
             this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing yt-dlp version: ${remoteVersion}. Preparing...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
             this.paths.setPermissions()
         } else if(remoteVersion == null) {
-            transaction.setTag("download", "down");
             console.log("Unable to check for new updates, GitHub may be down.");
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
-            transaction.setTag("download", "update");
             this.action = "Updating to";
             this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version: ${remoteVersion}. Preparing...`})
             await this.downloadUpdate(remoteUrl, remoteVersion);
             this.paths.setPermissions()
         }
-        span.finish();
-        transaction.finish();
     }
 
     async checkPreInstalled() {

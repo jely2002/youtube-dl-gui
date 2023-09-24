@@ -1272,12 +1272,6 @@ function setError(code, description, unexpected, identifier, url) {
     if(unexpected) {
         $(card).find('.options, .info, .open').addClass("d-none").removeClass("d-flex");
         $(card).find('.error').addClass('d-flex').removeClass("d-none");
-        $(card).find('.report').unbind().on('click', () => {
-            window.main.invoke("errorReport", {identifier: identifier, type: $(card).find('.custom-select.download-type').val(), quality: $(card).find('.custom-select.download-quality').val()}).then((id) => {
-                $(card).find('.progress small').html("Error reported! Report ID: " + id);
-                $(card).find('.report').prop("disabled", true);
-            });
-        });
         $(card).find('#fullError').unbind().on('click', () => {
             window.main.invoke("messageBox", {title: "Full error message", message: description});
         })
