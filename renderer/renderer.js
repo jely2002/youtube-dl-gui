@@ -794,8 +794,6 @@ function updateCodecs(card, newValue) {
 }
 
 function updateProgress(args) {
-    console.log(args);
-
     let card = getCard(args.identifier);
     if(args.progress.reset != null && args.progress.reset) {
         resetProgress($(card).find('.progress-bar')[0], card);
