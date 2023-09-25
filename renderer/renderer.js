@@ -794,6 +794,8 @@ function updateCodecs(card, newValue) {
 }
 
 function updateProgress(args) {
+    console.log(args);
+
     let card = getCard(args.identifier);
     if(args.progress.reset != null && args.progress.reset) {
         resetProgress($(card).find('.progress-bar')[0], card);
@@ -832,23 +834,21 @@ function updateProgress(args) {
         $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
         $(card).find('.progress small').html(`${args.progress.percentage} - ${args.progress.done} of ${args.progress.total} `);
     } else if(args.progress.percentage != null) {
-        if(parseFloat(args.progress.percentage.slice(0, -1)) > parseFloat($(card).find('.progress-bar').attr("aria-valuenow"))) {
-            $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
-            if(args.progress.percentage.slice(0, -1) === "100.0") {
-                $(card).find('.progress-bar').addClass("progress-bar-striped")
-                $(card).find('.progress small').html("Converting with FFmpeg");
-            } else {
-                if (args.progress.isAudio == null) $(card).find('.progress small').html("Downloading item - " + args.progress.percentage);
-                else $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
-            }
-            if(!progressCooldown.includes(args.identifier)) {
-                progressCooldown.push(args.identifier);
-                $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta).show();
-                $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed).show();
-                setTimeout(() => {
-                    progressCooldown = progressCooldown.filter(item => item !== args.identifier);
-                }, 200);
-            }
+        $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
+        if(parseFloat(args.progress.percentage.slice(0, -1)) >= 100) {
+            $(card).find('.progress-bar').addClass("progress-bar-striped")
+            $(card).find('.progress small').html("Converting with FFmpeg");
+        } else {
+            if (args.progress.isAudio == null) $(card).find('.progress small').html("Downloading item - " + args.progress.percentage);
+            else $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
+        }
+        if(!progressCooldown.includes(args.identifier)) {
+            progressCooldown.push(args.identifier);
+            $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta).show();
+            $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed).show();
+            setTimeout(() => {
+                progressCooldown = progressCooldown.filter(item => item !== args.identifier);
+            }, 200);
         }
     }
 }
