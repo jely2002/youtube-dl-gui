@@ -224,7 +224,6 @@ select {
     transform: translateY(-50%) scale(1.5);
     filter: brightness(55%);
     cursor: move;
-    z-index: 100;
 }
 
 .video-card p {
