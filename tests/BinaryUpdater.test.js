@@ -46,7 +46,7 @@ describe("getLocalVersion", () => {
 });
 
 describe('getRemoteVersion', () => {
-    it('returns a null array when not redirected', () => {
+    it('returns a null when not redirected', () => {
         const axiosGetSpy = jest.spyOn(axios, 'get').mockRejectedValue({response: {status: 200}});
         const instance = new BinaryUpdater({platform: "win32"});
         instance.platform = "win32";
@@ -55,7 +55,7 @@ describe('getRemoteVersion', () => {
             expect(axiosGetSpy).toBeCalledTimes(1);
         });
     });
-    it('returns a null array on error', () => {
+    it('returns a null on error', () => {
         const axiosGetSpy = jest.spyOn(axios, 'get').mockRejectedValue({response: null});
         const instance = new BinaryUpdater({platform: "darwin"});
         instance.platform = "darwin";
@@ -65,7 +65,7 @@ describe('getRemoteVersion', () => {
             expect(axiosGetSpy).toBeCalledTimes(1);
         });
     });
-    it('returns array with the link and the version', () => {
+    it('returns the link and the version', () => {
         const redirectUrl = "https://github.com/yt-dlp/yt-dlp/releases/tag/2021.10.10"
         const binaryUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
         const axiosGetSpy = jest.spyOn(axios, 'get').mockRejectedValue({
@@ -78,11 +78,9 @@ describe('getRemoteVersion', () => {
         });
         const instance = new BinaryUpdater({platform: "win32"});
         instance.platform = "win32";
+        expect(instance.getBinaryUrl()).toEqual(binaryUrl);
         return instance.getRemoteVersion().then((data) => {
-            expect(data).toEqual({
-                remoteUrl: binaryUrl,
-                remoteVersion: "2021.10.10"
-            });
+            expect(data).toEqual("2021.10.10");
             expect(axiosGetSpy).toBeCalledTimes(1);
         });
     });
@@ -95,7 +93,7 @@ describe('checkUpdate', () => {
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate');
         instance.paths.setPermissions = jest.fn();
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("v2.0.0");
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue(["link", "v2.0.0"]);
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue("v2.0.0");
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).not.toBeCalled();
             expect(instance.win.webContents.send).not.toBeCalled();
@@ -107,7 +105,7 @@ describe('checkUpdate', () => {
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate');
         instance.paths.setPermissions = jest.fn();
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("v2.0.0");
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue([null, null]);
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue(null);
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).not.toBeCalled();
             expect(instance.win.webContents.send).not.toBeCalled();
@@ -119,7 +117,7 @@ describe('checkUpdate', () => {
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate').mockResolvedValue("");
         instance.paths.setPermissions = jest.fn();
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue(null);
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue(["link", "v2.0.0"]);
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue("v2.0.0");
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).toBeCalledTimes(1);
             expect(instance.win.webContents.send).toBeCalledTimes(1);
@@ -131,7 +129,7 @@ describe('checkUpdate', () => {
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate').mockResolvedValue("");
         instance.paths.setPermissions = jest.fn();
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("2021.03.10");
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteUrl: "link", remoteVersion: "2021.10.10" });
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue("2021.10.10");
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).toBeCalledTimes(1);
             expect(instance.win.webContents.send).toBeCalledTimes(1);
