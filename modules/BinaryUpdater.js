@@ -22,23 +22,25 @@ class BinaryUpdater {
         }
         console.log("Checking for a new version of yt-dlp.");
         const localVersion = await this.getLocalVersion();
-        const { remoteUrl, remoteVersion } = await this.getRemoteVersion();
+        const remoteVersion = await this.getRemoteVersion();
+        if(remoteVersion == null) {
+            console.log("Unable to check for new updates, GitHub may be down.");
+            return
+        }
         if(remoteVersion === localVersion) {
             console.log(`Binaries were already up-to-date! Version: ${localVersion}`);
-        } else if(localVersion == null) {
+            return;
+        }
+        const remoteUrl = this.getBinaryUrl();
+        if(localVersion == null) {
             console.log("Downloading missing yt-dlp binary.");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing yt-dlp version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteUrl, remoteVersion);
-            this.paths.setPermissions()
-        } else if(remoteVersion == null) {
-            console.log("Unable to check for new updates, GitHub may be down.");
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
             this.action = "Updating to";
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteUrl, remoteVersion);
-            this.paths.setPermissions()
         }
+        this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version: ${remoteVersion}. Preparing...`})
+        await this.downloadUpdate(remoteUrl, remoteVersion);
+        this.paths.setPermissions()
     }
 
     async checkPreInstalled() {
@@ -53,30 +55,24 @@ class BinaryUpdater {
 
     async getRemoteVersion() {
         const releaseUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/"
-        const binaryUrl = this.getBinaryUrl()
         try {
             await axios.get(releaseUrl, {
-                  responseType: 'document',
-                  maxRedirects: 0,
-              })
+                responseType: 'document',
+                maxRedirects: 0,
+            })
         } catch (err) {
             const res = err.response;
             if (err.response == null) {
                 console.error('An error occurred while retrieving the latest yt-dlp version data.')
                 return null;
             }
-            if (res.status === 302) {
-                const directUrl = res.headers.location;
-                const versionRegex = directUrl.match(/[0-9]+\.[0-9]+\.[0-9]+/);
-
-                return {
-                    remoteVersion: versionRegex ? versionRegex[0] : null,
-                    remoteUrl: binaryUrl,
-                };
-            } else {
+            if (res.status !== 302) {
                 console.error('Did not get redirect for the latest version link. Status: ' + err.response.status);
                 return null;
             }
+            const directUrl = res.headers.location;
+            const versionRegex = directUrl.match(/[0-9]+\.[0-9]+\.[0-9]+/);
+            return versionRegex ? versionRegex[0] : null;
         }
         return null;
     }

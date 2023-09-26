@@ -25,26 +25,25 @@ class FfmpegUpdater {
         console.log("Checking for a new version of ffmpeg.");
         const localVersion = await this.getLocalVersion();
         const { remoteFfmpegUrl, remoteFfprobeUrl, remoteVersion } = await this.getRemoteVersion();
+        if(remoteVersion == null) {
+            console.log("Unable to check for new updates, ffbinaries.com may be down.");
+            return;
+        }
         if(remoteVersion === localVersion) {
             console.log(`ffmpeg was already up-to-date! Version: ${localVersion}`);
-        } else if(localVersion == null) {
+            return;
+        }
+        if(localVersion == null) {
             console.log("Downloading missing ffmpeg binary.");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing ffmpeg version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteFfmpegUrl, remoteVersion, "ffmpeg" + this.getFileExtension());
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing ffprobe version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteFfprobeUrl, remoteVersion, "ffprobe" + this.getFileExtension());
-            await this.writeVersionInfo(remoteVersion);
-        } else if(remoteVersion == null) {
-            console.log("Unable to check for new updates, ffbinaries.com may be down.");
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
             this.action = "Updating to";
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ffmpeg to version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteFfmpegUrl, remoteVersion, "ffmpeg" + this.getFileExtension());
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ffprobe to version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteFfprobeUrl, remoteVersion, "ffprobe" + this.getFileExtension());
-            await this.writeVersionInfo(remoteVersion);
         }
+        this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing/Updating ffmpeg to version: ${remoteVersion}. Preparing...`})
+        await this.downloadUpdate(remoteFfmpegUrl, remoteVersion, "ffmpeg" + this.getFileExtension());
+        this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing/Updating ffprobe to version: ${remoteVersion}. Preparing...`})
+        await this.downloadUpdate(remoteFfprobeUrl, remoteVersion, "ffprobe" + this.getFileExtension());
+        await this.writeVersionInfo(remoteVersion);
     }
 
     async checkPreInstalled() {
@@ -77,7 +76,11 @@ class FfmpegUpdater {
             if (err.response != null) {
                 console.error('Status code: ' + err.response.status);
             }
-            return null;
+            return {
+                remoteVersion: null,
+                remoteFfmpegUrl: null,
+                remoteFfprobeUrl: null,
+            }
         }
     }
 
