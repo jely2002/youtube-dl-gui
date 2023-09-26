@@ -177,7 +177,7 @@ class DownloadQuery extends Query {
                     return;
                 }
 
-                if (destinationCount === 2 && !this.video.audioOnly) {
+                if (destinationCount === 2 && !this.video.audioOnly && !this.video.downloadingAudio) {
                     this.video.downloadingAudio = true;
                     this.progressBar.reset();
                     return;
