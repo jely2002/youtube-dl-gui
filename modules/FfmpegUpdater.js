@@ -145,7 +145,7 @@ class FfmpegUpdater {
         this.win.webContents.send("binaryLock", {lock: true, placeholder: `${this.action} ${artifact} ${version} - Extracting binaries...`})
         const zipFile = new AdmZip(path.join(downloadPath, filename), {});
         zipFile.extractEntryTo(filename, this.paths.ffmpeg, false, true, false, filename);
-        fs.rmdirSync(path.join(this.paths.ffmpeg, "downloads"), { recursive: true, force: true });
+        fs.rmSync(path.join(this.paths.ffmpeg, "downloads"), { recursive: true, force: true });
     }
 
     //Writes the new version number to the ytdlVersion file

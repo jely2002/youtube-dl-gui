@@ -161,7 +161,7 @@ class Filepaths {
             const toCopy = ["yt-dlp.exe", "ffmpeg.exe", "ytdlVersion", "ffmpegVersion", "AtomicParsley.exe", "userSettings", "taskList"];
             await this.copyFiles(from, this.persistentPath, toCopy);
             try {
-                await fs.promises.rmdir(from, {recursive: true});
+                await fs.promises.rm(from, {recursive: true});
             } catch (e) {
                 console.error(e);
             }

@@ -246,7 +246,7 @@ class DownloadQuery extends Query {
     removeVideoDataFolder(folderPath) {
         if(folderPath != null) {
             try {
-                fs.rmdirSync(folderPath, {recursive : true, force : true});
+                fs.rmSync(folderPath, {recursive : true, force : true});
             } catch(e) {
                 console.log("No left-over Temp Folder found to remove. (" + folderPath + ")")
             }
