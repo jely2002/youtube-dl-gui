@@ -84,7 +84,7 @@ class Query {
                 this.process.stdout.on('data', (data) => {
                     const lines = data
                         .toString()
-                        .replace(/\\u[0-9A-Fa-f]{4,6}/g, escapedUnicode => String.fromCharCode(parseInt(escapedUnicode.slice(2), 16)))
+                        .replace(/\\u[0-9A-Fa-f]{4}/g, escapedUnicode => String.fromCharCode(parseInt(escapedUnicode.slice(2), 16)))
                         .split("\n");
                     for(const line of lines) {
                         cb(line);
