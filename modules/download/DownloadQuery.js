@@ -164,42 +164,48 @@ class DownloadQuery extends Query {
         let result = null;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
-                const perLine = liveData.split("\n");
-                for(const line of perLine) {
-                    this.video.setFilename(line);
-                    if(line.lastIndexOf("[download]") !== line.indexOf("[download]")) {
-                        const splitLines = line.split("[");
-                        for(const splitLine of splitLines) {
-                            if(splitLine.trim() !== "") {
-                                this.environment.logger.log(this.video.identifier, "[" + splitLine.trim());
-                            }
-                        }
-                    } else {
-                        this.environment.logger.log(this.video.identifier, line);
-                    }
-                }
+                this.environment.logger.log(this.video.identifier, liveData);
+                this.video.setFilename(liveData);
 
                 if (!liveData.includes("[download]")) return;
-                if (!initialReset) {
-                    initialReset = true;
-                    this.progressBar.reset();
-                }
 
                 if (liveData.includes("Destination")) destinationCount += 1;
 
-                if (destinationCount > 1) {
-                    if (destinationCount === 2 && !this.video.audioOnly && !this.video.downloadingAudio) {
-                        this.video.downloadingAudio = true;
-                        this.progressBar.reset();
-                    }
+                if (!initialReset) {
+                    initialReset = true;
+                    this.progressBar.reset();
+                    return;
                 }
-                let liveDataArray = liveData.split(" ").filter((el) => {
-                    return el !== ""
-                });
-                let percentage = liveDataArray[1];
-                let speed = liveDataArray[2];
-                let eta = liveDataArray[3];
-                this.progressBar.updateDownload(percentage, eta, speed, this.video.audioOnly ? true : this.video.downloadingAudio);
+
+                if (destinationCount === 2 && !this.video.audioOnly) {
+                    this.video.downloadingAudio = true;
+                    this.progressBar.reset();
+                    return;
+                }
+
+                let liveDataObj;
+                try {
+                    liveDataObj = JSON.parse(liveData.slice(liveData.indexOf('{')));
+                } catch(e) {
+                    return;
+                }
+
+                let percentage;
+                if ("fragment_count" in liveDataObj) {
+                    //When there is multiple fragments, cap the completion percentage to avoid some strange values.
+                    const completion = Math.min(
+                        liveDataObj.downloaded_bytes / liveDataObj.total_bytes_estimate,
+                        (liveDataObj.fragment_index + 1) / liveDataObj.fragment_count
+                    );
+                    percentage = Math.floor(completion * 100) + "." + (Math.floor(completion * 1000) % 10) + "%";
+                } else {
+                    percentage = liveDataObj._percent_str;
+                }
+
+                const speed = liveDataObj._speed_str;
+                const eta = liveDataObj.eta >= 0 ? liveDataObj._eta_str : "00:00";
+
+                this.progressBar.updateDownload(percentage, eta, speed, this.video.audioOnly || this.video.downloadingAudio);
             }));
         } catch (exception) {
             this.environment.errorHandler.checkError(exception, this.video.identifier);

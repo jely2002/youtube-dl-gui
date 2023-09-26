@@ -833,7 +833,7 @@ function updateProgress(args) {
         $(card).find('.progress small').html(`${args.progress.percentage} - ${args.progress.done} of ${args.progress.total} `);
     } else if(args.progress.percentage != null) {
         $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
-        if(parseFloat(args.progress.percentage.slice(0, -1)) >= 100) {
+        if(args.progress.percentage === "100.0%") {
             $(card).find('.progress-bar').addClass("progress-bar-striped")
             $(card).find('.progress small').html("Converting with FFmpeg");
         } else {

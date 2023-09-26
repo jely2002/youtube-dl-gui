@@ -82,9 +82,13 @@ class Query {
                 this.process = execa(command, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
-                    cb(data
+                    const lines = data
                         .toString()
-                        .replace(/\\u[0-9A-Fa-f]{4,6}/g, escapedUnicode => String.fromCharCode(parseInt(escapedUnicode.slice(2), 16))));
+                        .replace(/\\u[0-9A-Fa-f]{4,6}/g, escapedUnicode => String.fromCharCode(parseInt(escapedUnicode.slice(2), 16)))
+                        .split("\n");
+                    for(const line of lines) {
+                        cb(line);
+                    }
                 });
                 this.process.stdout.on('close', () => {
                     if(this.process.killed) {
