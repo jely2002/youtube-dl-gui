@@ -5,7 +5,7 @@ const actions = {
         "Sleep": ["rundll32.exe", "powrprof.dll,SetSuspendState", "0,1,0"],
         "Lock": ["rundll32.exe", "user32.dll,LockWorkStation"],
         "Shutdown": ["shutdown", "/s", "/f", "/t", "0"],
-        "Hibernate": ["shutdown", "/h", "/f", "/t", "0"],
+        "Hibernate (if enabled)": ["shutdown", "/h", "/f", "/t", "0"],
         "Reboot": ["shutdown", "/r", "/f", "/t", "0"],
     },
     "linux": {
