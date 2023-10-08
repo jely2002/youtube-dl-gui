@@ -32,6 +32,12 @@ Be sure to check out [a demo gif of the application](#Demo-gif)!
 
 Want to know more about the features this app offers? Head over to the [wiki](https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/).
 
+## Supporting the project
+I appreciate any help. That may include:
+- testing and raising issues if you encounter any
+- contributing via a pull request
+- donating to the project ([ko-fi](https://ko-fi.com/stefanlobbenmeier))
+
 ## Something is not working!
 Please see if the answer is in the [frequently answered questions](https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/FAQ) or in the [wiki](https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/).
 
