@@ -179,7 +179,7 @@ class Utils {
         for(const entry of query.entries) {
             let url;
             if (entry.url == null) url = entry.webpage_url;
-            else url = (entry.ie_key != null && entry.ie_key === "Youtube") ? "https://youtube.com/watch?v=" + entry.url : entry.url;
+            else url = entry.url;
             if(url != null && url.length > 0) {
                 let playlist = "?";
                 if(query.title != null) {
@@ -206,11 +206,7 @@ class Utils {
         if(metadata == null) return null;
         for(const video of metadata) {
             if(video.video_url === video_url) {
-                if(playlist_url == null) {
-                    return video;
-                } else if(playlist_url === video.playlist_url) {
-                    return video;
-                }
+                return video;
             }
         }
         return null;

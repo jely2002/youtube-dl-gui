@@ -156,7 +156,7 @@ class QueryManager {
         }
         downloadVideo.audioQuality = (downloadVideo.audioQuality != null) ? downloadVideo.audioQuality : "best";
         let progressBar = new ProgressBar(this, downloadVideo);
-        downloadVideo.setQuery(new DownloadQuery(downloadVideo.url, downloadVideo, this.environment, progressBar));
+        downloadVideo.setQuery(new DownloadQuery(downloadVideo.url, downloadVideo, this.environment, progressBar, this.playlistMetadata));
         downloadVideo.query.connect().then(() => {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             if(downloadVideo.error) return;
