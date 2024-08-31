@@ -1,6 +1,6 @@
 {
   "name": "youtube-dl-gui",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "description": "Open Video Downloader",
   "main": "main.js",
   "scripts": {

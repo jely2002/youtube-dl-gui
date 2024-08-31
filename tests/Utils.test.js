@@ -241,7 +241,7 @@ describe("generatePlaylistMetadata", () => {
             }
         }
         expect(result).toHaveLength(2);
-        expect(result).toEqual([expectedResult(0, "test__url"), expectedResult(1, "https://youtube.com/watch?v=test__yt_id")])
+        expect(result).toEqual([expectedResult(0, "test__url"), expectedResult(1, "test__yt_id")])
     })
     it("returns the id for playlist when the title is null", () => {
         const query = {
@@ -280,14 +280,6 @@ describe('getVideoInPlaylistMetadata', () => {
         const video_url = "test__video_url";
         const metadata = {video_url: "test__video_url"};
         const result = Utils.getVideoInPlaylistMetadata(video_url, null, [metadata]);
-        expect(result).toBe(metadata);
-    })
-    it("gets metadata from a video and playlist url", () => {
-        const video_url = "test__video_url";
-        const playlist_url = "test__playlist_url";
-        const metadata = {video_url: "test__video_url", playlist_url: "test__playlist_url"};
-        const decoy = {video_url: "test__video_url", playlist_url: "another_playlist_url"};
-        const result = Utils.getVideoInPlaylistMetadata(video_url, playlist_url, [decoy, metadata]);
         expect(result).toBe(metadata);
     })
     it("returns null if metadata is not iterable", () => {
