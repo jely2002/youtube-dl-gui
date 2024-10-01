@@ -128,6 +128,7 @@ select {
 
 /* URL FORM */
 .url-input {
+    display: inline-block;
     margin-top: calc(40px + 1.5rem); /* Compensate the fixed navbar */
     margin-bottom: 1.5rem;
 }
@@ -145,6 +146,43 @@ select {
 
 .url-input .btn > i::before {
     transform: scale(1.5);
+}
+
+/* scanner toggle button*/
+.btns-input {
+    display: inline;
+    padding-left: 0px;
+    margin-top: calc(40px + 1.5rem); /* Compensate the fixed navbar */
+    margin-bottom: 1.5rem;
+}
+
+.btns-input .toggle-handle{
+    background-color:var(--font-color) !important;
+    border-color: var(--font-color) !important;
+}
+
+.btns-input .toggle-on {   
+    background-color: var(--secondary-highlight-color);
+    border-color: var(--secondary-highlight-color);
+}
+
+.btns-input .toggle-off {   
+    background-color: var(--secondary-bg-color);
+    border-color: var(--secondary-bg-color);
+}
+
+.btns-input .toggle {
+    background-color: var(--secondary-bg-color) !important;
+}
+
+.btns-input .btn {
+    border-color: transparent !important;
+    color: var(--font-color) !important;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 0.5;
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px !important;
 }
 
 #settingsBtn {
@@ -216,6 +254,7 @@ select {
 }
 
 .video-card .handle {
+    z-index: -1;
     position: absolute;
     left: 0.25rem;
     top: calc(50% + 2rem);
@@ -415,6 +454,7 @@ option.audio {
 
 .controls .buttons * {
     margin: 0 5px;
+    width: 140px;
 }
 
 .controls .buttons i:before {

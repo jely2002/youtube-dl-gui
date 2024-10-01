@@ -27,7 +27,7 @@ class DownloadQueryList {
         return await new Promise(((resolve) => {
             for(let video of this.videos) {
                 let progressBar = new ProgressBar(this.manager, video);
-                let task = new DownloadQuery(video.webpage_url, video, this.environment, progressBar, Utils.getVideoInPlaylistMetadata(video.url, null, this.playlistMetadata));
+                let task = new DownloadQuery(video.webpage_url, video.headers, video, this.environment, progressBar, Utils.getVideoInPlaylistMetadata(video.url, null, this.playlistMetadata));
                 if(video.parentID != null && !this.parentProgress.some(e => e.id === video.parentID)) {
                     const bar = new ProgressBar(this.manager, video.parentID);
                     this.parentProgress.push({

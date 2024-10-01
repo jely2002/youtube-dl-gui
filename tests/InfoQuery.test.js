@@ -44,6 +44,6 @@ function instanceBuilder() {
         },
         settings: {}
     };
-    return [env, new InfoQuery("http://url.link", "test__id", env)];
+    return [env, new InfoQuery("http://url.link", [], "test__id", env)];
 }
 

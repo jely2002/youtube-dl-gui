@@ -68,7 +68,7 @@ function instanceBuilder(type) {
             nameFormatMode: "%(title).200s-(%(height)sp%(fps).0d).%(ext)s"
         }
     };
-    const video = new Video("http://test.url", type, env);
+    const video = new Video("http://test.url", [], type, env);
     let formats = [];
     const displayNames = ["144p12", "1080p", "480p", "480p30", "480p29", "1080p60"];
     for (const name of displayNames) {

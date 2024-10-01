@@ -33,7 +33,7 @@ class AppUpdater {
                     this.win.webContents.send('toast', {
                         type: "update",
                         title: "An update has been found",
-                        body: `Update ${result.updateInfo.releaseName} is out now! <br> <a target="_blank" href="https://github.com/StefanLobbenmeier/youtube-dl-gui/releases/latest">Download on GitHub</a>`
+                        body: `Update ${result.updateInfo.releaseName} is out now! <br> <a target="_blank" href="https://github.com/mp3butcher/youtube-dl-gui/releases/latest">Download on GitHub</a>`
                     });
                 } else {
                     this.newVersion = result.updateInfo.releaseName;

@@ -145,7 +145,7 @@ async function init() {
     $('#download-type').on('change', async () => {
         updateAllVideoSettings();
         await getSettings();
-        sendSettings();
+        await sendSettings();
     });
 
     $('#infoModal .img-overlay, #infoModal .info-img').on('click', () => {
@@ -186,8 +186,8 @@ async function init() {
     });
 
     $('#settingsModal .apply').on('click', () => {
-        $('#settingsModal').modal("hide");
         sendSettings();
+        $('#settingsModal').modal("hide");
     });
 
     $('#maxConcurrent').on('input', () => {
@@ -206,6 +206,15 @@ async function init() {
     $('#settingsBtn').on('click', async () => {
         await getSettings();
         $('#settingsModal').modal("show");
+    });
+
+    $('#scannerBtn').on('change', async () => {
+        try{
+            await window.main.invoke('setScannerEnabled',{value: $('#scannerBtn').prop('checked')});
+        } catch (e) {
+            //Catch mainly proxu AbortError
+            console.error(e);
+        }
     });
 
     $('#defaultConcurrent').on('click', () => {
@@ -1003,6 +1012,7 @@ async function getSettings() {
     $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
     $('#keepUnmerged').prop('checked', settings.keepUnmerged);
     $('#avoidFailingToSaveDuplicateFileName').prop('checked', settings.avoidFailingToSaveDuplicateFileName);
+    $('#allowUnsafeFileExtensions').prop('checked', settings.allowUnsafeFileExtensions);
     $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
     $('#maxConcurrent').val(settings.maxConcurrent);
     $('#settingsModal #retries').val(settings.retries);
@@ -1015,7 +1025,7 @@ async function getSettings() {
     window.settings = settings;
 }
 
-function sendSettings() {
+async function sendSettings() {
     let settings = {
         updateBinary: $('#updateBinary').prop('checked'),
         updateApplication: $('#updateApplication').prop('checked'),
@@ -1039,6 +1049,7 @@ function sendSettings() {
         downloadThumbnail: $('#downloadThumbnail').prop('checked'),
         keepUnmerged: $('#keepUnmerged').prop('checked'),
         avoidFailingToSaveDuplicateFileName: $('#avoidFailingToSaveDuplicateFileName').prop('checked'),
+        allowUnsafeFileExtensions: $('#allowUnsafeFileExtensions').prop('checked'),
         calculateTotalSize: $('#calculateTotalSize').prop('checked'),
         sizeMode: $('#sizeSetting').val(),
         splitMode: $('#splitMode').val(),
@@ -1050,7 +1061,7 @@ function sendSettings() {
         theme: $('#theme').val()
     }
     window.settings = settings;
-    window.main.invoke("settingsAction", {action: "save", settings});
+    await window.main.invoke("settingsAction", {action: "save", setting:settings});
     updateEncodingDropdown(settings.enableEncoding);
     toggleWhiteMode(settings.theme);
 }
@@ -1138,7 +1149,10 @@ function showInfoModal(info, identifier) {
     }
     $(modal).find('img').prop("src", data.thumbnail);
     $(modal).find('.modal-title').html(data.title);
-    $(modal).find('#info-description').html(data.description == null ? "No description was found." : data.description);
+    let hs = "";
+    data.headers.forEach((h) => { hs = hs + h.k + ": " + h.v + "\n" } );
+    $(modal).find('#headers-string').html(hs);
+    $(modal).find('#info-description').html(data.description == null ? 'no description': data.description);
     $(modal).find('.uploader').html('<strong>Uploader: </strong>' + (data.uploader == null ? "Unknown" : data.uploader));
     $(modal).find('.extractor').html('<strong>Extractor: </strong>' + (data.extractor == null ? "Unknown" : data.extractor));
     $(modal).find('.url').html('<strong>URL: </strong>' + '<a target="_blank" href="' + data.url + '">' + data.url + '</a>');

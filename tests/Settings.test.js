@@ -15,7 +15,7 @@ jest.mock('electron', () => ({
 
 const Settings = require('../modules/persistence/Settings');
 const env = {version: '2.0.0-test1', app: {getPath: jest.fn().mockReturnValue('test/path')}};
-const defaultSettingsInstance = new Settings({settings: 'tests/test-settings.json'}, env, 'none', 'none', 'test/path', '', '', true, false, true, 'spoof', false, false, true, '%(title).200s-(%(height)sp%(fps).0d).%(ext)s', '%(title).200s-(%(height)sp%(fps).0d).%(ext)s', 'click', '49', 8, 6, 2, true, 'video', true, 'C:\\Users\\user\\cookies.txt', false, '', '', 'https://sponsor.ajay.app', true, false, false, false, false, true, 'dark');
+const defaultSettingsInstance = new Settings({settings: 'tests/test-settings.json'}, env, 'none', 'none', 'test/path', '', '', true, false, true, 'spoof', false, false, true, '%(title).200s-(%(height)sp%(fps).0d).%(ext)s', '%(title).200s-(%(height)sp%(fps).0d).%(ext)s', 'click', '49', 8, 6, 2, true, 'video', true, 'C:\\Users\\user\\cookies.txt', false, '', '', 'https://sponsor.ajay.app', true, false, false, false, false, false, true, 'dark');
 const defaultSettings = {
   outputFormat: 'none',
   audioOutputFormat: 'none',
@@ -49,6 +49,7 @@ const defaultSettings = {
   downloadThumbnail: false,
   keepUnmerged: false,
   avoidFailingToSaveDuplicateFileName: false,
+  allowUnsafeFileExtensions: false,
   calculateTotalSize: true,
   theme: 'dark',
   version: '2.0.0-test1',

@@ -5,13 +5,14 @@ const Utils = require("../Utils")
 const console = require("console");
 
 class DownloadQuery extends Query {
-    constructor(url, video, environment, progressBar, playlistMeta) {
+    constructor(url, headers, video, environment, progressBar, playlistMeta) {
         super(environment, video.identifier);
         this.playlistMeta = playlistMeta;
         this.url = url;
         this.video = video;
         this.progressBar = progressBar;
         this.format = video.formats[video.selected_format_index];
+        this.headers = headers;
     }
 
     cancel() {
@@ -159,6 +160,12 @@ class DownloadQuery extends Query {
             args.push(this.environment.settings.retries);
         }
 
+        if(this.environment.settings.allowUnsafeFileExtensions) {
+            args.push('--compat-options','allow-unsafe-ext');
+        }
+
+        this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
+        console.log(args);    console.log(this.video.headers);
         let destinationCount = 0;
         let initialReset = false;
         let result = null;

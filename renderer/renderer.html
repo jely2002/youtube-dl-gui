@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
     <title>Open Video Downloader</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap4-toggle/css/bootstrap4-toggle.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="lib/select2.min.css">
     <link rel="stylesheet" href="renderer.css">
@@ -12,6 +13,7 @@
     <script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
     <script src="lib/select2.min.js"></script>
     <script src="../node_modules/sortablejs/Sortable.min.js"></script>
+    <script src="../node_modules/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
 </head>
 <body>
 
@@ -22,9 +24,16 @@
             <div class="input-group-append">
                 <button type="button" id="add-url-btn" class="btn btn-dark" title="Add video to queue"><i class="bi bi-plus"></i></button>
             </div>
-            <button id="settingsBtn" title="Settings" type="button" class="btn btn-dark"><i class="bi bi-gear"></i></button>
+    <button  id="settingsBtn" title="Settings" type="button" class="btn btn-dark"><i class="bi bi-gear"></i></button>
         </div>
     </form>
+</div> 
+
+<div class="container btns-input">
+   
+        <input style="padding: 0px;" type="checkbox" id="scannerBtn" class="btn btn-dark" data-toggle="toggle" data-width="45" data-height="38" data-onstyle="dark" data-on="<i style='font-size: 20px;' class='bi bi-radar'></i>" data-off="<i style='font-size: 20px;' class='bi bi-radar'></i>">
+  
+   
 </div>
 
 <div class="container-fluid queue-area">
@@ -177,6 +186,7 @@
                         </div>
                     </div>
                     <textarea id="info-description" rows="5" cols="50" readonly></textarea>
+                    <textarea id="headers-string" rows="5" cols="50" readonly></textarea>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item uploader"></li>
                         <li class="list-group-item extractor"></li>
@@ -460,6 +470,11 @@
                     <input class="check-input" type="checkbox" value="" id="enableEncoding">
                     <label class="check-label" for="enableEncoding">Show available codecs to download</label>
                 </div>
+                <div class="mb-1"></div>
+                    <input class="check-input" type="checkbox" value="" id="allowUnsafeFileExtensions">
+                    <label class="check-label" for="allowUnsafeFileExtensions">Allow unsafe file extension to be downloaded</label>
+                </div>
+                
                 <div>
                     <label for="splitMode" class="form-label">Split playlists into separate videos when:</label>
                     <select class="custom-select d-block rounded w-auto mb-2" id="splitMode">
@@ -470,11 +485,11 @@
                         <option value="199">less than 200 videos</option>
                     </select>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <p id="version"></p>
-                <button type="button" class="btn dismiss btn-dark">Cancel</button>
-                <button type="button" class="btn apply btn-highlight">Apply</button>
+                <div class="modal-footer">
+                    <p id="version"></p>
+                    <button type="button" class="btn dismiss btn-dark">Cancel</button>
+                    <button type="button" class="btn apply btn-highlight">Apply</button>
+                </div>
             </div>
         </div>
     </div>

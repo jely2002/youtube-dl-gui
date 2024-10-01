@@ -23,7 +23,8 @@ contextBridge.exposeInMainWorld(
                 "getSubtitles",
                 "getSelectedSubtitles",
                 "getLog",
-                "saveLog"
+                "saveLog",
+                "setScannerEnabled"
             ];
             if (validChannels.includes(channel)) {
                 return await ipcRenderer.invoke(channel, data);

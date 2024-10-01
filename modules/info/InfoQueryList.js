@@ -17,7 +17,7 @@ class InfoQueryList {
             let totalMetadata = [];
             let playlistUrls = Utils.extractPlaylistUrls(this.query);
             for (const videoData of playlistUrls[1]) {
-                let video = this.createVideo(videoData, videoData.url);
+                let video = this.createVideo(videoData, videoData.url, videoData.headers);
                 totalMetadata.push(video);
             }
             this.urls = playlistUrls[0];
@@ -29,10 +29,10 @@ class InfoQueryList {
                 resolve(null);
             }
             for (const url of this.urls) {
-                let task = new InfoQuery(url, this.progressBar.video.identifier, this.environment);
+                let task = new InfoQuery(url,this.progressBar.video.headers, this.progressBar.video.identifier, this.environment);
                 task.connect().then((data) => {
                     if (data.formats != null) {
-                        let video = this.createVideo(data, url);
+                        let video = this.createVideo(data, url, data.headers);
                         totalMetadata.push(video);
                     }
                     this.done++;
@@ -45,9 +45,9 @@ class InfoQueryList {
         }));
     }
 
-    createVideo(data, url) {
+    createVideo(data, url, headers) {
         let metadata = (data.entries != null && data.entries.length === 1 && data.entries[0].formats != null) ? data.entries[0] : data;
-        let video = new Video(url, "single", this.environment);
+        let video = new Video(url, headers,"single", this.environment);
         video.setMetadata(metadata);
         return video;
     }

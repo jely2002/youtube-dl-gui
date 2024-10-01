@@ -1,6 +1,11 @@
 name: Build artifacts to link to release
 
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number'
+        required: true
   push:
     tags:
       - '*'
@@ -9,7 +14,7 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v2
         with:
           node-version: '20'
@@ -28,7 +33,7 @@ jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v2
         with:
           node-version: '20'

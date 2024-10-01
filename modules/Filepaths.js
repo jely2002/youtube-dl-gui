@@ -23,6 +23,9 @@ class Filepaths {
                 this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
                 this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
                 this.ffmpegVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpegVersion") :"binaries/ffmpegVersion";
+                this.mitmproxy = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries") : "binaries";
+                this.mitmproxyVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/mitmproxyVersion") :"binaries/mitmproxyVersion";
+                this.mitmproxyScriptPath=  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 break;
             case "win32app": {
                 const appDir = path.basename(path.join(this.appPath, "../../..")).replace(/_(.*)_/g, "_");
@@ -38,6 +41,9 @@ class Filepaths {
                 this.taskList = path.join(this.binaryPath, "taskList");
                 this.ytdlVersion = path.join(this.binaryPath, "ytdlVersion");
                 this.ffmpegVersion = path.join(this.binaryPath, "ffmpegVersion");
+                this.mitmproxy = this.binaryPath;
+                this.mitmproxyVersion = path.join(this.binaryPath, "mitmproxyVersion");
+                this.mitmproxyScriptPath=  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 break;
             }
             case "win32portable":
@@ -52,17 +58,36 @@ class Filepaths {
                 this.taskList = path.join(this.persistentPath, "taskList");
                 this.ytdlVersion = path.join(this.persistentPath, "ytdlVersion");
                 this.ffmpegVersion = path.join(this.persistentPath, "ffmpegVersion");
+                this.mitmproxy = this.persistentPath;
+                this.mitmproxyVersion = path.join(this.persistentPath, "mitmproxyVersion");
+                this.mitmproxyScriptPath=  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 break;
             case "darwin":
                 this.packedPrefix = this.appPath;
                 this.unpackedPrefix = this.appPath + ".unpacked";
-                this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries") : "binaries";
-                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, this.getMacOSPathYtDlp()) : this.getMacOSPathYtDlp();
-                this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
-                this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
-                this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
-                this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
-                this.ffmpegVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpegVersion") :"binaries/ffmpegVersion";
+                if(this.app.isPackaged){
+                    this.ffmpeg = path.join(this.unpackedPrefix, "binaries");
+                    this.ytdl = path.join(this.unpackedPrefix, this.getMacOSPathYtDlp());
+                    this.icon = path.join(this.packedPrefix, "renderer/img/icon.png");
+                    this.settings = path.join(this.unpackedPrefix, "userSettings");
+                    this.taskList = path.join(this.unpackedPrefix, "taskList");
+                    this.ytdlVersion = path.join(this.unpackedPrefix, "binaries/ytdlVersion");
+                    this.ffmpegVersion = path.join(this.unpackedPrefix, "binaries/ffmpegVersion");
+                    this.mitmproxy = path.join(this.unpackedPrefix, "binaries");
+                    this.mitmproxyVersion =  path.join(this.unpackedPrefix, "binaries/mitmproxyVersion");
+                    this.mitmproxyScriptPath=  path.join(this.unpackedPrefix, "binaries");
+                }else{
+                    this.ffmpeg = "binaries";
+                    this.ytdl = this.getMacOSPathYtDlp();
+                    this.icon = "renderer/img/icon.png";
+                    this.settings = "userSettings";
+                    this.taskList = "taskList";
+                    this.ytdlVersion = "binaries/ytdlVersion";
+                    this.ffmpegVersion = "binaries/ffmpegVersion";
+                    this.mitmproxy = "binaries";
+                    this.mitmproxyVersion = "binaries/mitmproxyVersion";
+                    this.mitmproxyScriptPath= "binaries";
+                }
                 this.setPermissions()
                 break;
             case "linux":
@@ -77,6 +102,9 @@ class Filepaths {
                 this.taskList = this.app.isPackaged ? path.join(this.persistentPath, "taskList") : "taskList";
                 this.ytdlVersion = this.app.isPackaged ? path.join(this.persistentPath, "ytdlVersion") :"binaries/ytdlVersion";
                 this.ffmpegVersion = this.app.isPackaged ? path.join(this.persistentPath, "ffmpegVersion") :"binaries/ffmpegVersion";
+                this.mitmproxy = this.app.isPackaged ? this.persistentPath : "binaries";
+                this.mitmproxyVersion =  this.app.isPackaged ? path.join(this.persistentPath, "mitmproxyVersion") :"binaries/mitmproxyVersion";
+                this.mitmproxyScriptPath=  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 this.setPermissions()
                 break;
         }
@@ -133,7 +161,7 @@ class Filepaths {
 
     setPermissions() {
         fs.readdirSync(this.ffmpeg).forEach(file => {
-            if (file === "userSettings" || file === "ytdlVersion" || file === "taskList" || file === "ffmpegVersion") return;
+            if (file === "userSettings" || file === "ytdlVersion" || file === "taskList" || file === "ffmpegVersion"|| file === "mitmproxyVersion") return;
             fs.chmod(path.join(this.ffmpeg, file), 0o755, (err) => {
                 if(err) console.error(err);
             });

@@ -209,7 +209,7 @@
   },
   {
     "code": "Missing dependency",
-    "description": "Please install <a href=\"https://github.com/StefanLobbenmeier/youtube-dl-gui#how-to-use\" target=\"_blank\"> Microsoft Visual C++ 2010</a>",
+    "description": "Please install <a href=\"https://github.com/mp3butcher/youtube-dl-gui#how-to-use\" target=\"_blank\"> Microsoft Visual C++ 2010</a>",
     "trigger": "3221225781"
   },
   {

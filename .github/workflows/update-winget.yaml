@@ -21,4 +21,4 @@ jobs:
         shell: cmd
         run: |
           curl https://aka.ms/wingetcreate/latest -L --output wingetcreate.exe
-          wingetcreate.exe update StefanLobbenmeier.youtube-dl-gui -s true -u https://github.com/StefanLobbenmeier/youtube-dl-gui/releases/download/v%APP_VERSION%/Open-Video-Downloader-Setup-%APP_VERSION%.exe -v %APP_VERSION%  -t %WINGET_TOKEN%
+          wingetcreate.exe update mp3butcher.youtube-dl-gui -s true -u https://github.com/mp3butcher/youtube-dl-gui/releases/download/v%APP_VERSION%/Open-Video-Downloader-Setup-%APP_VERSION%.exe -v %APP_VERSION%  -t %WINGET_TOKEN%

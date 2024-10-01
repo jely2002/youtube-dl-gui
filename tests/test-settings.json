@@ -32,6 +32,7 @@
   "downloadThumbnail": false,
   "keepUnmerged": false,
   "avoidFailingToSaveDuplicateFileName": false,
+  "allowUnsafeFileExtensions": false,
   "calculateTotalSize": true,
   "theme": "dark",
   "version": "2.0.0-test1"

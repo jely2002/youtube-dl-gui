@@ -9,7 +9,7 @@ class Settings {
         validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
         sizeMode, splitMode, maxConcurrent, retries, fileAccessRetries, updateBinary, downloadType, updateApplication, cookiePath,
         statSend, sponsorblockMark, sponsorblockRemove, sponsorblockApi, downloadMetadata, downloadJsonMetadata,
-        downloadThumbnail, keepUnmerged, avoidFailingToSaveDuplicateFileName, calculateTotalSize, theme
+        downloadThumbnail, keepUnmerged, avoidFailingToSaveDuplicateFileName, allowUnsafeFileExtensions, calculateTotalSize, theme
     ) {
         this.paths = paths;
         this.env = env
@@ -35,6 +35,7 @@ class Settings {
         this.downloadThumbnail = downloadThumbnail == null ? false : downloadThumbnail;
         this.keepUnmerged = keepUnmerged == null ? false : keepUnmerged;
         this.avoidFailingToSaveDuplicateFileName = avoidFailingToSaveDuplicateFileName == null ? false : avoidFailingToSaveDuplicateFileName;
+        this.allowUnsafeFileExtensions = allowUnsafeFileExtensions == null ? false : allowUnsafeFileExtensions;
         this.calculateTotalSize = calculateTotalSize == null ? true : calculateTotalSize;
         this.sizeMode = sizeMode == null ? "click" : sizeMode;
         this.splitMode = splitMode == null? "49" : splitMode;
@@ -100,6 +101,7 @@ class Settings {
                 data.downloadThumbnail,
                 data.keepUnmerged,
                 data.avoidFailingToSaveDuplicateFileName,
+                data.allowUnsafeFileExtensions,
                 data.calculateTotalSize,
                 data.theme
             );
@@ -134,6 +136,7 @@ class Settings {
         this.downloadThumbnail = settings.downloadThumbnail;
         this.keepUnmerged = settings.keepUnmerged;
         this.avoidFailingToSaveDuplicateFileName = settings.avoidFailingToSaveDuplicateFileName;
+        this.allowUnsafeFileExtensions = settings.allowUnsafeFileExtensions;
         this.calculateTotalSize = settings.calculateTotalSize;
         this.sizeMode = settings.sizeMode;
         this.splitMode = settings.splitMode;
@@ -189,6 +192,7 @@ class Settings {
             downloadThumbnail: this.downloadThumbnail,
             keepUnmerged: this.keepUnmerged,
             avoidFailingToSaveDuplicateFileName: this.avoidFailingToSaveDuplicateFileName,
+            allowUnsafeFileExtensions: this.allowUnsafeFileExtensions,
             calculateTotalSize: this.calculateTotalSize,
             theme: this.theme,
             version: this.env.version

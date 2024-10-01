@@ -22,13 +22,13 @@ class QueryManager {
         this.playlistMetadata = [];
     }
 
-    async manage(url) {
-        let metadataVideo = new Video(url, "metadata", this.environment);
+    async manage(url, headers) {
+        let metadataVideo = new Video(url, headers, "metadata", this.environment);
         this.addVideo(metadataVideo);
-        const initialQuery = await new InfoQuery(url, metadataVideo.identifier, this.environment).connect();
+        const initialQuery = await new InfoQuery(url, headers,metadataVideo.identifier, this.environment).connect();
         if(metadataVideo.error) return;
         if(Utils.isYouTubeChannel(url)) {
-            const actualQuery = await new InfoQuery(initialQuery.entries[0].url, metadataVideo.identifier, this.environment).connect();
+            const actualQuery = await new InfoQuery(initialQuery.entries[0].url, metadataVideo.headers, metadataVideo.identifier, this.environment).connect();
             if(metadataVideo.error) return;
             this.removeVideo(metadataVideo);
             if(actualQuery.entries == null || actualQuery.entries.length === 0) this.managePlaylist(initialQuery, url);
@@ -38,11 +38,11 @@ class QueryManager {
 
         switch(Utils.detectInfoType(initialQuery)) {
             case "single":
-                this.manageSingle(initialQuery, url);
+                this.manageSingle(initialQuery, url, headers);
                 this.removeVideo(metadataVideo);
                 break;
             case "playlist":
-                this.managePlaylist(initialQuery, url);
+                this.managePlaylist(initialQuery, url, headers);
                 this.removeVideo(metadataVideo);
                 break;
             case "livestream":
@@ -54,18 +54,18 @@ class QueryManager {
         }
     }
 
-    manageSingle(initialQuery, url) {
-        let video = new Video(url, "single", this.environment);
+    manageSingle(initialQuery, url, headers) {
+        let video = new Video(url, headers, "single", this.environment);
         video.setMetadata(initialQuery);
         this.addVideo(video);
         setTimeout(() => this.updateGlobalButtons(), 700); //This feels kinda hacky, maybe find a better way sometime.
     }
 
-    managePlaylist(initialQuery, url) {
+    managePlaylist(initialQuery, url, headers) {
         this.playlistMetadata = this.playlistMetadata.concat(Utils.generatePlaylistMetadata(initialQuery));
-        let playlistVideo = new Video(url, "playlist", this.environment);
+        let playlistVideo = new Video(url, headers, "playlist", this.environment);
         this.addVideo(playlistVideo);
-        const playlistQuery = new InfoQueryList(initialQuery, this.environment, new ProgressBar(this, playlistVideo));
+        const playlistQuery = new InfoQueryList(initialQuery, headers, this.environment, new ProgressBar(this, playlistVideo));
         playlistQuery.start().then((videos) => {
             if(videos.length > this.environment.settings.splitMode) {
                 let totalFormats = [];
@@ -156,7 +156,7 @@ class QueryManager {
         }
         downloadVideo.audioQuality = (downloadVideo.audioQuality != null) ? downloadVideo.audioQuality : "best";
         let progressBar = new ProgressBar(this, downloadVideo);
-        downloadVideo.setQuery(new DownloadQuery(downloadVideo.url, downloadVideo, this.environment, progressBar, this.playlistMetadata));
+        downloadVideo.setQuery(new DownloadQuery(downloadVideo.url, downloadVideo.headers, downloadVideo, this.environment, progressBar, this.playlistMetadata));
         downloadVideo.query.connect().then(() => {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             if(downloadVideo.error) return;
@@ -560,14 +560,14 @@ class QueryManager {
         const urlList = []
         const filteredUrlList = [];
         for(const video of this.managedVideos) {
-            urlList.push(video.url)
+            urlList.push({url:video.url, headers:video.headers})
         }
         for(const video of this.playlistMetadata) {
             for(let i = 0; i < urlList.length; i++) {
-                if(urlList[i] === video.video_url || urlList[i] === video.playlist_url) {
+                if(urlList[i].url === video.video_url || urlList[i].url === video.playlist_url) {
                     urlList.splice(i, 1);
                     i--;
-                    filteredUrlList.push(video.playlist_url);
+                    filteredUrlList.push({url:video.playlist_url, headers:video.headers});
                 } else {
                     filteredUrlList.push(urlList[i]);
                 }
@@ -584,7 +584,8 @@ class QueryManager {
     loadTaskList(taskList) {
         let count = 0;
         for(const url of taskList) {
-            this.manage(url);
+            console.log("loadTaskList")
+            this.manage(url.url, url.headers);
             count++;
         }
         console.log("Added " + count + " saved tasks.")

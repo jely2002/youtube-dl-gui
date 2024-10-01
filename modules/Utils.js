@@ -67,7 +67,7 @@ class Utils {
                 alreadyDone.push(entry);
                 continue;
             }
-            urls.push(url);
+            urls.push({'url':url,'headers':entry.headers});
         }
         return [urls, alreadyDone]
     }
