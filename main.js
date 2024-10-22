@@ -361,6 +361,10 @@ function scan(msg) {
                 console.log(res);
                 toscandeeply = true;
             }
+            else if (res.startsWith('<MPD')) { //DASH?
+                console.log(res);
+                toscandeeply = true;
+            }
         }
         if (toscandeeply) queryManager.manage(data.url, data.headers);
     }
