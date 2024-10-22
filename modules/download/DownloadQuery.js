@@ -169,11 +169,26 @@ class DownloadQuery extends Query {
         let destinationCount = 0;
         let initialReset = false;
         let result = null;
+        const regexliverec = /size=\s*(\d+\w)iB\s*time=(\d+:\d+:\d+.\d+)\s*bitrate=\s*(\d+.\d+\w)bits\/s\s*speed=\d+.\d+x/;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
                 this.environment.logger.log(this.video.identifier, liveData);
                 this.video.setFilename(liveData);
-
+                if(this.video.is_live) {
+                    if (!initialReset) {
+                        initialReset = true;
+                        this.progressBar.reset();
+                        return;
+                    }
+                    try{
+                        const livrec =  liveData.match(regexliverec);
+                        if (typeof (`${livrec[1]}`) == "undefined") return;
+                        this.progressBar.updateDownload('livestream', `${livrec[2]}`, `${livrec[3]}bits\/s`, this.video.audioOnly || this.video.downloadingAudio);
+                    } catch(e) {
+                        return;
+                    }
+                    return;
+                }
                 if (!liveData.includes("[download]")) return;
 
                 if (liveData.includes("Destination")) destinationCount += 1;

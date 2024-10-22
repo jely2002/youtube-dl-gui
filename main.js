@@ -151,6 +151,9 @@ function startCriticalHandlers(env) {
                 case "stop":
                     queryManager.stopDownload(args.identifier);
                     break;
+                case "remove":
+                    queryManager.removeDownload(args.identifier);
+                    break;
                 case "open":
                     queryManager.openVideo(args);
                     break;

@@ -62,7 +62,6 @@ Please be aware that this app is only tested on windows, linux and macOS. If you
 ## Planned features
 - Select individual audio and video codecs (advanced mode)
 - List all audio qualities
-- Support for downloading livestreams
 
 Feel free to [request a new feature](https://github.com/StefanLobbenmeier/youtube-dl-gui/issues).
 

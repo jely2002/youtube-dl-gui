@@ -1,3 +1,4 @@
+const child_process = require('child_process');
 const execa = require('execa');
 const UserAgent = require('user-agents');
 
@@ -12,7 +13,9 @@ class Query {
     stop() {
         this.stopped = true;
         if(this.process != null) {
-            this.process.cancel();
+            if (this.progressBar.video.is_live)
+                process.kill(this.process.pid, 'SIGINT');///Only way to stop ffmpeg lives
+            else this.process.kill();
         }
     }
 
@@ -79,7 +82,7 @@ class Query {
             //Return data while the query is running (live)
             //Return "done" when the query has finished
             return await new Promise((resolve) => {
-                this.process = execa(command, args);
+                this.process = child_process.spawn(command, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
                     const lines = data

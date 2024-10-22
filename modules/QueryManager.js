@@ -46,7 +46,8 @@ class QueryManager {
                 this.removeVideo(metadataVideo);
                 break;
             case "livestream":
-                this.environment.errorHandler.raiseError({code: "Not supported", description: "Livestreams are not yet supported."}, metadataVideo.identifier);
+                this.manageSingle(initialQuery, url, headers);
+                this.removeVideo(metadataVideo);
                 break;
             default:
                 //This.environment.errorHandler.raiseUnhandledError("Youtube-dl returned an empty object\n" + JSON.stringify(Utils.detectInfoType(initialQuery), null, 2), metadataVideo.identifier);
@@ -357,12 +358,19 @@ class QueryManager {
         }
     }
 
-    stopDownload(identifier) {
+    removeDownload(identifier) {
         let video = this.getVideo(identifier);
         if (video.query != null) {
             video.query.cancel();
         }
         this.removeVideo(video);
+    }
+
+    stopDownload(identifier) {
+        let video = this.getVideo(identifier);
+        if (video.query != null) {
+            video.query.cancel();
+        }
     }
 
     async openVideo(args) {

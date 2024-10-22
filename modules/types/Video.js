@@ -21,6 +21,7 @@ class Video {
         this.error = false;
         this.filename = null;
         this.identifier = Utils.getRandomID(32);
+        this.is_live = false;
     }
 
     setFilename(liveData) {
@@ -120,6 +121,7 @@ class Video {
         this.formats = Utils.parseAvailableFormats(metadata);
         this.audioCodecs = Utils.parseAvailableAudioCodecs(metadata);
         this.selected_format_index = this.selectHighestQuality();
+        this.is_live = (metadata.is_live != null && metadata.is_live === true);
     }
 
     selectHighestQuality() {

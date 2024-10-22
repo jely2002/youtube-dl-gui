@@ -672,10 +672,11 @@ function removeVideo(card) {
     if(btn.hasClass("clicked") || $(card).find(".custom-select.download-type").is(":visible") || $(card).find(".btn.btn-dark.folder").is(":visible") || $(card).find(".row.error.d-none").is(":visible") || $(card).find(".url").length) {
         $(btn).popover('hide');
         $(card).remove();
-        window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
+        window.main.invoke("videoAction", {action: "remove", identifier: $(card).prop("id")});
     } else {
         $(btn).popover('show');
         $(btn).addClass("clicked");
+        window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
     }
 }
 
