@@ -53,6 +53,9 @@
     "user-agents": "^1.0.1444",
     "windowbar": "^1.7.4"
   },
+  "optionalDependencies": {
+    "dmg-license": "^1.0.9"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mp3butcher/youtube-dl-gui.git"
