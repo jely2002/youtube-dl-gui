@@ -9,55 +9,56 @@ from mitmproxy import http
 
 LISTENING_PORT = 12000
 
-# Queue to hold shared data
+# Queue to hold requests data to be sent
 data_queue = queue.Queue(maxsize=15)
 
-def serverloop(selfs):
+def sendTrafficLoop(trafficLoggerAddon):
   data=''
   deadguard=0
   try:
     while data=='':
         try:
-          #die on any message
-          data=selfs.socket_connection.recv(1)
+          data=trafficLoggerAddon.socket_connection.recv(1)
           print(data)
-          selfs.socket_instance.close()
-          selfs.socket_connection.close()
+          trafficLoggerAddon.socket_connection.close()
+          trafficLoggerAddon.socket_instance.close()
           ctx.master.shutdown()
         except:
           pass
         if data_queue.qsize()>0:
-          #send to OpenVideoDownloader
           msg = data_queue.get()        
           if msg is not None:
-            selfs.socket_connection.send(msg.encode())
+            trafficLoggerAddon.socket_connection.send(msg.encode())
         else:
           deadguard=deadguard+1
-          if deadguard>100000000:
-            #selfs.socket_connection.send('testconnection'.encode()) #dirty connection test to exit even if OpenVideoDownloader prematuraturaly die
+          if deadguard>10000000:
+            #Dirty connection test to exit even if OpenVideoDownloader prematurally die
+            trafficLoggerAddon.socket_connection.send('testconnection'.encode())
             deadguard=0
-  except:  
-    selfs.socket_instance.close()
-    selfs.socket_connection.close()
+  except:
+    trafficLoggerAddon.socket_connection.close()
+    trafficLoggerAddon.socket_instance.close()
     ctx.master.shutdown()
-  selfs.socket_instance.close()
-  selfs.socket_connection.close()
+  trafficLoggerAddon.socket_connection.close()
+  trafficLoggerAddon.socket_instance.close()
   ctx.master.shutdown()
 
 class TrafficLogger:
   def __init__(self):
-    
     self.socket_instance = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #self.socket_instance.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     self.socket_instance.bind(('127.0.0.1', LISTENING_PORT))
     self.socket_instance.listen(1) #limit to one client
-    print('Server running!')    
+    print('Proxy traffic server running on port 12000: Waiting for OpenVideoDownloader')
+    # Accept client connection    
     self.socket_connection, self.address = self.socket_instance.accept()
     self.socket_connection.setblocking(False)
-    print('new listener!')
+    print('OpenVideoDownloader connected: Ready to send traffic')
 
-    thread = threading.Thread(target=serverloop, args=([self]))
+    # Launch a thread to send traffic
+    thread = threading.Thread(target=sendTrafficLoop, args=([self]))
     thread.start()
+
         
   def request(self, flow):
     self.checkflow(flow, False)
@@ -70,24 +71,30 @@ class TrafficLogger:
     url='"'    + flow.request.url+  '"'
     headers="["
     for k, v in flow.request.headers.items():
-        if k!='If-Range':
-           headers=headers+'{"k":"'+k+'"'+',"v":'+'"'+v.replace("\"","\\\"")+'"'+'},'
-    headers=headers[:-1]+"]"
+        if k!='If-Range': #TODO: Headers should be filtered in OpenVideoDownloader instead of here
+           headers=headers+'{"k":"'+k+'"'+',"v":'+'"'+v.replace('"','\\"')+'"'+'},'
+    if headers=="[":
+       headers=headers+"]"
+    else:
+       headers=headers[:-1]+"]"
     rheaders="[]"
     if isrep:    
       rheaders="["
       for k, v in flow.response.headers.items():
-        rheaders=rheaders+'{"k":"'+k+'"'+',"v":'+'"'+v.replace("\"","\\\"")+'"'+'},'
-      rheaders=rheaders[:-1]+"]"
+        rheaders=rheaders+'{"k":"'+k+'"'+',"v":'+'"'+v.replace('"','\\"')+'"'+'},'
+      if rheaders=="[":
+         rheaders=rheaders+"]"
+      else:
+         rheaders=rheaders[:-1]+"]"
     data=""
     if isrep:
       #Don't send large response    
-      if len(flow.response.text)<50000000:
+      if len(flow.response.text)<20000000:
        try:
-         data=base64.b64encode(flow.response.content).decode("ascii")
+         data=base64.b64encode(flow.response.content[:10000]).decode("ascii")
        except:
          data=""
     msg='{"url":'+url+',"headers":'+headers+',"rheaders":'+rheaders+',"response":"'+data+'"}'
     data_queue.put(msg)
 
-addons = [TrafficLogger()]    
+addons = [TrafficLogger()]
