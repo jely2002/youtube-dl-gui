@@ -5,14 +5,12 @@ const Utils = require("../Utils")
 const console = require("console");
 
 class DownloadQuery extends Query {
-    constructor(url, headers, video, environment, progressBar, playlistMeta) {
-        super(environment, video.identifier);
+    constructor(video, progressBar, playlistMeta) {
+        super(video.environment, video.identifier);
         this.playlistMeta = playlistMeta;
-        this.url = url;
         this.video = video;
         this.progressBar = progressBar;
         this.format = video.formats[video.selected_format_index];
-        this.headers = headers;
     }
 
     cancel() {
@@ -171,7 +169,7 @@ class DownloadQuery extends Query {
         let result = null;
         const regexliverec = /size=\s*(\d+\w)iB\s*time=(\d+:\d+:\d+.\d+)\s*bitrate=\s*(\d+.\d+\w)bits\/s\s*speed=\d+.\d+x/;
         try {
-            result = await this.environment.downloadLimiter.schedule(() => this.start(this.url, args, (liveData) => {
+            result = await this.environment.downloadLimiter.schedule(() => this.start(this.video, args, (liveData) => {
                 this.environment.logger.log(this.video.identifier, liveData);
                 this.video.setFilename(liveData);
                 if(this.video.is_live) {
@@ -183,7 +181,7 @@ class DownloadQuery extends Query {
                     try{
                         const livrec =  liveData.match(regexliverec);
                         if (typeof (`${livrec[1]}`) == "undefined") return;
-                        this.progressBar.updateDownload('livestream', `${livrec[2]}`, `${livrec[3]}bits\/s`, this.video.audioOnly || this.video.downloadingAudio);
+                        this.progressBar.updateDownload('livestream', `${livrec[2]}`, `${livrec[3]}bits/s`, this.video.audioOnly || this.video.downloadingAudio);
                     } catch(e) {
                         return;
                     }

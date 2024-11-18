@@ -1,11 +1,10 @@
 const Query = require("../types/Query");
 
 class InfoQuery extends Query {
-    constructor(url, headers, identifier, environment) {
-        super(environment, identifier);
-        this.url = url;
-        this.headers = headers;
-        this.environment = environment;
+    constructor(video, identifier) {
+        super(video.environment, identifier);
+        this.video = video;
+        this.environment = video.environment;
         this.identifier = identifier;
     }
 
@@ -16,8 +15,8 @@ class InfoQuery extends Query {
                 args.push('--file-access-retries');
                 args.push(this.environment.settings.fileAccessRetries);
             }
-            this.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
-            let data = await this.environment.metadataLimiter.schedule(() => this.start(this.url, args));
+            this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
+            let data = await this.environment.metadataLimiter.schedule(() => this.start(this.video, args));
             return JSON.parse(data);
         } catch (e) {
             this.environment.errorHandler.checkError(e.stderr, this.identifier)

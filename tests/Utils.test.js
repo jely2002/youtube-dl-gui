@@ -98,13 +98,13 @@ describe('extractPlaylistUrls', () => {
        expect(console.error).toBeCalledTimes(1);
    });
    it('returns playlist urls',() => {
-       expect(Utils.extractPlaylistUrls({entries: [{url: "1"}, {url: "2"}]})).toContainEqual([{headers: undefined, url: "1"}, {headers: undefined, url: "2"}])
+       expect(Utils.extractPlaylistUrls({entries: [{url: "1"}, {url: "2"}]})).toContainEqual([{headers: [], url: "1"}, {headers: [], url: "2"}])
    });
    it('returns already done (queried) urls', () => {
-       expect(Utils.extractPlaylistUrls({entries: [{url: "1", formats: ["format"]}, {url: "2"}]})).toContainEqual([{url: "1", headers: undefined, formats: ["format"]}]);
+       expect(Utils.extractPlaylistUrls({entries: [{url: "1", formats: ["format"]}, {url: "2"}]})).toContainEqual([{url: "1", headers: [], formats: ["format"]}]);
    });
    it('uses the webpage_url when url is null', () => {
-      expect(Utils.extractPlaylistUrls({entries: [{webpage_url: "url"}]})).toContainEqual([{url:"url", "headers": undefined}]);
+      expect(Utils.extractPlaylistUrls({entries: [{webpage_url: "url"}]})).toContainEqual([{url:"url", "headers": []}]);
    });
 });
 

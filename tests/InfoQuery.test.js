@@ -1,4 +1,5 @@
 const InfoQuery = require("../modules/info/InfoQuery");
+const Video = require("../modules/types/Video");
 
 describe('Connect the InfoQuery', () => {
     beforeEach(() => {
@@ -44,6 +45,8 @@ function instanceBuilder() {
         },
         settings: {}
     };
-    return [env, new InfoQuery("http://url.link", [], "test__id", env)];
+    let metadataVideo = new Video("http://url.link", [], "test__id", env);
+               
+    return [env, new InfoQuery(metadataVideo, "test__id")];
 }
 

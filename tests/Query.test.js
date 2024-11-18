@@ -1,11 +1,21 @@
 const UserAgent = require('user-agents');
 const Query = require("../modules/types/Query");
+const Video = require("../modules/types/Video");
 const execa = require('execa');
 const { PassThrough } = require('stream');
 
 jest.mock('user-agents');
 jest.mock('execa');
-
+//jest.mock('child_process');
+const env = {
+    metadataLimiter: {
+        schedule: jest.fn()
+    },
+    errorHandler: {
+        checkError: jest.fn()
+    },
+    settings: {}
+};
 beforeEach(() => {
     jest.clearAllMocks();
     jest.doMock('execa', () => {
@@ -26,7 +36,7 @@ describe('ytdl Query', () => {
         UserAgent.prototype.toString = jest.fn().mockReturnValue("agent");
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("spoof", null, errorHandlerMock, "python");
-        return instance.start("https://url.link", [], null).then(() => {
+        return instance.start(new Video("https://url.link", [], "test__id",env), [], null).then(() => {
             expect(UserAgent.prototype.toString).toBeCalledTimes(1);
             expect(execa.mock.calls[0][1]).toContain("--user-agent");
             expect(execa.mock.calls[0][1]).toContain("agent");
@@ -36,7 +46,7 @@ describe('ytdl Query', () => {
         UserAgent.prototype.toString = jest.fn().mockReturnValue("agent");
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("empty", null, errorHandlerMock, "python");
-        return instance.start("https://url.link", [], null).then(() => {
+        return instance.start(new Video("https://url.link", [], "test__id",env), [], null).then(() => {
             expect(UserAgent.prototype.toString).toBeCalledTimes(0);
             expect(execa.mock.calls[0][1]).toContain("--user-agent");
             expect(execa.mock.calls[0][1]).toContain("''");
@@ -45,7 +55,7 @@ describe('ytdl Query', () => {
    it('adds the proxy when one is set', () => {
        const errorHandlerMock = jest.fn();
        const instance = instanceBuilder("default", "a/path/to/cookies.txt", errorHandlerMock, "python", "https://iama.proxy");
-       return instance.start("https://url.link", [], null).then(() => {
+       return instance.start(new Video("https://url.link", [], "test__id",env), [], null).then(() => {
            expect(execa.mock.calls[0][1]).toContain("--proxy");
            expect(execa.mock.calls[0][1]).toContain("https://iama.proxy");
        });
@@ -53,14 +63,14 @@ describe('ytdl Query', () => {
     it('does not add a proxy when none are set', () => {
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("default", "a/path/to/cookies.txt", errorHandlerMock, "python", "");
-        return instance.start("https://url.link", [], null).then(() => {
+        return instance.start(new Video("https://url.link", [], "test__id",env), [], null).then(() => {
             expect(execa.mock.calls[0][1]).not.toContain("--proxy");
         });
     })
    it('adds the cookies argument when specified in settings', () => {
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("default", "a/path/to/cookies.txt", errorHandlerMock, "python");
-        return instance.start("https://url.link", [], null).then(() => {
+        return instance.start(new Video("https://url.link", [], "test__id",env), [], null).then(() => {
             expect(execa.mock.calls[0][1]).toContain("--cookies");
             expect(execa.mock.calls[0][1]).toContain("a/path/to/cookies.txt");
         });
@@ -68,7 +78,7 @@ describe('ytdl Query', () => {
     it('uses the detected python command', () => {
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("default", null, errorHandlerMock, "python3");
-        return instance.start("https://url.link", [], null).then(() => {
+        return instance.start(new Video("https://url.link", [], "test__id",env), [], null).then(() => {
             expect(execa.mock.calls[0][0]).toEqual("python3");
             expect(execa.mock.calls[0][1][0]).toEqual("a/path/to/ytdl");
         });
@@ -76,14 +86,14 @@ describe('ytdl Query', () => {
     it('adds the url as final argument', () => {
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("default", null, errorHandlerMock, "python");
-        return instance.start("https://url.link", [], null).then(() => {
+        return instance.start(new Video("https://url.link", [], "test__id",env), [], null).then(() => {
             expect(execa.mock.calls[0][1][execa.mock.calls[0][1].length - 1]).toContain("https://url.link");
         });
     })
     it('adds the no-cache-dir as argument', () => {
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("default", null, errorHandlerMock, "python");
-        return instance.start("https://url.link", [], null).then(() => {
+        return instance.start(new Video("https://url.link", [], "test__id",env), [], null).then(() => {
             expect(execa.mock.calls[0][1]).toContain("--no-cache-dir");
         });
     });
@@ -96,10 +106,10 @@ describe('Query with live callback', () => {
         const errorHandlerMock = jest.fn();
         const callbackMock = jest.fn();
         const instance = instanceBuilder("default", null, errorHandlerMock, "python");
-        const result = instance.start("https://url.link", [], callbackMock);
+        const result = instance.start(new Video("https://url.link", [], "",env), [], callbackMock);
         setTimeout(() => {
             instance.stop();
-        }, 100);
+        }, 10);
         await expect(result).resolves.toEqual("killed");
         expect(callbackMock).toBeCalledWith("killed");
     });
@@ -110,7 +120,7 @@ describe('Query with live callback', () => {
         const errorHandlerMock = jest.fn();
         const callbackMock = jest.fn();
         const instance = instanceBuilder("default", null, errorHandlerMock, "python");
-        const result = instance.start("https://url.link", [], callbackMock);
+        const result = instance.start(new Video("https://url.link", [], "test__id",env), [], callbackMock);
         setTimeout(() => {
             stderr.emit("data", "test-error");
         }, 100);
@@ -125,7 +135,7 @@ describe('Query with live callback', () => {
         execa.mockReturnValue(mock)
         const callbackMock = jest.fn();
         const instance = instanceBuilder("default", null, jest.fn(), "python");
-        const result = instance.start("https://url.link", [], callbackMock);
+        const result = instance.start(new Video("https://url.link", [], "test__id",env), [], callbackMock);
         setTimeout(() => {
             stdout.emit("close");
         }, 100);
@@ -137,7 +147,7 @@ describe('Query with live callback', () => {
         execa.mockReturnValue(mock);
         const callbackMock = jest.fn();
         const instance = instanceBuilder("default", null, jest.fn(), "python");
-        const result = instance.start("https://url.link", [], callbackMock);
+        const result = instance.start(new Video("https://url.link", [], "test__id",env), [], callbackMock);
         setTimeout(() => {
             stdout.emit("data", "test-data");
             stdout.emit("data", "more-test-data");
@@ -154,21 +164,21 @@ describe('Query without callback', () => {
         execa.mockResolvedValue({stdout: "fake-data"});
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("default", null, errorHandlerMock, "python");
-        const result = instance.start("https://url.link", [], null)
+        const result = instance.start(new Video("https://url.link", [], "test__id",env), [], null)
         await expect(result).resolves.toEqual("fake-data");
     });
     it('Returns a stringified empty object on error', async () => {
         execa.mockResolvedValue(null);
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("default", null, errorHandlerMock, "python");
-        const result = instance.start("https://url.link", [], null)
+        const result = instance.start(new Video("https://url.link", [], "test__id",env), [], null)
         await expect(result).resolves.toEqual("{}");
     });
     it('Checks the error on error', () => {
         execa.mockResolvedValue(null);
         const errorHandlerMock = jest.fn();
         const instance = instanceBuilder("default", null, errorHandlerMock, "python");
-        return instance.start("https://url.link", [], null).then(() => {
+        return instance.start(new Video("https://url.link", [], "test__id",env), [], null).then(() => {
             expect(errorHandlerMock).toBeCalled();
         });
     });

@@ -60,6 +60,7 @@ class Utils {
         }
         for(const entry of infoQueryResult.entries) {
             let url;
+            entry.headers=[];
             if (entry.url == null) url = entry.webpage_url;
             else url = entry.url;
             if(entry.formats != null && entry.formats.length > 0) {
@@ -67,7 +68,7 @@ class Utils {
                 alreadyDone.push(entry);
                 continue;
             }
-            urls.push({'url':url,'headers':entry.headers});
+            urls.push({'url':url,'headers':[]});
         }
         return [urls, alreadyDone]
     }

@@ -8,18 +8,20 @@ class Query {
         this.identifier = identifier
         this.process = null;
         this.stopped = false;
+        this.video = null;
     }
 
     stop() {
         this.stopped = true;
         if(this.process != null) {
-            if (this.progressBar.video.is_live)
-                process.kill(this.process.pid, 'SIGINT');///Only way to stop ffmpeg lives
-            else this.process.kill();
+            if (this.video.is_live) process.kill(this.process.pid, 'SIGINT');///Only way to stop ffmpeg lives
+            else this.process.cancel();
         }
     }
 
-    async start(url, args, cb) {
+    async start(video, args, cb) {
+        this.video = video;
+        let url = video.url;
         if(this.stopped) return "killed";
         args.push("--no-cache-dir");
         args.push("--ignore-config");
@@ -82,7 +84,9 @@ class Query {
             //Return data while the query is running (live)
             //Return "done" when the query has finished
             return await new Promise((resolve) => {
-                this.process = child_process.spawn(command, args);
+              try {
+                if(video.is_live) this.process = child_process.spawn(command, args);
+                else this.process = execa(command, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
                     const lines = data
@@ -108,7 +112,10 @@ class Query {
                         resolve("killed");
                     }
                     console.error(data.toString())
-                })
+                });
+              } catch(e) {
+                console.log(e);
+              }
             });
         }
     }

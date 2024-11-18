@@ -3,13 +3,14 @@ const Video = require('../types/Video');
 const Utils = require("../Utils");
 
 class InfoQueryList {
-    constructor(query, environment, progressBar) {
+    constructor(query, headers, environment, progressBar) {
         this.query = query;
         this.environment = environment;
         this.progressBar = progressBar;
         this.urls = null;
         this.length = null;
         this.done = 0;
+        this.headers = headers;
     }
 
     async start() {
@@ -29,10 +30,11 @@ class InfoQueryList {
                 resolve(null);
             }
             for (const url of this.urls) {
-                let task = new InfoQuery(url,this.progressBar.video.headers, this.progressBar.video.identifier, this.environment);
+                let metadataVideo = new Video(url.url, url.headers, "", this.environment);
+                let task = new InfoQuery(metadataVideo, "");
                 task.connect().then((data) => {
                     if (data.formats != null) {
-                        let video = this.createVideo(data, url, data.headers);
+                        let video = this.createVideo(data, url.url, url.headers);
                         totalMetadata.push(video);
                     }
                     this.done++;

@@ -25,10 +25,11 @@ class QueryManager {
     async manage(url, headers) {
         let metadataVideo = new Video(url, headers, "metadata", this.environment);
         this.addVideo(metadataVideo);
-        const initialQuery = await new InfoQuery(url, headers,metadataVideo.identifier, this.environment).connect();
+        const initialQuery = await new InfoQuery(metadataVideo, metadataVideo.identifier).connect();
         if(metadataVideo.error) return;
         if(Utils.isYouTubeChannel(url)) {
-            const actualQuery = await new InfoQuery(initialQuery.entries[0].url, metadataVideo.headers, metadataVideo.identifier, this.environment).connect();
+            let metadataVideo2 = new Video(initialQuery.entries[0].url, metadataVideo.headers, metadataVideo.identifier, this.environment);
+            const actualQuery = await new InfoQuery(metadataVideo2, metadataVideo.identifier).connect();
             if(metadataVideo.error) return;
             this.removeVideo(metadataVideo);
             if(actualQuery.entries == null || actualQuery.entries.length === 0) this.managePlaylist(initialQuery, url);
@@ -127,6 +128,7 @@ class QueryManager {
             type: video.type,
             identifier:  video.identifier,
             url: video.url,
+            headers: video.headers,
             title: video.title,
             duration: video.duration,
             audioOnly: video.audioOnly,
@@ -157,7 +159,7 @@ class QueryManager {
         }
         downloadVideo.audioQuality = (downloadVideo.audioQuality != null) ? downloadVideo.audioQuality : "best";
         let progressBar = new ProgressBar(this, downloadVideo);
-        downloadVideo.setQuery(new DownloadQuery(downloadVideo.url, downloadVideo.headers, downloadVideo, this.environment, progressBar, this.playlistMetadata));
+        downloadVideo.setQuery(new DownloadQuery(downloadVideo, progressBar, this.playlistMetadata));
         downloadVideo.query.connect().then(() => {
             //Backup done call, sometimes it does not trigger automatically from within the downloadQuery.
             if(downloadVideo.error) return;

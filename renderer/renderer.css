@@ -291,7 +291,7 @@ select {
 
 .bi-card-text-strike {
     display: block;
-    background: url(img/card-text-strike.svg);
+    background: url(img/card-text-strike.svg) center no-repeat;
     height: 1em;
     width: 1em;
     margin-top: 0.2em ;

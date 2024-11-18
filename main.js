@@ -351,7 +351,7 @@ function scan(msg) {
             console.warn(" [x] contentype video!!!!!!!!!!!" + data);
         }
         //Large Content-Range
-        if (sizeok || contentlength > 100000) {
+        if(!contentype.startsWith('image') && (sizeok || contentlength > 1000000)) {
             toscandeeply = true;
         }
         let res = atob(data.response)
@@ -360,8 +360,7 @@ function scan(msg) {
             if (res[0] == "#") { //HLS?
                 console.log(res);
                 toscandeeply = true;
-            }
-            else if (res.startsWith('<MPD')) { //DASH?
+            } else if (res.startsWith('<MPD')) { //DASH?
                 console.log(res);
                 toscandeeply = true;
             }
@@ -395,7 +394,6 @@ ipcMain.handle("setScannerEnabled", (event, args) => {
 
     console.log(env.settings.paths.mitmproxy);
     if (scannerIsOn) {
-
         if (mitmproxyclient) mitmproxyclient.destroy();
         console.log(__dirname);
         let script = path.join(path.dirname(__dirname), 'binaries', 'send_traffic_to_videodownloader.py');
@@ -421,8 +419,7 @@ ipcMain.handle("setScannerEnabled", (event, args) => {
         mitmwebprocess.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
         });
-        let msg = 'Proxy running on localhost on port 15930: Configure proxy in your browser to scan network';
-        dialog.showMessageBox({ message: msg });
+        dialog.showMessageBox({ message: 'Proxy running on localhost on port 15930: Configure proxy in your browser to scan network' });
         createConnection();
 
     } else {
