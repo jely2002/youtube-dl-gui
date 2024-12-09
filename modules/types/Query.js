@@ -23,6 +23,9 @@ class Query {
         this.video = video;
         let url = video.url;
         if(this.stopped) return "killed";
+
+        let command='';
+        if(!video.is_live){
         args.push("--no-cache-dir");
         args.push("--ignore-config");
 
@@ -61,8 +64,16 @@ class Query {
 
         args.push(url) //Url must always be added as the final argument
 
-        let command = this.environment.paths.ytdl; //Set the command to be executed
+        command = this.environment.paths.ytdl; //Set the command to be executed
+    }
+    
+    else{
+ 
 
+        command = this.environment.paths.ffmpeg+"/ffmpeg"; //Set the command to be executed
+        console.log(args);
+
+    }
         if(this.environment.pythonCommand !== "python") { //If standard python is not available use another install if detected
             args.unshift(this.environment.paths.ytdl);
             command = this.environment.pythonCommand;
@@ -85,8 +96,8 @@ class Query {
             //Return "done" when the query has finished
             return await new Promise((resolve) => {
               try {
-                if(video.is_live) this.process = child_process.spawn(command, args);
-                else this.process = execa(command, args);
+                //if(video.is_live) this.process = child_process.spawn(command, args);  else 
+                this.process = execa(command, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
                     const lines = data
