@@ -168,6 +168,12 @@ function startCriticalHandlers(env) {
                 case "info":
                     queryManager.showInfo(args.identifier);
                     break;
+                case "changeHeaders":
+                    queryManager.changeHeaders(args.identifier, args.newheaders);
+                    break;
+                case "retry":
+                    queryManager.retry(args.identifier);
+                    break;
                 case "downloadInfo":
                     queryManager.saveInfo(args.identifier);
                     break;
@@ -398,9 +404,12 @@ ipcMain.handle("setScannerEnabled", (event, args) => {
         console.log(__dirname);
         let script = path.join(path.dirname(__dirname), 'binaries', 'send_traffic_to_videodownloader.py');
         console.log(script);
+        let port = env.settings.mitmPort;
+        let extra = env.settings.mitmExtraArgs;
+        extra = extra.split(' ');
         mitmwebprocess = spawn(
             path.join(env.settings.paths.mitmproxy, 'mitmweb'),
-            ['-q', '--anticache', '--anticomp', '-s', script, '--listen-port', '15930']
+            ['-q', '-s', script, '--listen-port', port].concat(extra)
         );
         mitmwebprocess.on('message', (message) => {
             if (message.type === 'error') {
@@ -419,7 +428,7 @@ ipcMain.handle("setScannerEnabled", (event, args) => {
         mitmwebprocess.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
         });
-        dialog.showMessageBox({ message: 'Proxy running on localhost on port 15930: Configure proxy in your browser to scan network' });
+        dialog.showMessageBox({ message: 'Proxy running on localhost on port '+env.settings.mitmPort+': Configure proxy in your browser to scan network' });
         createConnection();
 
     } else {

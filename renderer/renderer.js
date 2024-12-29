@@ -250,7 +250,9 @@ async function init() {
         $('#fileInputLabel').html("Click to select cookies.txt");
         $('#fileInput').attr("title", "No file selected");
     })
-
+    $('#infoModal #headers-string').bind('input propertychange', () => {
+        window.main.invoke('videoAction', {action: "changeHeaders", identifier: $('#infoModal .identifier').html(), newheaders: $('#headers-string').val()});
+    });
     $('#infoModal .json').on('click', () => {
         window.main.invoke('videoAction', {action: "downloadInfo", identifier: $('#infoModal .identifier').html()});
     });
@@ -1014,6 +1016,8 @@ async function getSettings() {
     $('#keepUnmerged').prop('checked', settings.keepUnmerged);
     $('#avoidFailingToSaveDuplicateFileName').prop('checked', settings.avoidFailingToSaveDuplicateFileName);
     $('#allowUnsafeFileExtensions').prop('checked', settings.allowUnsafeFileExtensions);
+    $('#mitmPort').val(settings.mitmPort);
+    $('#mitmExtraArgs').val(settings.mitmExtraArgs);
     $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
     $('#maxConcurrent').val(settings.maxConcurrent);
     $('#settingsModal #retries').val(settings.retries);
@@ -1051,6 +1055,8 @@ async function sendSettings() {
         keepUnmerged: $('#keepUnmerged').prop('checked'),
         avoidFailingToSaveDuplicateFileName: $('#avoidFailingToSaveDuplicateFileName').prop('checked'),
         allowUnsafeFileExtensions: $('#allowUnsafeFileExtensions').prop('checked'),
+        mitmPort: $('#mitmPort').val(),
+        mitmExtraArgs: $('#mitmExtraArgs').val(),
         calculateTotalSize: $('#calculateTotalSize').prop('checked'),
         sizeMode: $('#sizeSetting').val(),
         splitMode: $('#splitMode').val(),
@@ -1207,12 +1213,7 @@ function changeSubsToRetry(url, card) {
         .addClass("retry-btn")
         .html('<i title="Retry" class="bi bi-arrow-counterclockwise"></i>')
         .on('click', function() {
-            window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
-            if(url == null) {
-                parseURL($(card).find('.url').val());
-            } else {
-                parseURL(url);
-            }
+            window.main.invoke("videoAction", {action: "retry", identifier: $(card).prop("id")});
         })
         .find('i').removeClass("disabled");
 }

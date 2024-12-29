@@ -49,6 +49,13 @@ class Settings {
         this.statSend = statSend == null ? false : statSend;
         this.theme = theme == null ? "dark" : theme;
         this.setGlobalShortcuts();
+        this.mitmPort = 15930;
+        this.mitmExtraArgs = "--anticache --anticomp";
+    }
+
+    setupMitmproxyConfig(mitmPort, mitmExtraArgs) {
+        this.mitmPort = mitmPort == null ? 15930 :mitmPort;
+        this.mitmExtraArgs = mitmExtraArgs == null ? "--anticache --anticomp" :mitmExtraArgs;
     }
 
     getDefaultMaxConcurrent() {
@@ -66,7 +73,7 @@ class Settings {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(
+            let settings= new Settings(
                 paths,
                 env,
                 data.outputFormat,
@@ -105,9 +112,15 @@ class Settings {
                 data.calculateTotalSize,
                 data.theme
             );
+            settings.setupMitmproxyConfig(
+                data.mitmPort,
+                data.mitmExtraArgs
+            );
+            return settings;
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
+            settings.setupMitmproxyConfig();
             settings.save();
             console.log("Created new settings file.")
             return settings;
@@ -137,6 +150,8 @@ class Settings {
         this.keepUnmerged = settings.keepUnmerged;
         this.avoidFailingToSaveDuplicateFileName = settings.avoidFailingToSaveDuplicateFileName;
         this.allowUnsafeFileExtensions = settings.allowUnsafeFileExtensions;
+        this.mitmPort = settings.mitmPort;
+        this.mitmExtraArgs = settings.mitmExtraArgs;
         this.calculateTotalSize = settings.calculateTotalSize;
         this.sizeMode = settings.sizeMode;
         this.splitMode = settings.splitMode;
@@ -193,6 +208,8 @@ class Settings {
             keepUnmerged: this.keepUnmerged,
             avoidFailingToSaveDuplicateFileName: this.avoidFailingToSaveDuplicateFileName,
             allowUnsafeFileExtensions: this.allowUnsafeFileExtensions,
+            mitmPort: this.mitmPort,
+            mitmExtraArgs: this.mitmExtraArgs,
             calculateTotalSize: this.calculateTotalSize,
             theme: this.theme,
             version: this.env.version

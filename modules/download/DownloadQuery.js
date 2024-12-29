@@ -187,6 +187,15 @@ class DownloadQuery extends Query {
                     }
                     return;
                 }
+                let livrec=null;
+                try{
+                    livrec =  liveData.match(regexliverec);
+                    if (typeof (`${livrec[1]}`) == "undefined") return;
+                    this.progressBar.updateDownload('livestream', `${livrec[2]}`, `${livrec[3]}bits/s`, this.video.audioOnly || this.video.downloadingAudio);
+                }catch(e){
+                   //
+                }
+                if (livrec!=null) return;
                 if (!liveData.includes("[download]")) return;
 
                 if (liveData.includes("Destination")) destinationCount += 1;

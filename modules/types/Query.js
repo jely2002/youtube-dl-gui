@@ -14,8 +14,8 @@ class Query {
     stop() {
         this.stopped = true;
         if(this.process != null) {
-            if (this.video.is_live) process.kill(this.process.pid, 'SIGINT');///Only way to stop ffmpeg lives
-            else this.process.cancel();
+            if(this.process.pid) process.kill(this.process.pid, 'SIGINT'); ///Only way to stop ffmpeg through ydl
+            else this.process.cancel(); //Just for Query.test to pass
         }
     }
 

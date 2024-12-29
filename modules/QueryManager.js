@@ -478,6 +478,26 @@ class QueryManager {
         this.window.webContents.send("videoAction", args);
     }
 
+    retry(identifier) {
+        let video = this.getVideo(identifier);
+        let url=video.url;
+        let headers=video.headers;
+        this.removeVideo(video);
+        this.manage(url, headers);
+    }
+
+    changeHeaders(identifier,newheaders) {
+        let video = this.getVideo(identifier);
+        let heads=newheaders.split("\n");
+        let nheaders=[]
+        heads.forEach(hv=> {
+            console.log(hv);
+            let t=hv.indexOf(":");
+            if(t>0) nheaders.push({ k: hv.substring(0,t), v: hv.substring(t+1,hv.length)});
+        })
+        video.headers=nheaders;
+    }
+
     async saveInfo(infoVideo, askPath=true) {
         let video = infoVideo;
         if(video.url == null) video = this.getVideo(infoVideo);

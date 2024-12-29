@@ -186,7 +186,7 @@
                         </div>
                     </div>
                     <textarea id="info-description" rows="5" cols="50" readonly></textarea>
-                    <textarea id="headers-string" rows="5" cols="50" readonly></textarea>
+                    <textarea id="headers-string" rows="5" cols="50"></textarea>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item uploader"></li>
                         <li class="list-group-item extractor"></li>
@@ -349,6 +349,16 @@
                 <div class="mb-4">
                     <label for="ratelimitSetting" class="form-label">Rate-limit per video (KB/s)</label>
                     <input id="ratelimitSetting" class="form-control" type="number" value="" placeholder="Rate-limit in KB/s">
+                </div>
+                <hr/>
+                <div class="mb-4">
+                    <label for="mitmPort" class="form-label">Mitmproxy port</label>
+                    <input id="mitmPort" class="form-control" type="number" value="" placeholder="Mitmproxy port">
+                </div>
+                <hr/>
+                <div class="mb-4">
+                    <label for="mitmExtraArgs" class="form-label">Mitmproxy extra arguments</label>
+                    <input id="mitmExtraArgs" class="form-control" type="text" value="" placeholder="Mitmproxy extra arguments">
                 </div>
                 <hr/>
                 <h3>Input</h3>
