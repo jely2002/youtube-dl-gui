@@ -14,8 +14,10 @@ class Query {
     stop() {
         this.stopped = true;
         if(this.process != null) {
-            if(this.process.pid) process.kill(this.process.pid, 'SIGINT'); ///Only way to stop ffmpeg through ydl
-            else this.process.cancel(); //Just for Query.test to pass
+            if(this.process.pid) {
+                if(process.platform=='win32') child_process.spawnSync("taskkill", ["/pid", this.process.pid, '/t', '/f']);
+                else process.kill(this.process.pid,'SIGINT');
+            }else this.process.cancel(); //Just for Query.test to pass}
         }
     }
 
