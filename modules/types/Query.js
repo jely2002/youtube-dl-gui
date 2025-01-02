@@ -1,6 +1,6 @@
-const child_process = require('child_process');
 const execa = require('execa');
 const UserAgent = require('user-agents');
+const ctrlc = require('ctrlc-windows')
 
 class Query {
     constructor(environment, identifier) {
@@ -15,9 +15,9 @@ class Query {
         this.stopped = true;
         if(this.process != null) {
             if(this.process.pid) {
-                if(process.platform=='win32') child_process.spawnSync("taskkill", ["/pid", this.process.pid, '/t', '/f']);
+                if(process.platform=='win32') ctrlc.ctrlc(this.process.pid);
                 else process.kill(this.process.pid,'SIGINT');
-            }else this.process.cancel(); //Just for Query.test to pass}
+            }else this.process.cancel(); //Just for Query.test to pass
         }
     }
 
@@ -87,8 +87,7 @@ class Query {
             //Return "done" when the query has finished
             return await new Promise((resolve) => {
               try {
-                if(video.is_live) this.process = child_process.spawn(command, args);
-                else this.process = execa(command, args);
+                this.process = execa(command, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
                     const lines = data
