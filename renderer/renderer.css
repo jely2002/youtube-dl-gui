@@ -453,7 +453,7 @@ option.audio {
 }
 
 .controls .buttons * {
-    margin: 0 5px;
+    margin: 1px 5px;
     width: 140px;
 }
 
