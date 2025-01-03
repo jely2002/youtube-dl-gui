@@ -739,7 +739,7 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
 }
 
 .light-icon.bi-card-text-strike {
-    background: url("img/card-text-strike-light.svg");
+    background: url("img/card-text-strike-light.svg") center no-repeat;
 }
 
 /* WHEN DONE DROPDOWN */
