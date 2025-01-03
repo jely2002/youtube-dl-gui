@@ -43,7 +43,6 @@ Want to know more about the features this app offers? Head over to the [wiki](ht
 I appreciate any help. That may include:
 - testing and raising issues if you encounter any
 - contributing via a pull request
-- donating to the project ([ko-fi](https://ko-fi.com/stefanlobbenmeier))
 
 ## Something is not working!
 Please see if the answer is in the [frequently answered questions](https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/FAQ) or in the [wiki](https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/).
@@ -63,7 +62,7 @@ Please be aware that this app is only tested on windows, linux and macOS. If you
 - Select individual audio and video codecs (advanced mode)
 - List all audio qualities
 
-Feel free to [request a new feature](https://github.com/StefanLobbenmeier/youtube-dl-gui/issues).
+Feel free to [request a new feature](https://github.com/mp3butcher/youtube-dl-gui/issues).
 
 ## Demo gif
 <img src="ytdlgui_demo.gif" alt="demo" width="500"/>  
