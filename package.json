@@ -51,6 +51,7 @@
     "mkdirp": "^2.1.6",
     "popper.js": "^1.16.1",
     "sortablejs": "^1.15.0",
+    "targz": "^1.0.1",
     "user-agents": "^1.0.1444",
     "windowbar": "^1.7.4"
   },

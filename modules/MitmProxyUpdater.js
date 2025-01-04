@@ -7,6 +7,7 @@ const os = require("os");
 const AdmZip = require("adm-zip");
 const Utils = require('./Utils');
 const {Agent} = require("https");
+const targz = require('targz');
 
 class MitmProxyUpdater {
 
@@ -24,7 +25,16 @@ class MitmProxyUpdater {
         }
         console.log("Checking for a new version of mitmproxy.");
         const localVersion = await this.getLocalVersion();
-        const { remoteMitmProxyUrl, remoteVersion } = await this.getRemoteVersion();
+        const  remoteVersion  = await this.getRemoteVersion();
+        let platform = "windows-amd64";
+        let ext=".tar.gz";
+        if (os.arch() === "x32" || os.arch() === "ia32") { platform = "windows-x86_64"; ext=".zip"; }
+        if (this.paths.platform === "darwin") {
+            if(os.arch() === "arm") platform = "macos-arm64";
+            else platform = "macos-x86_64";
+        } else if (this.paths.platform === "linux") platform = "linux-x86_64";
+
+        let remoteMitmProxyUrl='https://downloads.mitmproxy.org/'+remoteVersion+'/mitmproxy-'+remoteVersion+'-'+platform+ext;
 
         if(remoteVersion === localVersion) {
             console.log(`mitmproxy was already up-to-date! Version: ${localVersion}`);
@@ -54,35 +64,30 @@ class MitmProxyUpdater {
     }
 
     async getRemoteVersion() {
+        const releaseUrl = "https://github.com/mitmproxy/mitmproxy/releases/latest/"
         try {
-            let platform = "windows-amd64";
-
-/**
- * Missing: const httpsAgent = new Agent({
- *    rejectUnauthorized: false
- *  });
- *  const res = await axios.get("https://ffbinaries.com/api/v1/version/latest", {httpsAgent});
- */
-            if (os.arch() === "x32" || os.arch() === "ia32") platform = "windows-amd64";
-            if (this.paths.platform === "darwin") platform = "macos-arm";
-            else if (this.paths.platform === "linux") platform = "linux-amd64";
-            return {
-                remoteVersion: "10.4.2",//Missing: upload asset for release version in mitmproxy workflow
-                remoteMitmProxyUrl: 'https://github.com/mp3butcher/mitmproxy/releases/download/zipped/mitmproxy.' + platform + '.zip'
-            };
+            await axios.get(releaseUrl, {
+                responseType: 'document',
+                maxRedirects: 0,
+            })
         } catch (err) {
-            console.error('An error occurred while retrieving the latest mitmproxy version data.')
-            if (err.response != null) {
-                console.error('Status code: ' + err.response.status);
+            const res = err.response;
+            if (err.response == null) {
+                console.error('An error occurred while retrieving the latest mitmproxy version data.')
+                return null;
             }
-            return {
-                remoteVersion: null,
-                remoteMitmProxyUrl: null
-            };
+            if (res.status !== 302) {
+                console.error('Did not get redirect for the latest version link. Status: ' + err.response.status);
+                return null;
+            }
+            const directUrl = res.headers.location;
+            const versionRegex = directUrl.match(/[0-9]+\.[0-9]+\.[0-9]+/);
+            return versionRegex ? versionRegex[0] : null;
         }
+        return null;
     }
 
-    //Returns the currently downloaded version of yt-dlp
+    //Returns the currently downloaded version of mitmProxy
    async getLocalVersion() {
         let data;
         try {
@@ -100,7 +105,7 @@ class MitmProxyUpdater {
         if(data == null) {
             return null;
         } else {
-            console.log("Current mitmweb version: " + data.version);
+            console.log("Current mitmproxy version: " + data.version);
             return data.version;
         }
     }
@@ -140,12 +145,29 @@ class MitmProxyUpdater {
             data.pipe(writer);
         });
         this.win.webContents.send("binaryLock", {lock: true, placeholder: `${this.action} ${artifact} ${version} - Extracting binaries...`})
-        const zipFile = new AdmZip(path.join(downloadPath, filename), {});
-        zipFile.extractEntryTo(filename, this.paths.mitmproxy, false, true, false, filename);
+
+        if(url.endsWith('.zip')) {
+            const zipFile = new AdmZip(path.join(downloadPath, filename), {});
+            zipFile.extractEntryTo(filename, this.paths.mitmproxy, false, true, false, filename);
+        } else {
+            targz.decompress({
+                src: path.join(downloadPath, filename),
+                dest: this.paths.mitmproxy,
+                tar: {
+                    ignore: name => {
+                        return name.indexOf('mitmweb') == -1
+                    }
+                },
+            }, err => {
+                if(err) {
+                    console.log(err);
+                }
+            });
+        }
         fs.rmSync(path.join(this.paths.mitmproxy, "downloads"), { recursive: true, force: true });
     }
 
-    //Writes the new version number to the ytdlVersion file
+    //Writes the new version number to the mitmproxyVersion file
     async writeVersionInfo(version) {
         const data = {
             version: version,
