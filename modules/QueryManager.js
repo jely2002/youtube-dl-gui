@@ -472,7 +472,7 @@ class QueryManager {
         let video = this.getVideo(identifier);
         let args = {
             action: "info",
-            metadata: video.hasMetadata ? video.serialize() : null,
+            metadata: video.serialize(),
             identifier: identifier
         };
         this.window.webContents.send("videoAction", args);
