@@ -14,7 +14,9 @@ data_queue = queue.Queue(maxsize=15)
 
 def sendTrafficLoop(trafficLoggerAddon):
   data=''
-  deadguard=0
+  deadguard = 0
+  checkinterval = 6
+  next_checktime = time.time() + checkinterval
   try:
     while data=='':
         try:
@@ -31,10 +33,12 @@ def sendTrafficLoop(trafficLoggerAddon):
             trafficLoggerAddon.socket_connection.send(msg.encode())
         else:
           deadguard=deadguard+1
-          if deadguard>10000000:
-            #Dirty connection test to exit even if OpenVideoDownloader prematurally die
+          current_time = time.time()
+          if current_time >= next_checktime:
+            #Dirty connection test to crash and exit if OpenVideoDownloader prematurally died
             trafficLoggerAddon.socket_connection.send('testconnection'.encode())
-            deadguard=0
+            deadguard = 0
+            next_checktime += checkinterval
   except:
     trafficLoggerAddon.socket_connection.close()
     trafficLoggerAddon.socket_instance.close()
