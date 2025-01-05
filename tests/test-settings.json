@@ -35,6 +35,7 @@
   "allowUnsafeFileExtensions": false,
   "mitmPort": 15930,
   "mitmExtraArgs": "--anticache --anticomp",
+  "headerFilter": ["if-range"],
   "calculateTotalSize": true,
   "theme": "dark",
   "version": "2.0.0-test1"

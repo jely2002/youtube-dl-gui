@@ -131,6 +131,7 @@ select {
     display: inline-block;
     margin-top: calc(40px + 1.5rem); /* Compensate the fixed navbar */
     margin-bottom: 1.5rem;
+    padding-right: 0px;
 }
 
 .url-input .btn {
@@ -173,6 +174,7 @@ select {
 
 .btns-input .toggle {
     background-color: var(--secondary-bg-color) !important;
+    margin-bottom: 3px;
 }
 
 .btns-input .btn {

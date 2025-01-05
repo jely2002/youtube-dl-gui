@@ -318,11 +318,26 @@ function scan(msg) {
         } catch (e) {
             return console.error(e); //Error in the above string (in this case, yes)!
         }
+
+        //Filter unwanted headers
+        let idx = 0, removed = false;
+        while(idx<data.headers.length){
+            for(let idx2=0; idx2 < env.settings.headerFilter.length; idx2++) {
+                if(data.headers[idx].k.toLowerCase() == env.settings.headerFilter[idx2]) {
+                    data.headers.splice(idx,1);
+                    removed = true;
+                    break;
+                }
+            }
+            if(!removed) idx++;
+            removed = false;
+        }
         //Basic scanner
         let sizeok = false;   //Check if range is not prohibitively small
         let contentype = "";
         let contentlength = 0;
         let headerstr = '';
+
         data.headers.forEach(h => {
             headerstr = headerstr + h.k + ": " + h.v + '$';
             if (h.k.toLowerCase() == "range") {

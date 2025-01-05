@@ -1018,6 +1018,7 @@ async function getSettings() {
     $('#allowUnsafeFileExtensions').prop('checked', settings.allowUnsafeFileExtensions);
     $('#mitmPort').val(settings.mitmPort);
     $('#mitmExtraArgs').val(settings.mitmExtraArgs);
+    $('#headerFilter').val(settings.headerFilter.join(' '));
     $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
     $('#maxConcurrent').val(settings.maxConcurrent);
     $('#settingsModal #retries').val(settings.retries);
@@ -1057,6 +1058,7 @@ async function sendSettings() {
         allowUnsafeFileExtensions: $('#allowUnsafeFileExtensions').prop('checked'),
         mitmPort: $('#mitmPort').val(),
         mitmExtraArgs: $('#mitmExtraArgs').val(),
+        headerFilter: $('#headerFilter').val().toLowerCase().split(" "),
         calculateTotalSize: $('#calculateTotalSize').prop('checked'),
         sizeMode: $('#sizeSetting').val(),
         splitMode: $('#splitMode').val(),

@@ -75,7 +75,6 @@ class TrafficLogger:
     url='"'    + flow.request.url+  '"'
     headers="["
     for k, v in flow.request.headers.items():
-        if k!='If-Range': #TODO: Headers should be filtered in OpenVideoDownloader instead of here
            headers=headers+'{"k":"'+k+'"'+',"v":'+'"'+v.replace('"','\\"')+'"'+'},'
     if headers=="[":
        headers=headers+"]"

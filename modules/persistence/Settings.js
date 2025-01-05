@@ -51,11 +51,13 @@ class Settings {
         this.setGlobalShortcuts();
         this.mitmPort = 15930;
         this.mitmExtraArgs = "--anticache --anticomp";
+        this.headerFilter = ["if-range"];
     }
 
-    setupMitmproxyConfig(mitmPort, mitmExtraArgs) {
+    setupMitmproxyConfig(mitmPort, mitmExtraArgs, headerFilter) {
         this.mitmPort = mitmPort == null ? 15930 :mitmPort;
         this.mitmExtraArgs = mitmExtraArgs == null ? "--anticache --anticomp" :mitmExtraArgs;
+        this.headerFilter = headerFilter == null ? ["if-range"] : headerFilter;
     }
 
     getDefaultMaxConcurrent() {
@@ -114,7 +116,8 @@ class Settings {
             );
             settings.setupMitmproxyConfig(
                 data.mitmPort,
-                data.mitmExtraArgs
+                data.mitmExtraArgs,
+                data.headerFilter
             );
             return settings;
         } catch(err) {
@@ -152,6 +155,7 @@ class Settings {
         this.allowUnsafeFileExtensions = settings.allowUnsafeFileExtensions;
         this.mitmPort = settings.mitmPort;
         this.mitmExtraArgs = settings.mitmExtraArgs;
+        this.headerFilter = settings.headerFilter;
         this.calculateTotalSize = settings.calculateTotalSize;
         this.sizeMode = settings.sizeMode;
         this.splitMode = settings.splitMode;
@@ -210,6 +214,7 @@ class Settings {
             allowUnsafeFileExtensions: this.allowUnsafeFileExtensions,
             mitmPort: this.mitmPort,
             mitmExtraArgs: this.mitmExtraArgs,
+            headerFilter: this.headerFilter,
             calculateTotalSize: this.calculateTotalSize,
             theme: this.theme,
             version: this.env.version
