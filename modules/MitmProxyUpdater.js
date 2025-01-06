@@ -26,9 +26,9 @@ class MitmProxyUpdater {
         console.log("Checking for a new version of mitmproxy.");
         const localVersion = await this.getLocalVersion();
         const  remoteVersion  = await this.getRemoteVersion();
-        let platform = "windows-amd64";
-        let ext=".tar.gz";
-        if (os.arch() === "x32" || os.arch() === "ia32") { platform = "windows-x86_64"; ext=".zip"; }
+        let platform = "windows-x86_64";
+        let ext = ".tar.gz";
+        if (this.paths.platform.startsWith("win32")) ext = ".zip";
         if (this.paths.platform === "darwin") {
             if(os.arch() === "arm") platform = "macos-arm64";
             else platform = "macos-x86_64";
