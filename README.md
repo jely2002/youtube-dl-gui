@@ -1,8 +1,8 @@
-<img src="https://raw.githubusercontent.com/StefanLobbenmeier/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="100"/>
+<img src="https://raw.githubusercontent.com/mp3butcher/youtube-dl-gui/v2.6.12/renderer/img/icon.png" alt="logo" align="left" height="100"/>
 
-# Open Video Downloader (youtube-dl-gui)
+# Open Video Downloader Plus (youtube-dl-gui)
 [![version badge](https://img.shields.io/github/v/release/mp3butcher/youtube-dl-gui?label=latest-release)](https://github.com/mp3butcher/youtube-dl-gui/releases/latest)
-[![license](https://img.shields.io/github/license/StefanLobbenmeier/youtube-dl-gui)](https://github.com/StefanLobbenmeier/youtube-dl-gui/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/mp3butcher/youtube-dl-gui)](https://github.com/mp3butcher/youtube-dl-gui/blob/master/LICENSE)
 [![coverage badge](https://img.shields.io/codecov/c/github/mp3butcher/youtube-dl-gui)](https://app.codecov.io/gh/mp3butcher/youtube-dl-gui)
 [![downloads](https://img.shields.io/github/downloads/mp3butcher/youtube-dl-gui/total)](https://github.com/mp3butcher/youtube-dl-gui/releases/latest)
 [![CI badge](https://img.shields.io/github/actions/workflow/status/mp3butcher/youtube-dl-gui/continuous-integration.yaml)](https://github.com/mp3butcher/youtube-dl-gui/actions)
@@ -10,13 +10,16 @@
 
 A cross-platform GUI for youtube-dl made in Electron and node.js
 
-based on https://github.com/StefanLobbenmeier/youtube-dl-gui but adding a traffic scanning feature (using mitmproxy)
+based on https://github.com/StefanLobbenmeier/youtube-dl-gui but adding several features:
+- browser traffic scanning (using mitmproxy)
+- live streaming support
+- request headers manipulation
 
-- I] When scanner activated the first time don't forget to install mitmproxy authority certificate (cf image) 
-![Screenshot from 2024-10-07 16-37-04](https://github.com/user-attachments/assets/3fb3bb86-d5a8-44d8-ab8e-05429bd8fb4c)
-- II] I recommend to use browser proxy switcher extension such as [this extension](https://chromewebstore.google.com/detail/proxy-switcher/iejkjpdckomcjdhmkemlfdapjodcpgih?hl=fr) to easily enable/disable proxy usage while browsing (set it up proxy=localhost and port=15930)
+I] I recommend to use browser proxy switcher extension such as [this extension](https://chromewebstore.google.com/detail/proxy-switcher/iejkjpdckomcjdhmkemlfdapjodcpgih?hl=fr) to easily enable/disable proxy usage while browsing (set it up proxy=localhost and port=15930)
 ![Screenshot from 2024-10-07 16-43-32](https://github.com/user-attachments/assets/a4650d10-a2f0-4059-b72c-9a241e550338)
-- III] Browse to a streaming content and let the scanner capture the video
+II] When scanner activated the first time don't forget to install mitmproxy authority certificate (see [tutorial](https://github.com/mp3butcher/youtube-dl-gui/wiki/First-time-scanner-activation)) 
+![Screenshot from 2024-10-07 16-37-04](https://github.com/user-attachments/assets/3fb3bb86-d5a8-44d8-ab8e-05429bd8fb4c)
+III] Browse to a streaming content and let the scanner capture url of your content
 
 ### Features:
 - Download from all kind of platforms: YouTube, vimeo, twitter & many more
@@ -37,7 +40,7 @@ Be sure to check out [a demo gif of the application](#Demo-gif)!
 4. Wait for the app to gather all required metadata.
 5. Press download, and the video(s) will get downloaded to your downloads folder.
 
-Want to know more about the features this app offers? Head over to the [wiki](https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/).
+Want to know more about the features this app offers? Head over to the [wiki](https://github.com/mp3butcher/youtube-dl-gui/wiki/).
 
 ## Supporting the project
 I appreciate any help. That may include:
@@ -45,9 +48,9 @@ I appreciate any help. That may include:
 - contributing via a pull request
 
 ## Something is not working!
-Please see if the answer is in the [frequently answered questions](https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/FAQ) or in the [wiki](https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/).
+Please see if the answer is in the [frequently answered questions](https://github.com/mp3butcher/youtube-dl-gui/wiki/FAQ) or in the [wiki](https://github.com/mp3butcher/youtube-dl-gui/wiki/).
 
-Still haven't found your answer? [Open up an issue](https://github.com/StefanLobbenmeier/youtube-dl-gui/issues), and describe the problem you're facing.
+Still haven't found your answer? [Open up an issue](https://github.com/mp3butcher/youtube-dl-gui/issues), and describe the problem you're facing.
 
 ## Building from source
 First, clone the repository using `git clone https://github.com/mp3butcher/youtube-dl-gui.git`.
@@ -71,5 +74,5 @@ Feel free to [request a new feature](https://github.com/mp3butcher/youtube-dl-gu
 Big thanks to the original author [jely2002](https://github.com/jely2002), who unfortunately stopped maintaining the original repository: https://github.com/jely2002/youtube-dl-gui
 
 ## Liability & License notice
-Youtube-dl-gui and its maintainers cannot be held liable for misuse of this application, as stated in the [AGPL-3.0 license (section 16)](https://github.com/StefanLobbenmeier/youtube-dl-gui/blob/master/LICENSE).  
+Youtube-dl-gui and its maintainers cannot be held liable for misuse of this application, as stated in the [AGPL-3.0 license (section 16)](https://github.com/mp3butcher/youtube-dl-gui/blob/master/LICENSE).  
 The maintainers of youtube-dl-gui do not in any way condone the use of this application in practices that violate local laws such as but not limited to the DMCA. The maintainers of this application call upon the personal responsibility of its users to use this application in a fair way, as it is intended to be used.
