@@ -167,7 +167,7 @@ class DownloadQuery extends Query {
         let destinationCount = 0;
         let initialReset = false;
         let result = null;
-        const regexliverec = /size=\s*(\d+\w)iB\s*time=(\d+:\d+:\d+.\d+)\s*bitrate=\s*(\d+.\d+\w)bits\/s\s*speed=\d+.\d+x/;
+        const regexliverec = /size=\s*(\d+\w)i*B\s*time=(\d+:\d+:\d+.\d+)\s*bitrate=\s*(\d+.\d+\w)bits\/s\s*speed=\d+.\d+x/;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.video, args, (liveData) => {
                 this.environment.logger.log(this.video.identifier, liveData);
