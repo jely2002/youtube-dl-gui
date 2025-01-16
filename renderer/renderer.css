@@ -454,9 +454,9 @@ option.audio {
     background-color: var(--secondary-bg-color);
 }
 
-.controls .buttons * {
+.controls .buttons > * {
     margin: 1px 5px;
-    width: 140px;
+    width: fit-content;
 }
 
 .controls .buttons i:before {
@@ -466,6 +466,7 @@ option.audio {
 
 .controls .spacer {
     width: 2px;
+    padding: 0;
     margin: 0 10px;
     background: var(--secondary-bg-color);
 }
@@ -794,4 +795,3 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: var(--scroll-bar-color);
 }
-
