@@ -53,7 +53,7 @@ const defaultSettings = {
   allowUnsafeFileExtensions: false,
   mitmPort: 15930,
   mitmExtraArgs: '--anticache --anticomp',
-  headerFilter: ["if-range"],
+  headerFilter: ["if-range", "if-none-match", "if-modified-since", "if-match", "if-unmodified-since", "sec-ch-ua"],
   calculateTotalSize: true,
   theme: 'dark',
   version: '2.0.0-test1',
