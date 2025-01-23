@@ -50,13 +50,13 @@ class Settings {
         this.theme = theme == null ? "dark" : theme;
         this.setGlobalShortcuts();
         this.mitmPort = 15930;
-        this.mitmExtraArgs = "--anticache --anticomp";
+        this.mitmExtraArgs = "--anticache --anticomp --mode socks5";
         this.headerFilter = ["if-range", "if-none-match", "if-modified-since", "if-match", "if-unmodified-since", "sec-ch-ua"];
     }
 
     setupMitmproxyConfig(mitmPort, mitmExtraArgs, headerFilter) {
         this.mitmPort = mitmPort == null ? 15930 :mitmPort;
-        this.mitmExtraArgs = mitmExtraArgs == null ? "--anticache --anticomp" :mitmExtraArgs;
+        this.mitmExtraArgs = mitmExtraArgs == null ? "--anticache --anticomp --mode socks5" :mitmExtraArgs;
         this.headerFilter = headerFilter == null ? ["if-range", "if-none-match", "if-modified-since", "if-match", "if-unmodified-since", "sec-ch-ua"] : headerFilter;
     }
 

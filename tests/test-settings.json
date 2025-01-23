@@ -34,7 +34,7 @@
   "avoidFailingToSaveDuplicateFileName": false,
   "allowUnsafeFileExtensions": false,
   "mitmPort": 15930,
-  "mitmExtraArgs": "--anticache --anticomp",
+  "mitmExtraArgs": "--anticache --anticomp --mode socks5",
   "headerFilter": ["if-range", "if-none-match", "if-modified-since", "if-match", "if-unmodified-since", "sec-ch-ua"],
   "calculateTotalSize": true,
   "theme": "dark",
