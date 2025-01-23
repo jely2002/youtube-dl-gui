@@ -11,6 +11,7 @@ const DoneAction = require("./modules/DoneAction");
 const ClipboardWatcher = require("./modules/ClipboardWatcher");
 const FfmpegUpdater = require('./modules/FfmpegUpdater');
 const MitmProxyUpdater = require('./modules/MitmProxyUpdater');
+const Settings = require('./modules/persistence/Settings');
 
 let win
 let env
@@ -119,6 +120,9 @@ function startCriticalHandlers(env) {
                     return env.settings.serialize();
                 case "save":
                     env.settings.update(args.setting);
+                    break;
+                case "reset":
+                    env.settings = new Settings(env.paths, env);
                     break;
             }
         })

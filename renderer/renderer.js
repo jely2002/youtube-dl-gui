@@ -185,6 +185,11 @@ async function init() {
         $('#settingsModal').modal("hide");
     });
 
+    $('#settingsModal .reset').on('click', () => {
+        window.main.invoke("settingsAction", {action: "reset", setting: window.settings});
+        getSettings();
+    });
+
     $('#settingsModal .apply').on('click', () => {
         sendSettings();
         $('#settingsModal').modal("hide");
