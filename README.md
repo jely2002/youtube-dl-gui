@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/mp3butcher/youtube-dl-gui/v2.6.12/renderer/img/icon.png" alt="logo" align="left" height="100"/>
 
-# Open Video Downloader Plus (youtube-dl-gui)
+# Open Video Downloader Plus (youtube-dl-gui-plus)
 [![version badge](https://img.shields.io/github/v/release/mp3butcher/youtube-dl-gui?label=latest-release)](https://github.com/mp3butcher/youtube-dl-gui/releases/latest)
 [![license](https://img.shields.io/github/license/mp3butcher/youtube-dl-gui)](https://github.com/mp3butcher/youtube-dl-gui/blob/master/LICENSE)
 [![coverage badge](https://img.shields.io/codecov/c/github/mp3butcher/youtube-dl-gui)](https://app.codecov.io/gh/mp3butcher/youtube-dl-gui)
@@ -14,22 +14,24 @@ based on https://github.com/StefanLobbenmeier/youtube-dl-gui but adding several 
 - browser traffic scanning (using mitmproxy)
 - live streaming support
 - request headers manipulation
+- various fixes and updates
 
-I] I recommend to use browser proxy switcher extension such as [this extension](https://chromewebstore.google.com/detail/proxy-switcher/iejkjpdckomcjdhmkemlfdapjodcpgih?hl=fr) to easily enable/disable proxy usage while browsing (set it up proxy=localhost and port=15930)
-![Screenshot from 2024-10-07 16-43-32](https://github.com/user-attachments/assets/a4650d10-a2f0-4059-b72c-9a241e550338)
-II] When scanner activated the first time don't forget to install mitmproxy authority certificate (see [tutorial](https://github.com/mp3butcher/youtube-dl-gui/wiki/First-time-scanner-activation)) 
+### Network traffic scanner
+1. When scanner activated the first time, don't forget to install mitmproxy authority certificate (see [tutorial](https://github.com/mp3butcher/youtube-dl-gui/wiki/First-time-scanner-activation)) 
 ![Screenshot from 2024-10-07 16-37-04](https://github.com/user-attachments/assets/3fb3bb86-d5a8-44d8-ab8e-05429bd8fb4c)
-III] Browse to a streaming content and let the scanner capture url of your content
+2. Browse to a streaming content, press play and let the scanner capture url of your content:
+
+When scanner activated, browser requests passing through the proxy are sent to OpenVideoDownloader on port 1200 as json and then can be analysed easily to find standard streaming technologies in request response (HLS, Dash, partial-content video) then elected requests url and headers are sent to ydl for download...
 
 ### Features:
 - Download from all kind of platforms: YouTube, vimeo, twitter & many more
+- Network scanner for media requests through a binding with mitmproxy 
 - Download multiple videos/playlists/channels in one go
 - Select the resolution and format you want to download in
 - Download private videos (currently only tested on YouTube)
 - Multithreaded, up to 32 videos can be downloaded synchronously
 - Shows how much size the download will use up on your system
-- The app automatically keeps ytdl up-to-date
-- The app include a network scanner through a binding with mitmproxy 
+- The app automatically keeps ytdl, ffmpeg and mitmproxy up-to-date
 
 Be sure to check out [a demo gif of the application](#Demo-gif)!
 
