@@ -5,15 +5,15 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
     <title>Open Video Downloader</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../node_modules/bootstrap4-toggle/css/bootstrap4-toggle.min.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap5-toggle/css/bootstrap5-toggle.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="lib/select2.min.css">
     <link rel="stylesheet" href="renderer.css">
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="../node_modules/@popperjs/core/dist/umd/popper.min.js"></script>    
+    <script src="../node_modules/bootstrap5-toggle/js/bootstrap5-toggle.ecmas.min.js"></script>
     <script src="lib/select2.min.js"></script>
     <script src="../node_modules/sortablejs/Sortable.min.js"></script>
-    <script src="../node_modules/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
 </head>
 <body>
 
@@ -31,7 +31,7 @@
 
 <div class="container btns-input">
    
-        <input style="padding: 0px;" type="checkbox" id="scannerBtn" class="btn btn-dark" data-toggle="toggle" data-width="45" data-height="38" data-onstyle="dark" data-on="<i style='font-size: 20px;' class='bi bi-radar'></i>" data-off="<i style='font-size: 20px;' class='bi bi-radar'></i>">
+        <input style="padding: 0px;" type="checkbox" id="scannerBtn" class="btn btn-dark" data-toggle="toggle" data-width="45" data-height="38" data-onstyle="dark" data-onlabel="<i style='font-size: 20px;' class='bi bi-radar'></i>" data-offlabel="<i style='font-size: 20px;' class='bi bi-radar'></i>">
   
    
 </div>
@@ -72,7 +72,7 @@
         </select>
         <span class="spacer"></span>
         <div class="dropdown dropup">
-            <button class="btn btn-dark dropdown-toggle" type="button" id="whenDoneButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-dark dropdown-toggle" type="button" id="whenDoneButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 When done
             </button>
             <ul id="whenDoneOptions" class="dropdown-menu" aria-labelledby="whenDoneButton">
@@ -156,7 +156,7 @@
             </div>
         </div>
         <div class="col-1 buttons m-auto">
-            <a class="remove-btn" data-container="body" data-toggle="popover" tabindex="0" data-trigger="manual" data-placement="bottom" data-content="Click again to remove"><i class="bi-x-circle mb-3"></i></a>
+            <a class="remove-btn" data-bs-container="body" data-bs-toggle="popover" tabindex="0" data-bs-trigger="manual" data-bs-placement="bottom" data-bs-content="Click again to remove"><i class="bi-x-circle mb-3"></i></a>
             <a class="subtitle-btn"><i title="Subtitles disabled" class="bi-card-text-strike"></i></a>
             <a class="download-btn"><i class="bi-download mb-3"></i></a>
             <a class="info-btn"><i class="bi-info-circle mb-3"></i></a>
@@ -513,7 +513,7 @@
 <div class="toast" id="update" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
         <strong class="mr-auto update-title">There is an update available!</strong>
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <button type="button" class="ml-2 mb-1 close" data-bs-dismiss="toast" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -523,7 +523,7 @@
 <div class="toast" id="task-list" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
         <strong class="mr-auto task-list-title">Do you want to restore your queue?</strong>
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <button type="button" class="ml-2 mb-1 close" data-bs-dismiss="toast" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>

@@ -163,12 +163,12 @@ select {
 }
 
 .btns-input .toggle-on {   
-    background-color: var(--secondary-highlight-color);
+    background-color: var(--secondary-highlight-color) !important; 
     border-color: var(--secondary-highlight-color);
 }
 
 .btns-input .toggle-off {   
-    background-color: var(--secondary-bg-color);
+    background-color: var(--secondary-bg-color) !important; 
     border-color: var(--secondary-bg-color);
 }
 

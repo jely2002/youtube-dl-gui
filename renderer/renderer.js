@@ -61,7 +61,6 @@ async function init() {
     //Init the when done dropdown
     $(document).ready(async function() {
         console.log("hello");
-        $('.dropdown-toggle').dropdown();
         const availableOptions = await window.main.invoke('getDoneActions');
         for(const option of availableOptions) {
             $('#whenDoneOptions').append('<li class="dropdown-divider"></li>').append(`<li><a class="dropdown-item" href="#">${option}</a></li>`)
