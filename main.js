@@ -316,6 +316,9 @@ ipcMain.handle("platform", () => {
     return process.platform;
 })
 
+const regexDash = /(?:<\?.*>\n*)*<MPD/gi;
+const regexprange = /bytes=(\d+)-(\d+)?\/?(\d+)?/g;
+
 function scan(msg) {
     if (scannerIsOn) {
         let data;
@@ -347,7 +350,6 @@ function scan(msg) {
         data.headers.forEach(h => {
             headerstr = headerstr + h.k + ": " + h.v + '$';
             if (h.k.toLowerCase() == "range") {
-                const regexprange = /bytes=(\d+)-(\d+)?\/?(\d+)?/g;
                 const ranges = [...h.v.matchAll(regexprange)];
                 console.log(ranges[0]);
                 if (typeof (ranges[1]) == "undefined") contentlength = 20000000;
@@ -364,7 +366,6 @@ function scan(msg) {
             }
             if (h.k.toLowerCase() == "content-range") {
 
-                const regexprange = /bytes (\d+)-(\d+)?\/?(\d+)?/g;
                 const ranges = [...h.v.matchAll(regexprange)];
                 if (typeof (ranges[1]) == "undefined") contentlength = 20000000;
                 else contentlength = parseInt(ranges[1], 10) - parseInt(ranges[0], 10);
@@ -387,7 +388,7 @@ function scan(msg) {
             if (res[0] == "#") { //HLS?
                 console.log(res);
                 toscandeeply = true;
-            } else if (res.startsWith('<MPD')) { //DASH?
+            } else if (res.match(regexDash)) { //DASH?
                 console.log(res);
                 toscandeeply = true;
             }
