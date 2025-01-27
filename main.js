@@ -123,6 +123,8 @@ function startCriticalHandlers(env) {
                     break;
                 case "reset":
                     env.settings = new Settings(env.paths, env);
+                    env.settings.setupAdvancedConfig();
+                    env.settings.setupMitmproxyConfig();
                     break;
             }
         })

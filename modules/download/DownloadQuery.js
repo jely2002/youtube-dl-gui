@@ -162,6 +162,10 @@ class DownloadQuery extends Query {
             args.push('--compat-options','allow-unsafe-ext');
         }
 
+        if(this.environment.settings.allowUnplayable) {
+            args.push('--allow-unplayable-formats');
+        }
+
         this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
         console.log(args);    console.log(this.video.headers);
         let destinationCount = 0;

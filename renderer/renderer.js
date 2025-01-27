@@ -1020,6 +1020,7 @@ async function getSettings() {
     $('#keepUnmerged').prop('checked', settings.keepUnmerged);
     $('#avoidFailingToSaveDuplicateFileName').prop('checked', settings.avoidFailingToSaveDuplicateFileName);
     $('#allowUnsafeFileExtensions').prop('checked', settings.allowUnsafeFileExtensions);
+    $('#allowUnplayable').prop('checked', settings.allowUnplayable);
     $('#mitmPort').val(settings.mitmPort);
     $('#mitmExtraArgs').val(settings.mitmExtraArgs);
     $('#headerFilter').val(settings.headerFilter.join(' '));
@@ -1060,6 +1061,7 @@ async function sendSettings() {
         keepUnmerged: $('#keepUnmerged').prop('checked'),
         avoidFailingToSaveDuplicateFileName: $('#avoidFailingToSaveDuplicateFileName').prop('checked'),
         allowUnsafeFileExtensions: $('#allowUnsafeFileExtensions').prop('checked'),
+        allowUnplayable: $('#allowUnplayable').prop('checked'),
         mitmPort: $('#mitmPort').val(),
         mitmExtraArgs: $('#mitmExtraArgs').val(),
         headerFilter: $('#headerFilter').val().toLowerCase().split(" "),
