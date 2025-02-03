@@ -3,6 +3,7 @@ import base64
 import socket, threading
 import queue
 import time
+import json
 
 from mitmproxy import ctx
 from mitmproxy import http
@@ -14,7 +15,6 @@ data_queue = queue.Queue(maxsize=15)
 
 def sendTrafficLoop(trafficLoggerAddon):
   data=''
-  deadguard = 0
   checkinterval = 6
   next_checktime = time.time() + checkinterval
   try:
@@ -32,12 +32,10 @@ def sendTrafficLoop(trafficLoggerAddon):
           if msg is not None:
             trafficLoggerAddon.socket_connection.send(msg.encode())
         else:
-          deadguard=deadguard+1
           current_time = time.time()
           if current_time >= next_checktime:
             #Dirty connection test to crash and exit if OpenVideoDownloader prematurally died
             trafficLoggerAddon.socket_connection.send('testconnection'.encode())
-            deadguard = 0
             next_checktime += checkinterval
   except:
     trafficLoggerAddon.socket_connection.close()
@@ -62,7 +60,6 @@ class TrafficLogger:
     # Launch a thread to send traffic
     thread = threading.Thread(target=sendTrafficLoop, args=([self]))
     thread.start()
-
         
   def request(self, flow):
     self.checkflow(flow, False)
@@ -72,32 +69,35 @@ class TrafficLogger:
     return
 
   def checkflow(self,flow,isrep):
-    url='"'    + flow.request.url+  '"'
-    headers="["
+    h=[]
     for k, v in flow.request.headers.items():
-           headers=headers+'{"k":"'+k+'"'+',"v":'+'"'+v.replace('"','\\"')+'"'+'},'
-    if headers=="[":
-       headers=headers+"]"
-    else:
-       headers=headers[:-1]+"]"
-    rheaders="[]"
-    if isrep:    
-      rheaders="["
+        h.append({"k":k,"v":v})
+    rh=[]
+    if isrep:
       for k, v in flow.response.headers.items():
-        rheaders=rheaders+'{"k":"'+k+'"'+',"v":'+'"'+v.replace('"','\\"')+'"'+'},'
-      if rheaders=="[":
-         rheaders=rheaders+"]"
-      else:
-         rheaders=rheaders[:-1]+"]"
-    data=""
+        rh.append({"k":k,"v":v})
+    try:
+      requestbody=base64.b64encode(flow.request.content).decode("ascii")
+    except:
+      requestbody=""
+    resp=""
     if isrep:
       #Don't send large response    
       if len(flow.response.text)<20000000:
        try:
-         data=base64.b64encode(flow.response.content[:10000]).decode("ascii")
+         resp=base64.b64encode(flow.response.content[:10000]).decode("ascii")
        except:
-         data=""
-    msg='{"url":'+url+',"headers":'+headers+',"rheaders":'+rheaders+',"response":"'+data+'"}'
-    data_queue.put(msg)
+         resp=""
+    msg= json.dumps(
+    {
+     "url": flow.request.pretty_url,
+     "method": flow.request.method,
+     "requestbody": requestbody,
+     "headers": h,
+     "rheaders": rh,
+     "response": resp
+     }
+     , indent = 0)
+    data_queue.put(str(msg))
 
 addons = [TrafficLogger()]
