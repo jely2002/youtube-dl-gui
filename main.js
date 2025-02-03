@@ -317,7 +317,7 @@ ipcMain.handle("platform", () => {
 })
 
 const regexDash = /(?:<\?.*>\n*)*<MPD/gi;
-const regexprange = /bytes=(\d+)-(\d+)?\/?(\d+)?/g;
+const regexprange = /bytes\s*=?(\d+)-(\d+)?\/?(\d+)?/g;
 
 function scan(msg) {
     if (scannerIsOn) {
@@ -352,24 +352,21 @@ function scan(msg) {
             if (h.k.toLowerCase() == "range") {
                 const ranges = [...h.v.matchAll(regexprange)];
                 console.log(ranges[0]);
-                if (typeof (ranges[1]) == "undefined") contentlength = 20000000;
-                else contentlength = parseInt(ranges[1], 10) - parseInt(ranges[0], 10);
-                if (contentlength > 1000000) sizeok = true;
+                if (typeof (ranges[0][2]) == "undefined") contentlength = 20000000;
+                else contentlength = parseInt(ranges[0][2], 10) - parseInt(ranges[0][1], 10);
+                if (contentlength > 1500000) sizeok = true;
             }
         });
         console.log(" scan url " + data.url + " headers:" + headerstr);
 
         data.rheaders.forEach(h => {
             if (h.k.toLowerCase() == "content-type") contentype = h.v;
-            if (h.k.toLowerCase() == "content-length") {
-                contentlength = parseInt(h.v, 10);
-            }
+            if (h.k.toLowerCase() == "content-length") contentlength = parseInt(h.v, 10);
             if (h.k.toLowerCase() == "content-range") {
-
                 const ranges = [...h.v.matchAll(regexprange)];
-                if (typeof (ranges[1]) == "undefined") contentlength = 20000000;
-                else contentlength = parseInt(ranges[1], 10) - parseInt(ranges[0], 10);
-                if (contentlength > 1000000) sizeok = true;
+                if (typeof (ranges[0][2]) == "undefined") contentlength = 20000000;
+                else contentlength = parseInt(ranges[0][2], 10) - parseInt(ranges[0][1], 10);
+                if (contentlength > 1500000) sizeok = true;
             }
         });
         let toscandeeply = false;
@@ -379,7 +376,7 @@ function scan(msg) {
             console.warn(" [x] contentype video!!!!!!!!!!!" + data);
         }
         //Large Content-Range
-        if(!contentype.startsWith('image') && (sizeok || contentlength > 1000000)) {
+        if(contentype=="" && (sizeok || contentlength > 1000000)) {
             toscandeeply = true;
         }
         let res = atob(data.response)
