@@ -32,12 +32,9 @@ class DownloadQuery extends Query {
             this.video.headers.forEach((h) => {
                 if (h.k.toLowerCase() == 'referer') {
                     args.push("-referer", h.v);
-                
-               // } else if (h.k.toLowerCase() == 'user-agent') {
-                 //   args.push("-user_agent",'"'+ h.v+'"');
                 } else {
-                    //if(ffmpegheaders=='') ffmpegheaders='"'+ h.k + ": " + h.v+'"';
-                    ffmpegheaders = ffmpegheaders + '\'' + h.k + ": " + h.v + '\'' +'$\'\ \r\n\'';//  String.raw`$'\r\n'`;
+                    // ffmpegheaders = ffmpegheaders + '\'' + h.k + ": " + h.v + '\'' +'$\'\ \r\n\'';//  posix syntax doesn't work
+                    args.push("-headers", '\'' + h.k + ": " + h.v + '\'');
                 }
             });
 
