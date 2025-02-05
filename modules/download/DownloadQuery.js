@@ -28,23 +28,33 @@ class DownloadQuery extends Query {
         let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
         const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
         if (this.video.is_live && this.video.extractor == 'Generic') {
-            let ffmpegheaders = '';
+            let ffmpegheaders = '';    let ffmpegheads = '';
             this.video.headers.forEach((h) => {
                 if (h.k.toLowerCase() == 'referer') {
                     args.push("-referer", h.v);
                 } else {
-                    // ffmpegheaders = ffmpegheaders + '\'' + h.k + ": " + h.v + '\'' +'$\'\ \r\n\'';//  posix syntax doesn't work
-                    args.push("-headers", '\'' + h.k + ": " + h.v + '\'');
+                    ffmpegheads = ffmpegheads + '' + h.k + ": " + h.v + '\r\n';//fmpeg7 syntax ffmpeg 6 takes separate headers options
                 }
             });
 
-            if (ffmpegheaders != '') args.push("-headers", ffmpegheaders);
+            if (ffmpegheads != '') args.push("-headers",ffmpegheads)
 
-
-            //use ffmpeg instead of ydl in order to stop gracefully ffmpeg when finished
             args.push("-i", this.video.url);
+            let formatid = this.video.formats.findIndex(e => e.format==this.format.height)
+            args.push('-map','0:v:'+formatid)
 
-            args.push('"'+path.join(downloadFolderPath, this.video.title+".mp4"+'"'));
+            if(this.environment.settings.allowUnplayable||this.environment.settings.keepUnmerged) {
+               /// keep stream files separated
+                args.push(path.join(downloadFolderPath, this.video.title+".mp4"));
+                args.push('-map','0:a:0')    // TODO first audio track found...
+                args.push(path.join(downloadFolderPath, this.video.title+".aac"));
+
+            } else
+            {
+                args.push('-map','0:a:0')    // TODO first audio track found...
+                args.push(path.join(downloadFolderPath, this.video.title+".mp4"));
+            }
+
         } else {
             if (this.video.audioOnly) {
                 let audioQuality = this.video.audioQuality;
@@ -177,15 +187,17 @@ class DownloadQuery extends Query {
                 args.push(this.environment.settings.retries);
             }
 
-        if(this.environment.settings.allowUnsafeFileExtensions) {
-            args.push('--compat-options','allow-unsafe-ext');
+            if(this.environment.settings.allowUnsafeFileExtensions) {
+                args.push('--compat-options','allow-unsafe-ext');
+            }
+
+            if(this.environment.settings.allowUnplayable) {
+                args.push('--allow-unplayable-formats');
+            }            
+            this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
         }
 
-        if(this.environment.settings.allowUnplayable) {
-            args.push('--allow-unplayable-formats');
-        }
 
-        this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
         console.log(args);    console.log(this.video.headers);
         let destinationCount = 0;
         let initialReset = false;
