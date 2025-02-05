@@ -32,7 +32,9 @@ class Query {
         if(this.stopped) return "killed";
 
         let command='';
-        if(!video.is_live){
+        if(this.video.is_live && this.video.extractor == 'Generic'){
+            command = this.environment.paths.ffmpeg+"/ffmpeg"; //Set the command to be executed
+        }else{
             args.push("--no-cache-dir");
             args.push("--ignore-config");
 
@@ -72,8 +74,6 @@ class Query {
             args.push(url) //Url must always be added as the final argument
 
             command = this.environment.paths.ytdl; //Set the command to be executed
-        }else{
-            command = this.environment.paths.ffmpeg+"/ffmpeg"; //Set the command to be executed
         }
         if(this.environment.pythonCommand !== "python") { //If standard python is not available use another install if detected
             args.unshift(this.environment.paths.ytdl);

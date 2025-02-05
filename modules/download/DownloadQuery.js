@@ -176,13 +176,20 @@ class DownloadQuery extends Query {
             downloadFolderPath += `/[${this.video.identifier}]`;
         }
         /// let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+        let ffversion=  require('child_process').execSync( this.environment.paths.ffmpeg+"/ffmpeg"+' -version').toString();  //readFileSync(this.environment.paths.ffmpegVersion);
+       
+        ffversion=ffversion.substring(ffversion.indexOf('version')+8,ffversion.indexOf('Copyright'))
+
+        let isFFmpeg7=false;
+        if(ffversion.match(/(7)/g)) isFFmpeg7=true;
 
         let ffmpegheads = '';
         this.video.headers.forEach((h) => {
             if (h.k.toLowerCase() == 'referer') {
                 args.push("-referer", h.v);
             } else {
-                ffmpegheads = ffmpegheads + '' + h.k + ": " + h.v + '\r\n'; //Ffmpeg7 syntax ffmpeg 6 takes separate headers options
+                if(isFFmpeg7) ffmpegheads = ffmpegheads + h.k + ": " + h.v + '\r\n'; //Ffmpeg7 syntax ffmpeg 6 takes separate headers options
+                else  args.push("-headers", h.k + ": " + h.v)
             }
         });
 
