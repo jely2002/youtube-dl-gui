@@ -11,6 +11,7 @@ const DoneAction = require("./modules/DoneAction");
 const ClipboardWatcher = require("./modules/ClipboardWatcher");
 const FfmpegUpdater = require('./modules/FfmpegUpdater');
 const MitmProxyUpdater = require('./modules/MitmProxyUpdater');
+const Settings = require('./modules/persistence/Settings');
 
 let win
 let env
@@ -120,6 +121,11 @@ function startCriticalHandlers(env) {
                 case "save":
                     env.settings.update(args.setting);
                     break;
+                case "reset":
+                    env.settings = new Settings(env.paths, env);
+                    env.settings.setupAdvancedConfig();
+                    env.settings.setupMitmproxyConfig();
+                    break;
             }
         })
 
@@ -167,6 +173,12 @@ function startCriticalHandlers(env) {
                     break;
                 case "info":
                     queryManager.showInfo(args.identifier);
+                    break;
+                case "changeHeaders":
+                    queryManager.changeHeaders(args.identifier, args.newheaders);
+                    break;
+                case "retry":
+                    queryManager.retry(args.identifier);
                     break;
                 case "downloadInfo":
                     queryManager.saveInfo(args.identifier);
@@ -304,6 +316,9 @@ ipcMain.handle("platform", () => {
     return process.platform;
 })
 
+const regexDash = /(?:<\?.*>\n*)*<MPD/gi;
+const regexprange = /bytes\s*=?(\d+)-(\d+)?\/?(\d+)?/g;
+
 function scan(msg) {
     if (scannerIsOn) {
         let data;
@@ -312,36 +327,46 @@ function scan(msg) {
         } catch (e) {
             return console.error(e); //Error in the above string (in this case, yes)!
         }
+
+        //Filter unwanted headers
+        let idx = 0, removed = false;
+        while(idx<data.headers.length){
+            for(let idx2=0; idx2 < env.settings.headerFilter.length; idx2++) {
+                if(data.headers[idx].k.toLowerCase() == env.settings.headerFilter[idx2]) {
+                    data.headers.splice(idx,1);
+                    removed = true;
+                    break;
+                }
+            }
+            if(!removed) idx++;
+            removed = false;
+        }
         //Basic scanner
         let sizeok = false;   //Check if range is not prohibitively small
         let contentype = "";
         let contentlength = 0;
         let headerstr = '';
+
         data.headers.forEach(h => {
             headerstr = headerstr + h.k + ": " + h.v + '$';
             if (h.k.toLowerCase() == "range") {
-                const regexprange = /bytes=(\d+)-(\d+)?\/?(\d+)?/g;
                 const ranges = [...h.v.matchAll(regexprange)];
                 console.log(ranges[0]);
-                if (typeof (ranges[1]) == "undefined") contentlength = 20000000;
-                else contentlength = parseInt(ranges[1], 10) - parseInt(ranges[0], 10);
-                if (contentlength > 1000000) sizeok = true;
+                if (typeof (ranges[0][2]) == "undefined") contentlength = 20000000;
+                else contentlength = parseInt(ranges[0][2], 10) - parseInt(ranges[0][1], 10);
+                if (contentlength > 1500000) sizeok = true;
             }
         });
         console.log(" scan url " + data.url + " headers:" + headerstr);
 
         data.rheaders.forEach(h => {
             if (h.k.toLowerCase() == "content-type") contentype = h.v;
-            if (h.k.toLowerCase() == "content-length") {
-                contentlength = parseInt(h.v, 10);
-            }
+            if (h.k.toLowerCase() == "content-length") contentlength = parseInt(h.v, 10);
             if (h.k.toLowerCase() == "content-range") {
-
-                const regexprange = /bytes (\d+)-(\d+)?\/?(\d+)?/g;
                 const ranges = [...h.v.matchAll(regexprange)];
-                if (typeof (ranges[1]) == "undefined") contentlength = 20000000;
-                else contentlength = parseInt(ranges[1], 10) - parseInt(ranges[0], 10);
-                if (contentlength > 1000000) sizeok = true;
+                if (typeof (ranges[0][2]) == "undefined") contentlength = 20000000;
+                else contentlength = parseInt(ranges[0][2], 10) - parseInt(ranges[0][1], 10);
+                if (contentlength > 1500000) sizeok = true;
             }
         });
         let toscandeeply = false;
@@ -351,7 +376,7 @@ function scan(msg) {
             console.warn(" [x] contentype video!!!!!!!!!!!" + data);
         }
         //Large Content-Range
-        if(!contentype.startsWith('image') && (sizeok || contentlength > 1000000)) {
+        if(contentype=="" && (sizeok || contentlength > 1000000)) {
             toscandeeply = true;
         }
         let res = atob(data.response)
@@ -360,7 +385,7 @@ function scan(msg) {
             if (res[0] == "#") { //HLS?
                 console.log(res);
                 toscandeeply = true;
-            } else if (res.startsWith('<MPD')) { //DASH?
+            } else if (res.match(regexDash)) { //DASH?
                 console.log(res);
                 toscandeeply = true;
             }
@@ -398,9 +423,12 @@ ipcMain.handle("setScannerEnabled", (event, args) => {
         console.log(__dirname);
         let script = path.join(path.dirname(__dirname), 'binaries', 'send_traffic_to_videodownloader.py');
         console.log(script);
+        let port = env.settings.mitmPort;
+        let extra = env.settings.mitmExtraArgs;
+        extra = extra.split(' ');
         mitmwebprocess = spawn(
             path.join(env.settings.paths.mitmproxy, 'mitmweb'),
-            ['-q', '--anticache', '--anticomp', '-s', script, '--listen-port', '15930']
+            ['-q', '-s', script, '--listen-port', port].concat(extra)
         );
         mitmwebprocess.on('message', (message) => {
             if (message.type === 'error') {
@@ -419,7 +447,7 @@ ipcMain.handle("setScannerEnabled", (event, args) => {
         mitmwebprocess.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
         });
-        dialog.showMessageBox({ message: 'Proxy running on localhost on port 15930: Configure proxy in your browser to scan network' });
+        dialog.showMessageBox({ message: 'Proxy running on localhost on port '+env.settings.mitmPort+': Configure proxy in your browser to scan network' });
         createConnection();
 
     } else {

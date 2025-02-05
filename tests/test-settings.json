@@ -33,6 +33,10 @@
   "keepUnmerged": false,
   "avoidFailingToSaveDuplicateFileName": false,
   "allowUnsafeFileExtensions": false,
+  "allowUnplayable": false,
+  "mitmPort": 15930,
+  "mitmExtraArgs": "--anticache --anticomp --mode socks5",
+  "headerFilter": ["if-range", "if-none-match", "if-modified-since", "if-match", "if-unmodified-since", "sec-ch-ua"],
   "calculateTotalSize": true,
   "theme": "dark",
   "version": "2.0.0-test1"

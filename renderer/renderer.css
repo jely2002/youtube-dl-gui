@@ -131,6 +131,7 @@ select {
     display: inline-block;
     margin-top: calc(40px + 1.5rem); /* Compensate the fixed navbar */
     margin-bottom: 1.5rem;
+    padding-right: 0px;
 }
 
 .url-input .btn {
@@ -162,17 +163,18 @@ select {
 }
 
 .btns-input .toggle-on {   
-    background-color: var(--secondary-highlight-color);
+    background-color: var(--secondary-highlight-color) !important; 
     border-color: var(--secondary-highlight-color);
 }
 
 .btns-input .toggle-off {   
-    background-color: var(--secondary-bg-color);
+    background-color: var(--secondary-bg-color) !important; 
     border-color: var(--secondary-bg-color);
 }
 
 .btns-input .toggle {
     background-color: var(--secondary-bg-color) !important;
+    margin-bottom: 3px;
 }
 
 .btns-input .btn {
@@ -452,9 +454,9 @@ option.audio {
     background-color: var(--secondary-bg-color);
 }
 
-.controls .buttons * {
-    margin: 0 5px;
-    width: 140px;
+.controls .buttons > * {
+    margin: 1px 5px;
+    width: fit-content;
 }
 
 .controls .buttons i:before {
@@ -464,6 +466,7 @@ option.audio {
 
 .controls .spacer {
     width: 2px;
+    padding: 0;
     margin: 0 10px;
     background: var(--secondary-bg-color);
 }
@@ -739,7 +742,7 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
 }
 
 .light-icon.bi-card-text-strike {
-    background: url("img/card-text-strike-light.svg");
+    background: url("img/card-text-strike-light.svg") center no-repeat;
 }
 
 /* WHEN DONE DROPDOWN */
@@ -792,4 +795,3 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: var(--scroll-bar-color);
 }
-

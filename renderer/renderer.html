@@ -5,15 +5,15 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
     <title>Open Video Downloader</title>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../node_modules/bootstrap4-toggle/css/bootstrap4-toggle.min.css">
+    <link rel="stylesheet" href="../node_modules/bootstrap5-toggle/css/bootstrap5-toggle.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="lib/select2.min.css">
     <link rel="stylesheet" href="renderer.css">
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="../node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="../node_modules/@popperjs/core/dist/umd/popper.min.js"></script>    
+    <script src="../node_modules/bootstrap5-toggle/js/bootstrap5-toggle.ecmas.min.js"></script>
     <script src="lib/select2.min.js"></script>
     <script src="../node_modules/sortablejs/Sortable.min.js"></script>
-    <script src="../node_modules/bootstrap4-toggle/js/bootstrap4-toggle.min.js"></script>
 </head>
 <body>
 
@@ -31,7 +31,7 @@
 
 <div class="container btns-input">
    
-        <input style="padding: 0px;" type="checkbox" id="scannerBtn" class="btn btn-dark" data-toggle="toggle" data-width="45" data-height="38" data-onstyle="dark" data-on="<i style='font-size: 20px;' class='bi bi-radar'></i>" data-off="<i style='font-size: 20px;' class='bi bi-radar'></i>">
+        <input style="padding: 0px;" type="checkbox" id="scannerBtn" class="btn btn-dark" data-toggle="toggle" data-width="45" data-height="38" data-onstyle="dark" data-onlabel="<i style='font-size: 20px;' class='bi bi-radar'></i>" data-offlabel="<i style='font-size: 20px;' class='bi bi-radar'></i>">
   
    
 </div>
@@ -72,7 +72,7 @@
         </select>
         <span class="spacer"></span>
         <div class="dropdown dropup">
-            <button class="btn btn-dark dropdown-toggle" type="button" id="whenDoneButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-dark dropdown-toggle" type="button" id="whenDoneButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 When done
             </button>
             <ul id="whenDoneOptions" class="dropdown-menu" aria-labelledby="whenDoneButton">
@@ -156,7 +156,7 @@
             </div>
         </div>
         <div class="col-1 buttons m-auto">
-            <a class="remove-btn" data-container="body" data-toggle="popover" tabindex="0" data-trigger="manual" data-placement="bottom" data-content="Click again to remove"><i class="bi-x-circle mb-3"></i></a>
+            <a class="remove-btn" data-bs-container="body" data-bs-toggle="popover" tabindex="0" data-bs-trigger="manual" data-bs-placement="bottom" data-bs-content="Click again to remove"><i class="bi-x-circle mb-3"></i></a>
             <a class="subtitle-btn"><i title="Subtitles disabled" class="bi-card-text-strike"></i></a>
             <a class="download-btn"><i class="bi-download mb-3"></i></a>
             <a class="info-btn"><i class="bi-info-circle mb-3"></i></a>
@@ -186,7 +186,7 @@
                         </div>
                     </div>
                     <textarea id="info-description" rows="5" cols="50" readonly></textarea>
-                    <textarea id="headers-string" rows="5" cols="50" readonly></textarea>
+                    <textarea id="headers-string" rows="5" cols="50"></textarea>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item uploader"></li>
                         <li class="list-group-item extractor"></li>
@@ -219,11 +219,11 @@
                     </div>
                     <div class="mb-3">
                         <label for="subsLang" class="form-label d-block">Subtitles:</label>
-                        <select class="w-75 mb-2" id="subsLang" multiple></select>
+                        <select class="w-75 mb-2" id="subsLang" data-dropdown-parent="#subsModal" multiple></select>
                     </div>
                     <div>
                         <label for="autoGenSubsLang" class="form-label d-block">Auto-generated subtitles:</label>
-                        <select class="w-75 mb-2" id="autoGenSubsLang" multiple></select>
+                        <select class="w-75 mb-2" id="autoGenSubsLang" data-dropdown-parent="#subsModal" multiple></select>
                     </div>
                 </div>
             </div>
@@ -268,7 +268,7 @@
                     <input type="file" class="custom-file-input" id="fileInput">
                     <label id="fileInputLabel" class="custom-file-label" for="fileInput">Click to select cookies.txt</label>
                 </div>
-                <a target="_blank" href="https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/Tutorial:-Private-videos-&-playlists">What is a cookies.txt file?</a>
+                <a target="_blank" href="https://github.com/mp3butcher/youtube-dl-gui/wiki/Tutorial:-Private-videos-&-playlists">What is a cookies.txt file?</a>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn removeCookies btn-dark">Remove cookies</button>
@@ -283,7 +283,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="settingsModalLabel">App settings</h5>
-                <a class="help-button" target="_blank" href="https://github.com/StefanLobbenmeier/youtube-dl-gui/wiki/Settings" title="Help for settings"><i class="bi bi-question-circle"></i></a>
+                <a class="help-button" target="_blank" href="https://github.com/mp3butcher/youtube-dl-gui/wiki/Settings" title="Help for settings"><i class="bi bi-question-circle"></i></a>
                 <button type="button" class="close dismiss" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body">
@@ -349,6 +349,20 @@
                 <div class="mb-4">
                     <label for="ratelimitSetting" class="form-label">Rate-limit per video (KB/s)</label>
                     <input id="ratelimitSetting" class="form-control" type="number" value="" placeholder="Rate-limit in KB/s">
+                </div>
+                <hr/>
+                <div class="mb-4">
+                    <label for="mitmPort" class="form-label">Mitmproxy port</label>
+                    <input id="mitmPort" class="form-control" type="number" value="" placeholder="Mitmproxy port">
+                </div>
+                <hr/>
+                <div class="mb-4">
+                    <label for="mitmExtraArgs" class="form-label">Mitmproxy extra arguments</label>
+                    <input id="mitmExtraArgs" class="form-control" type="text" value="" placeholder="Mitmproxy extra arguments">
+                </div>
+                <div class="mb-4">
+                    <label for="headerFilter" class="form-label">Headers removed from requests</label>
+                    <input id="headerFilter" class="form-control" type="text" value="" placeholder="Headers removed from requests">
                 </div>
                 <hr/>
                 <h3>Input</h3>
@@ -470,11 +484,14 @@
                     <input class="check-input" type="checkbox" value="" id="enableEncoding">
                     <label class="check-label" for="enableEncoding">Show available codecs to download</label>
                 </div>
-                <div class="mb-1"></div>
+                <div class="mb-1">
                     <input class="check-input" type="checkbox" value="" id="allowUnsafeFileExtensions">
                     <label class="check-label" for="allowUnsafeFileExtensions">Allow unsafe file extension to be downloaded</label>
                 </div>
-                
+                <div class="mb-1">
+                    <input class="check-input" type="checkbox" value="" id="allowUnplayable">
+                    <label class="check-label" for="allowUnplayable">Allow DRM protected files to be downloaded</label>
+                </div>
                 <div>
                     <label for="splitMode" class="form-label">Split playlists into separate videos when:</label>
                     <select class="custom-select d-block rounded w-auto mb-2" id="splitMode">
@@ -488,6 +505,7 @@
                 <div class="modal-footer">
                     <p id="version"></p>
                     <button type="button" class="btn dismiss btn-dark">Cancel</button>
+                    <button type="button" class="btn reset btn-highlight">Reset</button>
                     <button type="button" class="btn apply btn-highlight">Apply</button>
                 </div>
             </div>
@@ -498,7 +516,7 @@
 <div class="toast" id="update" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
         <strong class="mr-auto update-title">There is an update available!</strong>
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <button type="button" class="ml-2 mb-1 close" data-bs-dismiss="toast" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -508,7 +526,7 @@
 <div class="toast" id="task-list" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
         <strong class="mr-auto task-list-title">Do you want to restore your queue?</strong>
-        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <button type="button" class="ml-2 mb-1 close" data-bs-dismiss="toast" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>

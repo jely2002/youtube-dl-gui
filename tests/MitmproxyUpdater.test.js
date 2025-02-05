@@ -52,11 +52,8 @@ describe('getRemoteVersion', () => {
         jest.spyOn(os, 'arch').mockReturnValue('x64');
         const instance = new MitmproxyUpdater({platform: "darwin"});
         return instance.getRemoteVersion().then((data) => {
-            expect(data).toEqual({
-                remoteVersion: "10.4.2",
-                remoteMitmProxyUrl: "https://github.com/mp3butcher/mitmproxy/releases/download/zipped/mitmproxy.macos-arm.zip"
-            });
-            expect(axiosGetSpy).toBeCalledTimes(0);
+            expect(data).toEqual(null);
+            expect(axiosGetSpy).toBeCalledTimes(1);
         });
     });
     it('returns object with the links and the version', async () => {
@@ -69,11 +66,8 @@ describe('getRemoteVersion', () => {
         });
         const instance = new MitmproxyUpdater({platform: "win32"});
         const result = await instance.getRemoteVersion();
-        expect(result).toEqual({
-            remoteVersion: "10.4.2",
-            remoteMitmProxyUrl: "https://github.com/mp3butcher/mitmproxy/releases/download/zipped/mitmproxy.windows-amd64.zip"
-        });
-        expect(axiosGetSpy).toBeCalledTimes(0);
+        expect(result).toEqual(null);
+        expect(axiosGetSpy).toBeCalledTimes(1);
     });
 });
 
@@ -84,7 +78,7 @@ describe('checkUpdate', () => {
         instance.paths.setPermissions = jest.fn();
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate');
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("v2.0.0");
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteMitmproxyUrl: "link", remoteVersion: "v2.0.0" });
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue("v2.0.0");
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).not.toBeCalled();
             expect(instance.win.webContents.send).not.toBeCalled();
@@ -96,7 +90,7 @@ describe('checkUpdate', () => {
         instance.paths.setPermissions = jest.fn();
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate');
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("v2.0.0");
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteMitmproxyUrl: "link", remoteVersion: null });
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue(null);
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).not.toBeCalled();
             expect(instance.win.webContents.send).not.toBeCalled();

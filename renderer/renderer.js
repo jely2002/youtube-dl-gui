@@ -61,7 +61,6 @@ async function init() {
     //Init the when done dropdown
     $(document).ready(async function() {
         console.log("hello");
-        $('.dropdown-toggle').dropdown();
         const availableOptions = await window.main.invoke('getDoneActions');
         for(const option of availableOptions) {
             $('#whenDoneOptions').append('<li class="dropdown-divider"></li>').append(`<li><a class="dropdown-item" href="#">${option}</a></li>`)
@@ -185,6 +184,11 @@ async function init() {
         $('#settingsModal').modal("hide");
     });
 
+    $('#settingsModal .reset').on('click', () => {
+        window.main.invoke("settingsAction", {action: "reset", setting: window.settings});
+        getSettings();
+    });
+
     $('#settingsModal .apply').on('click', () => {
         sendSettings();
         $('#settingsModal').modal("hide");
@@ -250,7 +254,9 @@ async function init() {
         $('#fileInputLabel').html("Click to select cookies.txt");
         $('#fileInput').attr("title", "No file selected");
     })
-
+    $('#infoModal #headers-string').bind('input propertychange', () => {
+        window.main.invoke('videoAction', {action: "changeHeaders", identifier: $('#infoModal .identifier').html(), newheaders: $('#headers-string').val()});
+    });
     $('#infoModal .json').on('click', () => {
         window.main.invoke('videoAction', {action: "downloadInfo", identifier: $('#infoModal .identifier').html()});
     });
@@ -1014,6 +1020,10 @@ async function getSettings() {
     $('#keepUnmerged').prop('checked', settings.keepUnmerged);
     $('#avoidFailingToSaveDuplicateFileName').prop('checked', settings.avoidFailingToSaveDuplicateFileName);
     $('#allowUnsafeFileExtensions').prop('checked', settings.allowUnsafeFileExtensions);
+    $('#allowUnplayable').prop('checked', settings.allowUnplayable);
+    $('#mitmPort').val(settings.mitmPort);
+    $('#mitmExtraArgs').val(settings.mitmExtraArgs);
+    $('#headerFilter').val(settings.headerFilter.join(' '));
     $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
     $('#maxConcurrent').val(settings.maxConcurrent);
     $('#settingsModal #retries').val(settings.retries);
@@ -1051,6 +1061,10 @@ async function sendSettings() {
         keepUnmerged: $('#keepUnmerged').prop('checked'),
         avoidFailingToSaveDuplicateFileName: $('#avoidFailingToSaveDuplicateFileName').prop('checked'),
         allowUnsafeFileExtensions: $('#allowUnsafeFileExtensions').prop('checked'),
+        allowUnplayable: $('#allowUnplayable').prop('checked'),
+        mitmPort: $('#mitmPort').val(),
+        mitmExtraArgs: $('#mitmExtraArgs').val(),
+        headerFilter: $('#headerFilter').val().toLowerCase().split(" "),
         calculateTotalSize: $('#calculateTotalSize').prop('checked'),
         sizeMode: $('#sizeSetting').val(),
         splitMode: $('#splitMode').val(),
@@ -1207,12 +1221,7 @@ function changeSubsToRetry(url, card) {
         .addClass("retry-btn")
         .html('<i title="Retry" class="bi bi-arrow-counterclockwise"></i>')
         .on('click', function() {
-            window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
-            if(url == null) {
-                parseURL($(card).find('.url').val());
-            } else {
-                parseURL(url);
-            }
+            window.main.invoke("videoAction", {action: "retry", identifier: $(card).prop("id")});
         })
         .find('i').removeClass("disabled");
 }

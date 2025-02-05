@@ -74,6 +74,22 @@ class Video {
 
     serialize() {
         let formats = [];
+        if (!this.hasMetadata) return {
+                like_count: Utils.numberFormatter(0, 2),
+                dislike_count: Utils.numberFormatter(0, 2),
+                description: "",
+                headers: this.headers,
+                view_count: Utils.numberFormatter(0, 2),
+                title: "",
+                tags: "",
+                duration: 0,
+                extractor: "",
+                thumbnail: null,
+                uploader: "",
+                average_rating: 0,
+                url: this.url,
+                formats: formats
+            };
         for(const format of this.formats) {
             formats.push(format.serialize());
         }

@@ -177,17 +177,20 @@ class DownloadQuery extends Query {
                 args.push(this.environment.settings.retries);
             }
 
-            if (this.environment.settings.allowUnsafeFileExtensions) {
-                args.push('--compat-options', 'allow-unsafe-ext');
-            }
-
-            this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
-            console.log(args); console.log(this.video.headers);
+        if(this.environment.settings.allowUnsafeFileExtensions) {
+            args.push('--compat-options','allow-unsafe-ext');
         }
+
+        if(this.environment.settings.allowUnplayable) {
+            args.push('--allow-unplayable-formats');
+        }
+
+        this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
+        console.log(args);    console.log(this.video.headers);
         let destinationCount = 0;
         let initialReset = false;
         let result = null;
-        const regexliverec = /size=\s*(\d+\w)iB\s*time=(\d+:\d+:\d+.\d+)\s*bitrate=\s*(\d+.\d+\w)bits\/s\s*speed=\d+.\d+x/;
+        const regexliverec = /size=\s*(\d+\w)i*B\s*time=(\d+:\d+:\d+.\d+)\s*bitrate=\s*(\d+.\d+\w)bits\/s\s*speed=\d+.\d+x/;
         try {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.video, args, (liveData) => {
                 this.environment.logger.log(this.video.identifier, liveData);
@@ -207,6 +210,15 @@ class DownloadQuery extends Query {
                     }
                     return;
                 }
+                let livrec=null;
+                try{
+                    livrec =  liveData.match(regexliverec);
+                    if (typeof (`${livrec[1]}`) == "undefined") return;
+                    this.progressBar.updateDownload('livestream', `${livrec[2]}`, `${livrec[3]}bits/s`, this.video.audioOnly || this.video.downloadingAudio);
+                }catch(e){
+                   //
+                }
+                if (livrec!=null) return;
                 if (!liveData.includes("[download]")) return;
 
                 if (liveData.includes("Destination")) destinationCount += 1;

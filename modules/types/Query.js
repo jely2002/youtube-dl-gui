@@ -1,7 +1,12 @@
-const child_process = require('child_process');
 const execa = require('execa');
 const UserAgent = require('user-agents');
+const { platform, arch } = require("os");
+const archDistDirName = arch() === "arm64" ? "arm64" : "x64";
 
+const native =
+  platform() === "win32"
+    ? require(`../../node_modules/ctrlc-windows/dist/${archDistDirName}/ctrlc-windows.node`)
+    : require("os");
 class Query {
     constructor(environment, identifier) {
         this.environment = environment;
@@ -14,8 +19,10 @@ class Query {
     stop() {
         this.stopped = true;
         if(this.process != null) {
-            if (this.video.is_live) process.kill(this.process.pid, 'SIGINT');///Only way to stop ffmpeg lives
-            else this.process.cancel();
+            if(this.process.pid) {
+                if(process.platform=='win32') native.ctrlc(this.process.pid, 'resources\\app.asar.unpacked\\node_modules\\ctrlc-windows\\dist\\x64\\process-killer.exe');
+                else process.kill(this.process.pid, 'SIGINT');
+            }else this.process.cancel(); //Just for Query.test to pass
         }
     }
 
