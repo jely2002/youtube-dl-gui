@@ -17,6 +17,193 @@ class DownloadQuery extends Query {
         super.stop();
     }
 
+    createYDLArguments(){
+        let args = [];
+        let downloadFolderPath = this.environment.settings.downloadPath;
+        const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
+        if (this.environment.settings.avoidFailingToSaveDuplicateFileName) {
+            downloadFolderPath += `/[${this.video.identifier}]`;
+        }
+        let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+
+        if (this.video.audioOnly) {
+            let audioQuality = this.video.audioQuality;
+            if (audioQuality === "best") {
+                audioQuality = "0";
+            } else if (audioQuality === "worst") {
+                audioQuality = "9";
+            }
+            const audioOutputFormat = this.environment.settings.audioOutputFormat;
+            args = [
+                '--extract-audio', '--audio-quality', audioQuality,
+                '--ffmpeg-location', this.environment.paths.ffmpeg,
+                '--no-mtime',
+                '-o', output,
+                '--output-na-placeholder', "",
+                '--progress-template', PROGRESS_TEMPLATE
+            ];
+            if (this.video.selectedAudioEncoding !== "none") {
+                args.push("-f");
+                args.push("bestaudio[acodec=" + this.video.selectedAudioEncoding + "]/bestaudio");
+            } else if (audioOutputFormat === "m4a") {
+                args.push("-f");
+                args.push("bestaudio[ext=m4a]/bestaudio");
+            }
+            if (audioOutputFormat !== "none") {
+                args.push('--audio-format', audioOutputFormat);
+            }
+            if (audioOutputFormat === "m4a" || audioOutputFormat === "mp3" || audioOutputFormat === "none") {
+                args.push("--embed-thumbnail");
+            }
+        } else {
+            if (this.video.formats.length !== 0) {
+                let format;
+                const encoding = this.video.selectedEncoding === "none" ? "" : "[vcodec=" + this.video.selectedEncoding + "]";
+                const audioEncoding = this.video.selectedAudioEncoding === "none" ? "" : "[acodec=" + this.video.selectedAudioEncoding + "]";
+                if (this.video.videoOnly) {
+                    format = `
+                    bestvideo[height=${this.format.height}][fps=${this.format.fps}][ext=mp4]${encoding}
+                    /bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}
+                    /bestvideo[height=${this.format.height}][fps=${this.format.fps}]
+                    /bestvideo[height=${this.format.height}]
+                    /best[height=${this.format.height}]
+                    /bestvideo
+                    /best`;
+                    if (this.format.fps == null) {
+                        format = `
+                        bestvideo[height=${this.format.height}][ext=mp4]${encoding}
+                        /bestvideo[height=${this.format.height}]${encoding}
+                        /bestvideo[height=${this.format.height}]
+                        /best[height=${this.format.height}]
+                        /bestvideo
+                        /best`
+                    }
+                } else {
+                    format = `
+                    bestvideo[height=${this.format.height}][fps=${this.format.fps}][ext=mp4]${encoding}+${this.video.audioQuality}audio[ext=m4a]${audioEncoding}
+                    /bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.video.audioQuality}audio${audioEncoding}
+                    /bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.video.audioQuality}audio
+                    /bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio
+                    /bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio
+                    /best[height=${this.format.height}]
+                    /bestvideo+bestaudio
+                    /best`;
+                    if (this.format.fps == null) {
+                        format = `
+                        bestvideo[height=${this.format.height}][ext=mp4]${encoding}+${this.video.audioQuality}audio[ext=m4a]${audioEncoding}
+                        /bestvideo[height=${this.format.height}]${encoding}+${this.video.audioQuality}audio${audioEncoding}
+                        /bestvideo[height=${this.format.height}]${encoding}+${this.video.audioQuality}audio
+                        /bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio
+                        /best[height=${this.format.height}]
+                        /bestvideo+bestaudio
+                        /best`
+                    }
+                }
+                args = [
+                    "-f", format,
+                    "-o", output,
+                    '--ffmpeg-location', this.environment.paths.ffmpeg,
+                    '--no-mtime',
+                    '--output-na-placeholder', "",
+                    '--progress-template', PROGRESS_TEMPLATE
+                ];
+            } else {
+                args = [
+                    "-o", output,
+                    '--ffmpeg-location', this.environment.paths.ffmpeg,
+                    '--no-mtime',
+                    '--output-na-placeholder', "",
+                    '--progress-template', PROGRESS_TEMPLATE
+                ];
+            }
+            if (this.video.downloadSubs && this.video.subLanguages.length > 0) {
+                this.progressBar.setInitial("Downloading subtitles");
+                args.push("--write-sub");
+                args.push("--write-auto-sub");
+                args.push("--embed-subs");
+                args.push("--sub-lang");
+                let langs = "";
+                this.video.subLanguages.forEach(lang => langs += lang + ",")
+                args.push(langs.slice(0, -1));
+            }
+            if (this.environment.settings.outputFormat !== "none") {
+                args.push("--merge-output-format");
+                args.push(this.environment.settings.outputFormat);
+            }
+        }
+
+        if (this.environment.settings.downloadMetadata) {
+            args.push('--add-metadata');
+        }
+        if (this.environment.settings.downloadThumbnail) {
+            args.push('--write-thumbnail');
+        }
+        if (this.environment.settings.sponsorblockMark !== "") {
+            args.push("--sponsorblock-mark");
+            args.push(this.environment.settings.sponsorblockMark);
+        }
+
+        if (this.environment.settings.sponsorblockRemove !== "") {
+            args.push("--sponsorblock-remove");
+            args.push(this.environment.settings.sponsorblockRemove);
+        }
+
+        if (this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName) {
+            args.push('--keep-video');
+        }
+
+        if (this.environment.settings.retries) {
+            args.push('--retries');
+            args.push(this.environment.settings.retries);
+        }
+
+        if(this.environment.settings.allowUnsafeFileExtensions) {
+            args.push('--compat-options','allow-unsafe-ext');
+        }
+
+        if(this.environment.settings.allowUnplayable) {
+            args.push('--allow-unplayable-formats');
+        }
+        this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
+
+        return args;
+    }
+
+    createLiveArguments(){
+        let args = [];
+        let downloadFolderPath = this.environment.settings.downloadPath;
+        if (this.environment.settings.avoidFailingToSaveDuplicateFileName) {
+            downloadFolderPath += `/[${this.video.identifier}]`;
+        }
+        /// let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+
+        let ffmpegheads = '';
+        this.video.headers.forEach((h) => {
+            if (h.k.toLowerCase() == 'referer') {
+                args.push("-referer", h.v);
+            } else {
+                ffmpegheads = ffmpegheads + '' + h.k + ": " + h.v + '\r\n'; //Ffmpeg7 syntax ffmpeg 6 takes separate headers options
+            }
+        });
+
+        if (ffmpegheads != '') args.push("-headers",ffmpegheads)
+
+        args.push("-i", this.video.url);
+        let formatid = this.video.formats.findIndex(e => e.height==this.format.height)
+        args.push('-map','0:v:'+formatid)
+
+        if(this.environment.settings.allowUnplayable||this.environment.settings.keepUnmerged) {
+            //Keep stream files separated
+            args.push(path.join(downloadFolderPath, this.video.title+".mp4"));
+            args.push('-map','0:a:0'); //First audio track found...
+            args.push(path.join(downloadFolderPath, this.video.title+".aac"));
+        } else {
+            args.push('-map','0:a:0'); //First audio track found....
+            args.push(path.join(downloadFolderPath, this.video.title+".mp4"));
+        }
+        return args;
+    }
+
     async connect() {
         let downloadFolderPath = this.environment.settings.downloadPath;
 
@@ -25,180 +212,15 @@ class DownloadQuery extends Query {
         }
 
         let args = [];
-        let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
-        const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
         if (this.video.is_live && this.video.extractor == 'Generic') {
-            let ffmpegheaders = '';    let ffmpegheads = '';
-            this.video.headers.forEach((h) => {
-                if (h.k.toLowerCase() == 'referer') {
-                    args.push("-referer", h.v);
-                } else {
-                    ffmpegheads = ffmpegheads + '' + h.k + ": " + h.v + '\r\n';//fmpeg7 syntax ffmpeg 6 takes separate headers options
-                }
-            });
-
-            if (ffmpegheads != '') args.push("-headers",ffmpegheads)
-
-            args.push("-i", this.video.url);
-            let formatid = this.video.formats.findIndex(e => e.format==this.format.height)
-            args.push('-map','0:v:'+formatid)
-
-            if(this.environment.settings.allowUnplayable||this.environment.settings.keepUnmerged) {
-               /// keep stream files separated
-                args.push(path.join(downloadFolderPath, this.video.title+".mp4"));
-                args.push('-map','0:a:0')    // TODO first audio track found...
-                args.push(path.join(downloadFolderPath, this.video.title+".aac"));
-
-            } else
-            {
-                args.push('-map','0:a:0')    // TODO first audio track found...
-                args.push(path.join(downloadFolderPath, this.video.title+".mp4"));
-            }
+            args=this.createLiveArguments()
 
         } else {
-            if (this.video.audioOnly) {
-                let audioQuality = this.video.audioQuality;
-                if (audioQuality === "best") {
-                    audioQuality = "0";
-                } else if (audioQuality === "worst") {
-                    audioQuality = "9";
-                }
-                const audioOutputFormat = this.environment.settings.audioOutputFormat;
-                args = [
-                    '--extract-audio', '--audio-quality', audioQuality,
-                    '--ffmpeg-location', this.environment.paths.ffmpeg,
-                    '--no-mtime',
-                    '-o', output,
-                    '--output-na-placeholder', "",
-                    '--progress-template', PROGRESS_TEMPLATE
-                ];
-                if (this.video.selectedAudioEncoding !== "none") {
-                    args.push("-f");
-                    args.push("bestaudio[acodec=" + this.video.selectedAudioEncoding + "]/bestaudio");
-                } else if (audioOutputFormat === "m4a") {
-                    args.push("-f");
-                    args.push("bestaudio[ext=m4a]/bestaudio");
-                }
-                if (audioOutputFormat !== "none") {
-                    args.push('--audio-format', audioOutputFormat);
-                }
-                if (audioOutputFormat === "m4a" || audioOutputFormat === "mp3" || audioOutputFormat === "none") {
-                    args.push("--embed-thumbnail");
-                }
-            } else {
-                if (this.video.formats.length !== 0) {
-                    let format;
-                    const encoding = this.video.selectedEncoding === "none" ? "" : "[vcodec=" + this.video.selectedEncoding + "]";
-                    const audioEncoding = this.video.selectedAudioEncoding === "none" ? "" : "[acodec=" + this.video.selectedAudioEncoding + "]";
-                    if (this.video.videoOnly) {
-                        format = `
-                        bestvideo[height=${this.format.height}][fps=${this.format.fps}][ext=mp4]${encoding}
-                        /bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}
-                        /bestvideo[height=${this.format.height}][fps=${this.format.fps}]
-                        /bestvideo[height=${this.format.height}]
-                        /best[height=${this.format.height}]
-                        /bestvideo
-                        /best`;
-                        if (this.format.fps == null) {
-                            format = `
-                            bestvideo[height=${this.format.height}][ext=mp4]${encoding}
-                            /bestvideo[height=${this.format.height}]${encoding}
-                            /bestvideo[height=${this.format.height}]
-                            /best[height=${this.format.height}]
-                            /bestvideo
-                            /best`
-                        }
-                    } else {
-                        format = `
-                        bestvideo[height=${this.format.height}][fps=${this.format.fps}][ext=mp4]${encoding}+${this.video.audioQuality}audio[ext=m4a]${audioEncoding}
-                        /bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.video.audioQuality}audio${audioEncoding}
-                        /bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}+${this.video.audioQuality}audio
-                        /bestvideo[height=${this.format.height}][fps=${this.format.fps}]+${this.video.audioQuality}audio
-                        /bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio
-                        /best[height=${this.format.height}]
-                        /bestvideo+bestaudio
-                        /best`;
-                        if (this.format.fps == null) {
-                            format = `
-                            bestvideo[height=${this.format.height}][ext=mp4]${encoding}+${this.video.audioQuality}audio[ext=m4a]${audioEncoding}
-                            /bestvideo[height=${this.format.height}]${encoding}+${this.video.audioQuality}audio${audioEncoding}
-                            /bestvideo[height=${this.format.height}]${encoding}+${this.video.audioQuality}audio
-                            /bestvideo[height=${this.format.height}]+${this.video.audioQuality}audio
-                            /best[height=${this.format.height}]
-                            /bestvideo+bestaudio
-                            /best`
-                        }
-                    }
-                    args = [
-                        "-f", format,
-                        "-o", output,
-                        '--ffmpeg-location', this.environment.paths.ffmpeg,
-                        '--no-mtime',
-                        '--output-na-placeholder', "",
-                        '--progress-template', PROGRESS_TEMPLATE
-                    ];
-                } else {
-                    args = [
-                        "-o", output,
-                        '--ffmpeg-location', this.environment.paths.ffmpeg,
-                        '--no-mtime',
-                        '--output-na-placeholder', "",
-                        '--progress-template', PROGRESS_TEMPLATE
-                    ];
-                }
-                if (this.video.downloadSubs && this.video.subLanguages.length > 0) {
-                    this.progressBar.setInitial("Downloading subtitles");
-                    args.push("--write-sub");
-                    args.push("--write-auto-sub");
-                    args.push("--embed-subs");
-                    args.push("--sub-lang");
-                    let langs = "";
-                    this.video.subLanguages.forEach(lang => langs += lang + ",")
-                    args.push(langs.slice(0, -1));
-                }
-                if (this.environment.settings.outputFormat !== "none") {
-                    args.push("--merge-output-format");
-                    args.push(this.environment.settings.outputFormat);
-                }
-            }
-
-            if (this.environment.settings.downloadMetadata) {
-                args.push('--add-metadata');
-            }
-            if (this.environment.settings.downloadThumbnail) {
-                args.push('--write-thumbnail');
-            }
-            if (this.environment.settings.sponsorblockMark !== "") {
-                args.push("--sponsorblock-mark");
-                args.push(this.environment.settings.sponsorblockMark);
-            }
-
-            if (this.environment.settings.sponsorblockRemove !== "") {
-                args.push("--sponsorblock-remove");
-                args.push(this.environment.settings.sponsorblockRemove);
-            }
-
-            if (this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName) {
-                args.push('--keep-video');
-            }
-
-            if (this.environment.settings.retries) {
-                args.push('--retries');
-                args.push(this.environment.settings.retries);
-            }
-
-            if(this.environment.settings.allowUnsafeFileExtensions) {
-                args.push('--compat-options','allow-unsafe-ext');
-            }
-
-            if(this.environment.settings.allowUnplayable) {
-                args.push('--allow-unplayable-formats');
-            }            
-            this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
+            args=this.createYDLArguments()
         }
 
 
-        console.log(args);    console.log(this.video.headers);
+        console.log(args);
         let destinationCount = 0;
         let initialReset = false;
         let result = null;

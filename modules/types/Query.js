@@ -33,54 +33,48 @@ class Query {
 
         let command='';
         if(!video.is_live){
-        args.push("--no-cache-dir");
-        args.push("--ignore-config");
+            args.push("--no-cache-dir");
+            args.push("--ignore-config");
 
-        if(this.environment.settings.userAgent === "spoof") {
-            args.push("--user-agent"); //Add random user agent to slow down user agent profiling
-            args.push(new UserAgent({ deviceCategory: 'desktop' }).toString());
-        } else if(this.environment.settings.userAgent === "empty") {
-            args.push("--user-agent");
-            args.push("''"); //Add an empty user agent string to workaround VR video issues
+            if(this.environment.settings.userAgent === "spoof") {
+                args.push("--user-agent"); //Add random user agent to slow down user agent profiling
+                args.push(new UserAgent({ deviceCategory: 'desktop' }).toString());
+            } else if(this.environment.settings.userAgent === "empty") {
+                args.push("--user-agent");
+                args.push("''"); //Add an empty user agent string to workaround VR video issues
+            }
+
+            if(this.environment.settings.proxy != null && this.environment.settings.proxy.length > 0) {
+                args.push("--proxy");
+                args.push(this.environment.settings.proxy);
+            }
+
+            if(!this.environment.settings.validateCertificate) {
+                args.push("--no-check-certificate"); //Dont check the certificate if validate certificate is false
+            }
+
+            if(this.environment.settings.cookiePath != null) { //Add cookie arguments if enabled
+                args.push("--cookies");
+                args.push(this.environment.settings.cookiePath);
+            }
+
+            if(this.environment.settings.rateLimit !== "") {
+                args.push("--limit-rate");
+                args.push(this.environment.settings.rateLimit + "K");
+            }
+
+            if(this.environment.settings.noPlaylist) {
+                args.push("--no-playlist");
+            } else {
+                args.push("--yes-playlist")
+            }
+
+            args.push(url) //Url must always be added as the final argument
+
+            command = this.environment.paths.ytdl; //Set the command to be executed
+        }else{
+            command = this.environment.paths.ffmpeg+"/ffmpeg"; //Set the command to be executed
         }
-
-        if(this.environment.settings.proxy != null && this.environment.settings.proxy.length > 0) {
-            args.push("--proxy");
-            args.push(this.environment.settings.proxy);
-        }
-
-        if(!this.environment.settings.validateCertificate) {
-            args.push("--no-check-certificate"); //Dont check the certificate if validate certificate is false
-        }
-
-        if(this.environment.settings.cookiePath != null) { //Add cookie arguments if enabled
-            args.push("--cookies");
-            args.push(this.environment.settings.cookiePath);
-        }
-
-        if(this.environment.settings.rateLimit !== "") {
-            args.push("--limit-rate");
-            args.push(this.environment.settings.rateLimit + "K");
-        }
-
-        if(this.environment.settings.noPlaylist) {
-            args.push("--no-playlist");
-        } else {
-            args.push("--yes-playlist")
-        }
-
-        args.push(url) //Url must always be added as the final argument
-
-        command = this.environment.paths.ytdl; //Set the command to be executed
-    }
-    
-    else{
- 
-
-        command = this.environment.paths.ffmpeg+"/ffmpeg"; //Set the command to be executed
-        console.log(args);
-
-    }
         if(this.environment.pythonCommand !== "python") { //If standard python is not available use another install if detected
             args.unshift(this.environment.paths.ytdl);
             command = this.environment.pythonCommand;
@@ -103,7 +97,6 @@ class Query {
             //Return "done" when the query has finished
             return await new Promise((resolve) => {
               try {
-                //if(video.is_live) this.process = child_process.spawn(command, args);  else 
                 this.process = execa(command, args);
                 this.process.stdout.setEncoding('utf8');
                 this.process.stdout.on('data', (data) => {
