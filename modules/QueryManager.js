@@ -79,8 +79,10 @@ class QueryManager {
                             totalAudioCodecs.push(audioCodec);
                         }
                     }
+                    let formatid=0;
                     for(const format of video.formats) {
                         format.display_name = Format.getDisplayName(format.height, format.fps);
+                        format.formatid=formatid++;
                         totalFormats.push(format);
                     }
                 }

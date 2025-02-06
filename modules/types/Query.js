@@ -1,4 +1,5 @@
 const execa = require('execa');
+const path = require('path')
 const UserAgent = require('user-agents');
 const { platform, arch } = require("os");
 const archDistDirName = arch() === "arm64" ? "arm64" : "x64";
@@ -33,7 +34,7 @@ class Query {
 
         let command='';
         if(this.video.is_live && this.video.extractor == 'Generic'){
-            command = this.environment.paths.ffmpeg+"/ffmpeg"; //Set the command to be executed
+            command = path.join(this.environment.paths.ffmpeg, "ffmpeg"+(process.platform=='win32'?'.exe':'')); //Set the command to be executed
         }else{
             args.push("--no-cache-dir");
             args.push("--ignore-config");

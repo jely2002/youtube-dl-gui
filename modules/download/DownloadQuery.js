@@ -1,8 +1,8 @@
 const Query = require("../types/Query")
-const path = require("path")
-const fs = require("fs");
+const path = require('path')
+const fs = require('fs');
 const Utils = require("../Utils")
-const console = require("console");
+const console = require('console');
 
 class DownloadQuery extends Query {
     constructor(video, progressBar, playlistMeta) {
@@ -176,9 +176,9 @@ class DownloadQuery extends Query {
             downloadFolderPath += `/[${this.video.identifier}]`;
         }
         /// let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
-        let ffversion=  require('child_process').execSync( this.environment.paths.ffmpeg+"/ffmpeg"+' -version').toString();  //readFileSync(this.environment.paths.ffmpegVersion);
-       
-        ffversion=ffversion.substring(ffversion.indexOf('version')+8,ffversion.indexOf('Copyright'))
+        let ffversion = require('child_process').execSync(path.join(this.environment.paths.ffmpeg,"ffmpeg"+(process.platform=='win32'?'.exe':''))+' -version')
+        ffversion = ffversion.toString();
+        ffversion = ffversion.substring(ffversion.indexOf('version')+8,ffversion.indexOf('Copyright'))
 
         let isFFmpeg7=false;
         if(ffversion.match(/(7)/g)) isFFmpeg7=true;
@@ -197,7 +197,7 @@ class DownloadQuery extends Query {
 
         args.push("-i", this.video.url);
         let formatid = this.video.formats.findIndex(e => e.height==this.format.height)
-        args.push('-map','0:v:'+formatid)
+        args.push('-map','0:'+this.video.formats[formatid].format_id)
 
         if(this.environment.settings.allowUnplayable||this.environment.settings.keepUnmerged) {
             //Keep stream files separated
