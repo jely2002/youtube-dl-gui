@@ -197,7 +197,7 @@ class DownloadQuery extends Query {
 
         args.push("-i", this.video.url);
         let formatid = this.video.formats.findIndex(e => e.height==this.format.height)
-        
+
         args.push('-c','copy');
 
         args.push('-map','0:'+this.video.formats[formatid].format_index)
@@ -208,7 +208,7 @@ class DownloadQuery extends Query {
             args.push('-map','0:a:0'); //First audio track found...
             args.push(output+"_audio.aac");
         } else {
-            args.push('-map','0:a:0'); //First audio track found....         
+            args.push('-map','0:a:0'); //First audio track found....
             args.push(output+".mp4");
         }
         return args;
