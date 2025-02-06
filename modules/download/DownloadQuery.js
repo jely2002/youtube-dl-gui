@@ -175,7 +175,7 @@ class DownloadQuery extends Query {
         if (this.environment.settings.avoidFailingToSaveDuplicateFileName) {
             downloadFolderPath += `/[${this.video.identifier}]`;
         }
-        /// let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
+        let output = path.join(downloadFolderPath, this.video.getFilename());
         let ffversion = require('child_process').execSync(path.join(this.environment.paths.ffmpeg,"ffmpeg"+(process.platform=='win32'?'.exe':''))+' -version')
         ffversion = ffversion.toString();
         ffversion = ffversion.substring(ffversion.indexOf('version')+8,ffversion.indexOf('Copyright'))
@@ -197,16 +197,19 @@ class DownloadQuery extends Query {
 
         args.push("-i", this.video.url);
         let formatid = this.video.formats.findIndex(e => e.height==this.format.height)
+        
+        args.push('-c','copy');
+
         args.push('-map','0:'+this.video.formats[formatid].format_id)
 
         if(this.environment.settings.allowUnplayable||this.environment.settings.keepUnmerged) {
             //Keep stream files separated
-            args.push(path.join(downloadFolderPath, this.video.title+".mp4"));
+            args.push(output+"_video.mp4");
             args.push('-map','0:a:0'); //First audio track found...
-            args.push(path.join(downloadFolderPath, this.video.title+".aac"));
+            args.push(output+"_audio.aac");
         } else {
-            args.push('-map','0:a:0'); //First audio track found....
-            args.push(path.join(downloadFolderPath, this.video.title+".mp4"));
+            args.push('-map','0:a:0'); //First audio track found....         
+            args.push(output+".mp4");
         }
         return args;
     }
