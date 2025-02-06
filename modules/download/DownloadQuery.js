@@ -1,8 +1,8 @@
 const Query = require("../types/Query")
-const path = require("path")
-const fs = require("fs");
+const path = require('path')
+const fs = require('fs');
 const Utils = require("../Utils")
-const console = require("console");
+const console = require('console');
 
 class DownloadQuery extends Query {
     constructor(video, progressBar, playlistMeta) {
@@ -17,22 +17,20 @@ class DownloadQuery extends Query {
         super.stop();
     }
 
-    async connect() {
+    createYDLArguments(){
+        let args = [];
         let downloadFolderPath = this.environment.settings.downloadPath;
-
-        if(this.environment.settings.avoidFailingToSaveDuplicateFileName) {
+        const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
+        if (this.environment.settings.avoidFailingToSaveDuplicateFileName) {
             downloadFolderPath += `/[${this.video.identifier}]`;
         }
-
-        let args = [];
         let output = path.join(downloadFolderPath, Utils.resolvePlaylistPlaceholders(this.environment.settings.nameFormat, this.playlistMeta));
-        const PROGRESS_TEMPLATE = '[download] %(progress._percent_str)s %(progress._speed_str)s %(progress._eta_str)s %(progress)j';
 
-        if(this.video.audioOnly) {
+        if (this.video.audioOnly) {
             let audioQuality = this.video.audioQuality;
-            if(audioQuality === "best") {
+            if (audioQuality === "best") {
                 audioQuality = "0";
-            } else if(audioQuality === "worst") {
+            } else if (audioQuality === "worst") {
                 audioQuality = "9";
             }
             const audioOutputFormat = this.environment.settings.audioOutputFormat;
@@ -44,17 +42,17 @@ class DownloadQuery extends Query {
                 '--output-na-placeholder', "",
                 '--progress-template', PROGRESS_TEMPLATE
             ];
-            if(this.video.selectedAudioEncoding !== "none") {
+            if (this.video.selectedAudioEncoding !== "none") {
                 args.push("-f");
                 args.push("bestaudio[acodec=" + this.video.selectedAudioEncoding + "]/bestaudio");
-            } else if(audioOutputFormat === "m4a") {
+            } else if (audioOutputFormat === "m4a") {
                 args.push("-f");
                 args.push("bestaudio[ext=m4a]/bestaudio");
             }
-            if(audioOutputFormat !== "none") {
+            if (audioOutputFormat !== "none") {
                 args.push('--audio-format', audioOutputFormat);
             }
-            if(audioOutputFormat === "m4a" || audioOutputFormat === "mp3" || audioOutputFormat === "none") {
+            if (audioOutputFormat === "m4a" || audioOutputFormat === "mp3" || audioOutputFormat === "none") {
                 args.push("--embed-thumbnail");
             }
         } else {
@@ -62,7 +60,7 @@ class DownloadQuery extends Query {
                 let format;
                 const encoding = this.video.selectedEncoding === "none" ? "" : "[vcodec=" + this.video.selectedEncoding + "]";
                 const audioEncoding = this.video.selectedAudioEncoding === "none" ? "" : "[acodec=" + this.video.selectedAudioEncoding + "]";
-                if(this.video.videoOnly) {
+                if (this.video.videoOnly) {
                     format = `
                     bestvideo[height=${this.format.height}][fps=${this.format.fps}][ext=mp4]${encoding}
                     /bestvideo[height=${this.format.height}][fps=${this.format.fps}]${encoding}
@@ -133,27 +131,28 @@ class DownloadQuery extends Query {
                 args.push(this.environment.settings.outputFormat);
             }
         }
-        if(this.environment.settings.downloadMetadata) {
+
+        if (this.environment.settings.downloadMetadata) {
             args.push('--add-metadata');
         }
-        if(this.environment.settings.downloadThumbnail) {
+        if (this.environment.settings.downloadThumbnail) {
             args.push('--write-thumbnail');
         }
-        if(this.environment.settings.sponsorblockMark !== "") {
+        if (this.environment.settings.sponsorblockMark !== "") {
             args.push("--sponsorblock-mark");
             args.push(this.environment.settings.sponsorblockMark);
         }
 
-        if(this.environment.settings.sponsorblockRemove !== "") {
+        if (this.environment.settings.sponsorblockRemove !== "") {
             args.push("--sponsorblock-remove");
             args.push(this.environment.settings.sponsorblockRemove);
         }
 
-        if(this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName) {
+        if (this.environment.settings.keepUnmerged || this.environment.settings.avoidFailingToSaveDuplicateFileName) {
             args.push('--keep-video');
         }
 
-        if(this.environment.settings.retries) {
+        if (this.environment.settings.retries) {
             args.push('--retries');
             args.push(this.environment.settings.retries);
         }
@@ -165,9 +164,71 @@ class DownloadQuery extends Query {
         if(this.environment.settings.allowUnplayable) {
             args.push('--allow-unplayable-formats');
         }
-
         this.video.headers.forEach((h) => args.push("--add-headers", h.k + ": " + h.v));
-        console.log(args);    console.log(this.video.headers);
+
+        return args;
+    }
+
+    createFfmpegArguments(){
+        let args = [];
+        let downloadFolderPath = this.environment.settings.downloadPath;
+        if (this.environment.settings.avoidFailingToSaveDuplicateFileName) {
+            downloadFolderPath += `/[${this.video.identifier}]`;
+        }
+        let output = path.join(downloadFolderPath, this.video.getFilename());
+        let ffversion = require('child_process').execSync(path.join(this.environment.paths.ffmpeg,"ffmpeg"+(process.platform=='win32'?'.exe':''))+' -version')
+        ffversion = ffversion.toString();
+        ffversion = ffversion.substring(ffversion.indexOf('version')+8,ffversion.indexOf('Copyright'))
+
+        let isFFmpeg7=false;
+        if(ffversion.match(/(7)/g)) isFFmpeg7=true;
+
+        let ffmpegheads = '';
+        this.video.headers.forEach((h) => {
+            if (h.k.toLowerCase() == 'referer') {
+                args.push("-referer", h.v);
+            } else {
+                if(isFFmpeg7) ffmpegheads = ffmpegheads + h.k + ": " + h.v + '\r\n'; //Ffmpeg7 syntax ffmpeg 6 takes separate headers options
+                else  args.push("-headers", h.k + ": " + h.v)
+            }
+        });
+
+        if (ffmpegheads != '') args.push("-headers",ffmpegheads)
+
+        args.push("-i", this.video.url);
+        let formatid = this.video.formats.findIndex(e => e.height == this.format.height)
+
+        args.push('-c','copy');
+
+        args.push('-map','0:'+this.video.formats[formatid].format_index)
+
+        if(this.environment.settings.allowUnplayable||this.environment.settings.keepUnmerged) {
+            //Keep stream files separated
+            args.push(output+"_video.mp4");
+            args.push('-map','0:a:0'); //First audio track found...
+            args.push(output+"_audio.aac");
+        } else {
+            args.push('-map','0:a:0'); //First audio track found....
+            args.push(output+".mp4");
+        }
+        return args;
+    }
+
+    async connect() {
+        let downloadFolderPath = this.environment.settings.downloadPath;
+
+        if (this.environment.settings.avoidFailingToSaveDuplicateFileName) {
+            downloadFolderPath += `/[${this.video.identifier}]`;
+        }
+
+        let args = [];
+        let useFfmpeginsteadofYDL = this.video.is_live && this.video.extractor == 'Generic';
+
+        if (useFfmpeginsteadofYDL) args = this.createFfmpegArguments()
+        else args = this.createYDLArguments()
+
+        console.log(args);
+
         let destinationCount = 0;
         let initialReset = false;
         let result = null;
@@ -176,17 +237,17 @@ class DownloadQuery extends Query {
             result = await this.environment.downloadLimiter.schedule(() => this.start(this.video, args, (liveData) => {
                 this.environment.logger.log(this.video.identifier, liveData);
                 this.video.setFilename(liveData);
-                if(this.video.is_live) {
+                if (this.video.is_live) {
                     if (!initialReset) {
                         initialReset = true;
                         this.progressBar.reset();
                         return;
                     }
-                    try{
-                        const livrec =  liveData.match(regexliverec);
+                    try {
+                        const livrec = liveData.match(regexliverec);
                         if (typeof (`${livrec[1]}`) == "undefined") return;
                         this.progressBar.updateDownload('livestream', `${livrec[2]}`, `${livrec[3]}bits/s`, this.video.audioOnly || this.video.downloadingAudio);
-                    } catch(e) {
+                    } catch (e) {
                         return;
                     }
                     return;
@@ -219,7 +280,7 @@ class DownloadQuery extends Query {
                 let liveDataObj;
                 try {
                     liveDataObj = JSON.parse(liveData.slice(liveData.indexOf('{')));
-                } catch(e) {
+                } catch (e) {
                     return;
                 }
 
@@ -245,14 +306,14 @@ class DownloadQuery extends Query {
             return exception;
         }
 
-        if(this.video.audioOnly) {
+        if (this.video.audioOnly) {
             await this.removeThumbnail(".jpg");
         }
 
-        if(this.environment.settings.avoidFailingToSaveDuplicateFileName) {
+        if (this.environment.settings.avoidFailingToSaveDuplicateFileName) {
             this.environment.paths.moveFile(downloadFolderPath, this.environment.settings.downloadPath, this.video.getFilename());
 
-            if(!this.environment.settings.keepUnmerged) {
+            if (!this.environment.settings.keepUnmerged) {
                 this.removeVideoDataFolder(downloadFolderPath);
             }
         }
@@ -262,14 +323,14 @@ class DownloadQuery extends Query {
 
     async removeThumbnail(extension) {
         const filename = this.video.filename;
-        if(filename != null) {
+        if (filename != null) {
             const filenameExt = path.basename(filename, path.extname(filename)) + extension;
             const filenameAbs = path.join(this.video.downloadedPath, filenameExt);
             try {
                 await fs.promises.unlink(filenameAbs);
-            } catch(e) {
+            } catch (e) {
                 console.log("No left-over thumbnail found to remove. (" + filenameExt + ")")
-                if(extension !== ".webp") {
+                if (extension !== ".webp") {
                     await this.removeThumbnail(".webp");
                 }
             }
@@ -277,10 +338,10 @@ class DownloadQuery extends Query {
     }
 
     removeVideoDataFolder(folderPath) {
-        if(folderPath != null) {
+        if (folderPath != null) {
             try {
-                fs.rmSync(folderPath, {recursive : true, force : true});
-            } catch(e) {
+                fs.rmSync(folderPath, { recursive: true, force: true });
+            } catch (e) {
                 console.log("No left-over Temp Folder found to remove. (" + folderPath + ")")
             }
         }
