@@ -156,7 +156,7 @@ class Utils {
         let formatid=0;
         for(let dataFormat of metadata.formats) {
             let format = new Format(dataFormat.height, dataFormat.fps, null, null);
-            format.format_id=formatid++;
+            format.format_index=formatid++;
             if(dataFormat.height == null) continue;
             if(!detectedFormats.includes(format.getDisplayName())) {
                 for(const dataFormat of metadata.formats) {

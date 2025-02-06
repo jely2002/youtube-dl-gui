@@ -6,7 +6,7 @@ class Format {
         this.filesize = filesize;
         this.filesize_label = filesize_label;
         this.encodings = [];
-        this.format_id = ''
+        this.format_index = ''
     }
 
     getDisplayName() {

@@ -200,7 +200,7 @@ class DownloadQuery extends Query {
         
         args.push('-c','copy');
 
-        args.push('-map','0:'+this.video.formats[formatid].format_id)
+        args.push('-map','0:'+this.video.formats[formatid].format_index)
 
         if(this.environment.settings.allowUnplayable||this.environment.settings.keepUnmerged) {
             //Keep stream files separated
