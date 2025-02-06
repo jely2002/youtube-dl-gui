@@ -196,7 +196,7 @@ class DownloadQuery extends Query {
         if (ffmpegheads != '') args.push("-headers",ffmpegheads)
 
         args.push("-i", this.video.url);
-        let formatid = this.video.formats.findIndex(e => e.height==this.format.height)
+        let formatid = this.video.formats.findIndex(e => e.height == this.format.height)
 
         args.push('-c','copy');
 
