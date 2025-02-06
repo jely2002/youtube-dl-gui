@@ -169,7 +169,7 @@ class DownloadQuery extends Query {
         return args;
     }
 
-    createLiveArguments(){
+    createFfmpegArguments(){
         let args = [];
         let downloadFolderPath = this.environment.settings.downloadPath;
         if (this.environment.settings.avoidFailingToSaveDuplicateFileName) {
@@ -222,15 +222,13 @@ class DownloadQuery extends Query {
         }
 
         let args = [];
-        if (this.video.is_live && this.video.extractor == 'Generic') {
-            args=this.createLiveArguments()
+        let useFfmpeginsteadofYDL = this.video.is_live && this.video.extractor == 'Generic';
 
-        } else {
-            args=this.createYDLArguments()
-        }
-
+        if (useFfmpeginsteadofYDL) args = this.createFfmpegArguments()
+        else args = this.createYDLArguments()
 
         console.log(args);
+
         let destinationCount = 0;
         let initialReset = false;
         let result = null;
