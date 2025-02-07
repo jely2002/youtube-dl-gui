@@ -1,7 +1,16 @@
 const Utils = require("../Utils");
 const path = require("path");
 
+function hashCode(s) {
+    let h = 0, i = 0, l = s.length;
+    if (l > 0) while (i < l)  h = (h << 5) - h + s.charCodeAt(i++) | 0; //eslint-disable-line no-bitwise
+    return h;
+}
 class Video {
+    static getVideoIdentifier(u,h) {
+        return hashCode(u+h.map(e=>e.k+': '+e.v).join());
+    }
+
     constructor(url, headers, type, environment) {
         this.url = url;
         this.headers = headers;
@@ -22,6 +31,7 @@ class Video {
         this.filename = null;
         this.identifier = Utils.getRandomID(32);
         this.is_live = false;
+        this.keys = '';
     }
 
     setFilename(liveData) {
@@ -91,7 +101,8 @@ class Video {
                 uploader: "",
                 average_rating: 0,
                 url: this.url,
-                formats: formats
+                formats: formats,
+                keys: this.keys
             };
         for(const format of this.formats) {
             formats.push(format.serialize());
@@ -110,7 +121,8 @@ class Video {
             uploader: this.uploader,
             average_rating: this.average_rating,
             url: this.url,
-            formats: formats
+            formats: formats,
+            keys: this.keys
         };
     }
 

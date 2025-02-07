@@ -50,6 +50,7 @@
     "iso-639-2": "^2.0.0",
     "jquery": "^3.7.1",
     "mkdirp": "^2.1.6",
+    "pyodide": "^0.25.1",
     "sortablejs": "^1.15.0",
     "targz": "^1.0.1",
     "user-agents": "^1.0.1444",
@@ -64,17 +65,29 @@
   },
   "build": {
     "extraResources": [
-      "binaries/send_traffic_to_videodownloader.py"
+      "binaries/send_traffic_to_videodownloader.py",
+      {
+        "from": "./resources/",
+        "to": "./resources/",
+        "filter": [
+          "**/*"
+        ]
+      },{
+        "from": "./node_modules/pyodide",
+        "to": "./resources/pyodide",
+        "filter": [
+          "**/*"
+        ]
+      }
     ],
     "afterPack": "./build/appimage-fix.js",
-    "appId": "com.jelleglebbeek.youtube-dl-gui",
-    "asarUnpack": "**/binaries/*",
+    "appId": "com.mp3butcher.youtube-dl-gui-plus",
     "appx": {
       "backgroundColor": "#292929",
-      "displayName": "Open Video Downloader",
-      "identityName": "3216JelleGlebbeek.youtube-dl-gui",
+      "displayName": "Open Video Downloader Plus",
+      "identityName": "3216MpEbUtCh3r.youtube-dl-gui-plus",
       "publisher": "CN=EBDD6AA4-D72E-42C6-BBCB-A288476F0CBE",
-      "publisherDisplayName": "Jelle Glebbeek",
+      "publisherDisplayName": "MpEbUtCh3r",
       "applicationId": "openvideodownloader"
     },
     "nsis": {

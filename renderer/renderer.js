@@ -1167,6 +1167,7 @@ function showInfoModal(info, identifier) {
     let hs = "";
     data.headers.forEach((h) => { hs = hs + h.k + ": " + h.v + "\n" } );
     $(modal).find('#headers-string').html(hs);
+    $(modal).find('#keys-string').html(data.keys);
     $(modal).find('#info-description').html(data.description == null ? 'no description': data.description);
     $(modal).find('.uploader').html('<strong>Uploader: </strong>' + (data.uploader == null ? "Unknown" : data.uploader));
     $(modal).find('.extractor').html('<strong>Extractor: </strong>' + (data.extractor == null ? "Unknown" : data.extractor));

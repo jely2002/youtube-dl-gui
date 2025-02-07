@@ -58,6 +58,8 @@ class QueryManager {
 
     manageSingle(initialQuery, url, headers) {
         let video = new Video(url, headers, "single", this.environment);
+        let keyholder=this.getVideoByUrlHeaders(url, headers)
+        if(keyholder) video.keys= keyholder.keys;
         video.setMetadata(initialQuery);
         this.addVideo(video);
         setTimeout(() => this.updateGlobalButtons(), 700); //This feels kinda hacky, maybe find a better way sometime.
@@ -583,6 +585,12 @@ class QueryManager {
     getVideo(identifier) {
         return this.managedVideos.find(item => {
             return item.identifier === identifier;
+        });
+    }
+
+    getVideoByUrlHeaders(u,h) {
+        return this.managedVideos.find(item => {
+            return Video.getVideoIdentifier(u,h) === Video.getVideoIdentifier(item.url,item.headers);
         });
     }
 

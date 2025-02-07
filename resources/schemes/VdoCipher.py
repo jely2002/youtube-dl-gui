@@ -1,0 +1,10 @@
+payload = loadBody("json")
+decoded_token = json.loads(base64.b64decode(payload['token']).decode())
+decoded_token['licenseRequest'] = base64.b64encode(cdm.service_certificate_challenge).decode('utf-8')
+payload = {"token": base64.b64encode(json.dumps(decoded_token).encode()).decode()}
+service_cert = await corsFetch(licUrl, "POST", licHeaders, payload, "json")
+service_cert = service_cert["license"]
+decoded_token['licenseRequest'] = getChallenge('b64', service_cert)
+payload = {"token": base64.b64encode(json.dumps(decoded_token).encode()).decode()}
+licence = await corsFetch(licUrl, "POST", licHeaders, payload, "json")
+licence = licence["license"]

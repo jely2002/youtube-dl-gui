@@ -1,5 +1,6 @@
 const execa = require('execa');
-const path = require('path')
+const path = require('path');
+const fs = require('fs');
 const UserAgent = require('user-agents');
 const { platform, arch } = require("os");
 const archDistDirName = arch() === "arm64" ? "arm64" : "x64";
@@ -100,6 +101,7 @@ class Query {
               try {
                 this.process = execa(command, args);
                 this.process.stdout.setEncoding('utf8');
+                let currentfile=''; let outputs=[];
                 this.process.stdout.on('data', (data) => {
                     const lines = data
                         .toString()
@@ -108,6 +110,10 @@ class Query {
                     for(const line of lines) {
                         cb(line);
                     }
+                    if(video.filename&&video.filename!=currentfile) {
+                        outputs.push(video.filename);
+                        currentfile = video.filename;
+                    }
                 });
                 this.process.stdout.on('close', () => {
                     if(this.process.killed) {
@@ -115,6 +121,29 @@ class Query {
                         resolve("killed");
                     }
                     cb("done");
+                    let args2 = []
+                    video.keys.split('\n').forEach((k) => {
+                        if (k) args2.push('--key', k)
+                    });
+                    if (args2.length > 0) {
+                        outputs.forEach((e) => {
+                            let curargs2 = [...args2];
+                            curargs2.push(path.join(video.downloadedPath, e), path.join(video.downloadedPath, 'dec' + e));
+                            this.process = execa.sync(path.join('resources', 'mp4decrypt' + (process.platform === "win32" ? '.exe' : '')), curargs2);
+                        })
+                        let curargs = [];
+                        outputs.forEach((e) => {
+                            fs.unlink(path.join(video.downloadedPath, e), (err) => {
+                                if (err) throw err;
+                            })
+                        })
+                        outputs.forEach((e) => { curargs.push('-i', path.join(video.downloadedPath, 'dec' + e)) })
+                        curargs.push('-c', 'copy');
+                        curargs.push(path.join(video.downloadedPath, 'decrypted_' + outputs[0]));
+                        this.process = execa.sync(path.join(this.environment.paths.ffmpeg, "ffmpeg"), curargs);
+                        //Keep intermediates outputs.forEach((e)=>{ fs.unlink( path.join(video.downloadedPath, 'dec' + e), (err) => { if (err) throw err; })})
+                    }
+
                     resolve("done");
                 });
                 this.process.stderr.on("data", (data) => {
@@ -125,7 +154,7 @@ class Query {
                     }
                     console.error(data.toString())
                 });
-              } catch(e) {
+            } catch(e) {
                 console.log(e);
               }
             });

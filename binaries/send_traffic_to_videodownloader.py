@@ -72,22 +72,24 @@ class TrafficLogger:
     h=[]
     for k, v in flow.request.headers.items():
         h.append({"k":k,"v":v})
+
     rh=[]
+    resp='';
     if isrep:
       for k, v in flow.response.headers.items():
         rh.append({"k":k,"v":v})
-    try:
-      requestbody=base64.b64encode(flow.request.content).decode("ascii")
-    except:
-      requestbody=""
-    resp=""
-    if isrep:
+
       #Don't send large response    
-      if len(flow.response.text)<20000000:
+      if len(flow.response.content)<20000000:
        try:
-         resp=base64.b64encode(flow.response.content[:10000]).decode("ascii")
+         resp=base64.b64encode(flow.response.content[:40000]).decode("ascii")
        except:
          resp=""
+    try:
+         requestbody=base64.b64encode(flow.request.content).decode("ascii")
+    except:
+         requestbody=""
+
     msg= json.dumps(
     {
      "url": flow.request.pretty_url,

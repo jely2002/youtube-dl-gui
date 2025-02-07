@@ -12,6 +12,8 @@ const ClipboardWatcher = require("./modules/ClipboardWatcher");
 const FfmpegUpdater = require('./modules/FfmpegUpdater');
 const MitmProxyUpdater = require('./modules/MitmProxyUpdater');
 const Settings = require('./modules/persistence/Settings');
+const Pyodide = require('pyodide');
+const fs = require('node:fs');
 
 let win
 let env
@@ -22,6 +24,8 @@ let appStarting = true;
 let scannerIsOn = false;
 let mitmwebprocess;
 let mitmproxyclient;
+let pyodide;
+let selectRules;
 
 function sendLogToRenderer(log, isErr) {
     if (win == null) return;
@@ -250,6 +254,40 @@ app.on('ready', async () => {
     app.setAppUserModelId("com.mp3butcher.youtube-dl-gui");
     env = new Environment(app);
     await env.initialize();
+    let baseappdir = app.isPackaged ? path.dirname(env.paths.packedPrefix) : app.getAppPath();
+    let pyodidepath = app.isPackaged ?  path.join(baseappdir,'resources/pyodide/') : path.join(baseappdir,'node_modules/pyodide');
+    let somepackages = [
+        "certifi-2024.2.2-py3-none-any.whl","charset_normalizer-3.3.2-py3-none-any.whl",
+        "construct-2.8.8-py2.py3-none-any.whl","idna-3.6-py3-none-any.whl",
+        "packaging-23.2-py3-none-any.whl","protobuf-4.24.4-cp312-cp312-emscripten_3_1_52_wasm32.whl",
+        "pycryptodome-3.20.0-cp35-abi3-emscripten_3_1_52_wasm32.whl","pymp4-1.4.0-py3-none-any.whl",
+        "pyodide_http-0.2.1-py3-none-any.whl",
+        "pywidevine-1.8.0-py3-none-any.whl",
+        "requests-2.31.0-py3-none-any.whl",
+        "urllib3-2.2.1-py3-none-any.whl"
+    ].map(e=>path.join(baseappdir,"resources/libs/wheels/")+e)
+    pyodide = await Pyodide.loadPyodide({indexURL: pyodidepath, packages: somepackages});
+
+    try {
+        let da3 = fs.readFileSync('resources/virtual_device.wvd', { encoding: "binary" })
+        let buf = Buffer.from(da3, 'binary')
+        pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
+    } catch (e) {
+        console.error('no virtual devices detected in binaries directory : please consider donation')
+    }
+
+    fs.readFile(path.join(baseappdir, 'resources/selectRules.conf'), 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log(data);
+        selectRules = data;
+        selectRules = selectRules.replace(/\n^\s*$|\s*\/\/.*|\s*$/gm, "");
+        selectRules = selectRules.split("\n").map(row => row.split("$$"));
+
+    });
+
     createWindow(env);
 })
 
@@ -318,6 +356,119 @@ ipcMain.handle("platform", () => {
 
 const regexDash = /(?:<\?.*>\n*)*<MPD/gi;
 const regexprange = /bytes\s*=?(\d+)-(\d+)?\/?(\d+)?/g;
+let lastwdurl='';
+let lastwdheader='';
+let pssh='';
+let reqlicHeaders='';
+const regspotpssh=/"pssh"\s*:\s*"([^"]*)/g
+const regexwd=/[\s.]*<ContentProtection[^>]*VINE">[\s.]*<cenc:pssh[^>]*>(.*)<\/cenc:pssh[^>]*>[\s.]*<\/ContentProtection[^>]*>/g
+const regexcenc=/[\s.]*<ContentProtection[^>]*>[\s.]*<cenc:pssh[^>]*>(.*)<\/cenc:pssh[^>]*>[\s.]*<\/ContentProtection[^>]*>/g
+let currentkeys='', lastposturl=''//eslint-disable-line no-unused-vars
+
+///Used by pyodide
+corsFetch = (u, m, h, b) => {  //eslint-disable-line no-unused-vars, no-implicit-globals, no-undef
+    return new Promise((resolve, reject) => {
+        let res = fetch(u, {
+            method: m,
+            headers: JSON.parse(h),
+            body: Uint8Array.from(atob(b), c => c.charCodeAt(0))
+        })
+        .then((r) => r.arrayBuffer())
+        .then((r) => {
+            let licenseresp = String.fromCharCode(...new Uint8Array(r));
+            console.error(licenseresp)
+            resolve(btoa(licenseresp));
+        })
+        if (!res) reject(res)
+    })
+
+}
+
+function setVideoKey(u, h, v, ms) {
+    let vid = queryManager.getVideoByUrlHeaders(u, h);
+    if(vid) vid.keys = v;
+    else setTimeout(setVideoKey, ms, u, h, v, ms);
+}
+
+function keyFound(result) {
+    console.log("!!!!!!!!!!!!!!Key Found!!!!!!!!!!\n" + result);
+    console.warn(globalThis.zechallenge.toString());
+    currentkeys = result;
+
+    if(lastwdurl!='') {
+        //Find the video and attach key the video
+        queryManager.manage(lastwdurl, lastwdheader);
+        setVideoKey(lastwdurl, lastwdheader, result, 2000)
+        lastwdurl = false;
+    }
+}
+
+function scanPostRequest(data) {
+    console.log("checking POST for licence")
+    for (let licrule of selectRules) {
+        let arr = []
+        arr.push(data.url)
+        let search = arr.findIndex(e => e.includes(licrule[0]));
+        if (search >= 0) {
+            //Sounds like we have a winner
+            if (data.response == '') {
+                ///Get headers of the original request
+                let blacked = ["content-length", "Origin", "Sec-Fetch-Mode", "Sec-Fetch-Dest", "Sec-Fetch-Site", "Referer", "Accept-Encoding", "Accept-Language", "Host", "Connection"]
+                let idx = 0, removed = false;
+                while (idx < data.headers.length) {
+                    for (let idx2 = 0; idx2 < blacked.length; idx2++) {
+                        if (data.headers[idx].k.toLowerCase() == blacked[idx2].toLowerCase()) {
+                            data.headers.splice(idx, 1);
+                            removed = true;
+                            break;
+                        }
+                    }
+                    if (!removed) idx++;
+                    removed = false;
+                }
+                reqlicHeaders = JSON.stringify(Object.fromEntries(data.headers.map(header => [header.k, header.v])))
+                break;
+            }
+            console.log(licrule[1]);
+            if (licrule[1]) lastposturl = data.url;
+            if (pssh != '') {
+                console.log("POST fit registered licence server")
+                let idx = 0, removed = false;
+                while (idx < data.headers.length) {
+
+                    if (data.headers[idx].k.toLowerCase() == 'content-length') {
+                        data.headers.splice(idx, 1);
+                        removed = true;
+                    }
+
+                    if (!removed) idx++;
+                    removed = false;
+                }
+                let licHeaders = JSON.stringify(Object.fromEntries(data.headers.map(header => [header.k, header.v]))) //eslint-disable-line no-unused-vars
+                pyodide.globals.set("pssh", pssh);
+                pyodide.globals.set("licUrl", data.url);
+                pyodide.globals.set("licHeaders", reqlicHeaders);
+                pyodide.globals.set("licBody", data.requestbody);
+
+                globalThis.zechallenge = '';
+
+                let baseappdir = app.isPackaged ? path.dirname(env.paths.packedPrefix) : app.getAppPath();
+                let pre = fs.readFileSync(path.join(baseappdir,'resources/pre.py'), { encoding: 'utf8', flag: 'r' });
+                let after = fs.readFileSync(path.join(baseappdir,'resources/after.py'), { encoding: 'utf8', flag: 'r' });
+                let scheme = fs.readFileSync(path.join(baseappdir,'resources/schemes/') + (licrule[1] ? licrule[1] : 'CommonWV') + '.py', { encoding: 'utf8', flag: 'r' });
+                //Get result
+
+                console.log("call virtual python")
+                try {
+                    pyodide.runPythonAsync([pre, scheme, after].join("\n")).then(keyFound)
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            break;
+        }
+    }
+}
 
 function scan(msg) {
     if (scannerIsOn) {
@@ -341,6 +492,7 @@ function scan(msg) {
             if(!removed) idx++;
             removed = false;
         }
+
         //Basic scanner
         let sizeok = false;   //Check if range is not prohibitively small
         let contentype = "";
@@ -352,42 +504,96 @@ function scan(msg) {
             if (h.k.toLowerCase() == "range") {
                 const ranges = [...h.v.matchAll(regexprange)];
                 console.log(ranges[0]);
-                if (typeof (ranges[0][2]) == "undefined") contentlength = 20000000;
+                if (typeof (ranges[0][1]) == "undefined") contentlength = 20000000;
                 else contentlength = parseInt(ranges[0][2], 10) - parseInt(ranges[0][1], 10);
                 if (contentlength > 1500000) sizeok = true;
             }
         });
         console.log(" scan url " + data.url + " headers:" + headerstr);
+        if (data.method == 'POST') {
+            scanPostRequest(data)
+
+        }
+
 
         data.rheaders.forEach(h => {
             if (h.k.toLowerCase() == "content-type") contentype = h.v;
-            if (h.k.toLowerCase() == "content-length") contentlength = parseInt(h.v, 10);
+            if (h.k.toLowerCase() == "content-length") {
+                contentlength = parseInt(h.v, 10);
+            }
             if (h.k.toLowerCase() == "content-range") {
+
                 const ranges = [...h.v.matchAll(regexprange)];
-                if (typeof (ranges[0][2]) == "undefined") contentlength = 20000000;
+                if (typeof (ranges[0][1]) == "undefined") contentlength = 20000000;
                 else contentlength = parseInt(ranges[0][2], 10) - parseInt(ranges[0][1], 10);
                 if (contentlength > 1500000) sizeok = true;
             }
         });
         let toscandeeply = false;
         //Large Content-type video
-        if (contentype.startsWith('video') && contentlength > 1000000) {
+        if (contentype.startsWith('video') && contentlength > 1500000) {
             toscandeeply = true;
             console.warn(" [x] contentype video!!!!!!!!!!!" + data);
         }
         //Large Content-Range
-        if(contentype=="" && (sizeok || contentlength > 1000000)) {
+        if(!contentype.startsWith('image') && (sizeok || contentlength >  1500000)) {
             toscandeeply = true;
         }
         let res = atob(data.response)
         console.log(" [x] response  " + res.substring(0, 100));
         if (res.length > 1) {
+            //Spotify pssh            https://seektables.scdn.co/seektable/file_id.json "pssh":"cap"
+            if(data.url.startsWith('https://seektables.scdn.co/seektable/')) {
+                const wd = [...res.matchAll(regspotpssh)];
+                console.log(wd[0]);
+                if (typeof (wd[0]) != "undefined") pssh = wd[0][1];
+
+            }
+            //Spotify stream            https://audio-ak.spotifycdn.com/audio
+            if(data.url.startsWith('https://audio-ak.spotifycdn.com/audio')) {
+                idx = 0;
+                removed = false;
+                while(idx<data.headers.length) {
+                        if(data.headers[idx].k.toLowerCase() == 'range') {
+                            data.headers.splice(idx,1);
+                            removed = true;
+                        }
+                    if(!removed) idx++;
+                    removed = false;
+                }
+                if(currentkeys!=''){
+                    //Delay to be sure to have key returned lastwdurl = data.url; lastwdheader = data.headers
+                    toscandeeply = true;
+                    let ckey = currentkeys
+                    setVideoKey(data.url, data.headers, ckey, 2000);
+                    currentkeys = ''
+                }
+            }
             if (res[0] == "#") { //HLS?
                 console.log(res);
                 toscandeeply = true;
             } else if (res.match(regexDash)) { //DASH?
                 console.log(res);
-                toscandeeply = true;
+                pssh='';
+                ///seek pssh
+                const wd = [...res.matchAll(regexwd)];
+                console.log(wd[0]);
+                if (typeof (wd[0]) != "undefined") {
+                    let bestqkey = 0; //Have to find a way to get desired stream
+                    console.log(wd[bestqkey]);
+                    pssh = wd[bestqkey][1];
+                    lastwdurl = data.url;
+                    lastwdheader = data.headers
+                }else{
+                    const cenc = [...res.matchAll(regexcenc)];
+                    console.log(cenc[0]);
+                    if (typeof (cenc[0]) != "undefined") {
+                        console.log(cenc[0]);
+                        pssh = cenc[0][1];
+                        lastwdurl = data.url;
+                        lastwdheader = data.headers
+                    } else toscandeeply = true;
+                }
             }
         }
         if (toscandeeply) queryManager.manage(data.url, data.headers);
@@ -538,5 +744,4 @@ ipcMain.handle('messageBox', (event, args) => {
         buttons: [],
     });
 });
-
 
