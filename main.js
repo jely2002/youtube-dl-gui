@@ -247,6 +247,15 @@ function createWindow(env) {
     win.webContents.on('did-finish-load', () => {
         win.show();
         startCriticalHandlers(env);
+
+        try {
+            let da3 = fs.readFileSync(path.join(env.paths.ffmpeg, 'virtual_device.wvd'), { encoding: "binary" })
+            let buf = Buffer.from(da3, 'binary')
+            pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
+        } catch (e) {
+            win.webContents.openDevTools();
+            setTimeout(console.log, 1000, 'no virtual device file detected in binaries directory : please consider donation on\nhttps://donorbox.org/youtube-dl-gui')
+        }
     });
 }
 
@@ -281,13 +290,6 @@ app.on('ready', async () => {
 
     createWindow(env);
 
-    try {
-        let da3 = fs.readFileSync(path.join(env.paths.ffmpeg, 'virtual_device.wvd'), { encoding: "binary" })
-        let buf = Buffer.from(da3, 'binary')
-        pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
-    } catch (e) {
-        console.error('no virtual devices detected in binaries directory : please consider donation')
-    }
 })
 
 app.on('before-quit', async () => {
