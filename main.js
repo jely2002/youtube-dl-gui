@@ -268,14 +268,6 @@ app.on('ready', async () => {
     ].map(e=>path.join(baseappdir,"resources/libs/wheels/")+e)
     pyodide = await Pyodide.loadPyodide({indexURL: pyodidepath, packages: somepackages});
 
-    try {
-        let da3 = fs.readFileSync(path.join(env.paths.ffmpeg, 'virtual_device.wvd'), { encoding: "binary" })
-        let buf = Buffer.from(da3, 'binary')
-        pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
-    } catch (e) {
-        console.error('no virtual devices detected in binaries directory : please consider donation')
-    }
-
     fs.readFile(path.join(baseappdir, 'resources/selectRules.conf'), 'utf8', (err, data) => {
         if (err) {
             console.error(err);
@@ -288,6 +280,14 @@ app.on('ready', async () => {
     });
 
     createWindow(env);
+
+    try {
+        let da3 = fs.readFileSync(path.join(env.paths.ffmpeg, 'virtual_device.wvd'), { encoding: "binary" })
+        let buf = Buffer.from(da3, 'binary')
+        pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
+    } catch (e) {
+        console.error('no virtual devices detected in binaries directory : please consider donation')
+    }
 })
 
 app.on('before-quit', async () => {
