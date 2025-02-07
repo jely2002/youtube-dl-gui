@@ -14,20 +14,20 @@ LISTENING_PORT = 12000
 data_queue = queue.Queue(maxsize=15)
 
 def sendTrafficLoop(trafficLoggerAddon):
-  data=''
+  data = ''
   checkinterval = 6
   next_checktime = time.time() + checkinterval
   try:
-    while data=='':
+    while data == '':
         try:
-          data=trafficLoggerAddon.socket_connection.recv(1)
+          data = trafficLoggerAddon.socket_connection.recv(1)
           print(data)
           trafficLoggerAddon.socket_connection.close()
           trafficLoggerAddon.socket_instance.close()
           ctx.master.shutdown()
         except:
           pass
-        if data_queue.qsize()>0:
+        if data_queue.qsize() > 0:
           msg = data_queue.get()        
           if msg is not None:
             trafficLoggerAddon.socket_connection.send(msg.encode())
@@ -69,26 +69,26 @@ class TrafficLogger:
     return
 
   def checkflow(self,flow,isrep):
-    h=[]
+    h = []
     for k, v in flow.request.headers.items():
-        h.append({"k":k,"v":v})
+        h.append({"k":k, "v":v})
 
-    rh=[]
-    resp='';
+    rh = []
+    resp = '';
     if isrep:
       for k, v in flow.response.headers.items():
-        rh.append({"k":k,"v":v})
+        rh.append({"k":k, "v":v})
 
       #Don't send large response    
       if len(flow.response.content)<20000000:
        try:
-         resp=base64.b64encode(flow.response.content[:40000]).decode("ascii")
+         resp = base64.b64encode(flow.response.content[:40000]).decode("ascii")
        except:
-         resp=""
+         resp = ""
     try:
-         requestbody=base64.b64encode(flow.request.content).decode("ascii")
+         requestbody = base64.b64encode(flow.request.content).decode("ascii")
     except:
-         requestbody=""
+         requestbody = ""
 
     msg= json.dumps(
     {
@@ -98,8 +98,8 @@ class TrafficLogger:
      "headers": h,
      "rheaders": rh,
      "response": resp
-     }
-     , indent = 0)
+    }
+    , indent = 0)
     data_queue.put(str(msg))
 
 addons = [TrafficLogger()]

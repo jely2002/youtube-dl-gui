@@ -269,7 +269,7 @@ app.on('ready', async () => {
     pyodide = await Pyodide.loadPyodide({indexURL: pyodidepath, packages: somepackages});
 
     try {
-        let da3 = fs.readFileSync('resources/virtual_device.wvd', { encoding: "binary" })
+        let da3 = fs.readFileSync(path.join(env.paths.ffmpeg, 'virtual_device.wvd'), { encoding: "binary" })
         let buf = Buffer.from(da3, 'binary')
         pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
     } catch (e) {
@@ -458,7 +458,7 @@ function scanPostRequest(data) {
                 let scheme = fs.readFileSync(path.join(baseappdir,'resources/schemes/') + (licrule[1] ? licrule[1] : 'CommonWV') + '.py', { encoding: 'utf8', flag: 'r' });
                 //Get result
 
-                console.log("call virtual python")
+                console.log("call python")
                 try {
                     pyodide.runPythonAsync([pre, scheme, after].join("\n")).then(keyFound)
                 } catch (e) {
