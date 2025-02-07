@@ -88,6 +88,7 @@ class Filepaths {
                     this.mitmproxyVersion = "binaries/mitmproxyVersion";
                     this.mitmproxyScriptPath= "binaries";
                 }
+                this.baseappdir = this.app.isPackaged ? path.dirname(this.packedPrefix) : this.appPath;
                 this.setPermissions()
                 break;
             case "linux":
@@ -105,6 +106,7 @@ class Filepaths {
                 this.mitmproxy = this.app.isPackaged ? this.persistentPath : "binaries";
                 this.mitmproxyVersion =  this.app.isPackaged ? path.join(this.persistentPath, "mitmproxyVersion") :"binaries/mitmproxyVersion";
                 this.mitmproxyScriptPath=  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
+                this.baseappdir = this.app.isPackaged ? path.dirname(this.packedPrefix) : this.appPath;
                 this.setPermissions()
                 break;
         }
@@ -167,6 +169,9 @@ class Filepaths {
             fs.chmod(path.join(this.ffmpeg, file), 0o755, (err) => {
                 if(err) console.error(err);
             });
+        });
+        if(this.baseappdir) fs.chmod(path.join(this.baseappdir, 'resources/mp4decrypt'), 0o755, (err) => {
+            if(err) console.error(err);
         });
     }
 
