@@ -129,7 +129,7 @@ class Query {
                         outputs.forEach((e) => {
                             let curargs2 = [...args2];
                             curargs2.push(path.join(video.downloadedPath, e), path.join(video.downloadedPath, 'dec' + e));
-                            this.process = execa.sync(path.join('resources', 'mp4decrypt' + (process.platform === "win32" ? '.exe' : '')), curargs2);
+                            this.process = execa.sync(path.join(path.join(this.environment.paths.baseappdir, 'resources'), 'mp4decrypt' + (process.platform === "win32" ? '.exe' : '')), curargs2);
                         })
                         let curargs = [];
                         outputs.forEach((e) => {

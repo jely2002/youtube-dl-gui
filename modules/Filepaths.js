@@ -108,6 +108,8 @@ class Filepaths {
                 this.setPermissions()
                 break;
         }
+        this.baseappdir = this.app.isPackaged ? path.dirname(this.packedPrefix) : this.appPath;
+
         await this.removeLeftOver();
     }
 
