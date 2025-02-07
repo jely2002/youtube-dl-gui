@@ -996,6 +996,9 @@ function updateAllVideoSettings() {
 
 async function getSettings() {
     const settings = await window.main.invoke("settingsAction", {action: "get"});
+    $('#openbinary').on('click', () => {
+        window.main.invoke("binaryFolder");
+    });
     $('#updateBinary').prop('checked', settings.updateBinary);
     $('#updateApplication').prop('checked', settings.updateApplication);
     $('#userAgent').val(settings.userAgent);

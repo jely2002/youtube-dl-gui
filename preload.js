@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld(
                 "settingsAction",
                 "videoAction",
                 "cookieFile",
+                "binaryFolder",
                 "downloadFolder",
                 "installUpdate",
                 "iconProgress",

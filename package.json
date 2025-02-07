@@ -26,7 +26,7 @@
     "gui",
     "interface"
   ],
-  "author": "Jelle Glebbeek <john@doe.com>, mp3butcher <mp3butcher@hotmail.com>",
+  "author": "Jelle Glebbeek <john@doe.com>, Julien Valentin <mp3butcher@hotmail.com>",
   "license": "AGPL-3.0-only",
   "devDependencies": {
     "electron": "^26.2.2",
@@ -94,8 +94,8 @@
       "include": "./build/vcredist.nsh",
       "packElevateHelper": false
     },
-    "productName": "Open Video Downloader",
-    "copyright": "Copyright © 2020-2021 Jelle Glebbeek",
+    "productName": "Open Video Downloader Plus",
+    "copyright": "Copyright © 2020-2021 Jelle Glebbeek 2023-2024 Julien Valentin",
     "win": {
       "target": "nsis",
       "icon": "renderer/img/icon.ico",

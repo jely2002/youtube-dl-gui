@@ -281,7 +281,6 @@ app.on('ready', async () => {
             console.error(err);
             return;
         }
-        console.log(data);
         selectRules = data;
         selectRules = selectRules.replace(/\n^\s*$|\s*\/\/.*|\s*$/gm, "");
         selectRules = selectRules.split("\n").map(row => row.split("$$"));
@@ -690,6 +689,11 @@ ipcMain.handle('titlebarClick', (event, arg) => {
     }
 })
 
+//Show Folder containing binaries
+ipcMain.handle('binaryFolder', async () => {
+    shell.openPath(env.paths.ffmpeg);
+});
+
 //Show a dialog to select a folder, and return the selected value.
 ipcMain.handle('downloadFolder', async () => {
     await dialog.showOpenDialog(win, {
@@ -737,6 +741,7 @@ ipcMain.handle('cookieFile', async (event, clear) => {
 
 //Show a messagebox with a custom title and message
 ipcMain.handle('messageBox', (event, args) => {
+    console.error(args.message);
     dialog.showMessageBoxSync(win, {
         title: args.title,
         message: (args.message.startsWith("Youtube-dl returned an empty object")) ? "Youtube-dl returned an empty object" : args.message,
