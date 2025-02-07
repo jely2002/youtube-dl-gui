@@ -503,7 +503,7 @@ function scan(msg) {
             if (h.k.toLowerCase() == "range") {
                 const ranges = [...h.v.matchAll(regexprange)];
                 console.log(ranges[0]);
-                if (typeof (ranges[0][1]) == "undefined") contentlength = 20000000;
+                if (typeof (ranges[0][2]) == "undefined") contentlength = 20000000;
                 else contentlength = parseInt(ranges[0][2], 10) - parseInt(ranges[0][1], 10);
                 if (contentlength > 1500000) sizeok = true;
             }
@@ -523,7 +523,7 @@ function scan(msg) {
             if (h.k.toLowerCase() == "content-range") {
 
                 const ranges = [...h.v.matchAll(regexprange)];
-                if (typeof (ranges[0][1]) == "undefined") contentlength = 20000000;
+                if (typeof (ranges[0][2]) == "undefined") contentlength = 20000000;
                 else contentlength = parseInt(ranges[0][2], 10) - parseInt(ranges[0][1], 10);
                 if (contentlength > 1500000) sizeok = true;
             }
