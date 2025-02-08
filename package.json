@@ -82,6 +82,7 @@
     ],
     "afterPack": "./build/appimage-fix.js",
     "appId": "com.mp3butcher.youtube-dl-gui-plus",
+    "asarUnpack": "**/binaries/*",
     "appx": {
       "backgroundColor": "#292929",
       "displayName": "Open Video Downloader Plus",
@@ -95,7 +96,7 @@
       "packElevateHelper": false
     },
     "productName": "Open Video Downloader Plus",
-    "copyright": "Copyright © 2020-2021 Jelle Glebbeek 2023-2024 Julien Valentin",
+    "copyright": "Copyright © 2020-2021 Jelle Glebbeek 2023-2025 Julien Valentin",
     "win": {
       "target": "nsis",
       "icon": "renderer/img/icon.ico",
