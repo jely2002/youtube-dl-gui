@@ -244,7 +244,7 @@ function createWindow(env) {
     win.once('focus', () => {
         win.flashFrame(false)
     });
-    win.webContents.on('did-finish-load', () => {
+    win.webContents.on('ready-to-show', () => {
         win.show();
         startCriticalHandlers(env);
 
