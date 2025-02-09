@@ -223,7 +223,10 @@ async function init() {
 
     $('#notification_area').on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function() {
         if ( $('#notification_area').hasClass('show')) {
+            $('#notification_area').css('z-index', 100);
             $('#notification_area').removeClass('show').addClass('hide');
+        }else{
+            $('#notification_area').css('z-index', -1);
         }
    });
 

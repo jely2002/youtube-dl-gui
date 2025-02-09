@@ -254,6 +254,7 @@ function createWindow(env) {
             pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
         } catch (e) {
             console.warn('Not Fatal: can\'t read virtual_device.wvd in binaries directory')
+            win.webContents.send("notify", { msg: "No virtual device file detected in binaries directory : please consider donation on\nhttps://donorbox.org/youtube-dl-gui"});
         }
     });
 }
@@ -405,8 +406,7 @@ function keyFound(result) {
     }
 }
 
-function nowvd(except){
-    win.webContents.send("notify", { msg: "No virtual device file detected in binaries directory : please consider donation on\nhttps://donorbox.org/youtube-dl-gui"});
+function nowvd(except) {
     console.error(except);
 }
 

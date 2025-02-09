@@ -42,6 +42,7 @@ select {
 /* notification_area */
 #notification_area {
     opacity: 0;
+    bottom:0px;
     margin-top: 50px;
     padding: 10px;
     background-color: var(--highlight-color);
@@ -51,7 +52,6 @@ select {
     transition: opacity 0.5s ease-in-out;
     transition-delay: 5s;
     position: fixed;
-    z-index: 100;
     color: var(--bs-primary-text-emphasis);
 }
 
