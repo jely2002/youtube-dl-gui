@@ -67,6 +67,14 @@ function startCriticalHandlers(env) {
                 mitmproxyUpdater.checkUpdate().finally(() => {
                     taskList.load();
                     clipboardWatcher.startPolling();
+                    try {
+                        let da3 = fs.readFileSync(path.join(env.paths.ffmpeg, 'virtual_device.wvd'), { encoding: "binary" })
+                        let buf = Buffer.from(da3, 'binary')
+                        pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
+                    } catch (e) {
+                        console.warn('Not Fatal: can\'t read virtual_device.wvd in binaries directory')
+                        win.webContents.send("notify", { msg: "No virtual device file detected in binaries directory : please consider donation on\nhttps://donorbox.org/youtube-dl-gui"});
+                    }
                 });
             });
         });
@@ -247,15 +255,6 @@ function createWindow(env) {
     win.webContents.on('ready-to-show', () => {
         win.show();
         startCriticalHandlers(env);
-
-        try {
-            let da3 = fs.readFileSync(path.join(env.paths.ffmpeg, 'virtual_device.wvd'), { encoding: "binary" })
-            let buf = Buffer.from(da3, 'binary')
-            pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
-        } catch (e) {
-            console.warn('Not Fatal: can\'t read virtual_device.wvd in binaries directory')
-            win.webContents.send("notify", { msg: "No virtual device file detected in binaries directory : please consider donation on\nhttps://donorbox.org/youtube-dl-gui"});
-        }
     });
 }
 
