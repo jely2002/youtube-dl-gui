@@ -221,6 +221,12 @@ async function init() {
         }
     });
 
+    $('#notification_area').on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function() {
+        if ( $('#notification_area').hasClass('show')) {
+            $('#notification_area').removeClass('show').addClass('hide');
+        }
+   });
+
     $('#defaultConcurrent').on('click', () => {
         window.main.invoke("settingsAction", {action: "get"}).then((settings) => {
             $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.defaultConcurrent})</strong>`);
@@ -377,6 +383,10 @@ async function init() {
         } else {
             $('#add-url').attr("placeholder", "Enter a video/playlist URL to add to the queue").prop("disabled", false);
         }
+    })
+
+    window.main.receive("notify", (args) => {
+        $('#notification_area').removeClass('hide').addClass('show').html(args.msg);
     })
 
     //Receive calls from main process and dispatch them to the right function

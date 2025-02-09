@@ -33,6 +33,7 @@ contextBridge.exposeInMainWorld(
         },
         receive: (channel, cb) => {
             let validChannels = [
+                "notify",
                 "log",
                 "error",
                 "toast",

@@ -253,8 +253,7 @@ function createWindow(env) {
             let buf = Buffer.from(da3, 'binary')
             pyodide.FS.writeFile("/device.wvd", buf, { encoding: "binary" });
         } catch (e) {
-            win.webContents.openDevTools();
-            setTimeout(console.log, 1000, 'no virtual device file detected in binaries directory : please consider donation on\nhttps://donorbox.org/youtube-dl-gui')
+            console.warn('Not Fatal: can\'t read virtual_device.wvd in binaries directory')
         }
     });
 }
@@ -406,6 +405,11 @@ function keyFound(result) {
     }
 }
 
+function nowvd(except){
+    win.webContents.send("notify", { msg: "No virtual device file detected in binaries directory : please consider donation on\nhttps://donorbox.org/youtube-dl-gui"});
+    console.error(except);
+}
+
 function scanPostRequest(data) {
     console.log("checking POST for licence")
     for (let licrule of selectRules) {
@@ -461,11 +465,11 @@ function scanPostRequest(data) {
                 //Get result
 
                 console.log("call python")
-                try {
-                    pyodide.runPythonAsync([pre, scheme, after].join("\n")).then(keyFound)
-                } catch (e) {
-                    console.error(e);
-                }
+
+                pyodide.runPythonAsync([pre, scheme, after].join("\n"))
+                .then(keyFound)
+                .catch(nowvd)
+
             }
             break;
         }

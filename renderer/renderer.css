@@ -39,6 +39,32 @@ select {
     background-color: var(--secondary-highlight-color) !important;
 }
 
+/* notification_area */
+#notification_area {
+    opacity: 0;
+    margin-top: 50px;
+    padding: 10px;
+    background-color: var(--highlight-color);
+    border: 1px solid #ccc;
+    width: -webkit-fill-available;
+    text-align: center;
+    transition: opacity 0.5s ease-in-out;
+    transition-delay: 5s;
+    position: fixed;
+    z-index: 100;
+    color: var(--bs-primary-text-emphasis);
+}
+
+#notification_area.show {
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+#notification_area.hide {
+    opacity: 0;
+    transition-delay: 5s;
+}
+
 /* TOASTS */
 .toast-header {
     border-bottom: none;
