@@ -1,7 +1,7 @@
 {
   "name": "youtube-dl-gui",
-  "version": "2.6.15",
-  "description": "Open Video Downloader",
+  "version": "2.6.16",
+  "description": "Open Video Downloader Plus",
   "main": "main.js",
   "scripts": {
     "start": "electron . --dev --ozone-platform-hint=auto",
