@@ -263,8 +263,10 @@ app.on('ready', async () => {
     app.setAppUserModelId("com.mp3butcher.youtube-dl-gui");
     env = new Environment(app);
     await env.initialize();
-    let baseappdir = app.isPackaged ? path.dirname(env.paths.packedPrefix) : app.getAppPath();
-    let pyodidepath = app.isPackaged ?  path.join(baseappdir,'resources/pyodide/') : path.join(baseappdir,'node_modules/pyodide');
+    let basewheels = app.isPackaged ?  env.paths.baseappdir + '/resources/libs/wheels/': env.paths.baseappdir +'/resources/libs/wheels/'
+    let pyodidepath;
+    if(process.platform == 'win32') pyodidepath = app.isPackaged ?  'resources/resources/pyodide/' : 'node_modules/pyodide';
+    else pyodidepath = app.isPackaged ?  path.join(env.paths.baseappdir,'resources/pyodide/') : path.join(env.paths.baseappdir,'node_modules/pyodide');
     let somepackages = [
         "certifi-2024.2.2-py3-none-any.whl","charset_normalizer-3.3.2-py3-none-any.whl",
         "construct-2.8.8-py2.py3-none-any.whl","idna-3.6-py3-none-any.whl",
@@ -274,10 +276,10 @@ app.on('ready', async () => {
         "pywidevine-1.8.0-py3-none-any.whl",
         "requests-2.31.0-py3-none-any.whl",
         "urllib3-2.2.1-py3-none-any.whl"
-    ].map(e=>path.join(baseappdir,"resources/libs/wheels/")+e)
+    ].map(e=>basewheels + e)
     pyodide = await Pyodide.loadPyodide({indexURL: pyodidepath, packages: somepackages});
 
-    fs.readFile(path.join(baseappdir, 'resources/selectRules.conf'), 'utf8', (err, data) => {
+    fs.readFile(path.join(env.paths.baseappdir, 'resources/selectRules.conf'), 'utf8', (err, data) => {
         if (err) {
             console.error(err);
             return;
@@ -453,10 +455,9 @@ function scanPostRequest(data) {
 
                 globalThis.zechallenge = '';
 
-                let baseappdir = app.isPackaged ? path.dirname(env.paths.packedPrefix) : app.getAppPath();
-                let pre = fs.readFileSync(path.join(baseappdir,'resources/pre.py'), { encoding: 'utf8', flag: 'r' });
-                let after = fs.readFileSync(path.join(baseappdir,'resources/after.py'), { encoding: 'utf8', flag: 'r' });
-                let scheme = fs.readFileSync(path.join(baseappdir,'resources/schemes/') + (licrule[1] ? licrule[1] : 'CommonWV') + '.py', { encoding: 'utf8', flag: 'r' });
+                let pre = fs.readFileSync(path.join(env.paths.baseappdir, 'resources/pre.py'), { encoding: 'utf8', flag: 'r' });
+                let after = fs.readFileSync(path.join(env.paths.baseappdir, 'resources/after.py'), { encoding: 'utf8', flag: 'r' });
+                let scheme = fs.readFileSync(path.join(env.paths.baseappdir, 'resources/schemes/') + (licrule[1] ? licrule[1] : 'CommonWV') + '.py', { encoding: 'utf8', flag: 'r' });
                 //Get result
 
                 console.log("call python")

@@ -25,7 +25,7 @@ class Filepaths {
                 this.ffmpegVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpegVersion") :"binaries/ffmpegVersion";
                 this.mitmproxy = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries") : "binaries";
                 this.mitmproxyVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/mitmproxyVersion") :"binaries/mitmproxyVersion";
-                this.mitmproxyScriptPath=  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
+                this.mitmproxyScriptPath =  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 break;
             case "win32app": {
                 const appDir = path.basename(path.join(this.appPath, "../../..")).replace(/_(.*)_/g, "_");
@@ -43,7 +43,7 @@ class Filepaths {
                 this.ffmpegVersion = path.join(this.binaryPath, "ffmpegVersion");
                 this.mitmproxy = this.binaryPath;
                 this.mitmproxyVersion = path.join(this.binaryPath, "mitmproxyVersion");
-                this.mitmproxyScriptPath=  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
+                this.mitmproxyScriptPath =  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 break;
             }
             case "win32portable":
@@ -60,7 +60,7 @@ class Filepaths {
                 this.ffmpegVersion = path.join(this.persistentPath, "ffmpegVersion");
                 this.mitmproxy = this.persistentPath;
                 this.mitmproxyVersion = path.join(this.persistentPath, "mitmproxyVersion");
-                this.mitmproxyScriptPath=  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
+                this.mitmproxyScriptPath =  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 break;
             case "darwin":
                 this.packedPrefix = this.appPath;
@@ -75,7 +75,7 @@ class Filepaths {
                     this.ffmpegVersion = path.join(this.unpackedPrefix, "binaries/ffmpegVersion");
                     this.mitmproxy = path.join(this.unpackedPrefix, "binaries");
                     this.mitmproxyVersion =  path.join(this.unpackedPrefix, "binaries/mitmproxyVersion");
-                    this.mitmproxyScriptPath=  path.join(this.unpackedPrefix, "binaries");
+                    this.mitmproxyScriptPath =  path.join(this.unpackedPrefix, "binaries");
                 }else{
                     this.ffmpeg = "binaries";
                     this.ytdl = this.getMacOSPathYtDlp();
@@ -86,7 +86,7 @@ class Filepaths {
                     this.ffmpegVersion = "binaries/ffmpegVersion";
                     this.mitmproxy = "binaries";
                     this.mitmproxyVersion = "binaries/mitmproxyVersion";
-                    this.mitmproxyScriptPath= "binaries";
+                    this.mitmproxyScriptPath = "binaries";
                 }
                 this.baseappdir = this.app.isPackaged ? path.dirname(this.packedPrefix) : this.appPath;
                 this.setPermissions()
@@ -105,7 +105,7 @@ class Filepaths {
                 this.ffmpegVersion = this.app.isPackaged ? path.join(this.persistentPath, "ffmpegVersion") :"binaries/ffmpegVersion";
                 this.mitmproxy = this.app.isPackaged ? this.persistentPath : "binaries";
                 this.mitmproxyVersion =  this.app.isPackaged ? path.join(this.persistentPath, "mitmproxyVersion") :"binaries/mitmproxyVersion";
-                this.mitmproxyScriptPath=  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
+                this.mitmproxyScriptPath =  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 this.baseappdir = this.app.isPackaged ? path.dirname(this.packedPrefix) : this.appPath;
                 this.setPermissions()
                 break;
