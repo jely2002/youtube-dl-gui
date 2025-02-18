@@ -14,6 +14,7 @@ based on https://github.com/StefanLobbenmeier/youtube-dl-gui but adding several 
 - browser traffic scanning (using mitmproxy)
 - live streaming support
 - request headers manipulation
+- android virtual device integration (require a personal wvd file)
 - various fixes and updates
 
 ### Network traffic scanner
