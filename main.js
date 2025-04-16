@@ -26,6 +26,7 @@ let mitmwebprocess;
 let mitmproxyclient;
 let pyodide;
 let selectRules;
+let remotecdm = false;
 
 function sendLogToRenderer(log, isErr) {
     if (win == null) return;
@@ -74,6 +75,7 @@ function startCriticalHandlers(env) {
                     } catch (e) {
                         console.warn('Not Fatal: can\'t read virtual_device.wvd in binaries directory')
                         win.webContents.send("notify", { msg: "No virtual device file detected in binaries directory : please consider donation on\nhttps://donorbox.org/youtube-dl-gui"});
+                        remotecdm = true;
                     }
                 });
             });
@@ -235,6 +237,7 @@ function createWindow(env) {
             contextIsolation: true
         }
     })
+    
     if (process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
@@ -394,7 +397,7 @@ function setVideoKey(u, h, v, ms) {
 
 function keyFound(result) {
     console.log("!!!!!!!!!!!!!!Key Found!!!!!!!!!!\n" + result);
-    console.warn(globalThis.zechallenge.toString());
+    //console.warn(globalThis.zechallenge.toString());
     currentkeys = result;
 
     if(lastwdurl!='') {
@@ -451,24 +454,43 @@ function scanPostRequest(data) {
                     removed = false;
                 }
                 let licHeaders = JSON.stringify(Object.fromEntries(data.headers.map(header => [header.k, header.v]))) //eslint-disable-line no-unused-vars
-                pyodide.globals.set("pssh", pssh);
-                pyodide.globals.set("licUrl", data.url);
-                pyodide.globals.set("licHeaders", reqlicHeaders);
-                pyodide.globals.set("licBody", data.requestbody);
+                if(remotecdm){
+                    const https = require('https');
+                    let res =  fetch("https://cdrm-project.com/api/decrypt", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            'pssh': pssh,
+                            'licurl': data.url,
+                            'licHeaders': reqlicHeaders,
+                            'licBody': data.requestbody,
+                            'headers': reqlicHeaders
+                        })
+                    }) 
+                    .then((r) => r.json())
+                    .then((r) => keyFound(r.message))
+                }else{
+                    
+                    pyodide.globals.set("pssh", pssh);
+                    pyodide.globals.set("licUrl", data.url);
+                    pyodide.globals.set("licHeaders", reqlicHeaders);
+                    pyodide.globals.set("licBody", data.requestbody);
 
-                globalThis.zechallenge = '';
+                    globalThis.zechallenge = '';
 
-                let pre = fs.readFileSync(path.join(env.paths.baseappdir, 'resources/pre.py'), { encoding: 'utf8', flag: 'r' });
-                let after = fs.readFileSync(path.join(env.paths.baseappdir, 'resources/after.py'), { encoding: 'utf8', flag: 'r' });
-                let scheme = fs.readFileSync(path.join(env.paths.baseappdir, 'resources/schemes/') + (licrule[1] ? licrule[1] : 'CommonWV') + '.py', { encoding: 'utf8', flag: 'r' });
-                //Get result
+                    let pre = fs.readFileSync(path.join(env.paths.baseappdir, 'resources/pre.py'), { encoding: 'utf8', flag: 'r' });
+                    let after = fs.readFileSync(path.join(env.paths.baseappdir, 'resources/after.py'), { encoding: 'utf8', flag: 'r' });
+                    let scheme = fs.readFileSync(path.join(env.paths.baseappdir, 'resources/schemes/') + (licrule[1] ? licrule[1] : 'CommonWV') + '.py', { encoding: 'utf8', flag: 'r' });
+                    //Get result
 
-                console.log("call python")
+                    console.log("call python")
 
-                pyodide.runPythonAsync([pre, scheme, after].join("\n"))
-                .then(keyFound)
-                .catch(nowvd)
-
+                    pyodide.runPythonAsync([pre, scheme, after].join("\n"))
+                    .then(keyFound)
+                    .catch(nowvd)
+                }
             }
             break;
         }
@@ -517,9 +539,7 @@ function scan(msg) {
         console.log(" scan url " + data.url + " headers:" + headerstr);
         if (data.method == 'POST') {
             scanPostRequest(data)
-
         }
-
 
         data.rheaders.forEach(h => {
             if (h.k.toLowerCase() == "content-type") contentype = h.v;
@@ -555,7 +575,7 @@ function scan(msg) {
 
             }
             //Spotify stream            https://audio-ak.spotifycdn.com/audio
-            if(data.url.startsWith('https://audio-ak.spotifycdn.com/audio')) {
+            if(data.url.indexOf('.spotifycdn.com/audio')>0) {
                 idx = 0;
                 removed = false;
                 while(idx<data.headers.length) {
