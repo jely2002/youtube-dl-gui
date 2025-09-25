@@ -575,7 +575,7 @@ function scan(msg) {
 
             }
             //Spotify stream            https://audio-ak.spotifycdn.com/audio
-            if(data.url.indexOf('.spotifycdn.com/audio')>0) {
+            if(data.url.indexOf('.spotifycdn.com/audio')>0 || data.url.indexOf('scdn.co/audio')>0) {
                 idx = 0;
                 removed = false;
                 while(idx<data.headers.length) {
