@@ -8,6 +8,7 @@ class Filepaths {
         this.env = env;
         this.appPath = this.app.getAppPath();
         this.platform = this.detectPlatform();
+        this.systemVersion = null
     }
 
      async generateFilepaths() {
@@ -22,6 +23,9 @@ class Filepaths {
                 this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
                 this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
                 this.ffmpegVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpegVersion") :"binaries/ffmpegVersion";
+                this.mitmproxy = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries") : "binaries";
+                this.mitmproxyVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/mitmproxyVersion") :"binaries/mitmproxyVersion";
+                this.mitmproxyScriptPath =  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 break;
             case "win32app": {
                 const appDir = path.basename(path.join(this.appPath, "../../..")).replace(/_(.*)_/g, "_");
@@ -37,6 +41,9 @@ class Filepaths {
                 this.taskList = path.join(this.binaryPath, "taskList");
                 this.ytdlVersion = path.join(this.binaryPath, "ytdlVersion");
                 this.ffmpegVersion = path.join(this.binaryPath, "ffmpegVersion");
+                this.mitmproxy = this.binaryPath;
+                this.mitmproxyVersion = path.join(this.binaryPath, "mitmproxyVersion");
+                this.mitmproxyScriptPath =  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 break;
             }
             case "win32portable":
@@ -51,17 +58,37 @@ class Filepaths {
                 this.taskList = path.join(this.persistentPath, "taskList");
                 this.ytdlVersion = path.join(this.persistentPath, "ytdlVersion");
                 this.ffmpegVersion = path.join(this.persistentPath, "ffmpegVersion");
+                this.mitmproxy = this.persistentPath;
+                this.mitmproxyVersion = path.join(this.persistentPath, "mitmproxyVersion");
+                this.mitmproxyScriptPath =  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
                 break;
             case "darwin":
                 this.packedPrefix = this.appPath;
                 this.unpackedPrefix = this.appPath + ".unpacked";
-                this.ffmpeg = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries") : "binaries";
-                this.ytdl = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/yt-dlp-unix") : "binaries/yt-dlp-unix";
-                this.icon = this.app.isPackaged ? path.join(this.packedPrefix, "renderer/img/icon.png") : "renderer/img/icon.png";
-                this.settings = this.app.isPackaged ? path.join(this.unpackedPrefix, "userSettings") : "userSettings";
-                this.taskList = this.app.isPackaged ? path.join(this.unpackedPrefix, "taskList") : "taskList";
-                this.ytdlVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ytdlVersion") :"binaries/ytdlVersion";
-                this.ffmpegVersion = this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries/ffmpegVersion") :"binaries/ffmpegVersion";
+                if(this.app.isPackaged){
+                    this.ffmpeg = path.join(this.unpackedPrefix, "binaries");
+                    this.ytdl = path.join(this.unpackedPrefix, this.getMacOSPathYtDlp());
+                    this.icon = path.join(this.packedPrefix, "renderer/img/icon.png");
+                    this.settings = path.join(this.unpackedPrefix, "userSettings");
+                    this.taskList = path.join(this.unpackedPrefix, "taskList");
+                    this.ytdlVersion = path.join(this.unpackedPrefix, "binaries/ytdlVersion");
+                    this.ffmpegVersion = path.join(this.unpackedPrefix, "binaries/ffmpegVersion");
+                    this.mitmproxy = path.join(this.unpackedPrefix, "binaries");
+                    this.mitmproxyVersion =  path.join(this.unpackedPrefix, "binaries/mitmproxyVersion");
+                    this.mitmproxyScriptPath =  path.join(this.unpackedPrefix, "binaries");
+                }else{
+                    this.ffmpeg = "binaries";
+                    this.ytdl = this.getMacOSPathYtDlp();
+                    this.icon = "renderer/img/icon.png";
+                    this.settings = "userSettings";
+                    this.taskList = "taskList";
+                    this.ytdlVersion = "binaries/ytdlVersion";
+                    this.ffmpegVersion = "binaries/ffmpegVersion";
+                    this.mitmproxy = "binaries";
+                    this.mitmproxyVersion = "binaries/mitmproxyVersion";
+                    this.mitmproxyScriptPath = "binaries";
+                }
+                this.baseappdir = this.app.isPackaged ? path.dirname(this.packedPrefix) : this.appPath;
                 this.setPermissions()
                 break;
             case "linux":
@@ -76,10 +103,31 @@ class Filepaths {
                 this.taskList = this.app.isPackaged ? path.join(this.persistentPath, "taskList") : "taskList";
                 this.ytdlVersion = this.app.isPackaged ? path.join(this.persistentPath, "ytdlVersion") :"binaries/ytdlVersion";
                 this.ffmpegVersion = this.app.isPackaged ? path.join(this.persistentPath, "ffmpegVersion") :"binaries/ffmpegVersion";
+                this.mitmproxy = this.app.isPackaged ? this.persistentPath : "binaries";
+                this.mitmproxyVersion =  this.app.isPackaged ? path.join(this.persistentPath, "mitmproxyVersion") :"binaries/mitmproxyVersion";
+                this.mitmproxyScriptPath =  this.app.isPackaged ? path.join(this.unpackedPrefix, "binaries"): "binaries";
+                this.baseappdir = this.app.isPackaged ? path.dirname(this.packedPrefix) : this.appPath;
                 this.setPermissions()
                 break;
         }
+        this.baseappdir = this.app.isPackaged ? path.dirname(this.packedPrefix) : this.appPath;
+
         await this.removeLeftOver();
+    }
+
+    getMacOSPathYtDlp() {
+        if (this.getSystemVersion() < "10.15"){
+            return "binaries/yt-dlp_macos_legacy";
+        } else {
+            return "binaries/yt-dlp_macos";
+        }
+    }
+
+    getSystemVersion() {
+        if (!this.systemVersion) {
+            this.systemVersion = process.getSystemVersion()
+        }
+        return this.systemVersion;
     }
 
     async validateDownloadPath() {
@@ -117,10 +165,13 @@ class Filepaths {
 
     setPermissions() {
         fs.readdirSync(this.ffmpeg).forEach(file => {
-            if (file === "userSettings" || file === "ytdlVersion" || file === "taskList" || file === "ffmpegVersion") return;
+            if (file === "userSettings" || file === "ytdlVersion" || file === "taskList" || file === "ffmpegVersion"|| file === "mitmproxyVersion") return;
             fs.chmod(path.join(this.ffmpeg, file), 0o755, (err) => {
                 if(err) console.error(err);
             });
+        });
+        if(this.baseappdir) fs.chmod(path.join(this.baseappdir, 'resources/mp4decrypt'), 0o755, (err) => {
+            if(err) console.error(err);
         });
     }
 
@@ -145,7 +196,7 @@ class Filepaths {
             const toCopy = ["yt-dlp.exe", "ffmpeg.exe", "ytdlVersion", "ffmpegVersion", "AtomicParsley.exe", "userSettings", "taskList"];
             await this.copyFiles(from, this.persistentPath, toCopy);
             try {
-                await fs.promises.rmdir(from, {recursive: true});
+                await fs.promises.rm(from, {recursive: true});
             } catch (e) {
                 console.error(e);
             }
@@ -182,8 +233,43 @@ class Filepaths {
         try {
             fs.copyFileSync(fromFile, toFile);
         } catch (e) {
-            console.error("Could not copy " + filename + " to " + to + ".");
+            console.error("Could not copy " + filename + " to " + to + " : " + e);
         }
+    }
+
+    moveFile(from, to, filename) {
+        const fromFile = path.join(from, filename);
+        let toFile = path.join(to, filename);
+
+        toFile = this.indexFileIfAlreadyExists(toFile);
+
+        try {
+            fs.renameSync(fromFile, toFile);
+        } catch (e) {
+            console.error("Could not move " + filename + " to " + to + " : " + e);
+        }
+    }
+
+    indexFileIfAlreadyExists(filePath) {
+        let newFilePath = filePath;
+
+        let splitPath = newFilePath.split('.');
+        let fileExt = "";
+        let fileName = newFilePath;
+
+        if(splitPath.length > 1) {
+            fileExt = "." + splitPath[splitPath.length - 1]
+            fileName = fileName.replace(fileExt, "");
+        }
+
+        let index = 0;
+
+        while(fs.existsSync(newFilePath)) {
+            index += 1;
+            newFilePath = fileName + "(" + index + ")" + fileExt;
+        }
+
+        return newFilePath;
     }
 }
 

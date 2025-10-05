@@ -38,6 +38,7 @@ describe('generate filepaths', () => {
        for(const platform of platforms) {
            const instance = instanceBuilder(true);
            instance.platform = platform;
+           instance.systemVersion = "13.0";
            instance.setPermissions = jest.fn();
            instance.createFolder = jest.fn().mockResolvedValue(undefined);
            await instance.generateFilepaths();
@@ -51,6 +52,7 @@ describe('generate filepaths', () => {
         for(const platform of platforms) {
             const instance = instanceBuilder(false);
             instance.platform = platform;
+            instance.systemVersion = "13.0"
             instance.setPermissions = jest.fn();
             instance.createFolder = jest.fn().mockResolvedValue(undefined);
             const joinSpy = jest.spyOn(path, 'join').mockReturnValue("path");
@@ -82,6 +84,7 @@ describe('generate filepaths', () => {
        for(const platform of platforms) {
            const instance = instanceBuilder(true);
            instance.platform = platform;
+           instance.systemVersion = "13.0";
            instance.setPermissions = jest.fn();
            instance.createFolder = jest.fn().mockResolvedValue(undefined);
            await instance.generateFilepaths();

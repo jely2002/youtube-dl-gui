@@ -6,9 +6,8 @@ const Logger = require("./persistence/Logger");
 const fs = require("fs").promises;
 
 class Environment {
-    constructor(app, analytics) {
+    constructor(app) {
         this.app = app;
-        this.analytics = analytics;
         this.version = app.getVersion();
         this.cookiePath = null;
         this.mainAudioOnly = false;

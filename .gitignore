@@ -1,1 +1,8 @@
 /.env
+/node_modules
+/.vs
+/binaries
+/coverage
+/dist
+/taskList
+/userSettings

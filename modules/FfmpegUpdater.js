@@ -1,12 +1,12 @@
 const axios = require("axios");
 const fs = require("fs");
-const Sentry = require("@sentry/node");
 const path = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const os = require("os");
 const AdmZip = require("adm-zip");
 const Utils = require('./Utils');
+const {Agent} = require("https");
 
 class FfmpegUpdater {
 
@@ -22,37 +22,28 @@ class FfmpegUpdater {
             console.log("FFmpeg and FFprobe already installed, skipping auto-install.")
             return;
         }
-        const transaction = Sentry.startTransaction({ name: "checkUpdate" });
-        const span = transaction.startChild({ op: "task" });
         console.log("Checking for a new version of ffmpeg.");
         const localVersion = await this.getLocalVersion();
         const { remoteFfmpegUrl, remoteFfprobeUrl, remoteVersion } = await this.getRemoteVersion();
-        if(remoteVersion === localVersion) {
-            transaction.setTag("download", "up-to-date");
-            console.log(`ffmpeg was already up-to-date! Version: ${localVersion}`);
-        } else if(localVersion == null) {
-            transaction.setTag("download", "corrupted");
-            console.log("Downloading missing ffmpeg binary.");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing ffmpeg version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteFfmpegUrl, remoteVersion, "ffmpeg" + this.getFileExtension());
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing ffprobe version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteFfprobeUrl, remoteVersion, "ffprobe" + this.getFileExtension());
-            await this.writeVersionInfo(remoteVersion);
-        } else if(remoteVersion == null) {
-            transaction.setTag("download", "down");
+        if(remoteVersion == null) {
             console.log("Unable to check for new updates, ffbinaries.com may be down.");
+            return;
+        }
+        if(remoteVersion === localVersion) {
+            console.log(`ffmpeg was already up-to-date! Version: ${localVersion}`);
+            return;
+        }
+        if(localVersion == null) {
+            console.log("Downloading missing ffmpeg binary.");
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
-            transaction.setTag("download", "update");
             this.action = "Updating to";
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ffmpeg to version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteFfmpegUrl, remoteVersion, "ffmpeg" + this.getFileExtension());
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating ffprobe to version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteFfprobeUrl, remoteVersion, "ffprobe" + this.getFileExtension());
-            await this.writeVersionInfo(remoteVersion);
         }
-        span.finish();
-        transaction.finish();
+        this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing/Updating ffmpeg to version: ${remoteVersion}. Preparing...`})
+        await this.downloadUpdate(remoteFfmpegUrl, remoteVersion, "ffmpeg" + this.getFileExtension());
+        this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing/Updating ffprobe to version: ${remoteVersion}. Preparing...`})
+        await this.downloadUpdate(remoteFfprobeUrl, remoteVersion, "ffprobe" + this.getFileExtension());
+        await this.writeVersionInfo(remoteVersion);
     }
 
     async checkPreInstalled() {
@@ -67,7 +58,10 @@ class FfmpegUpdater {
 
     async getRemoteVersion() {
         try {
-            const res = await axios.get("https://ffbinaries.com/api/v1/version/latest");
+            const httpsAgent = new Agent({
+                rejectUnauthorized: false
+            });
+            const res = await axios.get("https://ffbinaries.com/api/v1/version/latest", {httpsAgent});
             let platform = "windows-64";
             if (os.arch() === "x32" || os.arch() === "ia32") platform = "windows-32";
             if (process.platform === "darwin") platform = "osx-64";
@@ -82,7 +76,11 @@ class FfmpegUpdater {
             if (err.response != null) {
                 console.error('Status code: ' + err.response.status);
             }
-            return null;
+            return {
+                remoteVersion: null,
+                remoteFfmpegUrl: null,
+                remoteFfprobeUrl: null,
+            }
         }
     }
 
@@ -118,7 +116,10 @@ class FfmpegUpdater {
         }
         const writer = fs.createWriteStream(path.join(downloadPath, filename));
 
-        const { data, headers } = await axios.get(url, {responseType: 'stream'});
+        const httpsAgent = new Agent({
+            rejectUnauthorized: false
+        });
+        const { data, headers } = await axios.get(url, {responseType: 'stream', httpsAgent});
         const totalLength = +headers['content-length'];
         const total = Utils.convertBytes(totalLength);
         const artifact = filename.replace(".exe", "");
@@ -144,7 +145,7 @@ class FfmpegUpdater {
         this.win.webContents.send("binaryLock", {lock: true, placeholder: `${this.action} ${artifact} ${version} - Extracting binaries...`})
         const zipFile = new AdmZip(path.join(downloadPath, filename), {});
         zipFile.extractEntryTo(filename, this.paths.ffmpeg, false, true, false, filename);
-        fs.rmdirSync(path.join(this.paths.ffmpeg, "downloads"), { recursive: true, force: true });
+        fs.rmSync(path.join(this.paths.ffmpeg, "downloads"), { recursive: true, force: true });
     }
 
     //Writes the new version number to the ytdlVersion file

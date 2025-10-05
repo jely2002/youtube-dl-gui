@@ -30,7 +30,7 @@ class SizeQuery extends Query {
             formatArgument = `bestvideo+${this.format}audio/bestvideo+bestaudio/best`;
         }
 
-        let output = await this.environment.metadataLimiter.schedule(() => this.start(this.video.url, ["-J", "--flat-playlist", "-f", formatArgument]));
+        let output = await this.environment.metadataLimiter.schedule(() => this.start(this.video, ["-J", "--flat-playlist", "-f", formatArgument]));
         let data = JSON.parse(output);
         let totalSize = 0;
         if(data.requested_formats != null) {

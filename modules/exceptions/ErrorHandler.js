@@ -1,4 +1,3 @@
-const Sentry = require("@sentry/electron");
 const Utils = require("../Utils");
 const Path = require("path");
 const fs = require("fs").promises;
@@ -60,6 +59,8 @@ class ErrorHandler {
         if(video.type === "playlist") return;
         let errorDef = {
             identifier: identifier,
+            url: video.url,
+            headers: video.headers,
             error_id: Utils.getRandomID(8),
             unexpected: true,
             error: {
@@ -67,19 +68,6 @@ class ErrorHandler {
                 description: error,
             }
         };
-        Sentry.captureMessage(error === code ? error : code, scope => {
-            scope.setLevel(Sentry.Severity.Error);
-            if(code !== error) {
-                scope.setContext("error", {description: error});
-            }
-            scope.setTag("url", video.url);
-            scope.setTag("error_id", errorDef.error_id);
-            if(video.selected_format_index != null) {
-                scope.setContext("selected_format", video.formats[video.selected_format_index].serialize())
-            }
-            const { env, paths, ...settings } = this.env.settings;
-            scope.setContext("settings", settings);
-        });
         this.win.webContents.send("error", errorDef);
         this.unhandledErrors.push(errorDef);
         this.queryManager.onError(identifier);
@@ -94,14 +82,6 @@ class ErrorHandler {
         this.queryManager.onError(identifier);
     }
 
-    async reportError(args) {
-        for(const err of this.unhandledErrors) {
-            if(err.identifier === args.identifier) {
-                return await this.env.analytics.sendReport(err.error_id);
-            }
-        }
-    }
-
     async loadErrorDefinitions() {
         try {
             let path = Path.join(this.env.paths.packedPrefix, "/modules/exceptions/errorDefinitions.json");
@@ -113,7 +93,6 @@ class ErrorHandler {
         } catch (e) {
             console.error("Failed loading error definitions.")
             console.error(e);
-            Sentry.captureException(e);
         }
     }
 }

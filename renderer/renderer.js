@@ -36,6 +36,7 @@ async function init() {
     //Updates the placeholder to a copied link
     window.main.receive("updateLinkPlaceholder", (args) => {
         $('#add-url').prop("placeholder", args.text);
+        $('#add-url').focus();
         linkCopied = args.copied;
     });
 
@@ -58,16 +59,18 @@ async function init() {
     });
 
     //Init the when done dropdown
-    $('.dropdown-toggle').dropdown();
-    const availableOptions = await window.main.invoke('getDoneActions');
-    for(const option of availableOptions) {
-        $('#whenDoneOptions').append('<li class="dropdown-divider"></li>').append(`<li><a class="dropdown-item" href="#">${option}</a></li>`)
-    }
-    $('.dropdown-item').on('click', function() {
-        $('#whenDoneOptions').find('.dropdown-selected').removeClass('dropdown-selected');
-        $(this).addClass('dropdown-selected');
-        window.main.invoke("setDoneAction", {action: $(this).text()});
-    })
+    $(document).ready(async function() {
+        console.log("hello");
+        const availableOptions = await window.main.invoke('getDoneActions');
+        for(const option of availableOptions) {
+            $('#whenDoneOptions').append('<li class="dropdown-divider"></li>').append(`<li><a class="dropdown-item" href="#">${option}</a></li>`)
+        }
+        $('.dropdown-item').on('click', function() {
+            $('#whenDoneOptions').find('.dropdown-selected').removeClass('dropdown-selected');
+            $(this).addClass('dropdown-selected');
+            window.main.invoke("setDoneAction", {action: $(this).text()});
+        })
+    });
 
     //Set the selected theme (dark | light)
     const startupTheme = await window.main.invoke('theme');
@@ -141,7 +144,7 @@ async function init() {
     $('#download-type').on('change', async () => {
         updateAllVideoSettings();
         await getSettings();
-        sendSettings();
+        await sendSettings();
     });
 
     $('#infoModal .img-overlay, #infoModal .info-img').on('click', () => {
@@ -181,9 +184,14 @@ async function init() {
         $('#settingsModal').modal("hide");
     });
 
+    $('#settingsModal .reset').on('click', () => {
+        window.main.invoke("settingsAction", {action: "reset", setting: window.settings});
+        getSettings();
+    });
+
     $('#settingsModal .apply').on('click', () => {
-        $('#settingsModal').modal("hide");
         sendSettings();
+        $('#settingsModal').modal("hide");
     });
 
     $('#maxConcurrent').on('input', () => {
@@ -203,6 +211,24 @@ async function init() {
         await getSettings();
         $('#settingsModal').modal("show");
     });
+
+    $('#scannerBtn').on('change', async () => {
+        try{
+            await window.main.invoke('setScannerEnabled',{value: $('#scannerBtn').prop('checked')});
+        } catch (e) {
+            //Catch mainly proxu AbortError
+            console.error(e);
+        }
+    });
+
+    $('#notification_area').on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function() {
+        if ( $('#notification_area').hasClass('show')) {
+            $('#notification_area').css('z-index', 100);
+            $('#notification_area').removeClass('show').addClass('hide');
+        }else{
+            $('#notification_area').css('z-index', -1);
+        }
+   });
 
     $('#defaultConcurrent').on('click', () => {
         window.main.invoke("settingsAction", {action: "get"}).then((settings) => {
@@ -237,7 +263,9 @@ async function init() {
         $('#fileInputLabel').html("Click to select cookies.txt");
         $('#fileInput').attr("title", "No file selected");
     })
-
+    $('#infoModal #headers-string').bind('input propertychange', () => {
+        window.main.invoke('videoAction', {action: "changeHeaders", identifier: $('#infoModal .identifier').html(), newheaders: $('#headers-string').val()});
+    });
     $('#infoModal .json').on('click', () => {
         window.main.invoke('videoAction', {action: "downloadInfo", identifier: $('#infoModal .identifier').html()});
     });
@@ -358,6 +386,10 @@ async function init() {
         } else {
             $('#add-url').attr("placeholder", "Enter a video/playlist URL to add to the queue").prop("disabled", false);
         }
+    })
+
+    window.main.receive("notify", (args) => {
+        $('#notification_area').removeClass('hide').addClass('show').html(args.msg);
     })
 
     //Receive calls from main process and dispatch them to the right function
@@ -659,10 +691,11 @@ function removeVideo(card) {
     if(btn.hasClass("clicked") || $(card).find(".custom-select.download-type").is(":visible") || $(card).find(".btn.btn-dark.folder").is(":visible") || $(card).find(".row.error.d-none").is(":visible") || $(card).find(".url").length) {
         $(btn).popover('hide');
         $(card).remove();
-        window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
+        window.main.invoke("videoAction", {action: "remove", identifier: $(card).prop("id")});
     } else {
         $(btn).popover('show');
         $(btn).addClass("clicked");
+        window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
     }
 }
 
@@ -829,23 +862,21 @@ function updateProgress(args) {
         $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
         $(card).find('.progress small').html(`${args.progress.percentage} - ${args.progress.done} of ${args.progress.total} `);
     } else if(args.progress.percentage != null) {
-        if(parseFloat(args.progress.percentage.slice(0, -1)) > parseFloat($(card).find('.progress-bar').attr("aria-valuenow"))) {
-            $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
-            if(args.progress.percentage.slice(0, -1) === "100.0") {
-                $(card).find('.progress-bar').addClass("progress-bar-striped")
-                $(card).find('.progress small').html("Converting with FFmpeg");
-            } else {
-                if (args.progress.isAudio == null) $(card).find('.progress small').html("Downloading item - " + args.progress.percentage);
-                else $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
-            }
-            if(!progressCooldown.includes(args.identifier)) {
-                progressCooldown.push(args.identifier);
-                $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta).show();
-                $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed).show();
-                setTimeout(() => {
-                    progressCooldown = progressCooldown.filter(item => item !== args.identifier);
-                }, 200);
-            }
+        $(card).find('.progress-bar').attr('aria-valuenow', args.progress.percentage.slice(0,-1)).css('width', args.progress.percentage);
+        if(args.progress.percentage === "100.0%") {
+            $(card).find('.progress-bar').addClass("progress-bar-striped")
+            $(card).find('.progress small').html("Converting with FFmpeg");
+        } else {
+            if (args.progress.isAudio == null) $(card).find('.progress small').html("Downloading item - " + args.progress.percentage);
+            else $(card).find('.progress small').html((args.progress.isAudio ? "Downloading audio" : "Downloading video") + " - " + args.progress.percentage);
+        }
+        if(!progressCooldown.includes(args.identifier)) {
+            progressCooldown.push(args.identifier);
+            $(card).find('.metadata.right').html('<strong>ETA: </strong>' + args.progress.eta).show();
+            $(card).find('.metadata.left').html('<strong>Speed: </strong>' + args.progress.speed).show();
+            setTimeout(() => {
+                progressCooldown = progressCooldown.filter(item => item !== args.identifier);
+            }, 200);
         }
     }
 }
@@ -978,6 +1009,9 @@ function updateAllVideoSettings() {
 
 async function getSettings() {
     const settings = await window.main.invoke("settingsAction", {action: "get"});
+    $('#openbinary').on('click', () => {
+        window.main.invoke("binaryFolder");
+    });
     $('#updateBinary').prop('checked', settings.updateBinary);
     $('#updateApplication').prop('checked', settings.updateApplication);
     $('#userAgent').val(settings.userAgent);
@@ -1000,8 +1034,16 @@ async function getSettings() {
     $('#downloadJsonMetadata').prop('checked', settings.downloadJsonMetadata);
     $('#downloadThumbnail').prop('checked', settings.downloadThumbnail);
     $('#keepUnmerged').prop('checked', settings.keepUnmerged);
+    $('#avoidFailingToSaveDuplicateFileName').prop('checked', settings.avoidFailingToSaveDuplicateFileName);
+    $('#allowUnsafeFileExtensions').prop('checked', settings.allowUnsafeFileExtensions);
+    $('#allowUnplayable').prop('checked', settings.allowUnplayable);
+    $('#mitmPort').val(settings.mitmPort);
+    $('#mitmExtraArgs').val(settings.mitmExtraArgs);
+    $('#headerFilter').val(settings.headerFilter.join(' '));
     $('#calculateTotalSize').prop('checked', settings.calculateTotalSize);
     $('#maxConcurrent').val(settings.maxConcurrent);
+    $('#settingsModal #retries').val(settings.retries);
+    $('#settingsModal #fileAccessRetries').val(settings.fileAccessRetries);
     $('#concurrentLabel').html(`Max concurrent jobs <strong>(${settings.maxConcurrent})</strong>`);
     $('#sizeSetting').val(settings.sizeMode);
     $('#splitMode').val(settings.splitMode);
@@ -1010,7 +1052,7 @@ async function getSettings() {
     window.settings = settings;
 }
 
-function sendSettings() {
+async function sendSettings() {
     let settings = {
         updateBinary: $('#updateBinary').prop('checked'),
         updateApplication: $('#updateApplication').prop('checked'),
@@ -1033,16 +1075,24 @@ function sendSettings() {
         downloadJsonMetadata: $('#downloadJsonMetadata').prop('checked'),
         downloadThumbnail: $('#downloadThumbnail').prop('checked'),
         keepUnmerged: $('#keepUnmerged').prop('checked'),
+        avoidFailingToSaveDuplicateFileName: $('#avoidFailingToSaveDuplicateFileName').prop('checked'),
+        allowUnsafeFileExtensions: $('#allowUnsafeFileExtensions').prop('checked'),
+        allowUnplayable: $('#allowUnplayable').prop('checked'),
+        mitmPort: $('#mitmPort').val(),
+        mitmExtraArgs: $('#mitmExtraArgs').val(),
+        headerFilter: $('#headerFilter').val().toLowerCase().split(" "),
         calculateTotalSize: $('#calculateTotalSize').prop('checked'),
         sizeMode: $('#sizeSetting').val(),
         splitMode: $('#splitMode').val(),
         rateLimit: $('#ratelimitSetting').val(),
         maxConcurrent: parseInt($('#maxConcurrent').val()),
+        retries: $('#settingsModal #retries').val(),
+        fileAccessRetries: $('#settingsModal #fileAccessRetries').val(),
         downloadType: $('#download-type').val(),
         theme: $('#theme').val()
     }
     window.settings = settings;
-    window.main.invoke("settingsAction", {action: "save", settings});
+    await window.main.invoke("settingsAction", {action: "save", setting:settings});
     updateEncodingDropdown(settings.enableEncoding);
     toggleWhiteMode(settings.theme);
 }
@@ -1130,7 +1180,11 @@ function showInfoModal(info, identifier) {
     }
     $(modal).find('img').prop("src", data.thumbnail);
     $(modal).find('.modal-title').html(data.title);
-    $(modal).find('#info-description').html(data.description == null ? "No description was found." : data.description);
+    let hs = "";
+    data.headers.forEach((h) => { hs = hs + h.k + ": " + h.v + "\n" } );
+    $(modal).find('#headers-string').html(hs);
+    $(modal).find('#keys-string').html(data.keys);
+    $(modal).find('#info-description').html(data.description == null ? 'no description': data.description);
     $(modal).find('.uploader').html('<strong>Uploader: </strong>' + (data.uploader == null ? "Unknown" : data.uploader));
     $(modal).find('.extractor').html('<strong>Extractor: </strong>' + (data.extractor == null ? "Unknown" : data.extractor));
     $(modal).find('.url').html('<strong>URL: </strong>' + '<a target="_blank" href="' + data.url + '">' + data.url + '</a>');
@@ -1184,12 +1238,7 @@ function changeSubsToRetry(url, card) {
         .addClass("retry-btn")
         .html('<i title="Retry" class="bi bi-arrow-counterclockwise"></i>')
         .on('click', function() {
-            window.main.invoke("videoAction", {action: "stop", identifier: $(card).prop("id")});
-            if(url == null) {
-                parseURL($(card).find('.url').val());
-            } else {
-                parseURL(url);
-            }
+            window.main.invoke("videoAction", {action: "retry", identifier: $(card).prop("id")});
         })
         .find('i').removeClass("disabled");
 }
@@ -1266,12 +1315,6 @@ function setError(code, description, unexpected, identifier, url) {
     if(unexpected) {
         $(card).find('.options, .info, .open').addClass("d-none").removeClass("d-flex");
         $(card).find('.error').addClass('d-flex').removeClass("d-none");
-        $(card).find('.report').unbind().on('click', () => {
-            window.main.invoke("errorReport", {identifier: identifier, type: $(card).find('.custom-select.download-type').val(), quality: $(card).find('.custom-select.download-quality').val()}).then((id) => {
-                $(card).find('.progress small').html("Error reported! Report ID: " + id);
-                $(card).find('.report').prop("disabled", true);
-            });
-        });
         $(card).find('#fullError').unbind().on('click', () => {
             window.main.invoke("messageBox", {title: "Full error message", message: description});
         })

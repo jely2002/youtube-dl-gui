@@ -5,11 +5,10 @@ const fs = require("fs").promises;
 class Settings {
     constructor(
         paths, env, outputFormat, audioOutputFormat, downloadPath,
-        proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, userAgent,
-        validateCertificate, enableEncoding, taskList, nameFormat, nameFormatMode,
-        sizeMode, splitMode, maxConcurrent, updateBinary, downloadType, updateApplication, cookiePath,
+        proxy, rateLimit, autoFillClipboard, noPlaylist, globalShortcut, nameFormat, nameFormatMode,
+        sizeMode, maxConcurrent, retries, fileAccessRetries, updateBinary, downloadType, updateApplication, cookiePath,
         statSend, sponsorblockMark, sponsorblockRemove, sponsorblockApi, downloadMetadata, downloadJsonMetadata,
-        downloadThumbnail, keepUnmerged, calculateTotalSize, theme
+        downloadThumbnail, keepUnmerged, avoidFailingToSaveDuplicateFileName, calculateTotalSize, theme
     ) {
         this.paths = paths;
         this.env = env
@@ -21,10 +20,6 @@ class Settings {
         this.autoFillClipboard = autoFillClipboard == null ? true : autoFillClipboard;
         this.noPlaylist = noPlaylist == null ? false : noPlaylist;
         this.globalShortcut = globalShortcut == null ? true : globalShortcut;
-        this.userAgent = userAgent == null ? "spoof" : userAgent;
-        this.validateCertificate = validateCertificate == null ? false : validateCertificate;
-        this.enableEncoding = enableEncoding == null ? false : enableEncoding;
-        this.taskList = taskList == null ? true : taskList;
         this.nameFormat = nameFormat == null ? "%(title).200s-(%(height)sp%(fps).0d).%(ext)s" : nameFormat;
         this.nameFormatMode = nameFormatMode == null ? "%(title).200s-(%(height)sp%(fps).0d).%(ext)s" : nameFormatMode;
         this.sponsorblockMark = sponsorblockMark == null ? "" : sponsorblockMark;
@@ -34,10 +29,12 @@ class Settings {
         this.downloadJsonMetadata = downloadJsonMetadata == null ? false : downloadJsonMetadata;
         this.downloadThumbnail = downloadThumbnail == null ? false : downloadThumbnail;
         this.keepUnmerged = keepUnmerged == null ? false : keepUnmerged;
+        this.avoidFailingToSaveDuplicateFileName = avoidFailingToSaveDuplicateFileName == null ? false : avoidFailingToSaveDuplicateFileName;
         this.calculateTotalSize = calculateTotalSize == null ? true : calculateTotalSize;
         this.sizeMode = sizeMode == null ? "click" : sizeMode;
-        this.splitMode = splitMode == null? "49" : splitMode;
-        this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? Math.round(os.cpus().length / 2) : maxConcurrent; //Max concurrent is standard half of the system's available cores
+        this.maxConcurrent = (maxConcurrent == null || maxConcurrent <= 0) ? this.getDefaultMaxConcurrent() : maxConcurrent; //Max concurrent is standard half of the system's available cores
+        this.retries = retries || 10;
+        this.fileAccessRetries = fileAccessRetries || 3;
         this.updateBinary = updateBinary == null ? true : updateBinary;
         this.downloadType = downloadType == null ? "video" : downloadType;
         this.updateApplication = updateApplication == null ? true : updateApplication;
@@ -45,13 +42,43 @@ class Settings {
         this.statSend = statSend == null ? false : statSend;
         this.theme = theme == null ? "dark" : theme;
         this.setGlobalShortcuts();
+        this.mitmPort = 15930;
+        this.mitmExtraArgs = "--anticache --anticomp --mode socks5";
+        this.headerFilter = ["if-range", "if-none-match", "if-modified-since", "if-match", "if-unmodified-since", "sec-ch-ua"];
+    }
+
+    setupAdvancedConfig(taskList, userAgent, validateCertificate, enableEncoding, allowUnsafeFileExtensions, allowUnplayable, splitMode) {
+        this.taskList = taskList == null ? true : taskList;
+        this.userAgent = userAgent == null ? "spoof" : userAgent;
+        this.validateCertificate = validateCertificate == null ? false : validateCertificate;
+        this.enableEncoding = enableEncoding == null ? false : enableEncoding;
+        this.allowUnsafeFileExtensions = allowUnsafeFileExtensions == null ? false : allowUnsafeFileExtensions;
+        this.allowUnplayable = allowUnplayable == null ? false : allowUnplayable;
+        this.splitMode = splitMode == null? "49" : splitMode;
+    }
+
+    setupMitmproxyConfig(mitmPort, mitmExtraArgs, headerFilter) {
+        this.mitmPort = mitmPort == null ? 15930 : mitmPort;
+        this.mitmExtraArgs = mitmExtraArgs == null ? "--anticache --anticomp --mode socks5" : mitmExtraArgs;
+        this.headerFilter = headerFilter == null ? ["if-range", "if-none-match", "if-modified-since", "if-match", "if-unmodified-since", "sec-ch-ua"] : headerFilter;
+    }
+
+    getDefaultMaxConcurrent() {
+        let halfOfCpus = Math.round(os.cpus().length / 2);
+
+        //When os.cpus() returns an empty list, default to 4
+        if (halfOfCpus <= 0) {
+            halfOfCpus = 4;
+        }
+
+        return halfOfCpus;
     }
 
     static async loadFromFile(paths, env) {
         try {
             let result = await fs.readFile(paths.settings, "utf8");
             let data = JSON.parse(result);
-            return new Settings(
+            let settings= new Settings(
                 paths,
                 env,
                 data.outputFormat,
@@ -62,15 +89,12 @@ class Settings {
                 data.autoFillClipboard,
                 data.noPlaylist,
                 data.globalShortcut,
-                data.userAgent,
-                data.validateCertificate,
-                data.enableEncoding,
-                data.taskList,
                 data.nameFormat,
                 data.nameFormatMode,
                 data.sizeMode,
-                data.splitMode,
                 data.maxConcurrent,
+                data.retries,
+                data.fileAccessRetries,
                 data.updateBinary,
                 data.downloadType,
                 data.updateApplication,
@@ -83,12 +107,30 @@ class Settings {
                 data.downloadJsonMetadata,
                 data.downloadThumbnail,
                 data.keepUnmerged,
+                data.avoidFailingToSaveDuplicateFileName,
                 data.calculateTotalSize,
                 data.theme
             );
+            settings.setupAdvancedConfig(
+                data.taskList,
+                data.userAgent,
+                data.validateCertificate,
+                data.enableEncoding,
+                data.allowUnsafeFileExtensions,
+                data.allowUnplayable,
+                data.splitMode
+            );
+            settings.setupMitmproxyConfig(
+                data.mitmPort,
+                data.mitmExtraArgs,
+                data.headerFilter
+            );
+            return settings;
         } catch(err) {
             console.log(err);
             let settings = new Settings(paths, env);
+            settings.setupMitmproxyConfig();
+            settings.setupAdvancedConfig();
             settings.save();
             console.log("Created new settings file.")
             return settings;
@@ -116,6 +158,12 @@ class Settings {
         this.downloadJsonMetadata = settings.downloadJsonMetadata;
         this.downloadThumbnail = settings.downloadThumbnail;
         this.keepUnmerged = settings.keepUnmerged;
+        this.avoidFailingToSaveDuplicateFileName = settings.avoidFailingToSaveDuplicateFileName;
+        this.allowUnsafeFileExtensions = settings.allowUnsafeFileExtensions;
+        this.allowUnplayable = settings.allowUnplayable;
+        this.mitmPort = settings.mitmPort;
+        this.mitmExtraArgs = settings.mitmExtraArgs;
+        this.headerFilter = settings.headerFilter;
         this.calculateTotalSize = settings.calculateTotalSize;
         this.sizeMode = settings.sizeMode;
         this.splitMode = settings.splitMode;
@@ -123,6 +171,8 @@ class Settings {
             this.maxConcurrent = settings.maxConcurrent;
             this.env.changeMaxConcurrent(settings.maxConcurrent);
         }
+        this.retries = settings.retries;
+        this.fileAccessRetries = settings.fileAccessRetries;
         this.updateBinary = settings.updateBinary;
         this.downloadType = settings.downloadType;
         this.updateApplication = settings.updateApplication;
@@ -153,7 +203,9 @@ class Settings {
             sizeMode: this.sizeMode,
             splitMode: this.splitMode,
             maxConcurrent: this.maxConcurrent,
-            defaultConcurrent: Math.round(os.cpus().length / 2),
+            retries: this.retries,
+            fileAccessRetries: this.fileAccessRetries,
+            defaultConcurrent: this.getDefaultMaxConcurrent(),
             updateBinary: this.updateBinary,
             downloadType: this.downloadType,
             updateApplication: this.updateApplication,
@@ -166,6 +218,12 @@ class Settings {
             downloadJsonMetadata: this.downloadJsonMetadata,
             downloadThumbnail: this.downloadThumbnail,
             keepUnmerged: this.keepUnmerged,
+            avoidFailingToSaveDuplicateFileName: this.avoidFailingToSaveDuplicateFileName,
+            allowUnsafeFileExtensions: this.allowUnsafeFileExtensions,
+            allowUnplayable: this.allowUnplayable,
+            mitmPort: this.mitmPort,
+            mitmExtraArgs: this.mitmExtraArgs,
+            headerFilter: this.headerFilter,
             calculateTotalSize: this.calculateTotalSize,
             theme: this.theme,
             version: this.env.version

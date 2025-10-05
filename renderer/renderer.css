@@ -39,6 +39,32 @@ select {
     background-color: var(--secondary-highlight-color) !important;
 }
 
+/* notification_area */
+#notification_area {
+    opacity: 0;
+    bottom:0px;
+    margin-top: 50px;
+    padding: 10px;
+    background-color: var(--highlight-color);
+    border: 1px solid #ccc;
+    width: -webkit-fill-available;
+    text-align: center;
+    transition: opacity 0.5s ease-in-out;
+    transition-delay: 5s;
+    position: fixed;
+    color: var(--bs-primary-text-emphasis);
+}
+
+#notification_area.show {
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+#notification_area.hide {
+    opacity: 0;
+    transition-delay: 5s;
+}
+
 /* TOASTS */
 .toast-header {
     border-bottom: none;
@@ -128,8 +154,10 @@ select {
 
 /* URL FORM */
 .url-input {
+    display: inline-block;
     margin-top: calc(40px + 1.5rem); /* Compensate the fixed navbar */
     margin-bottom: 1.5rem;
+    padding-right: 0px;
 }
 
 .url-input .btn {
@@ -145,6 +173,44 @@ select {
 
 .url-input .btn > i::before {
     transform: scale(1.5);
+}
+
+/* scanner toggle button */
+.btns-input {
+    display: inline;
+    padding-left: 0px;
+    margin-top: calc(40px + 1.5rem); /* Compensate the fixed navbar */
+    margin-bottom: 1.5rem;
+}
+
+.btns-input .toggle-handle{
+    background-color:var(--font-color) !important;
+    border-color: var(--font-color) !important;
+}
+
+.btns-input .toggle-on {   
+    background-color: var(--secondary-highlight-color) !important; 
+    border-color: var(--secondary-highlight-color);
+}
+
+.btns-input .toggle-off {   
+    background-color: var(--secondary-bg-color) !important; 
+    border-color: var(--secondary-bg-color);
+}
+
+.btns-input .toggle {
+    background-color: var(--secondary-bg-color) !important;
+    margin-bottom: 3px;
+}
+
+.btns-input .btn {
+    border-color: transparent !important;
+    color: var(--font-color) !important;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 0.5;
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px !important;
 }
 
 #settingsBtn {
@@ -216,6 +282,7 @@ select {
 }
 
 .video-card .handle {
+    z-index: -1;
     position: absolute;
     left: 0.25rem;
     top: calc(50% + 2rem);
@@ -224,7 +291,6 @@ select {
     transform: translateY(-50%) scale(1.5);
     filter: brightness(55%);
     cursor: move;
-    z-index: 100;
 }
 
 .video-card p {
@@ -253,7 +319,7 @@ select {
 
 .bi-card-text-strike {
     display: block;
-    background: url(img/card-text-strike.svg);
+    background: url(img/card-text-strike.svg) center no-repeat;
     height: 1em;
     width: 1em;
     margin-top: 0.2em ;
@@ -305,7 +371,7 @@ select {
     border-radius: 3px;
     object-fit: cover;
     width: 100%;
-    max-height: 130px;
+    aspect-ratio: 16 / 9;
     background-color: var(--secondary-bg-color);
 }
 
@@ -414,8 +480,9 @@ option.audio {
     background-color: var(--secondary-bg-color);
 }
 
-.controls .buttons * {
-    margin: 0 5px;
+.controls .buttons > * {
+    margin: 1px 5px;
+    width: fit-content;
 }
 
 .controls .buttons i:before {
@@ -425,6 +492,7 @@ option.audio {
 
 .controls .spacer {
     width: 2px;
+    padding: 0;
     margin: 0 10px;
     background: var(--secondary-bg-color);
 }
@@ -700,7 +768,7 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
 }
 
 .light-icon.bi-card-text-strike {
-    background: url("img/card-text-strike-light.svg");
+    background: url("img/card-text-strike-light.svg") center no-repeat;
 }
 
 /* WHEN DONE DROPDOWN */
@@ -753,4 +821,3 @@ i.img-overlay:hover, img.info-img:hover ~ i.img-overlay  {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: var(--scroll-bar-color);
 }
-

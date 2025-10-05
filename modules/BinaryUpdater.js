@@ -1,6 +1,5 @@
 const axios = require("axios");
 const fs = require("fs");
-const Sentry = require("@sentry/node");
 const util = require('util');
 const Utils = require('./Utils');
 const exec = util.promisify(require('child_process').exec);
@@ -11,6 +10,8 @@ class BinaryUpdater {
         this.paths = paths;
         this.win = win;
         this.action = "Installing";
+        this.platform = process.platform;
+        this.systemVersion = null;
     }
 
     //Checks for an update and download it if there is.
@@ -19,33 +20,27 @@ class BinaryUpdater {
             console.log("yt-dlp already installed, skipping auto-install.")
             return;
         }
-        const transaction = Sentry.startTransaction({ name: "checkUpdate" });
-        const span = transaction.startChild({ op: "task" });
         console.log("Checking for a new version of yt-dlp.");
         const localVersion = await this.getLocalVersion();
-        const { remoteUrl, remoteVersion } = await this.getRemoteVersion();
-        if(remoteVersion === localVersion) {
-            transaction.setTag("download", "up-to-data");
-            console.log(`Binaries were already up-to-date! Version: ${localVersion}`);
-        } else if(localVersion == null) {
-            transaction.setTag("download", "corrupted");
-            console.log("Downloading missing yt-dlp binary.");
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Installing yt-dlp version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteUrl, remoteVersion);
-            this.paths.setPermissions()
-        } else if(remoteVersion == null) {
-            transaction.setTag("download", "down");
+        const remoteVersion = await this.getRemoteVersion();
+        if(remoteVersion == null) {
             console.log("Unable to check for new updates, GitHub may be down.");
+            return
+        }
+        if(remoteVersion === localVersion) {
+            console.log(`Binaries were already up-to-date! Version: ${localVersion}`);
+            return;
+        }
+        const remoteUrl = this.getBinaryUrl();
+        if(localVersion == null) {
+            console.log("Downloading missing yt-dlp binary.");
         } else {
             console.log(`New version ${remoteVersion} found. Updating...`);
-            transaction.setTag("download", "update");
             this.action = "Updating to";
-            this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version: ${remoteVersion}. Preparing...`})
-            await this.downloadUpdate(remoteUrl, remoteVersion);
-            this.paths.setPermissions()
         }
-        span.finish();
-        transaction.finish();
+        this.win.webContents.send("binaryLock", {lock: true, placeholder: `Updating yt-dlp to version: ${remoteVersion}. Preparing...`})
+        await this.downloadUpdate(remoteUrl, remoteVersion);
+        this.paths.setPermissions()
     }
 
     async checkPreInstalled() {
@@ -59,31 +54,51 @@ class BinaryUpdater {
     }
 
     async getRemoteVersion() {
+        const releaseUrl = "https://github.com/yt-dlp/yt-dlp/releases/latest/"
         try {
-            const url = process.platform === "win32" ? "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" : "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp"
-            await axios.get(url, {
-                  responseType: 'document',
-                  maxRedirects: 0,
-              })
+            await axios.get(releaseUrl, {
+                responseType: 'document',
+                maxRedirects: 0,
+            })
         } catch (err) {
             const res = err.response;
             if (err.response == null) {
                 console.error('An error occurred while retrieving the latest yt-dlp version data.')
                 return null;
             }
-            if (res.status === 302) {
-                const versionRegex = res.data.match(/[0-9]+\.[0-9]+\.[0-9]+/);
-                const urlRegex = res.data.match(/(?<=").+?(?=")/);
-                return {
-                    remoteVersion: versionRegex ? versionRegex[0] : null,
-                    remoteUrl: urlRegex ? urlRegex[0] : null,
-                };
-            } else {
+            if (res.status !== 302) {
                 console.error('Did not get redirect for the latest version link. Status: ' + err.response.status);
                 return null;
             }
+            const directUrl = res.headers.location;
+            const versionRegex = directUrl.match(/[0-9]+\.[0-9]+\.[0-9]+/);
+            return versionRegex ? versionRegex[0] : null;
         }
         return null;
+    }
+
+    getBinaryUrl() {
+        console.info("platform - " + this.platform)
+        if (this.platform === "win32") {
+            return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
+        } else if (this.platform === "darwin") {
+            let systemVersion = this.getSystemVersion();
+            console.info("systemVersion - " + this.systemVersion)
+            if (systemVersion < "10.15"){
+                return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos_legacy";
+            } else {
+                return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos";
+            }
+        } else {
+            return "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp";
+        }
+    }
+
+    getSystemVersion() {
+        if (!this.systemVersion) {
+            this.systemVersion = process.getSystemVersion()
+        }
+        return this.systemVersion;
     }
 
     //Returns the currently downloaded version of yt-dlp

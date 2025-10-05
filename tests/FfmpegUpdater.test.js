@@ -52,7 +52,11 @@ describe('getRemoteVersion', () => {
         jest.spyOn(os, 'arch').mockReturnValue('x64');
         const instance = new FfmpegUpdater({platform: "darwin"});
         return instance.getRemoteVersion().then((data) => {
-            expect(data).toEqual(null);
+            expect(data).toEqual({
+                remoteVersion: null,
+                remoteFfmpegUrl: null,
+                remoteFfprobeUrl: null,
+            });
             expect(axiosGetSpy).toBeCalledTimes(1);
         });
     });
@@ -81,7 +85,7 @@ describe('checkUpdate', () => {
         const instance = new FfmpegUpdater({platform: "win32"}, win);
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate');
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("v2.0.0");
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue(["link", "v2.0.0"]);
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteFfmpegUrl: "link", remoteFfprobeUrl: "link", remoteVersion: "v2.0.0" });
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).not.toBeCalled();
             expect(instance.win.webContents.send).not.toBeCalled();
@@ -92,7 +96,7 @@ describe('checkUpdate', () => {
         const instance = new FfmpegUpdater({platform: "win32"}, win);
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate');
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("v2.0.0");
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue([null, null]);
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteFfmpegUrl: "link", remoteFfprobeUrl: null, remoteVersion: null });
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).not.toBeCalled();
             expect(instance.win.webContents.send).not.toBeCalled();
@@ -103,7 +107,7 @@ describe('checkUpdate', () => {
         const instance = new FfmpegUpdater({platform: "win32"}, win);
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate').mockResolvedValue("");
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue(null);
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue(["link", "v2.0.0"]);
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteFfmpegUrl: "link", remoteFfprobeUrl: "link", remoteVersion: "v2.0.0" });
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).toBeCalledTimes(2);
             expect(instance.win.webContents.send).toBeCalledTimes(2);
@@ -114,7 +118,7 @@ describe('checkUpdate', () => {
         const instance = new FfmpegUpdater({platform: "win32", ytdl: "a/path/to"}, win);
         const downloadUpdateSpy = jest.spyOn(instance, 'downloadUpdate').mockResolvedValue("");
         jest.spyOn(instance, 'getLocalVersion').mockResolvedValue("2021.03.10");
-        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteUrl: "link", remoteVersion: "2021.10.10" });
+        jest.spyOn(instance, 'getRemoteVersion').mockResolvedValue({ remoteFfmpegUrl: "link", remoteFfprobeUrl: "link", remoteVersion: "2021.10.10" });
         return instance.checkUpdate().then(() => {
             expect(downloadUpdateSpy).toBeCalledTimes(2);
             expect(instance.win.webContents.send).toBeCalledTimes(2);

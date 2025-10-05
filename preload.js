@@ -1,22 +1,4 @@
-const Sentry = require("@sentry/electron");
-const Tracing = require("@sentry/tracing");
-const version = require('./package.json').version;
 const { contextBridge, ipcRenderer } = require('electron')
-
-function initSentry() {
-    if(process.argv[2] === '--dev' && !process.argv.includes("--sentry")) return;
-    Sentry.init({
-        dsn: process.env.SENTRY_DSN,
-        release: "youtube-dl-gui@" + version,
-        sendDefaultPii: true,
-        integrations: [new Tracing.Integrations.BrowserTracing()],
-        tracesSampleRate: process.argv[2] === '--dev' ? 1.0 : 0.01,
-        environment: process.argv[2] === '--dev' ? "development" : "production",
-        autoSessionTracking: true
-    });
-}
-
-initSentry();
 
 contextBridge.exposeInMainWorld(
     "main",
@@ -25,13 +7,13 @@ contextBridge.exposeInMainWorld(
             let validChannels = [
                 "platform",
                 "messageBox",
-                "errorReport",
                 "titlebarClick",
                 "openInputMenu",
                 "openCopyMenu",
                 "settingsAction",
                 "videoAction",
                 "cookieFile",
+                "binaryFolder",
                 "downloadFolder",
                 "installUpdate",
                 "iconProgress",
@@ -42,7 +24,8 @@ contextBridge.exposeInMainWorld(
                 "getSubtitles",
                 "getSelectedSubtitles",
                 "getLog",
-                "saveLog"
+                "saveLog",
+                "setScannerEnabled"
             ];
             if (validChannels.includes(channel)) {
                 return await ipcRenderer.invoke(channel, data);
@@ -50,6 +33,7 @@ contextBridge.exposeInMainWorld(
         },
         receive: (channel, cb) => {
             let validChannels = [
+                "notify",
                 "log",
                 "error",
                 "toast",

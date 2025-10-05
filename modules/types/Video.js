@@ -1,9 +1,21 @@
 const Utils = require("../Utils");
 const path = require("path");
 
+function hashCode(s) {
+    let h = 0, i = 0, l = s.length;
+    if (l > 0) while (i < l)  h = (h << 5) - h + s.charCodeAt(i++) | 0; //eslint-disable-line no-bitwise
+    return h;
+}
+
 class Video {
-    constructor(url, type, environment) {
+
+    static getVideoIdentifier(u,h) {
+        return hashCode(u+h.map(e=>e.k+': '+e.v).join());
+    }
+
+    constructor(url, headers, type, environment) {
         this.url = url;
+        this.headers = headers;
         this.type = type;
         this.environment = environment;
         this.audioQuality = environment.mainAudioQuality;
@@ -20,6 +32,8 @@ class Video {
         this.error = false;
         this.filename = null;
         this.identifier = Utils.getRandomID(32);
+        this.is_live = false;
+        this.keys = '';
     }
 
     setFilename(liveData) {
@@ -32,6 +46,18 @@ class Video {
         } else if(liveData.includes("[ffmpeg] Adding metadata to '")) {
             const noPrefix = liveData.replace("[ffmpeg] Adding metadata to '", "");
             this.filename = path.basename(noPrefix.trim().slice(0, -1));
+        } else if(liveData.includes("[Merger] Merging formats into \"")) {
+            const noPrefix = liveData.replace("[Merger] Merging formats into \"", "");
+            this.filename = path.basename(noPrefix.trim().slice(0, -1));
+        } else if(liveData.includes("[ExtractAudio] Destination: ")) {
+            const replaced = liveData.replace("[ExtractAudio] Destination: ", "");
+            this.filename = path.basename(replaced);
+        } else if(liveData.includes("[Metadata] Adding metadata to '")) {
+            const noPrefix = liveData.replace("[Metadata] Adding metadata to '", "");
+            this.filename = path.basename(noPrefix.trim().slice(0, -1));
+        } else if(liveData.includes("Output #")) {
+            const replaced = [...liveData.matchAll(/'([^']+)'/g)][0][1];
+            this.filename = path.basename(replaced);
         }
     }
 
@@ -63,6 +89,23 @@ class Video {
 
     serialize() {
         let formats = [];
+        if (!this.hasMetadata) return {
+                like_count: Utils.numberFormatter(0, 2),
+                dislike_count: Utils.numberFormatter(0, 2),
+                description: "",
+                headers: this.headers,
+                view_count: Utils.numberFormatter(0, 2),
+                title: "",
+                tags: "",
+                duration: 0,
+                extractor: "",
+                thumbnail: null,
+                uploader: "",
+                average_rating: 0,
+                url: this.url,
+                formats: formats,
+                keys: this.keys
+            };
         for(const format of this.formats) {
             formats.push(format.serialize());
         }
@@ -70,6 +113,7 @@ class Video {
             like_count: Utils.numberFormatter(this.like_count, 2),
             dislike_count: Utils.numberFormatter(this.dislike_count, 2),
             description: this.description,
+            headers: this.headers,
             view_count: Utils.numberFormatter(this.view_count, 2),
             title: this.title,
             tags: this.tags,
@@ -79,7 +123,8 @@ class Video {
             uploader: this.uploader,
             average_rating: this.average_rating,
             url: this.url,
-            formats: formats
+            formats: formats,
+            keys: this.keys
         };
     }
 
@@ -109,6 +154,7 @@ class Video {
         this.formats = Utils.parseAvailableFormats(metadata);
         this.audioCodecs = Utils.parseAvailableAudioCodecs(metadata);
         this.selected_format_index = this.selectHighestQuality();
+        this.is_live = (metadata.is_live != null && metadata.is_live === true);
     }
 
     selectHighestQuality() {
