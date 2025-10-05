@@ -237,7 +237,7 @@ function createWindow(env) {
             contextIsolation: true
         }
     })
-    
+
     if (process.argv[2] === '--dev') {
         win.webContents.openDevTools()
     }
@@ -397,7 +397,7 @@ function setVideoKey(u, h, v, ms) {
 
 function keyFound(result) {
     console.log("!!!!!!!!!!!!!!Key Found!!!!!!!!!!\n" + result);
-    //console.warn(globalThis.zechallenge.toString());
+    //Console.warn(globalThis.zechallenge.toString());
     currentkeys = result;
 
     if(lastwdurl!='') {
@@ -454,9 +454,9 @@ function scanPostRequest(data) {
                     removed = false;
                 }
                 let licHeaders = JSON.stringify(Object.fromEntries(data.headers.map(header => [header.k, header.v]))) //eslint-disable-line no-unused-vars
-                if(remotecdm){
-                    const https = require('https');
-                    let res =  fetch("https://cdrm-project.com/api/decrypt", {
+                if(remotecdm)
+                {
+                    fetch("https://cdrm-project.com/api/decrypt", {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -468,11 +468,12 @@ function scanPostRequest(data) {
                             'licBody': data.requestbody,
                             'headers': reqlicHeaders
                         })
-                    }) 
+                    })
                     .then((r) => r.json())
                     .then((r) => keyFound(r.message))
-                }else{
-                    
+                }
+                else
+                {
                     pyodide.globals.set("pssh", pssh);
                     pyodide.globals.set("licUrl", data.url);
                     pyodide.globals.set("licHeaders", reqlicHeaders);
