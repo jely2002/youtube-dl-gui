@@ -454,8 +454,7 @@ function scanPostRequest(data) {
                     removed = false;
                 }
                 let licHeaders = JSON.stringify(Object.fromEntries(data.headers.map(header => [header.k, header.v]))) //eslint-disable-line no-unused-vars
-                if(remotecdm)
-                {
+                if(remotecdm) {
                     fetch("https://cdrm-project.com/api/decrypt", {
                         method: 'POST',
                         headers: {
@@ -471,9 +470,7 @@ function scanPostRequest(data) {
                     })
                     .then((r) => r.json())
                     .then((r) => keyFound(r.message))
-                }
-                else
-                {
+                } else {
                     pyodide.globals.set("pssh", pssh);
                     pyodide.globals.set("licUrl", data.url);
                     pyodide.globals.set("licHeaders", reqlicHeaders);
