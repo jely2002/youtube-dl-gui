@@ -1,0 +1,250 @@
+{
+  "rules": [
+    {
+      "code": "signInRequired",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Sign in to confirm your age" },
+        { "kind": "substr", "value": "Sign in required" },
+        { "kind": "substr", "value": "login required" },
+        { "kind": "substr", "value": "private video" }
+      ]
+    },
+    {
+      "code": "membersOnly",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "members-only content" },
+        { "kind": "substr", "value": "available to this channel's members" }
+      ]
+    },
+    {
+      "code": "geoBlocked",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "not available in your country" },
+        { "kind": "substr", "value": "not available from your location" },
+        { "kind": "substr", "value": "geo restriction" },
+        { "kind": "substr", "value": "geolocation" }
+      ]
+    },
+    {
+      "code": "accessForbidden403",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "HTTP Error 403" },
+        { "kind": "substr", "value": "403: Forbidden" },
+        { "kind": "substr", "value": "Access to this resource is forbidden by access policy" }
+      ]
+    },
+    {
+      "code": "notFound404",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "HTTP Error 404" },
+        { "kind": "substr", "value": "404: Not Found" }
+      ]
+    },
+    {
+      "code": "server5xx",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "HTTP Error 500" },
+        { "kind": "substr", "value": "HTTP Error 502" },
+        { "kind": "substr", "value": "HTTP Error 503" },
+        { "kind": "substr", "value": "HTTP Error 504" }
+      ]
+    },
+    {
+      "code": "rateLimited429",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "HTTP Error 429" },
+        { "kind": "substr", "value": "Too many requests" },
+        { "kind": "substr", "value": "rate limit" }
+      ]
+    },
+    {
+      "code": "requestedFormatUnavailable",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Requested format is not available. Use --list-formats for a list of available formats" }
+      ]
+    },
+    {
+      "code": "unableToExtractInitialData",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Unable to extract yt initial data" },
+        { "kind": "substr", "value": "Did not get any data blocks" }
+      ]
+    },
+    {
+      "code": "unableToExtractIdOrInfo",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Unable to extract video ID" },
+        { "kind": "substr", "value": "Unable to extract uploader id" },
+        { "kind": "substr", "value": "Unable to extract info section" }
+      ]
+    },
+    {
+      "code": "nsigExtractionFailed",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "nsig extraction failed" },
+        { "kind": "substr", "value": "Unable to extract Initial JS player n function name" }
+      ]
+    },
+    {
+      "code": "embedOnly",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Cannot download embed-only video without embedding URL" }
+      ]
+    },
+    {
+      "code": "urlUnsupported",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Unsupported URL" },
+        { "kind": "substr", "value": "is not a valid URL" }
+      ]
+    },
+    {
+      "code": "unknownUrlType",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "urlopen error unknown url type" }
+      ]
+    },
+    {
+      "code": "networkNameResolutionFailed",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "getaddrinfo failed" }
+      ]
+    },
+    {
+      "code": "playlistPrivateOrMissing",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "The playlist does not exist" }
+      ]
+    },
+    {
+      "code": "videoNotFoundOrPrivate",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Video has not been found" },
+        { "kind": "substr", "value": "does not exist" },
+        { "kind": "substr", "value": "metadata.formats is not iterable" }
+      ]
+    },
+    {
+      "code": "channelUnavailable",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "This channel is not available" }
+      ]
+    },
+    {
+      "code": "ffmpegNotFound",
+      "component": "ffmpeg",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "ffmpeg or avconv not found" },
+        { "kind": "substr", "value": "ffprobe/avprobe and ffmpeg/avconv not found" }
+      ]
+    },
+    {
+      "code": "ffmpegFailed",
+      "component": "ffmpeg",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "regex", "value": "(?i)ffmpeg (exited|returned).*code\\s*\\d+" },
+        { "kind": "substr", "value": "Error in ffmpeg" }
+      ]
+    },
+    {
+      "code": "cannotAllocateMemory",
+      "component": "ffmpeg",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Cannot allocate memory" }
+      ]
+    },
+    {
+      "code": "permissionDenied",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "[Errno 13]" }
+      ]
+    },
+    {
+      "code": "noWritePermission",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "[Errno 95]" }
+      ]
+    },
+    {
+      "code": "windowsFileMissing",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "[WinError 2]" }
+      ]
+    },
+    {
+      "code": "blockedGeneric",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "The video is blocked" }
+      ]
+    },
+    {
+      "code": "copyrightClaimed",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "blocked it on copyright grounds" }
+      ]
+    },
+    {
+      "code": "notPremieredYet",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Premieres in" }
+      ]
+    },
+    {
+      "code": "livestreamNotStarted",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "This live event will begin in a few moments" }
+      ]
+    },
+    {
+      "code": "sslVerifyFailed",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "SSL: CERTIFICATE_VERIFY_FAILED" },
+        { "kind": "substr", "value": "certificate verify failed" }
+      ]
+    },
+    {
+      "code": "sponsorBlockUnreachable",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Unable to communicate with SponsorBlock API" }
+      ]
+    },
+    {
+      "code": "downloadRetryingFragment",
+      "appliesTo": "warning",
+      "patterns": [
+        { "kind": "substr", "value": "Retrying fragment download" }
+      ]
+    }
+  ],
+  "fallbackCode": "unknown"
+}

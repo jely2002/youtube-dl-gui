@@ -24,9 +24,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Additional info (please complete the following information):**
- - OS: [e.g. Windows 10]
- - Application version [e.g. 1.8.4] (the version can be found in the settings menu)
- - Application type [e.g. portable, installer, Microsoft Store]
+- OS: [e.g. Windows 10]
+- Application version [e.g. 1.8.4] (the version can be found in the settings menu)
+- Application type [e.g. portable, installer, Microsoft Store]
 
 **Additional context**
 Add any other context about the problem here.
