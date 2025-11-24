@@ -26,6 +26,7 @@ licenses/licenses-rust.txt
 *.njsproj
 *.sln
 *.sw?
+*.iml
 
 # Tests
 test-results/
