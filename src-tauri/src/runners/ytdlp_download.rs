@@ -31,6 +31,11 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
       &entry.url,
     ]);
 
+  static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
+  let matcher = DiagnosticMatcher::from_json(RULES_JSON).expect("invalid rules");
+  let error_parser = YtdlpErrorParser::new(&entry.id, &entry.group_id, matcher);
+  let mut progress_parser = YtdlpProgressParser::new(&entry.id, &entry.group_id);
+
   let (mut rx, child) = runner.spawn().expect("Failed to spawn yt-dlp");
 
   while let Some(event) = rx.recv().await {
@@ -49,12 +54,12 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
       CommandEvent::Stdout(line) => {
         let line_str = String::from_utf8_lossy(&line);
         store_log_line(&line_str, &entry, log_state, &app);
-        parse_progress_line(&line_str, &entry, &app);
+        parse_progress_line(&line_str, &mut progress_parser, &app);
       }
       CommandEvent::Stderr(line) => {
         let line_str = String::from_utf8_lossy(&line);
         store_log_line(&line_str, &entry, log_state, &app);
-        parse_error_line(&line_str, &entry, &app);
+        parse_error_line(&line_str, &error_parser, &app);
       }
       CommandEvent::Terminated(term) => {
         if term.code == Some(0) {
@@ -113,9 +118,7 @@ fn store_log_line(
   store.append_line(app, &entry.group_id, line);
 }
 
-fn parse_progress_line(line: &str, entry: &DownloadEntry, app: &AppHandle) {
-  let mut progress_parser = YtdlpProgressParser::new(&entry.id, &entry.group_id);
-
+fn parse_progress_line(line: &str, progress_parser: &mut YtdlpProgressParser, app: &AppHandle) {
   let progress_events = progress_parser.parse_line(line);
 
   for progress_event in progress_events {
@@ -133,11 +136,7 @@ fn parse_progress_line(line: &str, entry: &DownloadEntry, app: &AppHandle) {
   }
 }
 
-fn parse_error_line(line: &str, entry: &DownloadEntry, app: &AppHandle) {
-  static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
-  let matcher = DiagnosticMatcher::from_json(RULES_JSON).expect("invalid rules");
-  let error_parser = YtdlpErrorParser::new(&entry.id, &entry.group_id, matcher);
-
+fn parse_error_line(line: &str, error_parser: &YtdlpErrorParser, app: &AppHandle) {
   if let Some(event) = error_parser.parse_line(line) {
     app
       .emit(

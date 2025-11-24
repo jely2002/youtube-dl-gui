@@ -209,6 +209,9 @@
         "category": {
           "video": "video",
           "audio": "audio",
+          "subtitles": "ondertiteling",
+          "thumbnail": "thumbnail",
+          "metadata": "metadata",
           "other": "overig"
         },
         "status": {

@@ -53,6 +53,9 @@ pub enum ProgressEvent {
 pub enum ProgressCategory {
   Video,
   Audio,
+  Subtitles,
+  Metadata,
+  Thumbnail,
   Other,
 }
 

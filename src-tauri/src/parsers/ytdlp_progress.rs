@@ -97,18 +97,24 @@ impl YtdlpProgressParser {
 
   fn try_download_stage(&mut self, line: &str) -> Option<ProgressEvent> {
     if line.contains("[download] Destination:") {
-      if let Some(path) = line.split("Destination:").nth(1) {
-        let filename = path.trim().rsplit('/').next().unwrap_or("");
-
-        let ext = Path::new(filename)
+      if let Some(path) = line.trim().split("Destination:").nth(1) {
+        let ext = Path::new(path)
           .extension()
           .and_then(|e| e.to_str())
           .unwrap_or("")
           .to_ascii_lowercase();
 
         self.current_category = match ext.as_str() {
-          "mp4" | "mkv" => ProgressCategory::Video,
-          "mp3" | "m4a" => ProgressCategory::Audio,
+          "mp4" | "mkv" | "webm" | "flv" | "mov" | "avi" | "m4v" | "ts" | "m2ts" | "3gp" => {
+            ProgressCategory::Video
+          }
+          "mp3" | "m4a" | "wav" | "flac" | "ogg" | "opus" | "mka" | "aiff" | "wma" | "alac"
+          | "aac" => ProgressCategory::Audio,
+          "vtt" | "srt" | "ass" | "lrc" | "ttml" | "srv1" | "srv2" | "srv3" => {
+            ProgressCategory::Subtitles
+          }
+          "jpg" | "jpeg" | "png" | "webp" | "bmp" => ProgressCategory::Thumbnail,
+          "json" => ProgressCategory::Metadata,
           _ => ProgressCategory::Other,
         };
       }

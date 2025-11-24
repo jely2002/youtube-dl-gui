@@ -44,6 +44,9 @@ export interface MediaProgressCompletePayload {
 export enum ProgressCategory {
   video = 'video',
   audio = 'audio',
+  subtitles = 'subtitles',
+  thumbnail = 'thumbnail',
+  metadata = 'metadata',
   other = 'other',
 }
 
