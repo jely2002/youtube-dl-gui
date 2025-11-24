@@ -1,0 +1,686 @@
+{
+  "common": {
+    "download": "Downloaden",
+    "save": "Opslaan",
+    "later": "Later",
+    "load": "Laden",
+    "install": "Installeren",
+    "percentage": "{percent}%",
+    "add": "Toevoegen",
+    "back": "Terug",
+    "continue": "Doorgaan",
+    "retry": "Opnieuw proberen",
+    "enable": "Inschakelen",
+    "pleaseWait": "Even geduld…",
+    "loading": "Laden",
+    "emptySearch": "No results found.",
+    "parenthesis": "({content})",
+    "divide": "{left} / {right}",
+    "video": "video",
+    "unknown": "onbekend"
+  },
+  "layout": {
+    "header": {
+      "placeholder": "Voer een video- of afspeellijst-URL in om toe te voegen aan de wachtrij",
+      "nav": {
+        "settings": "App-instellingen"
+      }
+    },
+    "footer": {
+      "progress": {
+        "downloading": "Wachtrij downloaden – {done} van {total} voltooid.",
+        "completed": "Download voltooid – {n} item gedownload. | Download voltooid – {n} items gedownload.",
+        "ready": "Klaar om te downloaden! {n} item in de wachtrij. | Klaar om te downloaden! {n} items in de wachtrij."
+      },
+      "nav": {
+        "downloadLocation": "Downloadlocatie",
+        "login": {
+          "screenReader": {
+            "on": "Inloggegevens bewerken (momenteel ingelogd)",
+            "off": "Inloggegevens bewerken (niet ingelogd)"
+          },
+          "tooltip": {
+            "on": "Inloggegevens bewerken",
+            "off": "Inloggen"
+          }
+        },
+        "subtitles": {
+          "screenReader": {
+            "on": "Ondertitels bewerken (momenteel ingeschakeld)",
+            "off": "Ondertitels bewerken (momenteel uitgeschakeld)"
+          },
+          "tooltip": "Ondertitels"
+        }
+      },
+      "format": {
+        "trackSelect": {
+          "screenReader": "Selecteer track voor alle video's"
+        },
+        "formatSelect": {
+          "noFormats": "Geen opties",
+          "placeholder": "Selecteer formaat",
+          "screenReader": "Selecteer formaat voor alle video's"
+        }
+      },
+      "queue": {
+        "empty": "Lege wachtrij"
+      }
+    }
+  },
+  "auth": {
+    "title": "Authenticatie",
+    "cookies": {
+      "legend": "Cookies",
+      "legendBadge": "Aanbevolen",
+      "legendLabel": "Gebruik ingelogde sessies via een cookies-bestand of importeer uit je browser.",
+      "file": {
+        "label": "Cookies laden uit een cookies.txt-bestand",
+        "hint": "Om je cookies naar een bestand te exporteren {link}",
+        "hintLink": "bekijk de handleiding."
+      },
+      "browser": {
+        "label": "Cookies automatisch laden uit een browser:",
+        "placeholder": "Geen cookies laden uit een browser",
+        "hint": "Sommige browsers ondersteunen het laden van cookies niet. Zie de {link}",
+        "hintLink": "lijst met compatibele browsers."
+      }
+    },
+    "credentials": {
+      "title": "Geavanceerde methoden",
+      "description": "Gebruik methoden zoals basic auth, bearer tokens, headers, video-wachtwoord, enz.",
+      "labels": {
+        "username": "Gebruikersnaam",
+        "password": "Wachtwoord",
+        "token": "Token",
+        "headers": "Headers"
+      },
+      "basicAuth": {
+        "legend": "Basic auth",
+        "legendLabel": "Wordt gebruikt voor sites met eenvoudige authenticatie."
+      },
+      "videoPassword": {
+        "legend": "Video-wachtwoord",
+        "legendLabel": "Voer een wachtwoord in om beveiligde video's te openen."
+      },
+      "bearerToken": {
+        "legend": "Bearer-token",
+        "legendLabel": "Gebruik een bearer-token om privébronnen te openen."
+      },
+      "customHeaders": {
+        "legend": "Aangepaste headers",
+        "legendBadge": "Geavanceerd",
+        "legendLabel": "Eén per regel: VELD:WAARDE",
+        "placeholder": "X-Api-Key: …"
+      }
+    },
+    "init": {
+      "title": "Geheime opslag niet ingeschakeld",
+      "description": "Om geavanceerde authenticatiemethoden te gebruiken, moet de geheime opslag ingeschakeld zijn.",
+      "hint": "De geheime opslag gebruikt de sleutelhanger van je systeem; dit kan om een wachtwoord vragen.",
+      "error": {
+        "title": "Kon de geheime opslag niet inschakelen",
+        "description": "Er is een fout opgetreden bij het inschakelen van de geheime opslag. Probeer het opnieuw.",
+        "hint": "Fout: {error}",
+        "unknown": "Onbekende fout"
+      },
+      "toasts": {
+        "error": "Kon de geheime opslag niet initialiseren: {error}"
+      }
+    },
+    "toasts": {
+      "error": "Kon authenticatie instellingen niet opslaan. {error}",
+      "saved": "Authenticatie instellingen opgeslagen!"
+    }
+  },
+  "media": {
+    "view": {
+      "tabs": {
+        "metadata": "Metadata",
+        "logs": "Log"
+      },
+      "thumbnailAlt": "Thumbnail voor {title}",
+      "metadata": {
+        "uploader": "Uploader:",
+        "extractor": "Extractor:",
+        "link": "Link:",
+        "description": "Beschrijving:"
+      },
+      "stats": {
+        "title": "Videostatistieken",
+        "views": "Weergaven",
+        "likes": "Vind-ik-leuks",
+        "dislikes": "Niet-leuks",
+        "comments": "Reacties",
+        "rating": "Beoordeling",
+        "duration": "Duur"
+      },
+      "logs": {
+        "failure": "Fout",
+        "errors": {
+          "count": "Foutmeldingen ({count})",
+          "empty": "Geen foutmeldingen gevonden."
+        },
+        "warnings": {
+          "count": "Waarschuwingen ({count})",
+          "empty": "Geen waarschuwingen gevonden."
+        },
+        "all": {
+          "title": "Alle logberichten",
+          "empty": "Geen logberichten gevonden."
+        },
+        "toasts": {
+          "reported": "Foutmelding gerapporteerd.",
+          "error": "De foutmelding kon niet worden gerapporteerd."
+        }
+      }
+    },
+    "steps": {
+      "fetch": {
+        "progress": "{percentage}% — {done} van {total}",
+        "progressLabel": "Metadata ophalen…"
+      },
+      "configure": {
+        "format": {
+          "trackSelect": {
+            "screenReader": "Selecteer track om te downloaden"
+          },
+          "formatSelect": {
+            "noFormats": "Geen opties",
+            "placeholder": "Selecteer formaat",
+            "screenReader": "Selecteer formaat om de track in te downloaden"
+          }
+        },
+        "metadata": {
+          "duration": "Duur: {duration}",
+          "size": "Grootte: ",
+          "items": "Items: {amount} {failedCount}",
+          "failedCount": "({amount} mislukt)"
+        },
+        "trackTypes": {
+          "both": "Video + Audio",
+          "audio": "Audio",
+          "video": "Video"
+        }
+      },
+      "download": {
+        "progress": "{category} downloaden… — {percentage}%",
+        "progressList": "Downloaden… {percentage}% — {done} van {total}",
+        "indeterminate": "{status}…",
+        "category": {
+          "video": "video",
+          "audio": "audio",
+          "subtitles": "ondertiteling",
+          "thumbnail": "thumbnail",
+          "metadata": "metadata",
+          "other": "overig"
+        },
+        "status": {
+          "initializing": "Initialiseren",
+          "downloading": "Downloaden",
+          "merging": "Samenvoegen",
+          "finalizing": "Afronden"
+        },
+        "metadata": {
+          "eta": "Resterend: {eta}",
+          "speed": "Snelheid: {speed}"
+        }
+      },
+      "done": {
+        "complete": "Download voltooid — 100%",
+        "showFolder": "Map openen",
+        "open": "Bestand openen",
+        "openFirst": "Eerste bestand openen",
+        "undeterminedLocation": "Downloadlocatie kon niet worden bepaald voor dit item."
+      },
+      "error": {
+        "errorPrefix": "Fout – {message}",
+        "report": "Rapporteren",
+        "showFull": "Volledige fout weergeven"
+      }
+    },
+    "card": {
+      "actions": {
+        "remove": "Verwijderen",
+        "externalUrl": "Bezoek website",
+        "retry": "Probeer download opnieuw",
+        "download": "Los downloaden",
+        "metadata": "Toon meer informatie"
+      },
+      "toasts": {
+        "retry": "De video wordt opnieuw gedownload.",
+        "retryError": "Er is een fout opgetreden bij het opnieuw downloaden."
+      }
+    }
+  },
+  "subtitles": {
+    "title": "Ondertitels",
+    "options": {
+      "enable": {
+        "legend": "Ondertitel-downloads",
+        "legendLabel": "Kies hoe ondertitels worden opgehaald bij het downloaden van media.",
+        "label": "Ondertitels inschakelen",
+        "hint": "Download ondertitelbestanden samen met je media."
+      },
+      "autoGenerated": {
+        "label": "Automatisch gegenereerde ondertitels meenemen",
+        "hint": "Download automatisch gegenereerde ondertitels naast die van de maker."
+      },
+      "format": {
+        "legend": "Voorkeursformaat",
+        "legendLabel": "Kies je gewenste ondertitelformaat. Als dit niet beschikbaar is, wordt het volgende beste formaat gebruikt.",
+        "label": "Formaat"
+      },
+      "languages": {
+        "legend": "Talen",
+        "legendLabel": "Kies de ondertiteltalen om te downloaden.",
+        "downloadAll": "Alle beschikbare ondertitels downloaden.",
+        "search": "Zoek talen",
+        "searchPlaceholder": "Zoek op taalnaam",
+        "suggested": "Aanbevolen voor jou",
+        "all": "Alle talen",
+        "noResult": "Geen talen gevonden voor \"{query}\".",
+        "selected": "Geselecteerd:",
+        "allSelected": "Alle beschikbare ondertitels",
+        "searchHint": "Tip: gebruik het zoekveld om de lijst te filteren. Geselecteerde talen blijven gemarkeerd."
+      }
+    },
+    "toasts": {
+      "saved": "Ondertitelinstellingen opgeslagen!",
+      "error": "Kon ondertitelinstellingen niet opslaan. {error}"
+    },
+    "formats": {
+      "srt": "SubRip (.srt)",
+      "vtt": "WebVTT (.vtt)",
+      "ass": "Advanced SubStation Alpha (.ass)",
+      "ttml": "Timed Text Markup (.ttml)",
+      "json": "JSON (.json)"
+    }
+  },
+  "settings": {
+    "title": "Instellingen",
+    "performance": {
+      "legend": "Prestaties",
+      "legendLabel": "Bepaal hoeveel systeembronnen worden gebruikt.",
+      "maxConcurrency": {
+        "label": "Max. gelijktijdige taken:"
+      },
+      "splitPlaylistThreshold": {
+        "label": "Splits afspeellijsten naar losse videos bij:",
+        "options": {
+          "never": "Nooit splitsen",
+          "lessThan": "Minder dan {number} videos"
+        }
+      },
+      "autoLoadSize": {
+        "label": "Videogrootte automatisch laden:"
+      }
+    },
+    "input": {
+      "legend": "Invoer",
+      "legendLabel": "Kies hoe je downloads start in OVD.",
+      "autoFillClipboard": {
+        "label": "Gekopieerde links automatisch invullen:",
+        "hint": "Detecteer links die je hebt gekopieerd, zodat je deze met één klik kunt downloaden."
+      },
+      "preferVideoInMixedLinks": {
+        "label": "Voorkeur voor losse video bij playlist-links:",
+        "hint": "Als een link zowel een video als een playlist bevat, download dan alleen de video in plaats van de hele playlist."
+      }
+    },
+    "output": {
+      "legend": "Output",
+      "legendLabel": "Stel in welke bestanden je wilt downloaden.",
+      "addThumbnail": {
+        "label": "Thumbnail insluiten:",
+        "hint": "Voegt de thumbnail toe als cover-art in het bestand."
+      },
+      "addMetadata": {
+        "label": "Titel & artiest opslaan:",
+        "hint": "Slaat info zoals titel, uploader/artist en beschrijving op in het bestand."
+      },
+      "policy": {
+        "label": "Conversiemodus:",
+        "hint": "Als het bestand niet overeenkomt met je gekozen formaat kan het worden omgezet. Overslaan: snelst, maar formaat kan afwijken. Converteren als mogelijk: past alleen de container aan. Altijd converteren: gebruikt altijd het gekozen formaat maar kost meer tijd en CPU",
+        "options": {
+          "never": "Conversie overslaan",
+          "remuxOnly": "Converteren als mogelijk (aanbevolen)",
+          "allowReencode": "Altijd converteren (trager)"
+        }
+      },
+      "tabs": {
+        "audio": {
+          "screenreader": "Audio-instellingen",
+          "label": "Audio",
+          "format": {
+            "label": "Audioformaat:",
+            "hint": "Conversiemodus bepaalt of dit formaat ook echt wordt toegepast",
+            "options": {
+              "mp3": "MP3 (aanbevolen)",
+              "m4a": "M4A",
+              "ogg": "OGG",
+              "aac": "AAC",
+              "opus": "Opus"
+            }
+          }
+        },
+        "video": {
+          "screenreader": "Video-instellingen",
+          "label": "Video",
+          "container": {
+            "label": "Videoformaat:",
+            "hint": "Conversiemodus bepaalt of dit formaat ook echt wordt toegepast",
+            "options": {
+              "mp4": "MP4",
+              "mkv": "MKV"
+            }
+          }
+        }
+      }
+    },
+    "filename": {
+      "legend": "Bestandsnamen",
+      "legendLabel": "Bepaal hoe gedownloade bestanden worden opgeslagen.",
+      "formatPreset": {
+        "label": "Bestandsnaam-preset:",
+        "options": {
+          "titleQuality": "Titel + kwaliteit",
+          "titleOnly": "Alleen titel",
+          "custom": "Aangepast"
+        }
+      },
+      "outputFormat": {
+        "label": "Bestandsnaam-formaat:"
+      }
+    },
+    "appearance": {
+      "legend": "Weergave",
+      "legendLabel": "Pas aan hoe de applicatie eruitziet en aanvoelt.",
+      "theme": {
+        "label": "Thema:",
+        "options": {
+          "system": "Systeem ({theme})",
+          "light": "Licht",
+          "dark": "Donker"
+        }
+      },
+      "language": {
+        "label": "Taal",
+        "options": {
+          "system": "Systeem ({language})"
+        }
+      }
+    },
+    "network": {
+      "legend": "Netwerk",
+      "legendLabel": "Instellen hoe de app verbinding maakt met internet.",
+      "proxy": {
+        "label": "Proxyconfiguratie:"
+      },
+      "impersonate": {
+        "label": "Imiteren:",
+        "hint": "Doe je voor als een specifiek besturingssysteem of browser om fingerprinting te voorkomen.",
+        "options": {
+          "none": "Niet imiteren",
+          "any": "Willekeurige client imiteren"
+        }
+      }
+    },
+    "sponsorBlock": {
+      "legend": "SponsorBlock",
+      "legendLabel": "Verwijder of markeer delen van een video.",
+      "removeParts": {
+        "label": "Delen om te verwijderen",
+        "placeholder": "Selecteer delen om te verwijderen."
+      },
+      "markParts": {
+        "label": "Delen om te markeren",
+        "placeholder": "Selecteer delen om te markeren."
+      },
+      "apiUrl": {
+        "label": "API URL"
+      },
+      "parts": {
+        "sponsor": {
+          "label": "Sponsor",
+          "description": "Betaalde promotie van een product of dienst."
+        },
+        "selfpromo": {
+          "label": "Zelfpromotie / Onbetaald",
+          "description": "Promotie van eigen merchandise, diensten of kanalen."
+        },
+        "interaction": {
+          "label": "Interactie-herinnering",
+          "description": "Herinnering om te liken, abonneren of reageren."
+        },
+        "intro": {
+          "label": "Intro / Tussenscène",
+          "description": "Intro-animatie of kort niet-inhoudelijk begin."
+        },
+        "outro": {
+          "label": "Outro / Credits",
+          "description": "Eindkaarten, credits of afsluitend deel."
+        },
+        "preview": {
+          "label": "Preview / Samenvatting",
+          "description": "Korte vooruitblik of terugblik."
+        },
+        "filler": {
+          "label": "Vulling / Zijsporen",
+          "description": "Zijsporen of grappen buiten de hoofdinhoud."
+        },
+        "chapter": {
+          "label": "Hoofdstuk",
+          "description": "Markeert een sectie van de video."
+        }
+      }
+    },
+    "update": {
+      "legend": "Updates",
+      "legendLabel": "Stel in wat er automatisch wordt bijgewerkt.",
+      "updateBinaries": {
+        "label": "Tools automatisch updaten:",
+        "hint": "OVD gebruikt tools zoals yt-dlp en ffmpeg. Met deze optie blijven ze automatisch up-to-date."
+      },
+      "updateApp": {
+        "label": "App automatisch updaten:",
+        "hint": "Krijg direct nieuwe functies en bugfixes zodra er een nieuwe versie beschikbaar is."
+      }
+    },
+    "toasts": {
+      "saved": "Instellingen opgeslagen!"
+    }
+  },
+  "updater": {
+    "available": "Update beschikbaar!",
+    "install": {
+      "title": "Update installeren",
+      "subtitle": "De app wordt opnieuw gestart."
+    },
+    "downloading": "Update downloaden…"
+  },
+  "install": {
+    "title": {
+      "installing": "Vereiste tools installeren…",
+      "failed": "Sommige vereiste tools konden niet worden geïnstalleerd.",
+      "installed": "Vereiste tools geïnstalleerd."
+    },
+    "subtitle": {
+      "installing": "We maken alles gereed.",
+      "failed": "De app werkt mogelijk niet zoals verwacht, meld dit alsjeblieft.",
+      "installed": "Klaar om te downloaden!"
+    }
+  },
+  "components": {
+    "base": {
+      "emptyState": {
+        "title": "Je wachtrij is leeg",
+        "subtitle": "Voeg video's toe om te beginnen."
+      },
+      "dragState": {
+        "title": "Laat los om toe te voegen",
+        "subtitle": "Voeg video's toe door ze te slepen."
+      },
+      "fileInput": {
+        "select": "Bestand selecteren",
+        "placeholder": "Selecteer een bestand…",
+        "invalid": "Ongeldig bestand."
+      },
+      "secretInput": {
+        "hide": "Verbergen",
+        "show": "Weergeven",
+        "clear": "{label} wissen"
+      },
+      "toolCard": {
+        "failed": "Kon deze tool niet installeren. Vouw uit voor meer informatie."
+      }
+    }
+  },
+  "errors": {
+    "runner": {
+      "internal": {
+        "shortMessage": "Internal error",
+        "message": "An internal error occurred while processing this item."
+      },
+      "signInRequired": {
+        "shortMessage": "Sign-in required",
+        "message": "You need to sign in to view this content."
+      },
+      "membersOnly": {
+        "shortMessage": "Members-only",
+        "message": "This video is only available to channel members."
+      },
+      "geoBlocked": {
+        "shortMessage": "Region blocked",
+        "message": "This content isn’t available in your region."
+      },
+      "accessForbidden403": {
+        "shortMessage": "Access forbidden",
+        "message": "You don’t have permission to access this resource (HTTP 403)."
+      },
+      "notFound404": {
+        "shortMessage": "Not found",
+        "message": "The requested video or playlist could not be found (HTTP 404)."
+      },
+      "server5xx": {
+        "shortMessage": "Server error",
+        "message": "A temporary server issue occurred. Try again later."
+      },
+      "rateLimited429": {
+        "shortMessage": "Rate limited",
+        "message": "Too many requests were sent. Please wait and retry."
+      },
+      "requestedFormatUnavailable": {
+        "shortMessage": "Format unavailable",
+        "message": "The selected format isn’t available for this video."
+      },
+      "unableToExtractInitialData": {
+        "shortMessage": "Data extraction failed",
+        "message": "Couldn’t extract the required initial video data."
+      },
+      "unableToExtractIdOrInfo": {
+        "shortMessage": "Metadata error",
+        "message": "Failed to extract video or uploader information."
+      },
+      "nsigExtractionFailed": {
+        "shortMessage": "Signature failed",
+        "message": "Failed to extract or decode the video signature."
+      },
+      "embedOnly": {
+        "shortMessage": "Embed-only video",
+        "message": "This video can only be accessed through an embedded player."
+      },
+      "urlUnsupported": {
+        "shortMessage": "Invalid URL",
+        "message": "The provided link isn’t supported or recognized."
+      },
+      "unknownUrlType": {
+        "shortMessage": "Unknown URL type",
+        "message": "The provided URL uses an unsupported protocol."
+      },
+      "networkNameResolutionFailed": {
+        "shortMessage": "Network error",
+        "message": "Couldn’t resolve the host name. Check your internet connection."
+      },
+      "playlistPrivateOrMissing": {
+        "shortMessage": "Playlist unavailable",
+        "message": "This playlist is private or no longer exists."
+      },
+      "videoNotFoundOrPrivate": {
+        "shortMessage": "Video unavailable",
+        "message": "This video was removed or set to private."
+      },
+      "channelUnavailable": {
+        "shortMessage": "Channel unavailable",
+        "message": "The channel hosting this content is no longer accessible."
+      },
+      "ffmpegNotFound": {
+        "shortMessage": "ffmpeg not found",
+        "message": "Transcoding to mp3 or mp4 requires ffmpeg."
+      },
+      "ffmpegFailed": {
+        "shortMessage": "ffmpeg failed",
+        "message": "FFmpeg encountered an error during processing."
+      },
+      "cannotAllocateMemory": {
+        "shortMessage": "Memory error",
+        "message": "FFmpeg ran out of memory while processing the video."
+      },
+      "permissionDenied": {
+        "shortMessage": "Permission denied",
+        "message": "The app doesn’t have permission to access this file or folder."
+      },
+      "noWritePermission": {
+        "shortMessage": "Cannot write",
+        "message": "The destination path isn’t writable."
+      },
+      "windowsFileMissing": {
+        "shortMessage": "File missing",
+        "message": "The referenced file could not be found (WinError 2)."
+      },
+      "blockedGeneric": {
+        "shortMessage": "Video blocked",
+        "message": "This video is blocked and cannot be downloaded."
+      },
+      "copyrightClaimed": {
+        "shortMessage": "Copyright block",
+        "message": "The video was blocked due to a copyright claim."
+      },
+      "notPremieredYet": {
+        "shortMessage": "Not premiered yet",
+        "message": "This video isn’t available until its premiere begins."
+      },
+      "livestreamNotStarted": {
+        "shortMessage": "Livestream pending",
+        "message": "The livestream hasn’t started yet. Please check back later."
+      },
+      "sslVerifyFailed": {
+        "shortMessage": "SSL failed",
+        "message": "The secure connection could not be verified. Check your certificates or date/time."
+      },
+      "sponsorBlockUnreachable": {
+        "shortMessage": "SponsorBlock offline",
+        "message": "Couldn’t connect to the SponsorBlock API for segment data."
+      },
+      "downloadRetryingFragment": {
+        "shortMessage": "Retrying fragment",
+        "message": "A fragment download failed and will be retried automatically."
+      },
+      "unknown": {
+        "shortMessage": "Unknown error",
+        "message": "An unknown error occurred while processing this item."
+      }
+    }
+  },
+  "about": {
+    "title": "Over deze app",
+    "credit": "Gemaakt met ❤ door jely2002 & bijdragers",
+    "poweredBy": "Aangedreven door open source:",
+    "viewLicenses": "Licenties bekijken",
+    "version": "Versie: {version}",
+    "links": {
+      "github": "GitHub",
+      "wiki": "Wiki",
+      "reportABug": "Meld een bug"
+    }
+  }
+}

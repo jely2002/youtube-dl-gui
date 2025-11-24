@@ -1,0 +1,8 @@
+codecov:
+  require_ci_to_pass: false
+
+coverage:
+  status:
+    project: off
+    patch: off
+    changes: off

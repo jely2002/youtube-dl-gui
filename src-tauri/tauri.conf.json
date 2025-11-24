@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Open Video Downloader",
+  "mainBinaryName": "open-video-downloader",
+  "version": "3.0.0",
+  "identifier": "com.jelleglebbeek.youtube-dl-gui",
+  "build": {
+    "beforeDevCommand": "npm run build:isolation && npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build && npm run licenses",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Open Video Downloader",
+        "width": 800,
+        "minWidth": 750,
+        "height": 900,
+        "minHeight": 650,
+        "visible": false,
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "capabilities": ["default"],
+      "pattern": {
+        "use": "isolation",
+        "options": {
+          "dir": "../dist-isolation"
+        }
+      },
+      "csp": {
+        "default-src": "'self' asset:",
+        "connect-src": "ipc: http://ipc.localhost",
+        "img-src": "'self' asset: http://asset.localhost blob: data: http: https:",
+        "style-src": "'self' 'unsafe-inline'",
+        "font-src": "'self'",
+        "frame-ancestors": "'none'"
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "createUpdaterArtifacts": true,
+    "targets": ["nsis", "app", "dmg", "appimage", "deb"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": {
+      "../licenses/3rdpartylicenses.txt": "licenses/3rdpartylicenses.txt"
+    },
+    "macOS": {
+      "signingIdentity": "Apple Development"
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNBRTI0NDIwNzRDQUIzRUMKUldUc3M4cDBJRVRpT21CaVE1VmRZQ3pLSGZKb2F3OGRkM2ZCYXEyYStUQ0UyNnJ0aDBKMXh3eU4K",
+      "endpoints": [
+        "https://github.com/jely2002/youtube-dl-gui/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

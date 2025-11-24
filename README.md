@@ -1,56 +1,65 @@
 <img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="100"/>
 
-# Open Video Downloader (youtube-dl-gui) <br> ![version badge](https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release) ![GitHub](https://img.shields.io/github/license/jely2002/youtube-dl-gui) ![coverage badge](https://img.shields.io/codecov/c/github/jely2002/youtube-dl-gui) ![downloads](https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total) ![CI badge](https://img.shields.io/github/workflow/status/jely2002/youtube-dl-gui/CI?label=CI) 
+# Open Video Downloader (youtube-dl-gui) <br> ![version badge](https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release) ![GitHub](https://img.shields.io/github/license/jely2002/youtube-dl-gui) ![coverage badge](https://img.shields.io/codecov/c/github/jely2002/youtube-dl-gui) ![downloads](https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total) 
 [https://jely2002.github.io/youtube-dl-gui](https://jely2002.github.io/youtube-dl-gui)
 
-A cross-platform GUI for youtube-dl made in Electron and node.js
+Open Video Downloader is a simple, cross-platform desktop application that lets you download videos, audio, subtitles and metadata from hundreds of supported websites, not just YouTube.  
+It provides an easy-to-use interface around [yt-dlp](https://github.com/yt-dlp/yt-dlp) so you don’t have to touch the command line.
 
 
-### Features:
-- Download from all kind of platforms: YouTube, vimeo, twitter & many more
-- Download multiple videos/playlists/channels in one go
-- Select the resolution and format you want to download in
-- Download private videos (currently only tested on YouTube)
-- Multithreaded, up to 32 videos can be downloaded synchronously
-- Shows how much size the download will use up on your system
-- The app automatically keeps ytdl up-to-date
+## Features
 
-Be sure to check out [a demo gif of the application](#Demo-gif)!
+- **Cross-platform:** works on Windows, macOS and Linux.
+- **Audio or video downloads:** grab full videos or extract only the audio track.
+- **Subtitles and metadata:** automatically saves available captions and video information.
+- **Quality control:** choose your preferred resolution, frame rate, and (soon) encoding format like MP4 or MKV.
+- **Playlists:** download entire playlists in one go.
+- **Custom output:** set your download location and control filenames using presets or custom templates.
+- **Smart queueing:** OVD balances multiple downloads automatically so your computer doesn’t slow down.
+- **Authentication:** supports browser cookie files, basic auth and video passwords.
+- **Automatic updates:** both the app and yt-dlp are kept up to date automatically.
+- **Light and dark mode:** adapts to your system theme with clear progress and error handling.
 
-## How to use
-1. Download the [applicable installer or executable](https://github.com/jely2002/youtube-dl-gui/releases/latest) for your system.
-2. If you are on windows, make sure that the [Microsoft Visual C++ 2010 Redistributable Package (x86)](https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe) is installed. 
-3. Paste a link into the box up top.
-4. Wait for the app to gather all required metadata.
-5. Press download, and the video(s) will get downloaded to your downloads folder.
+## Download
 
-Want to know more about the features this app offers? Head over to the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/).
+The latest versions for **Windows**, **macOS** and **Linux** are available on the  
+[GitHub Releases page](https://github.com/jely2002/youtube-dl-gui/releases).
 
-## Something is not working!
-Please see if the answer is in the [frequently answered questions](https://github.com/jely2002/youtube-dl-gui/wiki/FAQ) or in the [wiki](https://github.com/jely2002/youtube-dl-gui/wiki/).
+Download the installer or archive for your platform and follow the normal installation steps.  
+No command-line setup is required.
 
-Still haven't found your answer? [Open up an issue](https://github.com/jely2002/youtube-dl-gui/issues), and describe the problem you're facing.
+#### What file do I download?
+| Your Computer                         | Download                                     |
+|---------------------------------------|----------------------------------------------|
+| **Windows**                           | `Open.Video.Downloader_x.x.x_x64-setup.exe`  |
+| **Mac (Intel)**                       | `Open.Video.Downloader_x.x.x_x64.dmg`        |
+| **Mac (Apple Silicon – M1, M2 … M5)** | `Open.Video.Downloader_x.x.x_aarch64.dmg`    |
+| **Linux (AppImage)**                  | `Open.Video.Downloader_x.x.x_amd64.AppImage` |
+| **Linux (Debian/Ubuntu)**             | `Open.Video.Downloader_x.x.x_amd64.deb`      |
 
-## Building from source
-First, clone the repository using `git clone https://github.com/jely2002/youtube-dl-gui.git`.
+## How it works
 
-Then navigate to the directory and install the npm modules by executing: `npm install`.
+Open Video Downloader uses a front-end built with Vue 3 and a Rust backend powered by [Tauri](https://tauri.app/).  
+When you add a video or playlist, the app communicates with yt-dlp to fetch information, process options and start the download.  
+The download progress and any errors are displayed in the app.
 
-The last step is to build using electron-builder [(documentation)](https://www.electron.build/cli). For example, the command to build a windows installer is: `npx electron-builder --win`. The output files can be found in the 'dist' folder.
+## Contributing
 
-Please be aware that this app is only tested on windows, linux and macOS. If you decide to build for another platform/archtype it may or may not work. Builds other than those available in the releases come with absolutely no support.
+Developers are welcome to contribute.  
+You’ll need Node.js (v24+) and Rust installed.
 
-## Planned features
-- Select individual audio and video codecs (advanced mode)
-- List all audio qualities
-- Support for downloading livestreams
+```
+npm install
+npm run tauri dev
+```
 
-Feel free to [request a new feature](https://github.com/jely2002/youtube-dl-gui/issues).
+For more details, see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## Demo gif
-<img src="ytdlgui_demo.gif" alt="demo" width="500"/>  
+## License and disclaimer
 
+Open Video Downloader is distributed under the [AGPL-3.0 license](./LICENSE).
 
-## Liability & License notice
-Youtube-dl-gui and its maintainers cannot be held liable for misuse of this application, as stated in the [AGPL-3.0 license (section 16)](https://github.com/jely2002/youtube-dl-gui/blob/master/LICENSE).  
-The maintainers of youtube-dl-gui do not in any way condone the use of this application in practices that violate local laws such as but not limited to the DMCA. The maintainers of this application call upon the personal responsibility of its users to use this application in a fair way, as it is intended to be used.
+#### Use this application responsibly
+The maintainers of Open Video Downloader cannot be held liable for misuse of this application, as stated in the AGPL-3.0 license (section 16).  
+We do not condone the use of this software to violate local laws or platform terms of service (including the DMCA).  
+Users are personally responsible for ensuring they use this software fairly and within legal boundaries.

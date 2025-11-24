@@ -1,0 +1,19 @@
+PACKAGES
+========
+
+{{#each licenses}}
+  {{#each used_by}}
+{{crate.name}} {{crate.version}} - {{../id}}
+  {{/each}}
+{{/each}}
+
+LICENSE TEXTS
+============
+
+{{#each licenses}}
+{{id}} - {{name}}
+{{text}}
+
+----------------------------------------
+
+{{/each}}
