@@ -65,6 +65,7 @@ function assetUrl(rel: GitHubRelease, name: string): string {
 export async function fetchSources(): Promise<ToolSource[]> {
   console.log('[sources] Resolving tool sources');
   const ytRel = await latestRelease('yt-dlp', 'yt-dlp');
+  const ytNuitkaRel = await latestRelease('jely2002', 'yt-dlp-nuitka');
   const ffRel = await latestRelease('eugeneware', 'ffmpeg-static');
   const denoRel = await latestRelease('denoland', 'deno');
   const apRel = await latestRelease('wez', 'atomicparsley');
@@ -95,13 +96,7 @@ export async function fetchSources(): Promise<ToolSource[]> {
           },
         },
         'windows-x86_64': {
-          url: assetUrl(ytRel, 'yt-dlp_win.zip'),
-          bundle: {
-            keep_folder: true,
-            folder_name: 'yt-dlp',
-            entry: 'yt-dlp.exe',
-            rename_entry_to: 'yt-dlp.exe',
-          },
+          url: assetUrl(ytNuitkaRel, `yt-dlp-${ytNuitkaRel.tag_name}-windows-x64-onefile.exe`),
         },
         'darwin-x86_64': {
           url: assetUrl(ytRel, 'yt-dlp_macos.zip'),
