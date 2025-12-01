@@ -82,11 +82,36 @@ jobs:
           updaterJsonPreferNsis: true
           args: ${{ matrix.args }}
 
-      - name: Build MSIX layout (Windows only)
+      - name: Build and sign MSIX (Windows only)
         if: matrix.platform == 'windows-latest'
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
+
+          $kitsRoot = "${Env:ProgramFiles(x86)}\Windows Kits\10\bin"
+
+          if (-not (Test-Path $kitsRoot)) {
+            Write-Error "Windows 10 Kits bin folder not found at $kitsRoot"
+          }
+
+          $makeAppx = Get-ChildItem -Path $kitsRoot -Recurse -Filter "makeappx.exe" -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match "\\x64\\makeappx\.exe$" } |
+            Select-Object -First 1
+
+          if (-not $makeAppx) {
+            Write-Error "MakeAppx.exe not found under $kitsRoot"
+          }
+
+          $signtool = Get-ChildItem -Path $kitsRoot -Recurse -Filter "signtool.exe" -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match "\\x64\\signtool\.exe$" } |
+            Select-Object -First 1
+
+          if (-not $signtool) {
+            Write-Error "signtool.exe not found under $kitsRoot"
+          }
+
+          Write-Host "Using MakeAppx at: $($makeAppx.FullName)"
+          Write-Host "Using signtool at: $($signtool.FullName)"
 
           $layoutRoot = "msix-layout"
           $appFolder = Join-Path $layoutRoot "Open Video Downloader"
@@ -105,16 +130,10 @@ jobs:
 
           Copy-Item $exeSrc -Destination (Join-Path $appFolder "open-video-downloader.exe") -Force
           Copy-Item $manifestSrc -Destination (Join-Path $layoutRoot "AppxManifest.xml") -Force
-          Copy-Item "src-tauri\icons\*.png" -Destination $assetsFolder -Recurse -Force
+          Copy-Item "src-tauri\icons\*" -Destination $assetsFolder -Recurse -Force
           Copy-Item $licenseSrc -Destination (Join-Path $licenseFolder "3rdpartylicenses.txt") -Force
 
-          & makeappx pack /d $layoutRoot /p $msixPath
-
-      - name: Sign MSIX (Windows only)
-        if: matrix.platform == 'windows-latest'
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = "Stop"
+          & "$($makeAppx.FullName)" pack /d $layoutRoot /p $msixPath
 
           if (-not $env:WINDOWS_PFX_B64) {
             Write-Error "WINDOWS_PFX_B64 is not set"
@@ -126,7 +145,6 @@ jobs:
 
           $pwd = $env:WINDOWS_PFX_PASSWORD
           $timestamp = "http://timestamp.digicert.com"
-          $msixPath = "OpenVideoDownloader_x64.msix"
 
           if (-not (Test-Path $msixPath)) {
             Write-Error "MSIX not found at $msixPath"
@@ -134,7 +152,7 @@ jobs:
 
           Write-Host "Signing $msixPath using dev certificate..."
 
-          & signtool sign `
+          & "$($signtool.FullName)" sign `
             /fd SHA256 `
             /f "$certPath" `
             /p "$pwd" `
@@ -142,7 +160,7 @@ jobs:
             /td SHA256 `
             "$msixPath"
 
-          Write-Host "MSIX signing complete."      
+          Write-Host "MSIX signing complete."
 
       - name: Upload MSIX artifact (Windows only)
         if: matrix.platform == 'windows-latest'
