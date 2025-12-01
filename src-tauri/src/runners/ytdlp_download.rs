@@ -27,7 +27,7 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
       "-o",
       output_str.as_ref(),
       "--output-na-placeholder",
-      "",
+      "\"\"",
       &entry.url,
     ]);
 
