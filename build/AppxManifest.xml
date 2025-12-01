@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+        xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+        xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+        xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+        IgnorableNamespaces="uap rescap">
+
+    <Identity
+            Name="3216JelleGlebbeek.youtube-dl-gui"
+            Publisher="CN=EBDD6AA4-D72E-42C6-BBCB-A288476F0CBE"
+            Version="3.0.0.0"
+            ProcessorArchitecture="x64" />
+
+    <Properties>
+        <DisplayName>Open Video Downloader</DisplayName>
+        <PublisherDisplayName>Jelle Glebbeek</PublisherDisplayName>
+        <Logo>Assets\StoreLogo.png</Logo>
+    </Properties>
+
+    <Resources>
+        <Resource Language="en-us"/>
+    </Resources>
+
+    <Dependencies>
+        <TargetDeviceFamily
+                Name="Windows.Desktop"
+                MinVersion="10.0.17763.0"
+                MaxVersionTested="10.0.22000.1" />
+        <PackageDependency
+                Name="Microsoft.WindowsAppRuntime.1.4"
+                MinVersion="4000.1010.1349.0"
+                Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
+    </Dependencies>
+
+    <Capabilities>
+        <rescap:Capability Name="runFullTrust" />
+    </Capabilities>
+
+    <Applications>
+        <Application
+                Id="OpenVideoDownloader"
+                Executable="Open Video Downloader\open-video-downloader.exe"
+                EntryPoint="Windows.FullTrustApplication">
+
+            <uap:VisualElements
+                    BackgroundColor="transparent"
+                    DisplayName="Open Video Downloader"
+                    Square150x150Logo="Assets\Square150x150Logo.png"
+                    Square44x44Logo="Assets\Square44x44Logo.png"
+                    Description="Open Video Downloader">
+                <uap:DefaultTile
+                        Wide310x150Logo="Assets\Wide310x150Logo.png"
+                        Square310x310Logo="Assets\Square310x310Logo.png"
+                        Square71x71Logo="Assets\Square71x71Logo.png"/>
+            </uap:VisualElements>
+
+        </Application>
+    </Applications>
+
+</Package>

@@ -10,6 +10,9 @@ jobs:
   publish-tauri:
     permissions:
       contents: write
+    env:
+      WINDOWS_PFX_B64: ${{ secrets.WINDOWS_PFX_B64 }}
+      WINDOWS_PFX_PASSWORD: ${{ secrets.WINDOWS_PFX_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -57,7 +60,7 @@ jobs:
       - name: install frontend dependencies
         run: npm install
 
-      - name: Import Apple Developer certificate
+      - name: Import Apple Developer certificate (MacOS only)
         if: startsWith(matrix.platform, 'macos')
         uses: apple-actions/import-codesign-certs@v3
         with:
@@ -78,3 +81,72 @@ jobs:
           includeUpdaterJson: true
           updaterJsonPreferNsis: true
           args: ${{ matrix.args }}
+
+      - name: Build MSIX layout (Windows only)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          $layoutRoot = "msix-layout"
+          $appFolder = Join-Path $layoutRoot "Open Video Downloader"
+          $assetsFolder = Join-Path $layoutRoot "Assets"
+          $licenseFolder = Join-Path $appFolder "licenses"
+          $manifestSrc = "build\AppxManifest.xml"
+          $exeSrc = "src-tauri\target\release\open-video-downloader.exe"
+          $licenseSrc = "licenses\3rdpartylicenses.txt"
+          $msixPath = "OpenVideoDownloader_x64.msix"
+
+          if (Test-Path $layoutRoot) {
+            Remove-Item $layoutRoot -Recurse -Force
+          }
+
+          New-Item -ItemType Directory -Path $appFolder, $assetsFolder, $licenseFolder | Out-Null
+
+          Copy-Item $exeSrc -Destination (Join-Path $appFolder "open-video-downloader.exe") -Force
+          Copy-Item $manifestSrc -Destination (Join-Path $layoutRoot "AppxManifest.xml") -Force
+          Copy-Item "src-tauri\icons\*.png" -Destination $assetsFolder -Recurse -Force
+          Copy-Item $licenseSrc -Destination (Join-Path $licenseFolder "3rdpartylicenses.txt") -Force
+
+          & makeappx pack /d $layoutRoot /p $msixPath
+
+      - name: Sign MSIX (Windows only)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          if (-not $env:WINDOWS_PFX_B64) {
+            Write-Error "WINDOWS_PFX_B64 is not set"
+          }
+
+          $certPath = Join-Path $env:RUNNER_TEMP "ovd-codesign.pfx"
+          $bytes = [Convert]::FromBase64String($env:WINDOWS_PFX_B64)
+          [IO.File]::WriteAllBytes($certPath, $bytes)
+
+          $pwd = $env:WINDOWS_PFX_PASSWORD
+          $timestamp = "http://timestamp.digicert.com"
+          $msixPath = "OpenVideoDownloader_x64.msix"
+
+          if (-not (Test-Path $msixPath)) {
+            Write-Error "MSIX not found at $msixPath"
+          }
+
+          Write-Host "Signing $msixPath using dev certificate..."
+
+          & signtool sign `
+            /fd SHA256 `
+            /f "$certPath" `
+            /p "$pwd" `
+            /tr "$timestamp" `
+            /td SHA256 `
+            "$msixPath"
+
+          Write-Host "MSIX signing complete."      
+
+      - name: Upload MSIX artifact (Windows only)
+        if: matrix.platform == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovd-msix
+          path: OpenVideoDownloader_x64.msix
