@@ -137,7 +137,7 @@ jobs:
           Copy-Item "src-tauri\icons\*.png" -Destination $assetsFolder -Recurse -Force
           Copy-Item $licenseSrc -Destination (Join-Path $licenseFolder "3rdpartylicenses.txt") -Force
           
-          $binSrc = "Open Video Downloader\bin"
+          $binSrc = Join-Path $appFolder "bin"
           if (-not (Test-Path $binSrc)) {
             Write-Error "Bin folder not found at '$binSrc'. Did 'npm run manifest:fetch' run?"
           }
