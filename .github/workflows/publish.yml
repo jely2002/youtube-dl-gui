@@ -126,10 +126,6 @@ jobs:
           $licenseSrc = "licenses\3rdpartylicenses.txt"
           $msixPath = "OpenVideoDownloader_x64.msix"
 
-          if (Test-Path $layoutRoot) {
-            Remove-Item $layoutRoot -Recurse -Force
-          }
-
           New-Item -ItemType Directory -Path $appFolder, $assetsFolder, $licenseFolder | Out-Null
 
           Copy-Item $exeSrc -Destination (Join-Path $appFolder "open-video-downloader.exe") -Force
