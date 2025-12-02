@@ -3,7 +3,7 @@ import { createHash } from 'crypto';
 import { canonicalize } from './canonicalize.ts';
 import { fetchSources } from './sources.ts';
 
-interface FileEntry {
+export interface FileEntry {
   url: string;
   sha256: string;
   entry?: string;
@@ -15,12 +15,12 @@ interface FileEntry {
   };
 }
 
-interface ToolEntry {
+export interface ToolEntry {
   version: string;
   files: Record<string, FileEntry>;
 }
 
-interface Manifest {
+export interface Manifest {
   generatedAt: string;
   tools: Record<string, ToolEntry>;
 }
@@ -37,7 +37,7 @@ async function sha256(url: string): Promise<string> {
   return hash.digest('hex');
 }
 
-async function main() {
+export async function main(): Promise<Manifest> {
   console.log('[gen-manifest] Starting manifest generation');
   const sources = await fetchSources();
   const tools: Record<string, ToolEntry> = {};
@@ -142,6 +142,8 @@ async function main() {
   }
 
   console.log('[gen-manifest] Finished manifest generation');
+
+  return manifest;
 }
 
 main().catch((err) => {

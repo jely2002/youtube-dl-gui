@@ -82,6 +82,10 @@ jobs:
           updaterJsonPreferNsis: true
           args: ${{ matrix.args }}
 
+      - name: Fetch tool binaries for MSIX (Windows only)
+        if: matrix.platform == 'windows-latest'
+        run: npm run manifest:fetch
+
       - name: Build and sign MSIX (Windows only)
         if: matrix.platform == 'windows-latest'
         shell: pwsh
@@ -130,8 +134,13 @@ jobs:
 
           Copy-Item $exeSrc -Destination (Join-Path $appFolder "open-video-downloader.exe") -Force
           Copy-Item $manifestSrc -Destination (Join-Path $layoutRoot "AppxManifest.xml") -Force
-          Copy-Item "src-tauri\icons\*" -Destination $assetsFolder -Recurse -Force
+          Copy-Item "src-tauri\icons\*.png" -Destination $assetsFolder -Recurse -Force
           Copy-Item $licenseSrc -Destination (Join-Path $licenseFolder "3rdpartylicenses.txt") -Force
+          
+          $binSrc = "Open Video Downloader\bin"
+          if (-not (Test-Path $binSrc)) {
+            Write-Error "Bin folder not found at '$binSrc'. Did 'npm run manifest:fetch' run?"
+          }
 
           & "$($makeAppx.FullName)" pack /d $layoutRoot /p $msixPath
 

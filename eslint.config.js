@@ -25,6 +25,7 @@ export default [
       'src-tauri/**',
       'test-results/**',
       'src/vite-env.d.ts',
+      'msix-layout/**',
       '.vite/**',
     ],
   },

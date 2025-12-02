@@ -58,6 +58,7 @@ struct BundleInfo {
 #[derive(Default, Serialize, Deserialize)]
 struct Metadata {
   versions: HashMap<String, String>,
+  is_locked: bool,
 }
 
 #[derive(Default, Serialize, Deserialize, Clone)]
@@ -175,14 +176,17 @@ impl BinariesManager {
   }
 
   pub async fn check(&self) -> Result<CheckResult, AnyError> {
-    let manifest = self.fetch_manifest().await?;
     let bin = Self::bin_dir(&self.app)?;
     tokio::fs::create_dir_all(&bin).await?;
 
     let meta_path = bin.join("metadata.json");
     let meta = self.load_metadata(&meta_path).await?;
+    if meta.is_locked {
+      return Ok(CheckResult { tools: Vec::new() });
+    }
     let arch = Self::current_platform();
 
+    let manifest = self.fetch_manifest().await?;
     let plan = self.build_plan(&manifest, &meta, &arch, None).await?;
     let tools: Vec<String> = plan.iter().map(|(n, _)| (*n).to_string()).collect();
 
@@ -190,15 +194,17 @@ impl BinariesManager {
   }
 
   pub async fn ensure(&self, allow: Option<&[String]>) -> Result<(), AnyError> {
-    let manifest = self.fetch_manifest().await?;
-
     let bin = Self::bin_dir(&self.app)?;
     tokio::fs::create_dir_all(&bin).await?;
 
     let meta_path = bin.join("metadata.json");
     let mut meta = self.load_metadata(&meta_path).await?;
+    if meta.is_locked {
+      return Ok(());
+    }
     let arch = Self::current_platform();
 
+    let manifest = self.fetch_manifest().await?;
     let plan = self.build_plan(&manifest, &meta, &arch, allow).await?;
     if plan.is_empty() {
       return Ok(());
@@ -219,6 +225,8 @@ impl BinariesManager {
         }
       }
     }
+
+    meta.is_locked = false;
 
     if let Err(e) = self.save_metadata(&meta_path, &meta).await {
       let msg = e.to_string();
