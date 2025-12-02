@@ -12,7 +12,7 @@ It provides an easy-to-use interface around [yt-dlp](https://github.com/yt-dlp/y
 - **Cross-platform:** works on Windows, macOS and Linux.
 - **Audio or video downloads:** grab full videos or extract only the audio track.
 - **Subtitles and metadata:** automatically saves available captions and video information.
-- **Quality control:** choose your preferred resolution, frame rate, and (soon) encoding format like MP4 or MKV.
+- **Quality control:** choose your preferred resolution, frame rate, and output format like MP4 or MKV.
 - **Playlists:** download entire playlists in one go.
 - **Custom output:** set your download location and control filenames using presets or custom templates.
 - **Smart queueing:** OVD balances multiple downloads automatically so your computer doesn’t slow down.
