@@ -126,7 +126,7 @@ jobs:
           $licenseSrc = "licenses\3rdpartylicenses.txt"
           $msixPath = "OpenVideoDownloader_x64.msix"
 
-          New-Item -ItemType Directory -Path $appFolder, $assetsFolder, $licenseFolder | Out-Null
+          New-Item -ItemType Directory -Path $appFolder, $assetsFolder, $licenseFolder -Force | Out-Null
 
           Copy-Item $exeSrc -Destination (Join-Path $appFolder "open-video-downloader.exe") -Force
           Copy-Item $manifestSrc -Destination (Join-Path $layoutRoot "AppxManifest.xml") -Force
