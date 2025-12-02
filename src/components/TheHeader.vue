@@ -8,6 +8,7 @@
           class="input join-item w-full"
           :placeholder="inputPlaceholder"
           type="text"
+          ref="input"
       />
       <button
           class="btn btn-primary join-item"
@@ -28,7 +29,7 @@
 
 import { CogIcon } from '@heroicons/vue/24/outline';
 import { useMediaStore } from '../stores/media/media';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useClipboard } from '../composables/useClipboard';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -45,6 +46,8 @@ const doPolling = computed(() => settingsStore.settings.input.autoFillClipboard)
 const { content: clipboardContent } = useClipboard({
   doPolling,
 });
+
+const input = ref<HTMLInputElement | null>(null);
 
 const inputPlaceholder = computed(() => {
   const defaultPlaceholder = t('layout.header.placeholder');
@@ -78,5 +81,9 @@ const submitUrl = () => {
   void mediaStore.dispatchMediaInfoFetch(urlToSubmit);
   void router.push('/');
 };
+
+onMounted(() => {
+  input.value?.focus();
+});
 
 </script>
