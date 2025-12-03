@@ -275,7 +275,7 @@
         "legendLabel": "Scegli le lingue sottotitoli da scaricare.",
         "downloadAll": "Scarica tutti i sottotitoli disponibili.",
         "search": "Cerca lingue",
-        "searchPlaceholder": "Cerca per lingua nae",
+        "searchPlaceholder": "Cerca per nome lingua",
         "suggested": "Suggerite per te",
         "all": "Tutte le lingue",
         "noResult": "Nessuna lingua corrispondente a '{query}'.",
@@ -523,7 +523,7 @@
       "fileInput": {
         "select": "Selezione file",
         "placeholder": "Seleziona un file…",
-        "invalid": "OPercorso file non valido."
+        "invalid": "Percorso file non valido."
 
       },
       "secretInput": {
