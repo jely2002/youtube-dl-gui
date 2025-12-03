@@ -80,14 +80,14 @@ Thank you for helping translate OVD!
     npm run tauri dev
     ```
 2. Edit the English locale to preview:
-   `src/i18n/locales/en.json`
+   `src/locales/en.json`
 
     Temporarily modify the text on the right-hand side of each key.  
     Do not change any keys. The UI will update automatically when the file is saved.
 
 3. Create your own language file:
 
-   `src/i18n/locales/<language-code>.json`
+   `src/locales/<language-code>.json`
 
 For example: `it.json`, `de.json`, `fr.json`.  
 Please restore `en.json` back to English before opening a pull request.
