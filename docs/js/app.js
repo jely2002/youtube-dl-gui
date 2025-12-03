@@ -38,7 +38,7 @@ async function httpGet(url) {
 }
 
 function getAssetDownload(os, release) {
-  const version = release.tag_name.substring(1);
+  const version = release.tag_name.substring(5);
   let assetName;
   switch (os) {
     case 'Windows':
@@ -48,7 +48,7 @@ function getAssetDownload(os, release) {
       assetName = 'Open.Video.Downloader_' + version + '_aarch64.dmg';
       break;
     case 'Linux x64':
-      assetName = 'Open.Video.Downloader-' + version + '_amd64.AppImage';
+      assetName = 'Open.Video.Downloader_' + version + '_amd64.AppImage';
   }
 
   for (const asset of release.assets) {
@@ -62,7 +62,7 @@ function setOtherVersionsText(os) {
   if (os === 'MacOS Silicon') {
     document.getElementById('other-versions').innerHTML = 'Other versions (MacOS Intel)';
   } else if (os === 'Linux x64') {
-    document.getElementById('other-versions').innerHTML = 'Other versions (Linux ARM)';
+    document.getElementById('other-versions').innerHTML = 'Other versions (Linux ARM / deb)';
   }
 }
 
