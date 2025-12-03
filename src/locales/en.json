@@ -275,7 +275,7 @@
         "legendLabel": "Pick the subtitle languages to download.",
         "downloadAll": "Download all available subtitles.",
         "search": "Search languages",
-        "searchPlaceholder": "Search by language nae",
+        "searchPlaceholder": "Search by language name",
         "suggested": "Suggested for you",
         "all": "All languages",
         "noResult": "No languages match \"{query}\".",
