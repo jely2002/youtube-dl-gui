@@ -67,7 +67,7 @@ const languageOptions = () => {
       }
     }
   }
-  options.sort((a, b) => a.value.localeCompare(b.value));
+  options.sort((a, b) => a.label.localeCompare(b.label));
   return options;
 };
 

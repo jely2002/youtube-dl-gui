@@ -1,9 +1,10 @@
 import { createI18n, I18n } from 'vue-i18n';
 import en from './locales/en.json';
 import nl from './locales/nl.json';
+import it from './locales/it.json';
 import { detectBrowserLanguageCodes } from './helpers/subtitles/languages.ts';
 
-export const availableLocales: Record<string, boolean> = { en: true, nl: true } as const;
+export const availableLocales: Record<string, boolean> = { en: true, nl: true, it: true } as const;
 
 type MessageSchema = typeof en;
 export type Locale = keyof typeof availableLocales;
@@ -24,5 +25,6 @@ export const i18n: I18n = createI18n<[MessageSchema], Locale>({
   messages: {
     en,
     nl,
+    it,
   },
 });
