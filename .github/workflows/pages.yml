@@ -21,22 +21,53 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout release branch for manifest
+        uses: actions/checkout@v4
         with:
           ref: release
-      - uses: actions/setup-node@v4
+          path: release
+
+      - name: Checkout main branch for docs
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: npm ci
-      - run: npm run manifest:gen
-      - run: npm run manifest:sign
+
+      - name: Install dependencies
+        working-directory: release
+        run: npm ci
+
+      - name: Generate manifest
+        working-directory: release
+        run: npm run manifest:gen
+
+      - name: Sign manifest
+        working-directory: release
+        run: npm run manifest:sign
         env:
           ED25519_PRIV_KEY_B64: ${{ secrets.ED25519_PRIV_KEY_B64 }}
-      - run: npm run manifest:verify
+
+      - name: Verify manifest
+        working-directory: release
+        run: npm run manifest:verify
         env:
           ED25519_PUB_KEY_HEX: ${{ secrets.ED25519_PUB_KEY_HEX }}
-      - uses: actions/upload-pages-artifact@v3
+
+      - name: Copy manifest into main/docs
+        run: |
+          mkdir -p main/docs/manifest
+          cp -R release/docs/manifest/* main/docs/manifest/
+
+      - name: Upload docs as Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: docs
-      - id: deployment
+          path: main/docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
