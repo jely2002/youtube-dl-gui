@@ -4,8 +4,8 @@
       <button @click="downloadItem" class="btn btn-primary">{{ t('common.download') }}</button>
       <template v-slot:title>
         <div role="tablist" class="tabs tabs-box flex gap-2">
-          <router-link exactActiveClass="tab-active" role="tab" :to="`/group/${groupId}`" class="tab">{{ t('media.view.tabs.metadata') }}</router-link>
-          <router-link exactActiveClass="tab-active" role="tab" :to="`/group/${groupId}/logs`" class="tab">{{ t('media.view.tabs.logs') }}</router-link>
+          <router-link exactActiveClass="tab-active" role="tab" :to="{ name: 'group.metadata', params: { groupId } }" class="tab">{{ t('media.view.tabs.metadata') }}</router-link>
+          <router-link exactActiveClass="tab-active" role="tab" :to="{ name: 'group.logs', params: { groupId } }" class="tab">{{ t('media.view.tabs.logs') }}</router-link>
         </div>
       </template>
     </base-sub-nav>

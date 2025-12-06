@@ -18,7 +18,7 @@
         {{ t('common.add') }}
       </button>
     </form>
-    <router-link class="btn btn-subtle" :title="t('layout.header.nav.settings')" to="/settings">
+    <router-link class="btn btn-subtle" :title="t('layout.header.nav.settings')" :to="{ name: 'settings' }">
       <span class="sr-only">{{ t('layout.header.nav.settings') }}</span>
       <cog-icon class="w-7 h-7"/>
     </router-link>

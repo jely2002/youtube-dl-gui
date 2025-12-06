@@ -25,7 +25,7 @@
     />
     <media-card-action-item
         :disabled="!canViewInfo"
-        :to="`/group/${group.id}`"
+        :to="{ name: 'group.metadata', params: { groupId: group.id } }"
         :label="t('media.card.actions.metadata')"
         :icon="InformationCircleIcon"
     />

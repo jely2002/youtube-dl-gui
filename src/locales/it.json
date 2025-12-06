@@ -325,6 +325,10 @@
       "preferVideoInMixedLinks": {
         "label": "Preferisci un singolo video per i collegamenti alle playlist:",
         "hint": "Quando un collegamento contiene sia un video che una playlist, scarica solo il video anziché la playlist completa."
+      },
+      "authentication": {
+        "label": "Accedi per scaricare video privati:",
+        "link": "Configura l'autenticazione"
       }
     },
     "output": {
@@ -337,6 +341,10 @@
       "addMetadata": {
         "label": "Aggiungi info su titolo e artista:",
         "hint": "Salva metadati all'interno del file (titolo, utente che ha caricato/artista e descrizione)."
+      },
+      "subtitles": {
+        "label": "Aggiungi i sottotitoli:",
+        "link": "Configura i sottotitoli"
       },
       "policy": {
         "label": "Modo conversione:",

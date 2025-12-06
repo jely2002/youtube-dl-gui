@@ -325,6 +325,10 @@
       "preferVideoInMixedLinks": {
         "label": "Voorkeur voor losse video bij playlist-links:",
         "hint": "Als een link zowel een video als een playlist bevat, download dan alleen de video in plaats van de hele playlist."
+      },
+      "authentication": {
+        "label": "Log in om privévideo’s te downloaden:",
+        "link": "Authenticatie instellen"
       }
     },
     "output": {
@@ -337,6 +341,10 @@
       "addMetadata": {
         "label": "Titel & artiest opslaan:",
         "hint": "Slaat info zoals titel, uploader/artist en beschrijving op in het bestand."
+      },
+      "subtitles": {
+        "label": "Ondertitels toevoegen:",
+        "link": "Ondertitels instellen"
       },
       "policy": {
         "label": "Conversiemodus:",

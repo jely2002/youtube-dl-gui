@@ -325,6 +325,10 @@
       "preferVideoInMixedLinks": {
         "label": "Prefer single video for playlist links:",
         "hint": "When a link contains both a video and a playlist, download only the video instead of the full playlist."
+      },
+      "authentication": {
+        "label": "Log in to download private videos:",
+        "link": "Configure authentication"
       }
     },
     "output": {
@@ -337,6 +341,10 @@
       "addMetadata": {
         "label": "Add title & artist info:",
         "hint": "Save metadata such as title, uploader/artist and description inside the file."
+      },
+      "subtitles": {
+        "label": "Add subtitles:",
+        "link": "Configure subtitles"
       },
       "policy": {
         "label": "Conversion mode:",

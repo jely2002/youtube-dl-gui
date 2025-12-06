@@ -1,6 +1,6 @@
 <template>
   <nav class="flex w-full items-center justify-between p-4 sticky top-0 bg-base-200 z-10 shadow-lg">
-    <router-link v-if="backButton" to="/" class="btn btn-soft">
+    <router-link v-if="backButton" :to="{ name: 'home' }" class="btn btn-soft">
       <chevron-left-icon class="w-4 h-4"/>
       {{ t('common.back') }}
     </router-link>

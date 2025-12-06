@@ -20,7 +20,7 @@
           <span>{{ t('media.steps.error.report') }}</span>
         </template>
       </button>
-      <router-link :to="`/group/${group.id}/logs`" class="btn btn-subtle">{{ t('media.steps.error.showFull') }}</router-link>
+      <router-link :to="{ name: 'group.logs', params: { groupId: group.id } }" class="btn btn-subtle">{{ t('media.steps.error.showFull') }}</router-link>
     </div>
   </div>
 </template>
