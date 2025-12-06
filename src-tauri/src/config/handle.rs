@@ -1,4 +1,5 @@
 use crate::config::Config;
+use crate::resolve_app_path;
 use arc_swap::ArcSwap;
 use serde_json::{Map, Value};
 use std::sync::Arc;
@@ -15,7 +16,10 @@ pub struct ConfigHandle {
 
 impl ConfigHandle {
   pub fn init(app: &AppHandle<Wry>) -> Result<Self, Box<dyn std::error::Error>> {
-    let store = app.store(STORE_FILE)?;
+    let data_root = resolve_app_path(app);
+    let store_path = data_root.join(STORE_FILE);
+    let store = app.store(store_path)?;
+
     let raw = store
       .get(CONFIG_KEY)
       .unwrap_or_else(|| Value::Object(Map::new()));

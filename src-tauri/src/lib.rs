@@ -21,7 +21,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::{Arc, LazyLock, Mutex as StdMutex};
 use stronghold::stronghold_state;
-use tauri::Manager;
+use tauri::{AppHandle, Manager, Runtime};
 use tokio::sync::Mutex;
 use tracing_subscriber::filter::{LevelFilter, Targets};
 use tracing_subscriber::{fmt, prelude::*};
@@ -81,11 +81,9 @@ pub fn run() {
       handle.manage(BinariesState::default());
 
       // setup stronghold
-      let stronghold_path: PathBuf = handle
-        .path()
-        .app_data_dir()
-        .expect("no app data dir")
-        .join("vault.hold");
+      let app_path = resolve_app_path(handle);
+      let stronghold_path = app_path.join("vault.hold");
+
       handle.manage(stronghold_state::StrongholdState::new(stronghold_path));
 
       // async init stronghold
@@ -142,6 +140,22 @@ pub fn init_tracing() {
     .with(fmt_layer)
     .with(sentry_layer)
     .init();
+}
+
+pub fn resolve_app_path<R: Runtime>(app: &AppHandle<R>) -> PathBuf {
+  if let Ok(exe_path) = std::env::current_exe() {
+    if let Some(exe_dir) = exe_path.parent() {
+      let portable_dir = exe_dir.join("ovd-portable");
+      if portable_dir.exists() {
+        return portable_dir;
+      }
+    }
+  }
+
+  app
+    .path()
+    .app_data_dir()
+    .expect("failed to resolve app data dir")
 }
 
 #[cfg(debug_assertions)]

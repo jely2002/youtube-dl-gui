@@ -11,7 +11,7 @@ use fs_extra::dir::{move_dir, CopyOptions};
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use tauri::{AppHandle, Emitter, Error, Manager, Wry};
+use tauri::{AppHandle, Emitter, Error, Wry};
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
 
@@ -108,7 +108,9 @@ impl BinariesManager {
   }
 
   pub fn bin_dir(app: &AppHandle<Wry>) -> Result<PathBuf, Error> {
-    app.path().app_data_dir().map(|p| p.join("bin"))
+    let root = crate::resolve_app_path(app);
+    let bin_path = root.join("bin");
+    Ok(bin_path)
   }
 
   fn canonical_path(&self, tool: &str) -> Result<PathBuf, Error> {
