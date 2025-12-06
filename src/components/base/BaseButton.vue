@@ -18,7 +18,8 @@
 </template>
 <script setup lang="ts">
 
-import { computed } from 'vue';
+import { RouteLocationRaw } from 'vue-router';
+import { computed, PropType } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -42,7 +43,7 @@ const { loading, tooltipLocation } = defineProps({
     default: 'top',
   },
   to: {
-    type: String,
+    type: Object as PropType<RouteLocationRaw>,
     required: false,
   },
   disabled: {

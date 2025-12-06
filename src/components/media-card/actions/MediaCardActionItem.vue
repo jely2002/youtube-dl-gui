@@ -4,6 +4,7 @@
 </template>
 <script setup lang="ts">
 import { type FunctionalComponent, type HTMLAttributes, PropType, type VNodeProps } from 'vue';
+import { RouteLocationRaw } from 'vue-router';
 
 const { icon, label, to } = defineProps({
   icon: {
@@ -15,7 +16,7 @@ const { icon, label, to } = defineProps({
     required: true,
   },
   to: {
-    type: String,
+    type: Object as PropType<RouteLocationRaw>,
     required: false,
   },
   disabled: {
