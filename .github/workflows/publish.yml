@@ -93,20 +93,19 @@ jobs:
         run: |
           $releaseDir = "src-tauri/target/release"
           $staging = "portable_staging"
-          $zipName = "OpenVideoDownloader-Portable-x64.zip"
+
+          $pkg = Get-Content -Raw "package.json" | ConvertFrom-Json
+          $version = $pkg.version
+          $zipName = "Open.Video.Downloader_$($version)_x64-portable.zip"
           
-          New-Item -ItemType Directory -Path "$staging/ovd-portable/bin" -Force | Out-Null
-          New-Item -ItemType Directory -Path "$staging/ovd-portable/temp" -Force | Out-Null
+          Write-Host "Building portable bundle: $zipName"
           
           $exe = Get-ChildItem -Path $releaseDir -Filter "*.exe" | Where-Object { $_.Name -notmatch "setup" } | Select-Object -First 1
-          
           if (-not $exe) { Write-Error "Could not find main exe in $releaseDir" }
           
-          Write-Host "Copying Main Binary: $($exe.Name)"
           Copy-Item $exe.FullName -Destination $staging
-
-          Compress-Archive -Path "$staging/*" -DestinationPath $zipName
           
+          Compress-Archive -Path "$staging/*" -DestinationPath $zipName
           echo "PORTABLE_ASSET=$zipName" >> $env:GITHUB_ENV
 
       - name: Upload Portable (Windows only)
