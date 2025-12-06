@@ -93,6 +93,13 @@
         class="toggle toggle-primary"
     />
     <p class="label">{{ t('settings.output.addMetadata.hint') }}</p>
+    <p class="font-semibold mt-2">
+      {{ t('settings.output.subtitles.label') }}
+    </p>
+    <router-link class="text-primary group font-semibold flex gap-1 items-center" :to="{ name: 'subtitles' }">
+      {{ t('settings.output.subtitles.link') }}
+      <arrow-right-icon class="w-5 h-5 group-focus:translate-x-1 group-hover:translate-x-1 transition-transform"/>
+    </router-link>
   </base-fieldset>
 </template>
 
@@ -101,6 +108,7 @@ import BaseFieldset from '../base/BaseFieldset.vue';
 import { Settings } from '../../tauri/types/config.ts';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
+import { ArrowRightIcon } from '@heroicons/vue/24/solid';
 import { AudioFormat, TranscodePolicy, VideoContainer } from '../../tauri/types/media.ts';
 import BaseSelect from '../base/BaseSelect.vue';
 
