@@ -124,7 +124,8 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   async function downloadAllGroups() {
-    const group_ids = Object.keys(groupStore.groups);
+    const group_ids = Object.keys(groupStore.groups)
+      .filter(gid => stateStore.getGroupState(gid) === MediaState.configure);
 
     await Promise.all(group_ids.map((gid) => {
       const opts = optionsStore.getOptions(gid) ?? { trackType: TrackType.both };
