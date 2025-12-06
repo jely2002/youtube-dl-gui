@@ -37,7 +37,7 @@
         "login": {
           "screenReader": {
             "on": "Editar login (atualmente conectado)",
-            "off": "Editar login (atualmente conectado)"
+            "off": "Editar login (atualmente desconectado)"
           },
           "tooltip": {
             "on": "Editar login",
@@ -47,7 +47,7 @@
         "subtitles": {
           "screenReader": {
             "on": "Editar legendas (atualmente ativado)",
-            "off": "Editar legendas (atualmente desativiado)"
+            "off": "Editar legendas (atualmente desativado)"
           },
           "tooltip": "Legendas"
         }
@@ -418,7 +418,7 @@
       },
       "impersonate": {
         "label": "Representação:",
-        "hint": "Simula um SO ou navegador específico, para previnir impressão digital.",
+        "hint": "Simula um SO ou navegador específico, para prevenir impressão digital.",
         "options": {
           "none": "Não representar",
           "any": "Representar um cliente aleatório"
