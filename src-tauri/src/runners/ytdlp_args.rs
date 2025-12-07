@@ -15,12 +15,19 @@ pub fn build_format_args(
       args.push("-f".into());
       args.push("ba/best".into());
 
-      args.push("-S".into());
-      if let Some(abr) = format_options.abr {
-        args.push(format!("abr~{abr}"));
+      let mut sort_fields = Vec::new();
+      sort_fields.push("lang".into());
+
+      if let Some(asr) = format_options.asr {
+        sort_fields.push(format!("asr~{asr}"));
       } else {
-        args.push("abr".into());
+        sort_fields.push("asr".into());
       }
+
+      let sort_arg = sort_fields.join(",");
+
+      args.push("-S".into());
+      args.push(sort_arg);
     }
 
     TrackType::Video | TrackType::Both => {
@@ -33,6 +40,8 @@ pub fn build_format_args(
       args.push(selector);
 
       let mut sort_fields = Vec::new();
+      sort_fields.push("lang".into());
+
       if let Some(h) = format_options.height {
         sort_fields.push(format!("res:{h}"));
       } else {
@@ -45,10 +54,11 @@ pub fn build_format_args(
       }
 
       if matches!(output_settings.video.container, VideoContainer::Mp4) {
-        sort_fields.push("ext:mp4:m4a".into());
+        sort_fields.push("ext:mp4".into());
+        sort_fields.push("ext:m4a".into());
+      } else {
+        sort_fields.push("ext".into());
       }
-
-      sort_fields.push("ext".into());
 
       let sort_arg = sort_fields.join(",");
 
@@ -174,13 +184,13 @@ mod tests {
   }
 
   #[test]
-  fn audio_format_args_without_abr() {
+  fn audio_format_args_without_asr() {
     let format_options = make_audio_format_options(None);
     let settings = OutputSettings::default();
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "abr"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,asr"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -189,13 +199,13 @@ mod tests {
   }
 
   #[test]
-  fn audio_format_args_with_abr() {
-    let format_options = make_audio_format_options(Some(192));
+  fn audio_format_args_with_asr() {
+    let format_options = make_audio_format_options(Some(44));
     let settings = OutputSettings::default();
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "abr~192"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,asr~44"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -210,7 +220,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "res:720,fps:60,ext:mp4:m4a,ext"]
+    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,ext:mp4,ext:m4a"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -227,7 +237,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "res:720,fps:60,ext"]
+    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,ext"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -246,7 +256,7 @@ mod tests {
       "-f",
       "bv*+ba/bv+ba/best",
       "-S",
-      "res:1080,fps:30,ext:mp4:m4a,ext",
+      "lang,res:1080,fps:30,ext:mp4,ext:m4a",
     ]
     .into_iter()
     .map(String::from)
