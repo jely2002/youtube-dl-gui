@@ -9,6 +9,7 @@ mod runners;
 mod scheduling;
 mod stronghold;
 
+use crate::binaries::binaries_manager::BinariesManager;
 use crate::binaries::binaries_state::BinariesState;
 use crate::commands::*;
 use crate::logging::LogStoreState;
@@ -77,8 +78,9 @@ pub fn run() {
       let download_dispatcher = setup_download_dispatcher(handle);
       handle.manage(DownloadSender(download_dispatcher.sender()));
 
-      // setup binary state
+      // setup binaries
       handle.manage(BinariesState::default());
+      handle.manage(BinariesManager::new(handle));
 
       // setup stronghold
       let app_path = resolve_app_path(handle);

@@ -21,7 +21,8 @@ pub struct YtdlpRunner<'a> {
 
 impl<'a> YtdlpRunner<'a> {
   pub fn new(app: &'a AppHandle) -> Self {
-    let bin_dir = BinariesManager::bin_dir(app).expect("app dir");
+    let binaries_manager = app.state::<BinariesManager>();
+    let bin_dir = binaries_manager.bin_dir().expect("app dir");
     let args = vec!["--encoding".into(), "utf-8".into()];
     let cfg_handle = app.state::<SharedConfig>();
     let cfg = cfg_handle.load();
