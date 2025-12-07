@@ -146,10 +146,10 @@ mod tests {
   use crate::models::download::{AudioFormat, FormatOptions, TranscodePolicy, VideoContainer};
   use crate::models::TrackType;
 
-  fn make_audio_format_options(abr: Option<u32>) -> FormatOptions {
+  fn make_audio_format_options(asr: Option<u32>) -> FormatOptions {
     FormatOptions {
       track_type: TrackType::Audio,
-      abr,
+      asr,
       height: None,
       fps: None,
     }
@@ -158,7 +158,7 @@ mod tests {
   fn make_video_format_options(height: Option<u32>, fps: Option<u32>) -> FormatOptions {
     FormatOptions {
       track_type: TrackType::Video,
-      abr: None,
+      asr: None,
       height,
       fps,
     }
@@ -167,7 +167,7 @@ mod tests {
   fn make_both_format_options(height: Option<u32>, fps: Option<u32>) -> FormatOptions {
     FormatOptions {
       track_type: TrackType::Both,
-      abr: None,
+      asr: None,
       height,
       fps,
     }

@@ -72,9 +72,9 @@ fn process_formats(
       continue;
     }
 
-    let mut abr_norm = fmt.abr;
-    if matches!(abr_norm, Some(a) if a == 0.0) {
-      abr_norm = None;
+    let mut asr_norm = fmt.asr;
+    if matches!(asr_norm, Some(a) if a == 0.0) {
+      asr_norm = None;
     }
 
     let mut fps_norm = fmt.fps;
@@ -82,14 +82,14 @@ fn process_formats(
       fps_norm = None;
     }
 
-    let (format_id, height, abr, fps) = match (&fmt.format_id, fmt.height, abr_norm, fps_norm) {
+    let (format_id, height, asr, fps) = match (&fmt.format_id, fmt.height, asr_norm, fps_norm) {
       (Some(format_id), Some(height), None, fps) => {
         let fps_rounded = fps.map(|f| f.round() as u64);
         (format_id.clone(), Some(height), None, fps_rounded)
       }
-      (Some(fid), None, Some(abr), None) => {
-        let abr_rounded = abr.round() as u64;
-        (fid.clone(), None, Some(abr_rounded), None)
+      (Some(format_id), None, Some(asr), None) => {
+        let asr_rounded = asr.round() as u64 / 1000;
+        (format_id.clone(), None, Some(asr_rounded), None)
       }
       _ => continue,
     };
@@ -98,7 +98,7 @@ fn process_formats(
       let fps_key = fps.map_or_else(|| "none".into(), |f| f.to_string());
       format!("{h}x{fps_key}")
     } else {
-      abr.map_or_else(|| "none".into(), |a| a.to_string())
+      asr.map_or_else(|| "none".into(), |a| a.to_string())
     };
 
     tracing::debug!("Detected format: {:?}", (format_id.clone(), key.clone()));
@@ -106,11 +106,11 @@ fn process_formats(
       continue;
     }
 
-    let codecs = collect_codecs_for_group(formats, height, fps, abr);
+    let codecs = collect_codecs_for_group(formats, height, fps, asr);
 
     media_formats.push(MediaFormat {
       id: format_id.clone(),
-      abr,
+      asr,
       height,
       fps,
       codecs: codecs.into_iter().collect(),
@@ -127,7 +127,7 @@ fn collect_codecs_for_group(
   formats: &[YtdlpFormat],
   height: Option<u64>,
   fps: Option<u64>,
-  abr: Option<u64>,
+  asr: Option<u64>,
 ) -> HashSet<String> {
   let mut codecs = HashSet::new();
 
@@ -135,8 +135,8 @@ fn collect_codecs_for_group(
     let is_match = if let Some(h) = height {
       other.height == Some(h)
         && ((fps.is_none() && other.fps.is_none()) || other.fps.map(|f| f.round() as u64) == fps)
-    } else if let Some(a) = abr {
-      other.abr.map(|x| x.round() as u64) == Some(a)
+    } else if let Some(a) = asr {
+      other.asr.map(|x| x.round() as u64) == Some(a)
     } else {
       false
     };

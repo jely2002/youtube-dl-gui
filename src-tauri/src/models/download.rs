@@ -45,7 +45,7 @@ pub struct DownloadItem {
 #[serde(rename_all = "camelCase")]
 pub struct FormatOptions {
   pub track_type: TrackType,
-  pub abr: Option<u32>,
+  pub asr: Option<u32>,
   pub height: Option<u32>,
   pub fps: Option<u32>,
 }
