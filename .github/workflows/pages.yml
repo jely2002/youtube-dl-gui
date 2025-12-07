@@ -44,6 +44,8 @@ jobs:
 
       - name: Generate manifest
         working-directory: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run manifest:gen
 
       - name: Sign manifest

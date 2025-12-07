@@ -50,6 +50,8 @@ jobs:
           args: '--no-bundle'
 
       - name: Fetch tool binaries for MSIX
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run manifest:fetch
 
       - name: Build and sign MSIX

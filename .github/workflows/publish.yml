@@ -85,6 +85,8 @@ jobs:
 
       - name: Fetch tool binaries for MSIX (Windows only)
         if: matrix.platform == 'windows-latest'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run manifest:fetch
 
       - name: Bundle Portable Version (Windows only)
