@@ -8,7 +8,7 @@
     <Identity
             Name="3216JelleGlebbeek.youtube-dl-gui"
             Publisher="CN=EBDD6AA4-D72E-42C6-BBCB-A288476F0CBE"
-            Version="3.0.0.0"
+            Version="3.0.0.1"
             ProcessorArchitecture="x64" />
 
     <Properties>
