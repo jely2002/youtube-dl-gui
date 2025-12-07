@@ -5,13 +5,14 @@ use crate::binaries::binaries_extractor::{
   extract_tar_bz2, extract_tar_bz2_bundle, extract_zip, extract_zip_bundle,
 };
 use crate::binaries::binaries_state::CheckResult;
+use crate::paths::PathsManager;
 use base64::Engine;
 use ed25519_dalek::{Signature, Verifier, VerifyingKey};
 use fs_extra::dir::{move_dir, CopyOptions};
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use tauri::{AppHandle, Emitter, Error, Wry};
+use tauri::{AppHandle, Emitter, Error, Manager, Wry};
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
 
@@ -97,24 +98,21 @@ struct ToolComplete {
 pub struct BinariesManager {
   app: AppHandle<Wry>,
   client: reqwest::Client,
+  bin_dir: PathBuf,
 }
 
 impl BinariesManager {
-  pub fn new(app: AppHandle<Wry>) -> Self {
+  pub fn new(app: &AppHandle<Wry>) -> Self {
+    let paths_manager = app.state::<PathsManager>();
     Self {
-      app,
+      app: app.clone(),
       client: reqwest::Client::new(),
+      bin_dir: paths_manager.bin_dir().clone(),
     }
   }
 
-  pub fn bin_dir(app: &AppHandle<Wry>) -> Result<PathBuf, Error> {
-    let root = crate::resolve_app_path(app);
-    let bin_path = root.join("bin");
-    Ok(bin_path)
-  }
-
   fn canonical_path(&self, tool: &str) -> Result<PathBuf, Error> {
-    let base = Self::bin_dir(&self.app)?;
+    let base = &self.bin_dir;
     #[cfg(windows)]
     {
       Ok(base.join(format!("{tool}.exe")))
@@ -178,7 +176,7 @@ impl BinariesManager {
   }
 
   pub async fn check(&self) -> Result<CheckResult, AnyError> {
-    let bin = Self::bin_dir(&self.app)?;
+    let bin = &self.bin_dir;
     tokio::fs::create_dir_all(&bin).await?;
 
     let meta_path = bin.join("metadata.json");
@@ -196,7 +194,7 @@ impl BinariesManager {
   }
 
   pub async fn ensure(&self, allow: Option<&[String]>) -> Result<(), AnyError> {
-    let bin = Self::bin_dir(&self.app)?;
+    let bin = &self.bin_dir;
     tokio::fs::create_dir_all(&bin).await?;
 
     let meta_path = bin.join("metadata.json");
@@ -216,7 +214,7 @@ impl BinariesManager {
     let mut failures: Vec<ToolError> = Vec::new();
 
     for (name, info) in plan {
-      match self.install_single_tool(&bin, &arch, name, info).await {
+      match self.install_single_tool(bin, &arch, name, info).await {
         Ok(()) => {
           // only update meta + successes on fully successful install
           meta.versions.insert(name.to_string(), info.version.clone());

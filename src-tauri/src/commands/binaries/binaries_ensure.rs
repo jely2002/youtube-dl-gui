@@ -1,20 +1,19 @@
 use crate::binaries::binaries_manager::BinariesManager;
 use crate::binaries::binaries_state::BinariesState;
-use tauri::{AppHandle, State, Wry};
+use tauri::State;
 
 #[tauri::command]
 pub async fn binaries_ensure(
-  app: AppHandle<Wry>,
+  binaries_manager: State<'_, BinariesManager>,
   state: State<'_, BinariesState>,
   tools: Option<Vec<String>>,
 ) -> Result<(), String> {
   if !state.try_start() {
     return Ok(());
   }
-  let mgr = BinariesManager::new(app);
   let res = match tools.as_ref() {
-    Some(v) => mgr.ensure(Some(v)).await,
-    None => mgr.ensure(None).await,
+    Some(v) => binaries_manager.ensure(Some(v)).await,
+    None => binaries_manager.ensure(None).await,
   }
   .map_err(|e| e.to_string());
   state.finish();

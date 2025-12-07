@@ -92,20 +92,25 @@ jobs:
         shell: pwsh
         run: |
           $releaseDir = "src-tauri/target/release"
-          $staging = "portable_staging"
+          $layoutRoot = "portable-layout"
+          $portableFolder = "ovd-portable"
 
           $pkg = Get-Content -Raw "package.json" | ConvertFrom-Json
           $version = $pkg.version
           $zipName = "Open.Video.Downloader_$($version)_x64-portable.zip"
+          $exeName = "Open.Video.Downloader_$($version)_x64.exe"
+          $keepFileName = ".keep"
           
           Write-Host "Building portable bundle: $zipName"
           
           $exe = Get-ChildItem -Path $releaseDir -Filter "*.exe" | Where-Object { $_.Name -notmatch "setup" } | Select-Object -First 1
           if (-not $exe) { Write-Error "Could not find main exe in $releaseDir" }
           
-          Copy-Item $exe.FullName -Destination $staging
+          New-Item -ItemType Directory -Path $layoutRoot/$portableFolder -Force | Out-Null
+          New-Item -ItemType File -Path $layoutRoot/$portableFolder/$keepFileName -Value "Do not remove this file or directory."
+          Copy-Item $exe.FullName -Destination $layoutRoot/$exeName
           
-          Compress-Archive -Path "$staging/*" -DestinationPath $zipName
+          Compress-Archive -Path "$layoutRoot/*" -DestinationPath $zipName
           echo "PORTABLE_ASSET=$zipName" >> $env:GITHUB_ENV
 
       - name: Upload Portable (Windows only)
