@@ -6,16 +6,31 @@ const BIN_DIR: &str = "bin";
 
 #[derive(Clone)]
 pub struct PathsManager {
+  is_microsoft_store_app: bool,
+  is_portable_app: bool,
   app_dir: PathBuf,
   bin_dir: PathBuf,
 }
 
 impl PathsManager {
   pub fn new(app: &AppHandle) -> Self {
-    let (app_dir, _is_portable_app) = Self::resolve_app_dir(app);
-    let (bin_dir, _is_microsoft_store_app) = Self::resolve_bin_dir(app_dir.clone());
+    let (app_dir, is_portable_app) = Self::resolve_app_dir(app);
+    let (bin_dir, is_microsoft_store_app) = Self::resolve_bin_dir(app_dir.clone());
 
-    Self { app_dir, bin_dir }
+    Self {
+      is_microsoft_store_app,
+      is_portable_app,
+      app_dir,
+      bin_dir,
+    }
+  }
+
+  pub fn is_microsoft_store_app(&self) -> bool {
+    self.is_microsoft_store_app
+  }
+
+  pub fn is_portable_app(&self) -> bool {
+    self.is_portable_app
   }
 
   pub fn app_dir(&self) -> &PathBuf {
