@@ -1,6 +1,6 @@
-use crate::binaries::binaries_manager::BinariesManager;
 use crate::config::{Config, SubtitleSettings};
 use crate::models::download::FormatOptions;
+use crate::paths::PathsManager;
 use crate::runners::ytdlp_args::{build_format_args, build_output_args};
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::SharedConfig;
@@ -21,8 +21,8 @@ pub struct YtdlpRunner<'a> {
 
 impl<'a> YtdlpRunner<'a> {
   pub fn new(app: &'a AppHandle) -> Self {
-    let binaries_manager = app.state::<BinariesManager>();
-    let bin_dir = binaries_manager.bin_dir().expect("app dir");
+    let paths_manager = app.state::<PathsManager>();
+    let bin_dir = paths_manager.bin_dir().clone();
     let args = vec!["--encoding".into(), "utf-8".into()];
     let cfg_handle = app.state::<SharedConfig>();
     let cfg = cfg_handle.load();
