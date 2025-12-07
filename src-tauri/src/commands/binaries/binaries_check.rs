@@ -1,9 +1,10 @@
 use crate::binaries::binaries_manager::BinariesManager;
 use crate::binaries::binaries_state::CheckResult;
-use tauri::{AppHandle, Wry};
+use tauri::State;
 
 #[tauri::command]
-pub async fn binaries_check(app: AppHandle<Wry>) -> Result<CheckResult, String> {
-  let mgr = BinariesManager::new(app);
-  mgr.check().await.map_err(|e| e.to_string())
+pub async fn binaries_check(
+  binaries_manager: State<'_, BinariesManager>,
+) -> Result<CheckResult, String> {
+  binaries_manager.check().await.map_err(|e| e.to_string())
 }
