@@ -30,6 +30,7 @@ const allowedCommands: Set<string> = new Set([
     'plugin:opener|reveal_item_in_dir',
     'plugin:clipboard-manager|read_text',
     'plugin:dialog|open',
+    'plugin:webview|internal_toggle_devtools',
 ]);
 
 window.__TAURI_ISOLATION_HOOK__ = (payload) => {
