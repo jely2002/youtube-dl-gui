@@ -44,30 +44,18 @@ jobs:
           node-version: 24
           cache: 'npm'
 
-      - name: install Rust nightly
-        uses: dtolnay/rust-toolchain@nightly
-        with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - name: Read app version
+        id: app-version
+        run: |
+          echo "version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
 
-      - name: Install cargo-about
-        uses: taiki-e/install-action@v2
+      - name: Setup Sentry CLI
+        uses: matbour/setup-sentry-cli@v2
         with:
-          tool: cargo-about
-
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
-        with:
-          workspaces: './src-tauri -> target'
-
-      - name: install frontend dependencies
-        run: npm install
-
-      - name: Import Apple Developer certificate (MacOS only)
-        if: startsWith(matrix.platform, 'macos')
-        uses: apple-actions/import-codesign-certs@v3
-        with:
-          p12-file-base64: ${{ secrets.APPLE_CERTIFICATE }}
-          p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          version: latest
+          token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          organization: ${{ secrets.SENTRY_ORG }}
+          project: ${{ secrets.SENTRY_PROJECT }}
 
       - uses: tauri-apps/tauri-action@v0
         id: tauri
@@ -84,6 +72,23 @@ jobs:
           includeUpdaterJson: true
           updaterJsonPreferNsis: true
           args: ${{ matrix.args }}
+
+      - name: Upload debug symbols to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+          SENTRY_RELEASE: ovd@${{ steps.app-version.outputs.version }}
+        run: |
+          cd src-tauri
+
+          sentry-cli debug-files upload --include-sources target
+
+          if [ "${{ matrix.platform }}" = "ubuntu-22.04" ]; then
+            sentry-cli releases new "$SENTRY_RELEASE" || true
+            sentry-cli releases set-commits "$SENTRY_RELEASE" --auto || true
+            sentry-cli releases finalize "$SENTRY_RELEASE" || true
+          fi
 
       - name: Fetch tool binaries for MSIX (Windows only)
         if: matrix.platform == 'windows-latest'
