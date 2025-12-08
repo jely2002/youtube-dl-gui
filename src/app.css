@@ -6,6 +6,8 @@
 
 @plugin "daisyui/theme" {
     name: light;
+    default: true;
+    prefersdark: false;
 
     /* Surfaces */
     --color-base-100: oklch(99.4% 0 0); /* cards / panels */
