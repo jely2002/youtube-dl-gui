@@ -20,6 +20,7 @@ describe('media options store', () => {
 
     groupStore.createGroup({
       id: 'g1',
+      url: 'g1',
       total: 1,
       processed: 1,
       errored: 0,
@@ -31,6 +32,7 @@ describe('media options store', () => {
     });
     groupStore.createGroup({
       id: 'g2',
+      url: 'g2',
       total: 1,
       processed: 1,
       errored: 0,

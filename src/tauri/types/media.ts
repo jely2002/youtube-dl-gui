@@ -42,7 +42,7 @@ export type MediaAddWithFormatPayload = MediaAddPayload & {
 
 export interface MediaItem {
   id: string;
-  url?: string;
+  url: string;
   title?: string;
   thumbnail?: string;
   description?: string;
@@ -59,7 +59,12 @@ export interface MediaItem {
   isLeader?: boolean;
   groupId?: string;
   filesize: number;
-  entries?: never[];
+  entries?: EntryItem[];
+}
+
+export interface EntryItem {
+  index: number;
+  videoUrl: string;
 }
 
 export interface MediaFormat {

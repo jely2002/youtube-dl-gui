@@ -6,6 +6,7 @@ import { Group } from '../../src/tauri/types/group.ts';
 function createItem(id: string, extra: Partial<MediaItem> = {}): MediaItem {
   return {
     id,
+    url: id,
     audioCodecs: [],
     formats: [],
     filesize: 0,
@@ -18,6 +19,7 @@ describe('media group store', () => {
     const store = useMediaGroupStore();
     const group: Group = {
       id: 'g1',
+      url: 'g1',
       total: 2,
       processed: 2,
       errored: 0,
@@ -45,6 +47,7 @@ describe('media group store', () => {
     const store = useMediaGroupStore();
     const group: Group = {
       id: 'g2',
+      url: 'g2',
       total: 2,
       processed: 2,
       errored: 0,
@@ -53,8 +56,9 @@ describe('media group store', () => {
       formats: [],
       filesize: 0,
       items: {
-        a: { ...createItem('a'), isLeader: true },
+        a: { ...createItem('a'), entries: [{ videoUrl: 'b', index: 0 }, { videoUrl: 'c', index: 1 }] },
         b: createItem('b'),
+        c: createItem('c'),
       },
     };
     store.createGroup(group);
@@ -62,10 +66,116 @@ describe('media group store', () => {
     expect(result).toHaveLength(2);
     expect(store.findGroupById(group.id)).toBeUndefined();
     const itemIds = result.map(g => Object.keys(g.items)[0]).sort();
-    expect(itemIds).toEqual(['a', 'b']);
+    expect(itemIds).toEqual(['b', 'c']);
     result.forEach((g) => {
       const item = Object.values(g.items)[0];
       expect(item.isLeader).toBe(true);
     });
+  });
+
+  it('returns empty array and keeps the group when there is no entries item', () => {
+    const store = useMediaGroupStore();
+    const group: Group = {
+      id: 'g-no-entries',
+      url: 'g-no-entries',
+      total: 2,
+      processed: 0,
+      errored: 0,
+      isCombined: false,
+      audioCodecs: [],
+      formats: [],
+      filesize: 0,
+      items: {
+        a: createItem('a'),
+        b: createItem('b'),
+      },
+    };
+
+    store.createGroup(group);
+
+    const result = store.splitGroup(group);
+
+    expect(result).toHaveLength(0);
+    expect(store.findGroupById(group.id)).toBeDefined();
+  });
+
+  it('orders split groups according to entries index', () => {
+    const store = useMediaGroupStore();
+    const group: Group = {
+      id: 'g-order',
+      url: 'g-order',
+      total: 2,
+      processed: 2,
+      errored: 0,
+      isCombined: false,
+      audioCodecs: [],
+      formats: [],
+      filesize: 0,
+      items: {
+        a: {
+          ...createItem('a'),
+          entries: [
+            { videoUrl: 'c', index: 1 },
+            { videoUrl: 'b', index: 0 },
+          ],
+        },
+        b: createItem('b'),
+        c: createItem('c'),
+      },
+    };
+
+    store.createGroup(group);
+    const result = store.splitGroup(group);
+
+    expect(result).toHaveLength(2);
+    expect(store.findGroupById(group.id)).toBeUndefined();
+
+    const itemIdsInOrder = result.map(g => Object.keys(g.items)[0]);
+    expect(itemIdsInOrder).toEqual(['b', 'c']);
+  });
+
+  it('puts items without matching entry at the end', () => {
+    const store = useMediaGroupStore();
+    const group: Group = {
+      id: 'g-extras',
+      url: 'g-extras',
+      total: 3,
+      processed: 3,
+      errored: 0,
+      isCombined: false,
+      audioCodecs: [],
+      formats: [],
+      filesize: 0,
+      items: {
+        a: {
+          ...createItem('a'),
+          entries: [
+            { videoUrl: 'b', index: 0 },
+          ],
+        },
+        b: createItem('b'),
+        c: createItem('c'),
+        d: createItem('d'),
+      },
+    };
+
+    store.createGroup(group);
+    const result = store.splitGroup(group);
+
+    expect(result).toHaveLength(3);
+    expect(store.findGroupById(group.id)).toBeUndefined();
+
+    const itemIdsInOrder = result.map(g => Object.keys(g.items)[0]);
+    expect(itemIdsInOrder).toEqual(['b', 'c', 'd']);
+
+    for (const g of result) {
+      const item = Object.values(g.items)[0];
+      expect(item.isLeader).toBe(true);
+      expect(g.total).toBe(1);
+      expect(g.processed).toBe(1);
+      expect(g.errored).toBe(0);
+      expect(g.isCombined).toBe(false);
+      expect(g.id).not.toBe(group.id);
+    }
   });
 });

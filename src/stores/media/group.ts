@@ -38,9 +38,23 @@ export const useMediaGroupStore = defineStore('media-group', () => {
   function splitGroup(group: Group): Group[] {
     const result: Group[] = [];
 
+    const entries
+      = Object.values(group.items).find(item => item.entries)?.entries;
+
+    if (!entries) return result;
+
+    const entryByUrl = new Map<string, (typeof entries)[number]>();
+    for (const entry of entries) {
+      entryByUrl.set(entry.videoUrl, entry);
+    }
+
+    const orderedGroups: (Group | undefined)[] = new Array(entries.length);
+    const extras: Group[] = [];
+
     for (const [itemKey, item] of Object.entries(group.items)) {
       if (item.entries) continue;
 
+      const entry = entryByUrl.get(item.url);
       const meta = omit(item, ['id', 'groupId', 'isLeader']);
 
       const newGroup: Group = {
@@ -55,12 +69,24 @@ export const useMediaGroupStore = defineStore('media-group', () => {
         },
       };
 
-      createGroup(newGroup);
-      result.push(newGroup);
+      if (entry) {
+        orderedGroups[entry.index] = newGroup;
+      } else {
+        extras.push(newGroup);
+      }
+    }
+
+    const finalGroups = orderedGroups.filter(
+      (g): g is Group => g !== undefined,
+    ).concat(extras);
+
+    for (const groupItem of finalGroups) {
+      createGroup(groupItem);
     }
 
     deleteGroup(group.id);
-    return result;
+
+    return finalGroups;
   }
 
   /**

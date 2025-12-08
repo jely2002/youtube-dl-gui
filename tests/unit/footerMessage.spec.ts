@@ -12,6 +12,7 @@ describe('TheFooter progress message', () => {
 
     groupStore.createGroup({
       id: 'g1',
+      url: 'g1',
       total: 2,
       processed: 2,
       errored: 0,
