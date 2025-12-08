@@ -23,6 +23,8 @@ jobs:
             args: '--target x86_64-apple-darwin'
           - platform: 'ubuntu-22.04'
             args: ''
+          - platform: 'ubuntu-22.04-arm'
+            args: ''
           - platform: 'windows-latest'
             args: ''
 
