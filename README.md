@@ -29,13 +29,17 @@ Download the installer or archive for your platform and follow the normal instal
 No command-line setup is required.
 
 #### What file do I download?
-| Your Computer                         | Download                                     |
-|---------------------------------------|----------------------------------------------|
-| **Windows**                           | `Open.Video.Downloader_x.x.x_x64-setup.exe`  |
-| **Mac (Intel)**                       | `Open.Video.Downloader_x.x.x_x64.dmg`        |
-| **Mac (Apple Silicon – M1, M2 … M5)** | `Open.Video.Downloader_x.x.x_aarch64.dmg`    |
-| **Linux (AppImage)**                  | `Open.Video.Downloader_x.x.x_amd64.AppImage` |
-| **Linux (Debian/Ubuntu)**             | `Open.Video.Downloader_x.x.x_amd64.deb`      |
+| Your Computer                         | Download                                       |
+|---------------------------------------|------------------------------------------------|
+| **Windows**                           | `Open.Video.Downloader_x.x.x_x64-setup.exe`    |
+| **Mac (Intel)**                       | `Open.Video.Downloader_x.x.x_x64.dmg`          |
+| **Mac (Apple Silicon – M1, M2 … M5)** | `Open.Video.Downloader_x.x.x_aarch64.dmg`      |
+| **Linux generic (x64)**               | `Open.Video.Downloader_x.x.x_amd64.AppImage`   |
+| **Linux generic (aarch64)**           | `Open.Video.Downloader_x.x.x_aarch64.AppImage` |
+| **Linux Debian/Ubuntu (x64)**         | `Open.Video.Downloader_x.x.x_amd64.deb`        |
+| **Linux Debian/Ubuntu (aarch64)**     | `Open.Video.Downloader_x.x.x_aarch64.deb`      |
+| **Linux Fedora/RHEL (x64)**           | `Open.Video.Downloader_x.x.x_amd64.rpm`        |
+| **Linux Fedora/RHEL (aarch64)**       | `Open.Video.Downloader_x.x.x_aarch64.rpm`      |
 
 ## How it works
 
