@@ -1,3 +1,4 @@
+use crate::scheduling::numbering::NumberingManager;
 use crate::RUNNING_GROUPS;
 use futures::Future;
 use std::{collections::VecDeque, sync::Arc};
@@ -6,6 +7,8 @@ use tokio::sync::{mpsc, Semaphore};
 
 pub trait DispatchEntry: Clone + Send + Sync + 'static {
   fn group_id(&self) -> &String;
+  fn group_key(&self) -> Option<&String>;
+  fn set_numbering(&mut self, autonumber: u64, group_autonumber: Option<u64>);
 }
 
 #[derive(Clone)]
@@ -45,6 +48,7 @@ where
     let run_job = Arc::new(run_job);
 
     tauri::async_runtime::spawn(async move {
+      let mut numbering = NumberingManager::new();
       let mut queues: VecDeque<(String, VecDeque<Entry>)> = VecDeque::new();
 
       loop {
@@ -55,7 +59,7 @@ where
               RUNNING_GROUPS.lock().unwrap().remove(&group_id);
             }
             DispatchRequest::Pipeline(inner) => {
-              let entries = make_entries(inner.clone());
+              let mut entries = make_entries(inner.clone());
               if !entries.is_empty() {
                 let gid = entries[0].group_id().clone();
                 if RUNNING_GROUPS
@@ -65,6 +69,12 @@ where
                   .copied()
                   .unwrap_or(false)
                 {
+                  for entry in entries.iter_mut() {
+                    let group_key = entry.group_key();
+                    let (autonumber, group_autonumber) = numbering.assign_for(group_key);
+                    entry.set_numbering(autonumber, group_autonumber);
+                  }
+
                   let q: VecDeque<Entry> = entries.into_iter().collect();
                   queues.push_back((gid, q));
                 }

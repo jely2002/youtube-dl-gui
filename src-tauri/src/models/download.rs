@@ -1,3 +1,4 @@
+use crate::runners::template_context::TemplateContext;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -39,6 +40,7 @@ pub struct DownloadItem {
   pub id: String,
   pub url: String,
   pub format: FormatOptions,
+  pub template_context: TemplateContext,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

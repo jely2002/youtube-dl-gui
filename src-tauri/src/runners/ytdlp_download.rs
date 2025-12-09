@@ -14,6 +14,9 @@ use tauri_plugin_shell::process::CommandEvent;
 pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
   let output_path = resolve_output_path(&app);
   let output_str = output_path.to_string_lossy();
+  let rendered_output_str = entry.template_context.render_template(output_str.as_ref());
+  println!("Running yt-dlp with output: {}", rendered_output_str);
+  println!("{:?}", entry.template_context.values);
   let runner = YtdlpRunner::new(&app)
     .with_progress_args()
     .with_network_args()
@@ -25,7 +28,7 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
     .with_output_args(&entry.format)
     .with_args([
       "-o",
-      output_str.as_ref(),
+      rendered_output_str.as_ref(),
       "--output-na-placeholder",
       "\"\"",
       &entry.url,

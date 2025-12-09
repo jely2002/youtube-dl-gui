@@ -11,6 +11,7 @@ export type Group = {
   title?: string;
   thumbnail?: string;
   description?: string;
+  uploaderId?: string;
   uploader?: string;
   extractor?: string;
   views?: number;
@@ -23,4 +24,9 @@ export type Group = {
   formats: MediaFormat[];
   entries?: EntryItem[];
   filesize: number;
+  playlistId?: string;
+  playlistTitle?: string;
+  playlistCount?: number;
+  playlistUploader?: string;
+  playlistUploaderId?: string;
 };

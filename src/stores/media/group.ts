@@ -38,8 +38,8 @@ export const useMediaGroupStore = defineStore('media-group', () => {
   function splitGroup(group: Group): Group[] {
     const result: Group[] = [];
 
-    const entries
-      = Object.values(group.items).find(item => item.entries)?.entries;
+    const leader = Object.values(group.items).find(item => item.entries);
+    const entries = leader?.entries;
 
     if (!entries) return result;
 
@@ -69,7 +69,14 @@ export const useMediaGroupStore = defineStore('media-group', () => {
         },
       };
 
+      console.log(leader);
       if (entry) {
+        newGroup.playlistCount = leader?.playlistCount;
+        newGroup.playlistUploader = leader?.uploader;
+        newGroup.playlistUploaderId = leader?.uploaderId;
+        newGroup.playlistTitle = leader?.title;
+        newGroup.playlistId = leader?.playlistId;
+        newGroup.items[itemKey].playlistIndex = entry.index;
         orderedGroups[entry.index] = newGroup;
       } else {
         extras.push(newGroup);
@@ -107,6 +114,8 @@ export const useMediaGroupStore = defineStore('media-group', () => {
 
     const codecSet = new Set<string>();
     for (const it of items) {
+      const entry = leader.entries?.find(entry => entry.videoUrl === it.url);
+      if (entry) it.playlistIndex = entry.index;
       for (const codec of it.audioCodecs ?? []) codecSet.add(codec);
     }
     leader.audioCodecs = [...codecSet];
@@ -120,6 +129,7 @@ export const useMediaGroupStore = defineStore('media-group', () => {
     }
     leader.formats = [...formatMap.values()];
 
+    group.playlistTitle = leader.title;
     const leaderMeta = omit(leader, ['id', 'groupId', 'isLeader']);
     Object.assign(group, leaderMeta);
   }

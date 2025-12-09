@@ -56,6 +56,10 @@ impl DispatchEntry for FetchEntry {
   fn group_id(&self) -> &String {
     &self.group_id
   }
+  fn group_key(&self) -> Option<&String> {
+    None
+  }
+  fn set_numbering(&mut self, _autonumber: u64, _group_autonumber: Option<u64>) {}
 }
 
 static GROUP_COUNTERS: LazyLock<Mutex<HashMap<String, usize>>> =
