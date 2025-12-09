@@ -328,7 +328,7 @@
       },
       "authentication": {
         "label": "Accedi per scaricare video privati:",
-        "link": "Configura l'autenticazione"
+        "link": "Configura autenticazione"
       }
     },
     "output": {
@@ -343,8 +343,8 @@
         "hint": "Salva metadati all'interno del file (titolo, utente che ha caricato/artista e descrizione)."
       },
       "subtitles": {
-        "label": "Aggiungi i sottotitoli:",
-        "link": "Configura i sottotitoli"
+        "label": "Aggiungi sottotitoli:",
+        "link": "Configura sottotitoli"
       },
       "policy": {
         "label": "Modo conversione:",
