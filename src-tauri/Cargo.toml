@@ -1,6 +1,6 @@
 [package]
 name = "open-video-downloader"
-version = "3.0.0"
+version = "3.0.1"
 description = "Download videos from all over the web."
 license = "AGPL-3.0-or-later"
 authors = ["Jelle Glebbeek"]
