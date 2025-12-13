@@ -69,12 +69,6 @@ jobs:
           p12-file-base64: ${{ secrets.APPLE_CERTIFICATE }}
           p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
 
-      - name: Read app version
-        id: app-version
-        shell: bash
-        run: |
-          echo "version=$(node -p 'require(\"./package.json\").version')" >> "$GITHUB_OUTPUT"
-
       - name: Setup Sentry CLI
         uses: matbour/setup-sentry-cli@v2
         with:
@@ -100,16 +94,22 @@ jobs:
           args: ${{ matrix.args }}
 
       - name: Upload debug symbols to Sentry
+        shell: bash
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-          SENTRY_RELEASE: ovd@${{ steps.app-version.outputs.version }}
         run: |
+          VERSION="$(node -p 'require("./package.json").version')"
+          SENTRY_RELEASE="ovd@${VERSION}"
+          export SENTRY_RELEASE
+          
+          echo "Using Sentry release: $SENTRY_RELEASE"
+          
           cd src-tauri
-
+          
           sentry-cli debug-files upload --include-sources target
-
+          
           if [ "${{ matrix.platform }}" = "ubuntu-22.04" ]; then
             sentry-cli releases new "$SENTRY_RELEASE" || true
             sentry-cli releases set-commits "$SENTRY_RELEASE" --auto || true
