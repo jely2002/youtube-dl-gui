@@ -44,6 +44,14 @@ jobs:
           node-version: 24
           cache: 'npm'
 
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install frontend dependencies
+        run: npm install
+
       - name: Read app version
         id: app-version
         run: |
