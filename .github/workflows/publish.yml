@@ -44,6 +44,16 @@ jobs:
           node-version: 24
           cache: 'npm'
 
+      - name: install Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Install cargo-about
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-about
+
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
@@ -51,6 +61,13 @@ jobs:
 
       - name: Install frontend dependencies
         run: npm install
+
+      - name: Import Apple Developer certificate (MacOS only)
+        if: startsWith(matrix.platform, 'macos')
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERTIFICATE }}
+          p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
 
       - name: Read app version
         id: app-version
