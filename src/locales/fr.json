@@ -390,10 +390,24 @@
       "legendLabel": "Configurer comment les fichiers téléchargés sont nommés.",
       "formatPreset": {
         "label": "Préréglage du nom :",
+        "exampleLabel": "Exemple de sortie :",
         "options": {
           "titleQuality": "Titre + qualité",
           "titleOnly": "Titre seul",
+          "titleQualityPlaylist": "Playlist + titre + qualité",
           "custom": "Personnalisé"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Ma vidéo-(1080p30).mp4",
+            "titleOnly": "Ma vidéo.mp4",
+            "titleQualityPlaylist": "03-Ma vidéo-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Mon audio-(320k).mp3",
+            "titleOnly": "Mon audio.mp3",
+            "titleQualityPlaylist": "03-Mon audio-(320k).mp3"
+          }
         }
       },
       "outputFormat": {

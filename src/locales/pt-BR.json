@@ -390,7 +390,7 @@
       "legendLabel": "Configurar como os arquivos baixados são salvos.",
       "formatPreset": {
         "label": "Predefinição do nome do arquivo:",
-        "exampleLabel": "Example output:",
+        "exampleLabel": "Exemplo de saída:",
         "options": {
           "titleQuality": "Título + qualidade",
           "titleOnly": "Apenas título",
@@ -399,14 +399,14 @@
         },
         "examples": {
           "video": {
-            "titleQuality": "My Video-(1080p30).mp4",
-            "titleOnly": "My Video.mp4",
-            "titleQualityPlaylist": "03-My Video-(1080p30).mkv"
+            "titleQuality": "Meu vídeo-(1080p30).mp4",
+            "titleOnly": "Meu vídeo.mp4",
+            "titleQualityPlaylist": "03-Meu vídeo-(1080p30).mkv"
           },
           "audio": {
-            "titleQuality": "My Audio-(320k).mp3",
-            "titleOnly": "My Audio.mp3",
-            "titleQualityPlaylist": "03-My Audio-(320k).mp3"
+            "titleQuality": "Meu áudio-(320k).mp3",
+            "titleOnly": "Meu áudio.mp3",
+            "titleQualityPlaylist": "03-Meu áudio-(320k).mp3"
           }
         }
       },
