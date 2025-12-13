@@ -26,6 +26,7 @@ pub struct ParsedSingleVideo {
   pub title: Option<String>,
   pub thumbnail: Option<String>,
   pub description: Option<String>,
+  pub uploader_id: Option<String>,
   pub uploader: Option<String>,
   pub views: Option<u64>,
   pub comments: Option<u64>,
@@ -50,6 +51,8 @@ pub struct ParsedPlaylist {
   pub uploader: Option<String>,
   pub uploader_id: Option<String>,
   pub entries: Vec<PlaylistEntry>,
+  pub playlist_id: Option<String>,
+  pub playlist_count: Option<u64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

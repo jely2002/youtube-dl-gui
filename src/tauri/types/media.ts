@@ -47,6 +47,7 @@ export interface MediaItem {
   thumbnail?: string;
   description?: string;
   uploader?: string;
+  uploaderId?: string;
   views?: number;
   comments?: number;
   likes?: number;
@@ -60,6 +61,9 @@ export interface MediaItem {
   groupId?: string;
   filesize: number;
   entries?: EntryItem[];
+  playlistId?: string;
+  playlistCount?: number;
+  playlistIndex?: number;
 }
 
 export interface EntryItem {

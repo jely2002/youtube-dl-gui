@@ -3,62 +3,86 @@
       :legend="t('settings.filename.legend')"
       :label="t('settings.filename.legendLabel')"
   >
-    <label class="font-semibold" for="formatPreset">
-      {{ t('settings.filename.formatPreset.label') }}
-    </label>
-    <select
-        id="formatPreset"
-        v-model="selectedFormatPreset"
-        class="select mb-2"
+    <tabbed-settings-pane
+        v-model="activeTab"
+        :tabs="tabs"
+        id-prefix="filename"
     >
-      <option
-          v-for="preset in outputFormatPresets"
-          :key="preset.value"
-          :value="preset.value"
-      >
-        {{ preset.label }}
-      </option>
-    </select>
-    <label class="font-semibold" for="outputFormat">
-      {{ t('settings.filename.outputFormat.label') }}
-    </label>
-    <input
-        v-model="outputFormatValue"
-        :disabled="!isCustom"
-        type="text"
-        id="outputFormat"
-        class="input w-full"
-    />
+      <template #video>
+        <format-preset-selector
+            id-prefix="video"
+            :presets="videoFormatPresets"
+            v-model="videoTemplate"
+            v-model:preset="selectedVideoFormatPreset"
+            :preset-label="t('settings.filename.formatPreset.label')"
+            :format-label="t('settings.filename.outputFormat.label')"
+            :example-label="t('settings.filename.formatPreset.exampleLabel')"
+        />
+      </template>
+
+      <template #audio>
+        <format-preset-selector
+            id-prefix="audio"
+            :presets="audioFormatPresets"
+            v-model="audioTemplate"
+            v-model:preset="selectedAudioFormatPreset"
+            :preset-label="t('settings.filename.formatPreset.label')"
+            :format-label="t('settings.filename.outputFormat.label')"
+            :example-label="t('settings.filename.formatPreset.exampleLabel')"
+        />
+      </template>
+    </tabbed-settings-pane>
   </base-fieldset>
 </template>
 
 <script setup lang="ts">
 import BaseFieldset from '../base/BaseFieldset.vue';
-import { Settings } from '../../tauri/types/config.ts';
+import TabbedSettingsPane from './TabbedSettingsPane.vue';
+import FormatPresetSelector from './FormatPresetSelector.vue';
+import { FormatPreset, Settings } from '../../tauri/types/config';
 import { useI18n } from 'vue-i18n';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+
+interface TabDef {
+  id: string;
+  label: string;
+}
+
+interface PresetDef {
+  label: string;
+  value: FormatPreset;
+  format: string;
+  example?: string;
+}
 
 const { t } = useI18n();
 const settings = defineModel<Settings>({ required: true });
 
-enum FormatPreset {
-  TitleQuality = 'titleQuality',
-  TitleOnly = 'titleOnly',
-  Custom = 'custom',
-}
+const activeTab = ref<'video' | 'audio'>('video');
 
-const selectedFormatPreset = ref<FormatPreset>(FormatPreset.Custom);
+const tabs: TabDef[] = [
+  { id: 'video', label: t('settings.output.tabs.video.label') },
+  { id: 'audio', label: t('settings.output.tabs.audio.label') },
+];
 
-const outputFormatPresets = [
+const videoFormatPresets: PresetDef[] = [
   {
     label: t('settings.filename.formatPreset.options.titleQuality'),
+    example: t('settings.filename.formatPreset.examples.video.titleQuality'),
     value: FormatPreset.TitleQuality,
     format: '%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
   },
   {
     label: t('settings.filename.formatPreset.options.titleOnly'),
+    example: t('settings.filename.formatPreset.examples.video.titleOnly'),
     value: FormatPreset.TitleOnly,
     format: '%(title).200s.%(ext)s',
+  },
+  {
+    label: t('settings.filename.formatPreset.options.titleQualityPlaylist'),
+    example: t('settings.filename.formatPreset.examples.video.titleQualityPlaylist'),
+    value: FormatPreset.TitleQualityPlaylist,
+    format: '%(playlist_index)02d-%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
   },
   {
     label: t('settings.filename.formatPreset.options.custom'),
@@ -67,35 +91,60 @@ const outputFormatPresets = [
   },
 ];
 
-const isCustom = computed(() => selectedFormatPreset.value === FormatPreset.Custom);
-
-onMounted(() => {
-  const match = outputFormatPresets.find(
-    p => p.value !== FormatPreset.Custom && settings.value.output.fileNameTemplate === p.format,
-  );
-  selectedFormatPreset.value = match?.value as FormatPreset ?? FormatPreset.Custom;
-});
-
-watch(selectedFormatPreset, (newVal) => {
-  if (newVal !== FormatPreset.Custom) {}
-  const preset = outputFormatPresets.find(p => p.value === newVal);
-  if (preset) {
-    settings.value.output.fileNameTemplate = preset.format;
-  }
-});
-
-const outputFormatValue = computed<string>({
-  get() {
-    if (!isCustom.value) {
-      return (
-        outputFormatPresets.find(p => p.value === selectedFormatPreset.value)?.format
-        ?? settings.value.output.fileNameTemplate ?? outputFormatPresets[0].format
-      );
-    }
-    return settings.value.output.fileNameTemplate ?? outputFormatPresets[0].format;
+const audioFormatPresets: PresetDef[] = [
+  {
+    label: t('settings.filename.formatPreset.options.titleQuality'),
+    example: t('settings.filename.formatPreset.examples.audio.titleQuality'),
+    value: FormatPreset.TitleQuality,
+    format: '%(title).200s-(%(abr)dk).%(ext)s',
   },
-  set(val: string) {
+  {
+    label: t('settings.filename.formatPreset.options.titleOnly'),
+    example: t('settings.filename.formatPreset.examples.audio.titleOnly'),
+    value: FormatPreset.TitleOnly,
+    format: '%(title).200s.%(ext)s',
+  },
+  {
+    label: t('settings.filename.formatPreset.options.titleQualityPlaylist'),
+    example: t('settings.filename.formatPreset.examples.audio.titleQualityPlaylist'),
+    value: FormatPreset.TitleQualityPlaylist,
+    format: '%(playlist_index)02d-%(title).200s-(%(abr)dk).%(ext)s',
+  },
+  {
+    label: t('settings.filename.formatPreset.options.custom'),
+    value: FormatPreset.Custom,
+    format: '',
+  },
+];
+
+const selectedVideoFormatPreset = ref<FormatPreset>(FormatPreset.Custom);
+const selectedAudioFormatPreset = ref<FormatPreset>(FormatPreset.Custom);
+
+const videoTemplate = computed<string>({
+  get: () => settings.value.output.fileNameTemplate ?? '',
+  set(val) {
     settings.value.output.fileNameTemplate = val;
   },
+});
+
+const audioTemplate = computed<string>({
+  get: () => settings.value.output.audioFileNameTemplate ?? '',
+  set(val) {
+    settings.value.output.audioFileNameTemplate = val;
+  },
+});
+
+onMounted(() => {
+  const videoMatch = videoFormatPresets.find(
+    p => p.value !== FormatPreset.Custom
+      && settings.value.output.fileNameTemplate === p.format,
+  );
+  selectedVideoFormatPreset.value = videoMatch?.value ?? FormatPreset.Custom;
+
+  const audioMatch = audioFormatPresets.find(
+    p => p.value !== FormatPreset.Custom
+      && settings.value.output.audioFileNameTemplate === p.format,
+  );
+  selectedAudioFormatPreset.value = audioMatch?.value ?? FormatPreset.Custom;
 });
 </script>

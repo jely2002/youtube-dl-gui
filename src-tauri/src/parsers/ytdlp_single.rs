@@ -30,6 +30,7 @@ pub fn parse_single(info: YtdlpInfo, id: String) -> ParsedMedia {
     title: info.title,
     thumbnail: info.thumbnail,
     uploader: info.uploader,
+    uploader_id: info.uploader_id,
     duration: info.duration,
     views: info.view_count,
     likes: info.like_count,

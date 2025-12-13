@@ -35,6 +35,13 @@ export interface InputSettings {
   preferVideoInMixedLinks: boolean;
 }
 
+export enum FormatPreset {
+  TitleQuality = 'titleQuality',
+  TitleOnly = 'titleOnly',
+  TitleQualityPlaylist = 'titleQualityPlaylist',
+  Custom = 'custom',
+}
+
 export interface OutputSettings {
   video: VideoOutputSettings;
   audio: AudioOutputSettings;
@@ -42,6 +49,7 @@ export interface OutputSettings {
   addThumbnail: boolean;
   downloadDir: string | null;
   fileNameTemplate: string;
+  audioFileNameTemplate: string;
 }
 
 export interface PerformanceSettings {
@@ -113,6 +121,7 @@ export const defaultOutputSettings: OutputSettings = {
   addThumbnail: true,
   downloadDir: null,
   fileNameTemplate: '%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
+  audioFileNameTemplate: '%(title).200s-%(abr)dk.%(ext)s',
 };
 
 export const defaultPerformanceSettings: PerformanceSettings = {

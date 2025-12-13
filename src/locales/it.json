@@ -390,10 +390,24 @@
       "legendLabel": "Configura la modalità di salvataggio dei file scaricati.",
       "formatPreset": {
         "label": "Prefisso nome file:",
+        "exampleLabel": "Output di esempio:",
         "options": {
           "titleQuality": "Titolo + qualità",
           "titleOnly": "Titolo",
+          "titleQualityPlaylist": "Playlist + titolo + qualità",
           "custom": "Personalizzato"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Il mio video-(1080p30).mp4",
+            "titleOnly": "Il mio video.mp4",
+            "titleQualityPlaylist": "03-Il mio video-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Il mio audio-(320k).mp3",
+            "titleOnly": "Il mio audio.mp3",
+            "titleQualityPlaylist": "03-Il mio audio-(320k).mp3"
+          }
         }
       },
       "outputFormat": {
