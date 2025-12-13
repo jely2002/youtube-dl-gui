@@ -325,6 +325,10 @@
       "preferVideoInMixedLinks": {
         "label": "Voorkeur voor losse video bij playlist-links:",
         "hint": "Als een link zowel een video als een playlist bevat, download dan alleen de video in plaats van de hele playlist."
+      },
+      "authentication": {
+        "label": "Log in om privévideo’s te downloaden:",
+        "link": "Authenticatie instellen"
       }
     },
     "output": {
@@ -337,6 +341,10 @@
       "addMetadata": {
         "label": "Titel & artiest opslaan:",
         "hint": "Slaat info zoals titel, uploader/artist en beschrijving op in het bestand."
+      },
+      "subtitles": {
+        "label": "Ondertitels toevoegen:",
+        "link": "Ondertitels instellen"
       },
       "policy": {
         "label": "Conversiemodus:",
@@ -382,10 +390,24 @@
       "legendLabel": "Bepaal hoe gedownloade bestanden worden opgeslagen.",
       "formatPreset": {
         "label": "Bestandsnaam-preset:",
+        "exampleLabel": "Voorbeeld:",
         "options": {
           "titleQuality": "Titel + kwaliteit",
           "titleOnly": "Alleen titel",
+          "titleQualityPlaylist": "afspeellijst + titel + kwaliteit",
           "custom": "Aangepast"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Mijn Video-(1080p30).mp4",
+            "titleOnly": "Mijn Video.mp4",
+            "titleQualityPlaylist": "03-Mijn Video-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Mijn Audio-(320k).mp3",
+            "titleOnly": "Mijn Audio.mp3",
+            "titleQualityPlaylist": "03-Mijn Audio-(320k).mp3"
+          }
         }
       },
       "outputFormat": {
@@ -538,136 +560,136 @@
   "errors": {
     "runner": {
       "internal": {
-        "shortMessage": "Internal error",
-        "message": "An internal error occurred while processing this item."
+        "shortMessage": "Interne fout",
+        "message": "Er is een interne fout opgetreden tijdens het verwerken van dit item."
       },
       "signInRequired": {
-        "shortMessage": "Sign-in required",
-        "message": "You need to sign in to view this content."
+        "shortMessage": "Aanmelding vereist",
+        "message": "Je moet je aanmelden om deze inhoud te bekijken."
       },
       "membersOnly": {
-        "shortMessage": "Members-only",
-        "message": "This video is only available to channel members."
+        "shortMessage": "Alleen voor leden",
+        "message": "Deze video is alleen beschikbaar voor kanaalleden."
       },
       "geoBlocked": {
-        "shortMessage": "Region blocked",
-        "message": "This content isn’t available in your region."
+        "shortMessage": "Regioblokkade",
+        "message": "Deze inhoud is niet beschikbaar in jouw regio."
       },
       "accessForbidden403": {
-        "shortMessage": "Access forbidden",
-        "message": "You don’t have permission to access this resource (HTTP 403)."
+        "shortMessage": "Toegang geweigerd",
+        "message": "Je hebt geen toestemming om deze bron te openen (HTTP 403)."
       },
       "notFound404": {
-        "shortMessage": "Not found",
-        "message": "The requested video or playlist could not be found (HTTP 404)."
+        "shortMessage": "Niet gevonden",
+        "message": "De gevraagde video of playlist is niet gevonden (HTTP 404)."
       },
       "server5xx": {
-        "shortMessage": "Server error",
-        "message": "A temporary server issue occurred. Try again later."
+        "shortMessage": "Serverfout",
+        "message": "Er is een tijdelijke serverstoring opgetreden. Probeer het later opnieuw."
       },
       "rateLimited429": {
-        "shortMessage": "Rate limited",
-        "message": "Too many requests were sent. Please wait and retry."
+        "shortMessage": "Te veel verzoeken",
+        "message": "Er zijn te veel verzoeken verstuurd. Wacht even en probeer het opnieuw."
       },
       "requestedFormatUnavailable": {
-        "shortMessage": "Format unavailable",
-        "message": "The selected format isn’t available for this video."
+        "shortMessage": "Formaat niet beschikbaar",
+        "message": "Het gekozen formaat is niet beschikbaar voor deze video."
       },
       "unableToExtractInitialData": {
-        "shortMessage": "Data extraction failed",
-        "message": "Couldn’t extract the required initial video data."
+        "shortMessage": "Extractie mislukt",
+        "message": "De vereiste initiële videogegevens konden niet worden geëxtraheerd."
       },
       "unableToExtractIdOrInfo": {
-        "shortMessage": "Metadata error",
-        "message": "Failed to extract video or uploader information."
+        "shortMessage": "Metadatafout",
+        "message": "Kon video- of uploaderinformatie niet extraheren."
       },
       "nsigExtractionFailed": {
-        "shortMessage": "Signature failed",
-        "message": "Failed to extract or decode the video signature."
+        "shortMessage": "Signatuur mislukt",
+        "message": "Kon de videosignatuur niet extraheren of decoderen."
       },
       "embedOnly": {
-        "shortMessage": "Embed-only video",
-        "message": "This video can only be accessed through an embedded player."
+        "shortMessage": "Alleen embed",
+        "message": "Deze video is alleen toegankelijk via een ingesloten speler."
       },
       "urlUnsupported": {
-        "shortMessage": "Invalid URL",
-        "message": "The provided link isn’t supported or recognized."
+        "shortMessage": "Ongeldige URL",
+        "message": "De opgegeven link wordt niet ondersteund of herkend."
       },
       "unknownUrlType": {
-        "shortMessage": "Unknown URL type",
-        "message": "The provided URL uses an unsupported protocol."
+        "shortMessage": "Onbekend URL-type",
+        "message": "De opgegeven URL gebruikt een niet-ondersteund protocol."
       },
       "networkNameResolutionFailed": {
-        "shortMessage": "Network error",
-        "message": "Couldn’t resolve the host name. Check your internet connection."
+        "shortMessage": "Netwerkfout",
+        "message": "De hostnaam kon niet worden opgelost. Controleer je internetverbinding."
       },
       "playlistPrivateOrMissing": {
-        "shortMessage": "Playlist unavailable",
-        "message": "This playlist is private or no longer exists."
+        "shortMessage": "Playlist niet beschikbaar",
+        "message": "Deze playlist is privé of bestaat niet meer."
       },
       "videoNotFoundOrPrivate": {
-        "shortMessage": "Video unavailable",
-        "message": "This video was removed or set to private."
+        "shortMessage": "Video niet beschikbaar",
+        "message": "Deze video is verwijderd of privé gezet."
       },
       "channelUnavailable": {
-        "shortMessage": "Channel unavailable",
-        "message": "The channel hosting this content is no longer accessible."
+        "shortMessage": "Kanaal niet beschikbaar",
+        "message": "Het kanaal met deze inhoud is niet langer toegankelijk."
       },
       "ffmpegNotFound": {
-        "shortMessage": "ffmpeg not found",
-        "message": "Transcoding to mp3 or mp4 requires ffmpeg."
+        "shortMessage": "ffmpeg ontbreekt",
+        "message": "Transcoderen naar mp3 of mp4 vereist ffmpeg."
       },
       "ffmpegFailed": {
-        "shortMessage": "ffmpeg failed",
-        "message": "FFmpeg encountered an error during processing."
+        "shortMessage": "ffmpeg mislukt",
+        "message": "Er trad een fout op in ffmpeg tijdens het verwerken."
       },
       "cannotAllocateMemory": {
-        "shortMessage": "Memory error",
-        "message": "FFmpeg ran out of memory while processing the video."
+        "shortMessage": "Geheugenfout",
+        "message": "ffmpeg had onvoldoende geheugen tijdens het verwerken van de video."
       },
       "permissionDenied": {
-        "shortMessage": "Permission denied",
-        "message": "The app doesn’t have permission to access this file or folder."
+        "shortMessage": "Toegang geweigerd",
+        "message": "De app heeft geen toestemming om dit bestand of deze map te openen."
       },
       "noWritePermission": {
-        "shortMessage": "Cannot write",
-        "message": "The destination path isn’t writable."
+        "shortMessage": "Kan niet schrijven",
+        "message": "Het doelpad is niet beschrijfbaar."
       },
       "windowsFileMissing": {
-        "shortMessage": "File missing",
-        "message": "The referenced file could not be found (WinError 2)."
+        "shortMessage": "Bestand ontbreekt",
+        "message": "Het opgegeven bestand is niet gevonden (WinError 2)."
       },
       "blockedGeneric": {
-        "shortMessage": "Video blocked",
-        "message": "This video is blocked and cannot be downloaded."
+        "shortMessage": "Video geblokkeerd",
+        "message": "Deze video is geblokkeerd en kan niet worden gedownload."
       },
       "copyrightClaimed": {
-        "shortMessage": "Copyright block",
-        "message": "The video was blocked due to a copyright claim."
+        "shortMessage": "Auteursrechtblokkade",
+        "message": "De video is geblokkeerd vanwege een auteursrechtclaim."
       },
       "notPremieredYet": {
-        "shortMessage": "Not premiered yet",
-        "message": "This video isn’t available until its premiere begins."
+        "shortMessage": "Nog niet in première",
+        "message": "Deze video is pas beschikbaar zodra de première begint."
       },
       "livestreamNotStarted": {
-        "shortMessage": "Livestream pending",
-        "message": "The livestream hasn’t started yet. Please check back later."
+        "shortMessage": "Livestream moet nog beginnen",
+        "message": "De livestream is nog niet gestart. Kom later terug."
       },
       "sslVerifyFailed": {
-        "shortMessage": "SSL failed",
-        "message": "The secure connection could not be verified. Check your certificates or date/time."
+        "shortMessage": "SSL mislukt",
+        "message": "De beveiligde verbinding kon niet worden geverifieerd. Controleer je certificaten of datum/tijd."
       },
       "sponsorBlockUnreachable": {
         "shortMessage": "SponsorBlock offline",
-        "message": "Couldn’t connect to the SponsorBlock API for segment data."
+        "message": "Kon geen verbinding maken met de SponsorBlock-API voor segmentgegevens."
       },
       "downloadRetryingFragment": {
-        "shortMessage": "Retrying fragment",
-        "message": "A fragment download failed and will be retried automatically."
+        "shortMessage": "Fragment opnieuw proberen",
+        "message": "Het downloaden van een fragment is mislukt en wordt automatisch opnieuw geprobeerd."
       },
       "unknown": {
-        "shortMessage": "Unknown error",
-        "message": "An unknown error occurred while processing this item."
+        "shortMessage": "Onbekende fout",
+        "message": "Er is een onbekende fout opgetreden tijdens het verwerken van dit item."
       }
     }
   },

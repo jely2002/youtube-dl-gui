@@ -25,7 +25,7 @@ export enum AudioFormat {
 
 export type DownloadOptions = {
   trackType: TrackType;
-  abr?: number;
+  asr?: number;
   height?: number;
   fps?: number;
 };
@@ -42,11 +42,12 @@ export type MediaAddWithFormatPayload = MediaAddPayload & {
 
 export interface MediaItem {
   id: string;
-  url?: string;
+  url: string;
   title?: string;
   thumbnail?: string;
   description?: string;
   uploader?: string;
+  uploaderId?: string;
   views?: number;
   comments?: number;
   likes?: number;
@@ -59,13 +60,21 @@ export interface MediaItem {
   isLeader?: boolean;
   groupId?: string;
   filesize: number;
-  entries?: never[];
+  entries?: EntryItem[];
+  playlistId?: string;
+  playlistCount?: number;
+  playlistIndex?: number;
+}
+
+export interface EntryItem {
+  index: number;
+  videoUrl: string;
 }
 
 export interface MediaFormat {
   id: string;
   height?: number;
-  abr?: number;
+  asr?: number;
   fps?: number;
   videoCodecs: string[];
 }

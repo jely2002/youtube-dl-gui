@@ -38,6 +38,8 @@ pub fn parse_playlist(info: YtdlpInfo, id: String) -> ParsedMedia {
     thumbnail,
     uploader: info.uploader,
     uploader_id: info.uploader_id,
+    playlist_id: info.id,
+    playlist_count: info.playlist_count,
     entries,
   })
 }

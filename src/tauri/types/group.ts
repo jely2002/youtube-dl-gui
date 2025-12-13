@@ -1,4 +1,4 @@
-import { MediaFormat, MediaItem } from './media';
+import { EntryItem, MediaFormat, MediaItem } from './media';
 
 export type Group = {
   id: string;
@@ -7,11 +7,11 @@ export type Group = {
   errored: number;
   isCombined: boolean;
   items: Record<string, MediaItem>;
-  entries?: never[];
-  url?: string;
+  url: string;
   title?: string;
   thumbnail?: string;
   description?: string;
+  uploaderId?: string;
   uploader?: string;
   extractor?: string;
   views?: number;
@@ -22,5 +22,11 @@ export type Group = {
   duration?: number;
   audioCodecs: string[];
   formats: MediaFormat[];
+  entries?: EntryItem[];
   filesize: number;
+  playlistId?: string;
+  playlistTitle?: string;
+  playlistCount?: number;
+  playlistUploader?: string;
+  playlistUploaderId?: string;
 };

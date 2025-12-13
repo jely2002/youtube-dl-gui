@@ -1,8 +1,9 @@
 use crate::config::Config;
+use crate::paths::PathsManager;
 use arc_swap::ArcSwap;
 use serde_json::{Map, Value};
 use std::sync::Arc;
-use tauri::{AppHandle, Wry};
+use tauri::{AppHandle, Manager, Wry};
 use tauri_plugin_store::{Store, StoreExt};
 
 pub const STORE_FILE: &str = "config.store.json";
@@ -15,7 +16,11 @@ pub struct ConfigHandle {
 
 impl ConfigHandle {
   pub fn init(app: &AppHandle<Wry>) -> Result<Self, Box<dyn std::error::Error>> {
-    let store = app.store(STORE_FILE)?;
+    let paths_manager = app.state::<PathsManager>();
+    let data_root = paths_manager.app_dir();
+    let store_path = data_root.join(STORE_FILE);
+    let store = app.store(store_path)?;
+
     let raw = store
       .get(CONFIG_KEY)
       .unwrap_or_else(|| Value::Object(Map::new()));

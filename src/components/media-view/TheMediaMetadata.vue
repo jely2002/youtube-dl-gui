@@ -46,6 +46,7 @@ import placeholderUrl from '../../assets/placeholder.png';
 import BaseMediaStats from '../base/BaseMediaStats.vue';
 import { useI18n } from 'vue-i18n';
 import { useMediaGroupStore } from '../../stores/media/group.ts';
+import { Group } from '../../tauri/types/group.ts';
 
 const { t } = useI18n();
 const groupStore = useMediaGroupStore();
@@ -57,7 +58,7 @@ const { groupId } = defineProps({
   },
 });
 
-const group = groupStore.findGroupById(groupId);
+const group: Group = groupStore.findGroupById(groupId);
 
 const setPlaceholderImage = (event: Event): void => {
   if (event.target instanceof HTMLImageElement) {

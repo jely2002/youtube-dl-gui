@@ -26,34 +26,34 @@ describe('nearestBy', () => {
 
 describe('approxAudio', () => {
   const audioFormats: MediaFormat[] = [
-    { id: '64', videoCodecs: [], abr: 64 },
-    { id: '128', videoCodecs: [], abr: 128 },
-    { id: '192', videoCodecs: [], abr: 192 },
-    { id: '256', videoCodecs: [], abr: 256 },
+    { id: '64', videoCodecs: [], asr: 64 },
+    { id: '128', videoCodecs: [], asr: 128 },
+    { id: '192', videoCodecs: [], asr: 192 },
+    { id: '256', videoCodecs: [], asr: 256 },
   ];
 
   it('returns highest ABR when no target is given', () => {
     const out = approxAudio(audioFormats);
-    expect(out?.abr).toBe(256);
+    expect(out?.asr).toBe(256);
   });
 
   it('returns exact match when target exists', () => {
     const out = approxAudio(audioFormats, 192);
-    expect(out?.abr).toBe(192);
+    expect(out?.asr).toBe(192);
   });
 
   it('returns nearest ABR when exact match does not exist', () => {
     const out = approxAudio(audioFormats, 150);
-    expect(out?.abr).toBe(128);
+    expect(out?.asr).toBe(128);
   });
 
   it('breaks ties by choosing higher ABR', () => {
     const formats: MediaFormat[] = [
-      { id: '100', abr: 100, videoCodecs: [] },
-      { id: '120', abr: 120, videoCodecs: [] },
+      { id: '100', asr: 100, videoCodecs: [] },
+      { id: '120', asr: 120, videoCodecs: [] },
     ];
     const out = approxAudio(formats, 110);
-    expect(out?.abr).toBe(120);
+    expect(out?.asr).toBe(120);
   });
 
   it('returns undefined when no audio formats exist', () => {

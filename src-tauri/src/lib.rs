@@ -5,20 +5,22 @@ mod logging;
 mod menu;
 mod models;
 mod parsers;
+mod paths;
 mod runners;
 mod scheduling;
 mod stronghold;
 
+use crate::binaries::binaries_manager::BinariesManager;
 use crate::binaries::binaries_state::BinariesState;
 use crate::commands::*;
 use crate::logging::LogStoreState;
 use crate::menu::setup_menu;
+use crate::paths::PathsManager;
 use crate::scheduling::download_pipeline::{setup_download_dispatcher, DownloadSender};
 use crate::scheduling::fetch_pipeline::{setup_fetch_dispatcher, FetchSender};
 use config::ConfigHandle;
 use sentry::ClientInitGuard;
 use std::collections::HashMap;
-use std::path::PathBuf;
 use std::sync::{Arc, LazyLock, Mutex as StdMutex};
 use stronghold::stronghold_state;
 use tauri::Manager;
@@ -60,6 +62,10 @@ pub fn run() {
 
       init_tracing();
 
+      // setup runtime mode detection / path management
+      let path_handle = PathsManager::new(handle);
+      handle.manage(path_handle.clone());
+
       // setup config management
       let config_handle = ConfigHandle::init(handle)?;
       let shared = Arc::new(config_handle);
@@ -77,15 +83,14 @@ pub fn run() {
       let download_dispatcher = setup_download_dispatcher(handle);
       handle.manage(DownloadSender(download_dispatcher.sender()));
 
-      // setup binary state
+      // setup binaries
       handle.manage(BinariesState::default());
+      handle.manage(BinariesManager::new(handle));
 
       // setup stronghold
-      let stronghold_path: PathBuf = handle
-        .path()
-        .app_data_dir()
-        .expect("no app data dir")
-        .join("vault.hold");
+      let app_path = path_handle.app_dir();
+      let stronghold_path = app_path.join("vault.hold");
+
       handle.manage(stronghold_state::StrongholdState::new(stronghold_path));
 
       // async init stronghold

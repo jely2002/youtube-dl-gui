@@ -2,10 +2,11 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct YtdlpInfo {
+  pub id: Option<String>,
   pub title: Option<String>,
   pub uploader: Option<String>,
   pub uploader_id: Option<String>,
-  pub duration: Option<u64>,
+  pub duration: Option<f64>,
   pub like_count: Option<u64>,
   pub dislike_count: Option<u64>,
   pub average_rating: Option<f64>,
@@ -23,6 +24,7 @@ pub struct YtdlpInfo {
   pub webpage_url: Option<String>,
   pub filesize: Option<u64>,
   pub filesize_approx: Option<u64>,
+  pub playlist_count: Option<u64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -43,7 +45,7 @@ pub struct YtdlpFormat {
   pub format_id: Option<String>,
   pub height: Option<u64>,
   pub fps: Option<f64>,
-  pub abr: Option<f64>,
+  pub asr: Option<f64>,
   pub ext: Option<String>,
   pub vcodec: Option<String>,
   pub acodec: Option<String>,

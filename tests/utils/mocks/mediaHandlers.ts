@@ -6,7 +6,7 @@ import { MediaAddPayload, MediaFormat } from '../../../src/tauri/types/media';
 const sampleFormats: MediaFormat[] = [
   { id: 'f1080', height: 1080, fps: 60, videoCodecs: [] },
   { id: 'f720', height: 720, fps: 30, videoCodecs: [] },
-  { id: 'audio', abr: 120, videoCodecs: [] },
+  { id: 'audio', asr: 120, videoCodecs: [] },
 ];
 
 export const mediaHandlers: Record<string, IPCHandler> = {

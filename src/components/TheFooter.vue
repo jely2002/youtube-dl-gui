@@ -15,7 +15,7 @@
         <folder-icon class="w-6 h-6"/>
       </base-button>
       <base-toggle-button
-          to="/authentication"
+          :to="{ name: 'authentication' }"
           :tooltip="hasAuthConfigured ? t('layout.footer.nav.login.tooltip.on') : t('layout.footer.nav.login.tooltip.off')"
           :model-value="hasAuthConfigured">
         <template v-slot:on>
@@ -27,7 +27,7 @@
           <key-icon-outline class="w-6 h-6"/>
         </template>
       </base-toggle-button>
-      <base-toggle-button to="/subtitles" :tooltip="t('layout.footer.nav.subtitles.tooltip')" :model-value="hasSubtitlesEnabled">
+      <base-toggle-button :to="{ name: 'subtitles' }" :tooltip="t('layout.footer.nav.subtitles.tooltip')" :model-value="hasSubtitlesEnabled">
         <template v-slot:on>
           <span class="sr-only">{{ t('layout.footer.nav.subtitles.screenReader.on') }}</span>
           <chat-bubble-bottom-center-text-icon class="w-6 h-6"/>

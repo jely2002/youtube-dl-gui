@@ -26,7 +26,12 @@ export interface Manifest {
 }
 
 async function sha256(url: string): Promise<string> {
-  const res = await fetch(url);
+  const headers: Record<string, string> = {};
+  const githubToken = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? null;
+  if (githubToken) {
+    headers['Authorization'] = `Bearer ${githubToken}`;
+  }
+  const res = await fetch(url, { headers });
   if (!res.ok) {
     throw new Error(`failed to fetch ${url}: ${res.status}`);
   }

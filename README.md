@@ -1,6 +1,6 @@
 <img src="https://raw.githubusercontent.com/jely2002/youtube-dl-gui/v2.0.0/renderer/img/icon.png" alt="logo" align="left" height="100"/>
 
-# Open Video Downloader (youtube-dl-gui) <br> ![version badge](https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release) ![GitHub](https://img.shields.io/github/license/jely2002/youtube-dl-gui) ![coverage badge](https://img.shields.io/codecov/c/github/jely2002/youtube-dl-gui) ![downloads](https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total) 
+# Open Video Downloader (youtube-dl-gui) <br> ![version badge](https://img.shields.io/github/v/release/jely2002/youtube-dl-gui?label=latest-release) ![GitHub](https://img.shields.io/github/license/jely2002/youtube-dl-gui) ![downloads](https://img.shields.io/github/downloads/jely2002/youtube-dl-gui/total) 
 [https://jely2002.github.io/youtube-dl-gui](https://jely2002.github.io/youtube-dl-gui)
 
 Open Video Downloader is a simple, cross-platform desktop application that lets you download videos, audio, subtitles and metadata from hundreds of supported websites, not just YouTube.  
@@ -12,7 +12,7 @@ It provides an easy-to-use interface around [yt-dlp](https://github.com/yt-dlp/y
 - **Cross-platform:** works on Windows, macOS and Linux.
 - **Audio or video downloads:** grab full videos or extract only the audio track.
 - **Subtitles and metadata:** automatically saves available captions and video information.
-- **Quality control:** choose your preferred resolution, frame rate, and (soon) encoding format like MP4 or MKV.
+- **Quality control:** choose your preferred resolution, frame rate, and output format like MP4 or MKV.
 - **Playlists:** download entire playlists in one go.
 - **Custom output:** set your download location and control filenames using presets or custom templates.
 - **Smart queueing:** OVD balances multiple downloads automatically so your computer doesn’t slow down.
@@ -29,13 +29,17 @@ Download the installer or archive for your platform and follow the normal instal
 No command-line setup is required.
 
 #### What file do I download?
-| Your Computer                         | Download                                     |
-|---------------------------------------|----------------------------------------------|
-| **Windows**                           | `Open.Video.Downloader_x.x.x_x64-setup.exe`  |
-| **Mac (Intel)**                       | `Open.Video.Downloader_x.x.x_x64.dmg`        |
-| **Mac (Apple Silicon – M1, M2 … M5)** | `Open.Video.Downloader_x.x.x_aarch64.dmg`    |
-| **Linux (AppImage)**                  | `Open.Video.Downloader_x.x.x_amd64.AppImage` |
-| **Linux (Debian/Ubuntu)**             | `Open.Video.Downloader_x.x.x_amd64.deb`      |
+| Your Computer                         | Download                                       |
+|---------------------------------------|------------------------------------------------|
+| **Windows**                           | `Open.Video.Downloader_x.x.x_x64-setup.exe`    |
+| **Mac (Intel)**                       | `Open.Video.Downloader_x.x.x_x64.dmg`          |
+| **Mac (Apple Silicon – M1, M2 … M5)** | `Open.Video.Downloader_x.x.x_aarch64.dmg`      |
+| **Linux generic (x64)**               | `Open.Video.Downloader_x.x.x_amd64.AppImage`   |
+| **Linux generic (aarch64)**           | `Open.Video.Downloader_x.x.x_aarch64.AppImage` |
+| **Linux Debian/Ubuntu (x64)**         | `Open.Video.Downloader_x.x.x_amd64.deb`        |
+| **Linux Debian/Ubuntu (aarch64)**     | `Open.Video.Downloader_x.x.x_aarch64.deb`      |
+| **Linux Fedora/RHEL (x64)**           | `Open.Video.Downloader_x.x.x_amd64.rpm`        |
+| **Linux Fedora/RHEL (aarch64)**       | `Open.Video.Downloader_x.x.x_aarch64.rpm`      |
 
 ## How it works
 

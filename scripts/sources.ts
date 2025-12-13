@@ -45,8 +45,14 @@ interface GitHubRelease {
 
 async function latestRelease(owner: string, repo: string): Promise<GitHubRelease> {
   console.log(`[sources] Fetching latest release for ${owner}/${repo}`);
+  const headers: Record<string, string> = {};
+  const githubToken = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? null;
+  if (githubToken) {
+    headers['Authorization'] = `Bearer ${githubToken}`;
+  }
   const res = await fetch(
     `https://api.github.com/repos/${owner}/${repo}/releases/latest`,
+    { headers },
   );
   if (!res.ok) throw new Error(`failed to fetch ${owner}/${repo}: ${res.status}`);
   const release = (await res.json()) as GitHubRelease;

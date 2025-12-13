@@ -1,5 +1,6 @@
 use crate::models::download::FormatOptions;
 use crate::models::DownloadItem;
+use crate::runners::template_context::TemplateContext;
 use crate::runners::ytdlp_download::run_ytdlp_download;
 use crate::scheduling::dispatcher::{DispatchEntry, DispatchRequest, GenericDispatcher};
 use crate::SharedConfig;
@@ -29,6 +30,7 @@ pub struct DownloadEntry {
   pub id: String,
   pub url: String,
   pub format: FormatOptions,
+  pub template_context: TemplateContext,
 }
 
 impl From<(DownloadItem, String)> for DownloadEntry {
@@ -38,6 +40,7 @@ impl From<(DownloadItem, String)> for DownloadEntry {
       id: item.0.id,
       url: item.0.url,
       format: item.0.format,
+      template_context: item.0.template_context,
     }
   }
 }
@@ -45,6 +48,21 @@ impl From<(DownloadItem, String)> for DownloadEntry {
 impl DispatchEntry for DownloadEntry {
   fn group_id(&self) -> &String {
     &self.group_id
+  }
+  fn group_key(&self) -> Option<&String> {
+    self.template_context.values.get("playlist_id")
+  }
+  fn set_numbering(&mut self, autonumber: u64, group_autonumber: Option<u64>) {
+    self
+      .template_context
+      .values
+      .insert("autonumber".to_string(), autonumber.to_string());
+    if let Some(group_autonumber) = group_autonumber {
+      self.template_context.values.insert(
+        "playlist_autonumber".to_string(),
+        group_autonumber.to_string(),
+      );
+    }
   }
 }
 

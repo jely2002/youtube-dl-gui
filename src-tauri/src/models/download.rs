@@ -1,3 +1,4 @@
+use crate::runners::template_context::TemplateContext;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -39,13 +40,14 @@ pub struct DownloadItem {
   pub id: String,
   pub url: String,
   pub format: FormatOptions,
+  pub template_context: TemplateContext,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FormatOptions {
   pub track_type: TrackType,
-  pub abr: Option<u32>,
+  pub asr: Option<u32>,
   pub height: Option<u32>,
   pub fps: Option<u32>,
 }
