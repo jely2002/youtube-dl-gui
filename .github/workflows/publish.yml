@@ -71,8 +71,9 @@ jobs:
 
       - name: Read app version
         id: app-version
+        shell: bash
         run: |
-          echo "version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+          echo "version=$(node -p 'require(\"./package.json\").version')" >> "$GITHUB_OUTPUT"
 
       - name: Setup Sentry CLI
         uses: matbour/setup-sentry-cli@v2
