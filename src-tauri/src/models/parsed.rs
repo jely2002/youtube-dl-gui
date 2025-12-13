@@ -32,7 +32,7 @@ pub struct ParsedSingleVideo {
   pub comments: Option<u64>,
   pub likes: Option<u64>,
   pub dislikes: Option<u64>,
-  pub duration: Option<u64>,
+  pub duration: Option<f64>,
   pub rating: Option<f64>,
   pub extractor: Option<String>,
   pub video_codecs: Vec<String>,

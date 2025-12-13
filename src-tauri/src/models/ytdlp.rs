@@ -6,7 +6,7 @@ pub struct YtdlpInfo {
   pub title: Option<String>,
   pub uploader: Option<String>,
   pub uploader_id: Option<String>,
-  pub duration: Option<u64>,
+  pub duration: Option<f64>,
   pub like_count: Option<u64>,
   pub dislike_count: Option<u64>,
   pub average_rating: Option<f64>,
