@@ -36,7 +36,7 @@ jobs:
         if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'ubuntu-22.04-arm'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
 
       - name: setup node
         uses: actions/setup-node@v4
@@ -136,23 +136,27 @@ jobs:
           $exeName = "Open.Video.Downloader_$($version)_x64.exe"
           $keepFileName = ".keep"
           
+          $tagName = "app-v$version"
           Write-Host "Building portable bundle: $zipName"
+          Write-Host "Using release tag: $tagName"
           
           $exe = Get-ChildItem -Path $releaseDir -Filter "*.exe" | Where-Object { $_.Name -notmatch "setup" } | Select-Object -First 1
           if (-not $exe) { Write-Error "Could not find main exe in $releaseDir" }
           
-          New-Item -ItemType Directory -Path $layoutRoot/$portableFolder -Force | Out-Null
-          New-Item -ItemType File -Path $layoutRoot/$portableFolder/$keepFileName -Value "Do not remove this file or directory."
-          Copy-Item $exe.FullName -Destination $layoutRoot/$exeName
+          New-Item -ItemType Directory -Path "$layoutRoot/$portableFolder" -Force | Out-Null
+          New-Item -ItemType File -Path "$layoutRoot/$portableFolder/$keepFileName" -Value "Do not remove this file or directory." -Force | Out-Null
+          Copy-Item $exe.FullName -Destination "$layoutRoot/$exeName" -Force
           
-          Compress-Archive -Path "$layoutRoot/*" -DestinationPath $zipName
+          Compress-Archive -Path "$layoutRoot/*" -DestinationPath $zipName -Force
+      
           echo "PORTABLE_ASSET=$zipName" >> $env:GITHUB_ENV
+          echo "RELEASE_TAG=$tagName" >> $env:GITHUB_ENV
 
       - name: Upload Portable (Windows only)
         if: matrix.platform == 'windows-latest'
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.tauri.outputs.releaseTagName }}
+          tag_name: ${{ env.RELEASE_TAG }}
           files: ${{ env.PORTABLE_ASSET }}
 
       - name: Build and sign MSIX (Windows only)
