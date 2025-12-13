@@ -154,10 +154,12 @@ jobs:
 
       - name: Upload Portable (Windows only)
         if: matrix.platform == 'windows-latest'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          files: ${{ env.PORTABLE_ASSET }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Uploading ${PORTABLE_ASSET} to release ${RELEASE_TAG}"
+          gh release upload "${RELEASE_TAG}" "${PORTABLE_ASSET}" --clobber
 
       - name: Build and sign MSIX (Windows only)
         if: matrix.platform == 'windows-latest'
