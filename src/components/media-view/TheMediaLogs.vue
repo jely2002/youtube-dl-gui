@@ -75,9 +75,17 @@ const linkifiedGroupLog = computed(() => {
 
 const hasLog = computed(() => groupLog.logText.value.length > 0);
 
-const errors = computed(() => {
+const errors = computed((): MediaDiagnostic[] => {
   const diagnostics = diagnosticsStore.findDiagnosticsByGroupId(groupId.value);
-  return diagnostics.filter(diagnostic => diagnostic.level === 'error');
+  const errorDiagnostics: MediaDiagnostic[] = diagnostics.filter(diagnostic => diagnostic.level === 'error');
+  const fatalDiagnostics: MediaDiagnostic[] = diagnosticsStore.findFatalsByGroupId(groupId.value).map(fatal => ({
+    ...fatal,
+    level: 'error',
+    code: (fatal.exitCode ?? 1).toString(),
+    raw: fatal.message + fatal.details ? `\n Details: ${fatal.details}` : '',
+    component: null,
+  }));
+  return [...fatalDiagnostics, ...errorDiagnostics];
 });
 
 const warnings = computed(() => {
