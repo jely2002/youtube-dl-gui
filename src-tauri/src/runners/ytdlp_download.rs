@@ -1,6 +1,6 @@
 use crate::logging::LogStoreState;
 use crate::models::{
-  MediaDiagnosticPayload, MediaFatalPayload, MediaProgressComplete, ProgressEvent,
+  MediaDiagnosticPayload, MediaFatalPayload, MediaProgressComplete, ProgressEvent, TrackType,
 };
 use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_progress::YtdlpProgressParser;
@@ -12,7 +12,7 @@ use tauri::{AppHandle, Emitter, Manager, State};
 use tauri_plugin_shell::process::CommandEvent;
 
 pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
-  let output_path = resolve_output_path(&app);
+  let output_path = resolve_output_path(&app, entry.format.track_type.clone());
   let output_str = output_path.to_string_lossy();
   let rendered_output_str = entry.template_context.render_template(output_str.as_ref());
   let runner = YtdlpRunner::new(&app)
@@ -148,7 +148,7 @@ fn parse_error_line(line: &str, error_parser: &YtdlpErrorParser, app: &AppHandle
   }
 }
 
-fn resolve_output_path(app: &AppHandle) -> PathBuf {
+fn resolve_output_path(app: &AppHandle, track_type: TrackType) -> PathBuf {
   let cfg_handle = app.state::<SharedConfig>();
   let cfg = cfg_handle.load();
 
@@ -161,7 +161,10 @@ fn resolve_output_path(app: &AppHandle) -> PathBuf {
       .unwrap_or_else(|_| std::env::current_dir().expect("couldn’t get current dir"))
   };
 
-  let filename = cfg.output.file_name_template.clone();
+  let filename = match track_type {
+    TrackType::Both | TrackType::Video => cfg.output.file_name_template.clone(),
+    TrackType::Audio => cfg.output.audio_file_name_template.clone(),
+  };
 
   base_dir.join(filename)
 }
