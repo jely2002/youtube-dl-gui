@@ -367,7 +367,9 @@
               "m4a": "M4A",
               "ogg": "OGG",
               "aac": "AAC",
-              "opus": "Opus"
+              "opus": "Opus",
+              "wav": "WAV",
+              "flac": "FLAC"
             }
           }
         },

@@ -21,9 +21,17 @@ pub enum VideoContainer {
 pub enum AudioFormat {
   Mp3,
   M4a,
-  Ogg,
-  Aac,
   Opus,
+  Aac,
+  Ogg,
+  Flac,
+  Wav,
+}
+
+impl AudioFormat {
+  pub fn supports_embedded_thumbnail(&self) -> bool {
+    !matches!(self, AudioFormat::Wav)
+  }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]

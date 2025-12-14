@@ -15,8 +15,6 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
   let output_path = resolve_output_path(&app);
   let output_str = output_path.to_string_lossy();
   let rendered_output_str = entry.template_context.render_template(output_str.as_ref());
-  println!("Running yt-dlp with output: {}", rendered_output_str);
-  println!("{:?}", entry.template_context.values);
   let runner = YtdlpRunner::new(&app)
     .with_progress_args()
     .with_network_args()

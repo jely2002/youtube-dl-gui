@@ -18,9 +18,11 @@ export enum VideoContainer {
 export enum AudioFormat {
   mp3 = 'mp3',
   m4a = 'm4a',
-  ogg = 'ogg',
-  aac = 'aac',
   opus = 'opus',
+  aac = 'aac',
+  ogg = 'ogg',
+  flac = 'flac',
+  wav = 'wav',
 }
 
 export type DownloadOptions = {
