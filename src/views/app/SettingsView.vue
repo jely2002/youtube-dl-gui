@@ -2,7 +2,17 @@
   <form @submit.prevent="saveSettings">
     <base-sub-nav>
       <template v-slot:default>
-        <base-button :disabled="!hasChanges" :loading="isSaving" type="submit" class="btn-primary">
+        <base-confirm-button
+          :confirm-text="t('settings.reset.confirm')"
+          :disabled="isSaving || isResetting"
+          :loading="isResetting"
+          type="button"
+          class="btn-soft btn-warning"
+          @confirm="resetSettings"
+        >
+          {{ t('settings.reset.label') }}
+        </base-confirm-button>
+        <base-button :disabled="!hasChanges || isResetting" :loading="isSaving" type="submit" class="btn-primary">
           {{ t('common.save') }}
         </base-button>
       </template>
@@ -47,6 +57,7 @@
 <script setup lang="ts">
 import BaseSubNav from '../../components/base/BaseSubNav.vue';
 import BaseButton from '../../components/base/BaseButton.vue';
+import BaseConfirmButton from '../../components/base/BaseConfirmButton.vue';
 import { useSettingsStore } from '../../stores/settings';
 import { computed, ref, toRaw } from 'vue';
 import { useToastStore } from '../../stores/toast';
@@ -73,6 +84,7 @@ const { t } = useI18n();
 const draft = ref<Settings>(structuredClone<Settings>(toRaw(settingsStore.settings)));
 
 const isSaving = ref(false);
+const isResetting = ref(false);
 const hasChanges = computed(() => {
   return JSON.stringify(draft.value) !== JSON.stringify(settingsStore.settings);
 });
@@ -85,6 +97,20 @@ const saveSettings = async () => {
   }
   isSaving.value = false;
   toastStore.showToast(t('settings.toasts.saved'), { style: 'success' });
+};
+
+const resetSettings = async () => {
+  isResetting.value = true;
+  try {
+    const newSettings = await settingsStore.reset();
+    draft.value = structuredClone<Settings>(toRaw(newSettings));
+    if (newSettings.appearance.theme) {
+      setTheme(newSettings.appearance.theme);
+    }
+    toastStore.showToast(t('settings.toasts.reset'), { style: 'success' });
+  } finally {
+    isResetting.value = false;
+  }
 };
 
 const sections = [

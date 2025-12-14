@@ -17,7 +17,8 @@
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
     "video": "vídeo",
-    "unknown": "desconhecido"
+    "unknown": "desconhecido",
+    "confirm": "Confirmar"
   },
   "layout": {
     "header": {
@@ -298,6 +299,10 @@
   },
   "settings": {
     "title": "Configurações",
+    "reset": {
+      "label": "Restaurar",
+      "confirm": "Confirmar restauração"
+    },
     "performance": {
       "legend": "Desempenho",
       "legendLabel": "Configure quantos recursos de sistema são utilizados.",
@@ -511,7 +516,8 @@
       }
     },
     "toasts": {
-      "saved": "Configurações salvas!"
+      "saved": "Configurações salvas!",
+      "reset": "Configurações restauradas para o padrão."
     }
   },
   "updater": {

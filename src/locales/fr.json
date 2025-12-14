@@ -17,7 +17,8 @@
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
     "video": "vidéo",
-    "unknown": "inconnu"
+    "unknown": "inconnu",
+    "confirm": "Confirmer"
   },
   "layout": {
     "header": {
@@ -298,6 +299,10 @@
   },
   "settings": {
     "title": "Paramètres",
+    "reset": {
+      "label": "Réinitialiser",
+      "confirm": "Cliquez encore"
+    },
     "performance": {
       "legend": "Performance",
       "legendLabel": "Configurez l’utilisation des ressources système.",
@@ -511,7 +516,8 @@
       }
     },
     "toasts": {
-      "saved": "Paramètres enregistrés !"
+      "saved": "Paramètres enregistrés !",
+      "reset": "Paramètres réinitialisés par défaut."
     }
   },
   "updater": {

@@ -121,7 +121,7 @@ export const defaultOutputSettings: OutputSettings = {
   addThumbnail: true,
   downloadDir: null,
   fileNameTemplate: '%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
-  audioFileNameTemplate: '%(title).200s-%(abr)dk.%(ext)s',
+  audioFileNameTemplate: '%(title).200s-(%(abr)dk).%(ext)s',
 };
 
 export const defaultPerformanceSettings: PerformanceSettings = {
