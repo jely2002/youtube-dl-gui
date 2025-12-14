@@ -28,6 +28,12 @@ pub enum AudioFormat {
   Wav,
 }
 
+impl AudioFormat {
+  pub fn supports_embedded_thumbnail(&self) -> bool {
+    !matches!(self, AudioFormat::Wav)
+  }
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum TranscodePolicy {

@@ -102,10 +102,7 @@ pub fn build_output_args(
         args.push(fmt.into());
 
         if output_settings.add_thumbnail
-          && matches!(
-            output_settings.audio.format,
-            AudioFormat::Mp3 | AudioFormat::M4a
-          )
+          && output_settings.audio.format.supports_embedded_thumbnail()
         {
           args.push("--embed-thumbnail".into());
         }
