@@ -13,6 +13,7 @@ const allowedCommands: Set<string> = new Set([
     'updater_install',
     'config_set',
     'config_get',
+    'config_reset',
     'group_cancel',
     'logging_subscribe',
     'logging_unsubscribe',

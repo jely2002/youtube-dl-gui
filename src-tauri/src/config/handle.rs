@@ -58,6 +58,17 @@ impl ConfigHandle {
 
     Ok(new_cfg)
   }
+
+  pub fn reset(&self) -> Result<Config, Box<dyn std::error::Error>> {
+    let default_cfg = Config::default();
+    let raw = serde_json::to_value(&default_cfg)?;
+
+    self.store.set(CONFIG_KEY, raw);
+    self.store.save()?;
+    self.swap.store(Arc::new(default_cfg.clone()));
+
+    Ok(default_cfg)
+  }
 }
 
 fn materialize_config(raw: &Value) -> Result<Config, Box<dyn std::error::Error>> {

@@ -17,7 +17,8 @@
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
     "video": "video",
-    "unknown": "unknown"
+    "unknown": "unknown",
+    "confirm": "Confirm"
   },
   "layout": {
     "header": {
@@ -298,6 +299,10 @@
   },
   "settings": {
     "title": "Settings",
+    "reset": {
+      "label": "Reset",
+      "confirm": "Click again to reset"
+    },
     "performance": {
       "legend": "Performance",
       "legendLabel": "Configure how many system resources are used.",
@@ -511,7 +516,8 @@
       }
     },
     "toasts": {
-      "saved": "Settings saved!"
+      "saved": "Settings saved!",
+      "reset": "Reset settings to defaults."
     }
   },
   "updater": {

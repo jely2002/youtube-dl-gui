@@ -114,6 +114,7 @@ pub fn run() {
       logging_subscribe,
       logging_unsubscribe,
       config_get,
+      config_reset,
       config_set,
       binaries_check,
       binaries_ensure,
