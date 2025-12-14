@@ -93,9 +93,11 @@ pub fn build_output_args(
         let fmt = match output_settings.audio.format {
           AudioFormat::Mp3 => "mp3",
           AudioFormat::M4a => "m4a",
-          AudioFormat::Ogg => "ogg",
-          AudioFormat::Aac => "aac",
           AudioFormat::Opus => "opus",
+          AudioFormat::Aac => "aac",
+          AudioFormat::Ogg => "ogg",
+          AudioFormat::Flac => "flac",
+          AudioFormat::Wav => "wav",
         };
         args.push(fmt.into());
 

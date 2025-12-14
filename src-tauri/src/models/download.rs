@@ -21,9 +21,11 @@ pub enum VideoContainer {
 pub enum AudioFormat {
   Mp3,
   M4a,
-  Ogg,
-  Aac,
   Opus,
+  Aac,
+  Ogg,
+  Flac,
+  Wav,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
