@@ -1,4 +1,4 @@
-use crate::stronghold::stronghold_state::StrongholdState;
+use crate::stronghold::state::StrongholdTauriState;
 use tauri::State;
 
 #[derive(serde::Serialize)]
@@ -8,8 +8,10 @@ pub struct VaultStatus {
 }
 
 #[tauri::command]
-pub async fn stronghold_status(state: State<'_, StrongholdState>) -> Result<VaultStatus, String> {
-  let unlocked = state.inner.lock().unwrap().is_some();
+pub async fn stronghold_status(
+  state: State<'_, StrongholdTauriState>,
+) -> Result<VaultStatus, String> {
+  let unlocked = state.secrets.is_unlocked();
   let init_error = state.init_error.lock().unwrap().clone();
   Ok(VaultStatus {
     unlocked,

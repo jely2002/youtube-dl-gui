@@ -1,8 +1,8 @@
+use crate::capabilities::CoreCtx;
 use crate::scheduling::numbering::NumberingManager;
 use crate::RUNNING_GROUPS;
 use futures::Future;
 use std::{collections::VecDeque, sync::Arc};
-use tauri::AppHandle;
 use tokio::sync::{mpsc, Semaphore};
 
 pub trait DispatchEntry: Clone + Send + Sync + 'static {
@@ -26,7 +26,7 @@ where
   Req: Send + Sync + Clone + 'static,
 {
   pub fn start<Entry, MakeEntries, RunJob, Fut>(
-    app_handle: AppHandle,
+    context: CoreCtx,
     semaphore: Arc<Semaphore>,
     make_entries: MakeEntries,
     run_job: RunJob,
@@ -34,7 +34,7 @@ where
   where
     Entry: DispatchEntry,
     MakeEntries: Fn(Req) -> Vec<Entry> + Send + Sync + 'static,
-    RunJob: Fn(mpsc::UnboundedSender<DispatchRequest<Req>>, AppHandle, Entry) -> Fut
+    RunJob: Fn(mpsc::UnboundedSender<DispatchRequest<Req>>, CoreCtx, Entry) -> Fut
       + Send
       + Sync
       + 'static,
@@ -43,11 +43,11 @@ where
     let (tx, mut rx) = mpsc::unbounded_channel::<DispatchRequest<Req>>();
     let tx_loop = tx.clone();
     let sem = semaphore;
-    let app_main = app_handle;
+    let main_ctx = context.clone();
     let make_entries = Arc::new(make_entries);
     let run_job = Arc::new(run_job);
 
-    tauri::async_runtime::spawn(async move {
+    main_ctx.spawner.spawn(Box::pin(async move {
       let mut numbering = NumberingManager::new();
       let mut queues: VecDeque<(String, VecDeque<Entry>)> = VecDeque::new();
 
@@ -127,12 +127,13 @@ where
           // Dispatch the entry with the permit.
           {
             let tx_job = tx_loop.clone();
-            let app2 = app_main.clone();
+            let app2 = context.clone();
+            let app3 = context.clone();
             let run_job = run_job.clone();
-            tauri::async_runtime::spawn(async move {
-              run_job(tx_job, app2, entry.clone()).await;
+            app2.spawner.spawn(Box::pin(async move {
+              run_job(tx_job, app3, entry.clone()).await;
               drop(permit);
-            });
+            }));
           }
 
           // Requeue if more groups are left.
@@ -143,7 +144,7 @@ where
           free -= 1;
         }
       }
-    });
+    }));
 
     Self { sender: tx }
   }

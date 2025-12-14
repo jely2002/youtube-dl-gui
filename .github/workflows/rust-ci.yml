@@ -7,12 +7,14 @@ on:
       - '.github/workflows/rust-ci.yml'
       - '.github/actions/install-tauri-deps/**'
       - 'src-tauri/**'
+      - 'crates/**'
   pull_request:
     branches: [main]
     paths:
       - '.github/workflows/rust-ci.yml'
       - '.github/actions/install-tauri-deps/**'
       - 'src-tauri/**'
+      - 'crates/**'
 
 jobs:
   lint:
@@ -21,7 +23,7 @@ jobs:
     env:
       CARGO_TERM_COLOR: always
       TAURI_SKIP_UPDATE_CHECK: 1
-      CARGO_TARGET_DIR: src-tauri/target
+      CARGO_TARGET_DIR: target
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,14 +47,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('src-tauri/Cargo.toml') }}
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('Cargo.toml') }}
 
       - name: Cache Rust build artifacts
         if: ${{ github.event_name == 'push' }}
         uses: actions/cache@v4
         with:
-          path: src-tauri/target
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('src-tauri/Cargo.lock') }}
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-target-
 
@@ -62,10 +64,10 @@ jobs:
           components: clippy,rustfmt
 
       - name: Run clippy
-        run: cargo clippy --manifest-path=src-tauri/Cargo.toml --all-features --all-targets -- -D warnings
+        run: cargo clippy --all-features --all-targets -- -D warnings
 
       - name: Run cargo fmt
-        run: cargo fmt --manifest-path=src-tauri/Cargo.toml --all -- --check
+        run: cargo fmt --all -- --check
 
   unit-tests:
     name: 'Unit Tests'
@@ -73,7 +75,7 @@ jobs:
     env:
       CARGO_TERM_COLOR: always
       TAURI_SKIP_UPDATE_CHECK: 1
-      CARGO_TARGET_DIR: src-tauri/target
+      CARGO_TARGET_DIR: target
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -97,14 +99,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('src-tauri/Cargo.toml') }}
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('Cargo.toml') }}
 
       - name: Cache Rust build artifacts
         if: ${{ github.event_name == 'push' }}
         uses: actions/cache@v4
         with:
-          path: src-tauri/target
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('src-tauri/Cargo.lock') }}
+          path: target
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-target-
 
@@ -119,7 +121,7 @@ jobs:
       - name: Generate Rust coverage
         run: |
           mkdir -p coverage/rust
-          cargo llvm-cov --manifest-path=src-tauri/Cargo.toml --lcov --output-path=coverage/rust/lcov.info --remap-path-prefix --all-features --all-targets
+          cargo llvm-cov --lcov --output-path=coverage/rust/lcov.info --remap-path-prefix --all-features --all-targets
 
       - name: Upload Rust coverage to Codecov
         uses: codecov/codecov-action@v5

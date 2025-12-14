@@ -1,20 +1,19 @@
 use crate::commands::VaultStatus;
-use crate::stronghold::stronghold_state;
-use crate::stronghold::stronghold_state::StrongholdState;
-use tauri::{AppHandle, State, Wry};
+use crate::stronghold::state::StrongholdTauriState;
+use tauri::State;
 
 #[tauri::command]
 pub async fn stronghold_init(
-  app: AppHandle<Wry>,
-  state: State<'_, StrongholdState>,
+  state: State<'_, StrongholdTauriState>,
 ) -> Result<VaultStatus, String> {
-  if let Err(init_err) = stronghold_state::init(&app, &state) {
-    *state.init_error.lock().unwrap() = Some(format!("Vault initialize failed: {init_err}"));
+  if let Err(e) = state.secrets.init_new() {
+    *state.init_error.lock().unwrap() = Some(format!("Vault initialize failed: {e}"));
+  } else {
+    *state.init_error.lock().unwrap() = None;
   }
-  let unlocked = state.inner.lock().unwrap().is_some();
-  let init_error = state.init_error.lock().unwrap().clone();
+
   Ok(VaultStatus {
-    unlocked,
-    init_error,
+    unlocked: state.secrets.is_unlocked(),
+    init_error: state.init_error.lock().unwrap().clone(),
   })
 }

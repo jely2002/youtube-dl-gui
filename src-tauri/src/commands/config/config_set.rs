@@ -1,5 +1,5 @@
-use crate::config::Config;
 use crate::SharedConfig;
+use ovd_core::config::Config;
 use serde_json::Value;
 use tauri::State;
 

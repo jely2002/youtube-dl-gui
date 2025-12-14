@@ -1,15 +1,14 @@
+use crate::capabilities::CoreCtx;
 use crate::models::download::FormatOptions;
 use crate::models::DownloadItem;
 use crate::runners::template_context::TemplateContext;
 use crate::runners::ytdlp_download::run_ytdlp_download;
 use crate::scheduling::dispatcher::{DispatchEntry, DispatchRequest, GenericDispatcher};
-use crate::SharedConfig;
 use std::sync::LazyLock;
 use std::{
   collections::HashMap,
   sync::{Arc, Mutex},
 };
-use tauri::{AppHandle, Manager};
 use tokio::sync::mpsc::UnboundedSender;
 use tokio::sync::Semaphore;
 
@@ -69,12 +68,12 @@ impl DispatchEntry for DownloadEntry {
 static DOWNLOAD_COUNTERS: LazyLock<Mutex<HashMap<String, usize>>> =
   LazyLock::new(|| Mutex::new(HashMap::new()));
 
-pub fn setup_download_dispatcher(app: &AppHandle) -> GenericDispatcher<DownloadRequest> {
-  let cfg = app.state::<SharedConfig>().load();
+pub fn setup_download_dispatcher(ctx: &CoreCtx) -> GenericDispatcher<DownloadRequest> {
+  let cfg = ctx.config.load();
   let sem = Arc::new(Semaphore::new(cfg.performance.max_concurrency));
 
   GenericDispatcher::start(
-    app.clone(),
+    ctx.clone(),
     sem,
     |req: DownloadRequest| match req {
       DownloadRequest::Batch { group_id, items } => {
@@ -89,7 +88,7 @@ pub fn setup_download_dispatcher(app: &AppHandle) -> GenericDispatcher<DownloadR
           .collect()
       }
     },
-    |tx, app: AppHandle, entry: DownloadEntry| async move {
+    |tx, app: CoreCtx, entry: DownloadEntry| async move {
       tracing::info!("starting download id={} url={}", entry.id, entry.url);
       run_ytdlp_download(app.clone(), entry.clone()).await;
       let mut counters = DOWNLOAD_COUNTERS.lock().unwrap();

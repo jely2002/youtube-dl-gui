@@ -7,13 +7,13 @@ pub struct BinariesState {
 }
 
 impl BinariesState {
-  pub(crate) fn try_start(&self) -> bool {
+  pub fn try_start(&self) -> bool {
     self
       .running
       .compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
       .is_ok()
   }
-  pub(crate) fn finish(&self) {
+  pub fn finish(&self) {
     self.running.store(false, Ordering::SeqCst);
   }
 }

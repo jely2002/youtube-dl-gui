@@ -1,6 +1,6 @@
-use crate::scheduling::dispatcher::DispatchRequest;
-use crate::scheduling::fetch_pipeline::FetchRequest;
-use crate::{FetchSender, RUNNING_GROUPS};
+use ovd_core::scheduling::dispatcher::DispatchRequest;
+use ovd_core::scheduling::fetch_pipeline::{FetchRequest, FetchSender};
+use ovd_core::RUNNING_GROUPS;
 use tauri::State;
 
 #[tauri::command]

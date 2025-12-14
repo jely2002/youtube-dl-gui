@@ -1,34 +1,27 @@
+use crate::capabilities::{AuthSecrets, CommandChild, CoreCtx, Output, ProcessEvent, Receiver};
 use crate::config::{Config, SubtitleSettings};
 use crate::models::download::FormatOptions;
-use crate::paths::PathsManager;
 use crate::runners::ytdlp_args::{build_format_args, build_output_args};
-use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
-use crate::SharedConfig;
 use std::collections::HashSet;
 use std::path::PathBuf;
 use std::sync::Arc;
-use tauri::async_runtime::Receiver;
-use tauri::{AppHandle, Manager};
-use tauri_plugin_shell::process::{CommandChild, Output};
-use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 
 pub struct YtdlpRunner<'a> {
-  app: &'a AppHandle,
+  ctx: &'a CoreCtx,
   cfg: Arc<Config>,
   args: Vec<String>,
   bin_dir: PathBuf,
 }
 
 impl<'a> YtdlpRunner<'a> {
-  pub fn new(app: &'a AppHandle) -> Self {
-    let paths_manager = app.state::<PathsManager>();
+  pub fn new(ctx: &'a CoreCtx) -> Self {
+    let paths_manager = &ctx.paths;
     let bin_dir = paths_manager.bin_dir().clone();
     let args = vec!["--encoding".into(), "utf-8".into()];
-    let cfg_handle = app.state::<SharedConfig>();
-    let cfg = cfg_handle.load();
+    let cfg = ctx.config.load();
 
     Self {
-      app,
+      ctx,
       cfg,
       args,
       bin_dir,
@@ -79,10 +72,8 @@ impl<'a> YtdlpRunner<'a> {
       ]);
     }
 
-    if let Some(sh_state) = self.app.try_state::<StrongholdState>() {
-      if let Ok(secrets) = sh_state.load_auth_secrets() {
-        self.apply_auth_secrets(secrets);
-      }
+    if let Ok(secrets) = self.ctx.secrets.load_auth_secrets() {
+      self.apply_auth_secrets(secrets);
     }
 
     self
@@ -162,29 +153,22 @@ impl<'a> YtdlpRunner<'a> {
     let path_env = std::env::var("PATH").unwrap_or_default();
     let new_path = format!("{}{}{}", self.bin_dir.display(), separator, path_env);
     self
-      .app
-      .shell()
-      .command("yt-dlp")
-      .args(self.args)
-      .env("PATH", new_path)
-      .output()
+      .ctx
+      .process
+      .output("yt-dlp", self.args, vec![("PATH".to_string(), new_path)])
       .await
       .map_err(|e| format!("yt-dlp failed to run: {e}"))
   }
 
-  pub fn spawn(self) -> Result<(Receiver<CommandEvent>, CommandChild), String> {
+  pub fn spawn(self) -> Result<(Receiver<ProcessEvent>, CommandChild), String> {
     tracing::info!("Running command: yt-dlp {}", self.args.join(" "));
     let separator = if cfg!(windows) { ';' } else { ':' };
     let path_env = std::env::var("PATH").unwrap_or_default();
     let new_path = format!("{}{}{}", self.bin_dir.display(), separator, path_env);
     self
-      .app
-      .shell()
-      .command("yt-dlp")
-      .args(self.args)
-      .env("PATH", new_path)
-      .spawn()
-      .map_err(|e| format!("yt-dlp failed to spawn: {e}"))
+      .ctx
+      .process
+      .spawn("yt-dlp", self.args, vec![("PATH".to_string(), new_path)])
   }
 
   fn apply_auth_secrets(&mut self, s: AuthSecrets) {

@@ -1,7 +1,7 @@
+use crate::capabilities::{CoreCtx, EventSinkExt};
 use crate::models::payloads::AppendLogPayload;
 use indexmap::IndexMap;
 use std::collections::{HashSet, VecDeque};
-use tauri::{AppHandle, Emitter};
 
 #[derive(Debug, Default)]
 pub struct GroupLog {
@@ -35,16 +35,16 @@ impl LogStore {
     self.subscribed.remove(group_id);
   }
 
-  pub fn append_lines<'a, I>(&mut self, app: &AppHandle, group: &str, lines: I)
+  pub fn append_lines<'a, I>(&mut self, ctx: &CoreCtx, group: &str, lines: I)
   where
     I: IntoIterator<Item = &'a str>,
   {
     for line in lines {
-      self.append_line(app, group, line);
+      self.append_line(ctx, group, line);
     }
   }
 
-  pub fn append_line(&mut self, app: &AppHandle, group_id: &str, line: &str) {
+  pub fn append_line(&mut self, ctx: &CoreCtx, group_id: &str, line: &str) {
     let line_len = line.len();
 
     let entry = self.groups.entry(group_id.to_string()).or_default();
@@ -59,7 +59,7 @@ impl LogStore {
         line: line.to_owned(),
       };
 
-      if let Err(err) = app.emit("logging_append", &payload) {
+      if let Err(err) = ctx.events.emit("logging_append", &payload) {
         tracing::debug!("Failed to emit log event: {err}");
       }
     }

@@ -1,7 +1,7 @@
-use crate::models::DownloadItem;
-use crate::scheduling::dispatcher::DispatchRequest;
-use crate::scheduling::download_pipeline::{DownloadRequest, DownloadSender};
-use crate::RUNNING_GROUPS;
+use ovd_core::models::DownloadItem;
+use ovd_core::scheduling::dispatcher::DispatchRequest;
+use ovd_core::scheduling::download_pipeline::{DownloadRequest, DownloadSender};
+use ovd_core::RUNNING_GROUPS;
 use tauri::State;
 
 #[tauri::command]

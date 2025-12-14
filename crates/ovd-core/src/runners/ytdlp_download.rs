@@ -1,4 +1,4 @@
-use crate::logging::LogStoreState;
+use crate::capabilities::{CoreCtx, EventSinkExt, ProcessEvent};
 use crate::models::{
   MediaDiagnosticPayload, MediaFatalPayload, MediaProgressComplete, ProgressEvent, TrackType,
 };
@@ -6,16 +6,14 @@ use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_progress::YtdlpProgressParser;
 use crate::runners::ytdlp_runner::YtdlpRunner;
 use crate::scheduling::download_pipeline::DownloadEntry;
-use crate::{SharedConfig, RUNNING_GROUPS};
+use crate::RUNNING_GROUPS;
 use std::path::PathBuf;
-use tauri::{AppHandle, Emitter, Manager, State};
-use tauri_plugin_shell::process::CommandEvent;
 
-pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
-  let output_path = resolve_output_path(&app, entry.format.track_type.clone());
+pub async fn run_ytdlp_download(ctx: CoreCtx, entry: DownloadEntry) {
+  let output_path = resolve_output_path(&ctx, entry.format.track_type.clone());
   let output_str = output_path.to_string_lossy();
   let rendered_output_str = entry.template_context.render_template(output_str.as_ref());
-  let runner = YtdlpRunner::new(&app)
+  let runner = YtdlpRunner::new(&ctx)
     .with_progress_args()
     .with_network_args()
     .with_auth_args()
@@ -24,13 +22,7 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
     .with_format_args(&entry.format)
     .with_input_args()
     .with_output_args(&entry.format)
-    .with_args([
-      "-o",
-      rendered_output_str.as_ref(),
-      "--output-na-placeholder",
-      "\"\"",
-      &entry.url,
-    ]);
+    .with_args(["-o", rendered_output_str.as_ref(), &entry.url]);
 
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
   let matcher = DiagnosticMatcher::from_json(RULES_JSON).expect("invalid rules");
@@ -49,22 +41,21 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
       }
     }
 
-    let log_state = app.state::<LogStoreState>();
-
     match event {
-      CommandEvent::Stdout(line) => {
+      ProcessEvent::Stdout(line) => {
         let line_str = String::from_utf8_lossy(&line);
-        store_log_line(&line_str, &entry, log_state, &app);
-        parse_progress_line(&line_str, &mut progress_parser, &app);
+        store_log_line(&line_str, &entry, &ctx);
+        parse_progress_line(&line_str, &mut progress_parser, &ctx);
       }
-      CommandEvent::Stderr(line) => {
+      ProcessEvent::Stderr(line) => {
         let line_str = String::from_utf8_lossy(&line);
-        store_log_line(&line_str, &entry, log_state, &app);
-        parse_error_line(&line_str, &error_parser, &app);
+        store_log_line(&line_str, &entry, &ctx);
+        parse_error_line(&line_str, &error_parser, &ctx);
       }
-      CommandEvent::Terminated(term) => {
+      ProcessEvent::Terminated(term) => {
         if term.code == Some(0) {
-          app
+          ctx
+            .events
             .emit(
               "media_complete",
               MediaProgressComplete {
@@ -74,7 +65,8 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
             )
             .ok();
         } else {
-          app
+          ctx
+            .events
             .emit(
               "media_fatal",
               MediaFatalPayload::with_exit(
@@ -88,8 +80,9 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
         }
         break;
       }
-      CommandEvent::Error(err) => {
-        app
+      ProcessEvent::Error(err) => {
+        ctx
+          .events
           .emit(
             "media_fatal",
             MediaFatalPayload::internal(
@@ -101,45 +94,40 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
           )
           .ok();
       }
-      _ => {}
     }
   }
 }
 
-fn store_log_line(
-  line: &str,
-  entry: &DownloadEntry,
-  log_state: State<LogStoreState>,
-  app: &AppHandle,
-) {
+fn store_log_line(line: &str, entry: &DownloadEntry, ctx: &CoreCtx) {
   if line.is_empty() || line.starts_with("RAW") {
     return;
   }
-  let mut store = log_state.write();
-  store.append_line(app, &entry.group_id, line);
+  let mut store = ctx.logging.write();
+  store.append_line(ctx, &entry.group_id, line);
 }
 
-fn parse_progress_line(line: &str, progress_parser: &mut YtdlpProgressParser, app: &AppHandle) {
+fn parse_progress_line(line: &str, progress_parser: &mut YtdlpProgressParser, ctx: &CoreCtx) {
   let progress_events = progress_parser.parse_line(line);
 
   for progress_event in progress_events {
     match progress_event {
       ProgressEvent::Destination(destination) => {
-        app.emit("media_destination", destination).ok();
+        ctx.events.emit("media_destination", destination).ok();
       }
       ProgressEvent::Progress(progress) => {
-        app.emit("media_progress", progress).ok();
+        ctx.events.emit("media_progress", progress).ok();
       }
       ProgressEvent::StageChange(progress) => {
-        app.emit("media_progress_stage", progress).ok();
+        ctx.events.emit("media_progress_stage", progress).ok();
       }
     }
   }
 }
 
-fn parse_error_line(line: &str, error_parser: &YtdlpErrorParser, app: &AppHandle) {
+fn parse_error_line(line: &str, error_parser: &YtdlpErrorParser, ctx: &CoreCtx) {
   if let Some(event) = error_parser.parse_line(line) {
-    app
+    ctx
+      .events
       .emit(
         "media_diagnostic",
         MediaDiagnosticPayload::from_diagnostic_event(event),
@@ -148,17 +136,13 @@ fn parse_error_line(line: &str, error_parser: &YtdlpErrorParser, app: &AppHandle
   }
 }
 
-fn resolve_output_path(app: &AppHandle, track_type: TrackType) -> PathBuf {
-  let cfg_handle = app.state::<SharedConfig>();
-  let cfg = cfg_handle.load();
+fn resolve_output_path(ctx: &CoreCtx, track_type: TrackType) -> PathBuf {
+  let cfg = ctx.config.load();
 
   let base_dir = if let Some(dir) = &cfg.output.download_dir {
     PathBuf::from(dir)
   } else {
-    app
-      .path()
-      .download_dir()
-      .unwrap_or_else(|_| std::env::current_dir().expect("couldn’t get current dir"))
+    ctx.paths.download_dir.clone()
   };
 
   let filename = match track_type {

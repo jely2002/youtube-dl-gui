@@ -113,7 +113,6 @@ export const useMediaStore = defineStore('media', () => {
     const newState = group.isCombined ? MediaState.downloadingList : MediaState.downloading;
     items.forEach(item => stateStore.setState(item.id, newState));
 
-    console.log(group);
     await invoke<string>('media_download', {
       groupId,
       items: itemsWithoutLeader.map(item => ({
@@ -123,11 +122,11 @@ export const useMediaStore = defineStore('media', () => {
         templateContext: {
           values: {
             playlist_index: item.playlistIndex?.toString(),
-            playlist_id: group.playlistId,
-            playlist_title: group.playlistTitle,
-            playlist: group.playlistTitle,
-            playlist_uploader: group.uploader,
-            playlist_uploader_id: group.uploaderId,
+            playlist_id: group.playlistId ?? undefined,
+            playlist_title: group.playlistTitle ?? undefined,
+            playlist: group.playlistTitle ?? undefined,
+            playlist_uploader: group.uploader ?? undefined,
+            playlist_uploader_id: group.uploaderId ?? undefined,
             playlist_count: group.playlistCount?.toString(),
             n_entries: group.entries?.length?.toString(),
           },

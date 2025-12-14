@@ -1,5 +1,5 @@
-use crate::binaries::binaries_manager::BinariesManager;
-use crate::binaries::binaries_state::BinariesState;
+use ovd_core::binaries::binaries_manager::BinariesManager;
+use ovd_core::binaries::binaries_state::BinariesState;
 use tauri::State;
 
 #[tauri::command]

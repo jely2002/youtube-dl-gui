@@ -1,0 +1,22 @@
+[workspace]
+members = [
+    "crates/ovd-core",
+    "crates/ovd-server",
+    "src-tauri",
+]
+resolver = "3"
+
+[profile.dev]
+incremental = true
+
+[profile.dev.package.scrypt]
+opt-level = 3
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = false
+debug = 1
+split-debuginfo = "packed"

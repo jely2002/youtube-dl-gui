@@ -1,3 +1,4 @@
+use crate::capabilities::{CoreCtx, EventSinkExt};
 use crate::models::download::FormatOptions;
 use crate::models::payloads::MediaAddWithFormatPayload;
 use crate::models::{MediaAddPayload, MediaFatalPayload};
@@ -5,14 +6,12 @@ use crate::runners::ytdlp_info::run_ytdlp_info_fetch;
 use crate::{
   models::{ParsedMedia, ParsedPlaylist},
   scheduling::dispatcher::{DispatchEntry, DispatchRequest, GenericDispatcher},
-  SharedConfig,
 };
 use std::sync::LazyLock;
 use std::{
   collections::HashMap,
   sync::{Arc, Mutex},
 };
-use tauri::{AppHandle, Emitter, Manager};
 use tokio::sync::{mpsc::UnboundedSender, Semaphore};
 use uuid::Uuid;
 
@@ -65,15 +64,15 @@ impl DispatchEntry for FetchEntry {
 static GROUP_COUNTERS: LazyLock<Mutex<HashMap<String, usize>>> =
   LazyLock::new(|| Mutex::new(HashMap::new()));
 
-pub fn setup_fetch_dispatcher(app: &AppHandle) -> GenericDispatcher<FetchRequest> {
-  let cfg = app.state::<SharedConfig>().load();
+pub fn setup_fetch_dispatcher(ctx: &CoreCtx) -> GenericDispatcher<FetchRequest> {
+  let cfg = ctx.config.load();
   let sem = Arc::new(Semaphore::new(cfg.performance.max_concurrency));
 
   GenericDispatcher::start(
-    app.clone(),
+    ctx.clone(),
     sem,
     expand_fetch_request,
-    |tx: UnboundedSender<DispatchRequest<FetchRequest>>, app: AppHandle, entry: FetchEntry| async move {
+    |tx: UnboundedSender<DispatchRequest<FetchRequest>>, app: CoreCtx, entry: FetchEntry| async move {
       handle_fetch_entry(tx, app, entry).await;
     },
   )
@@ -141,7 +140,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
 
 async fn handle_fetch_entry(
   tx: UnboundedSender<DispatchRequest<FetchRequest>>,
-  app: AppHandle,
+  ctx: CoreCtx,
   entry: FetchEntry,
 ) {
   let FetchEntry {
@@ -152,7 +151,7 @@ async fn handle_fetch_entry(
     format,
   } = entry.clone();
 
-  let result = run_ytdlp_info_fetch(&app, id.clone(), group_id.clone(), &url, format.clone()).await;
+  let result = run_ytdlp_info_fetch(&ctx, id.clone(), group_id.clone(), &url, format.clone()).await;
 
   match result {
     Some(ParsedMedia::Single(single)) => {
@@ -163,14 +162,14 @@ async fn handle_fetch_entry(
           item: single,
           format,
         };
-        let _ = app.emit("media_size", payload);
+        let _ = ctx.events.emit("media_size", payload);
       } else {
         let payload = MediaAddPayload {
           group_id: group_id.clone(),
           total,
           item: single,
         };
-        let _ = app.emit("media_add", payload);
+        let _ = ctx.events.emit("media_add", payload);
       }
 
       let mut counters = GROUP_COUNTERS.lock().unwrap();
@@ -206,13 +205,13 @@ async fn handle_fetch_entry(
           total: pl.entries.len(),
           item: pl,
         };
-        let _ = app.emit("media_add", payload);
+        let _ = ctx.events.emit("media_add", payload);
       }
     }
     Some(ParsedMedia::Livestream(_)) => {
       let payload =
         MediaFatalPayload::internal(group_id.clone(), id, "Livestreams unsupported".into(), None);
-      let _ = app.emit("media_fatal", payload);
+      let _ = ctx.events.emit("media_fatal", payload);
       let _ = tx.send(DispatchRequest::Cleanup { group_id });
     }
     None => {

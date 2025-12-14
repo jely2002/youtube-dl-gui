@@ -1,14 +1,13 @@
-use crate::logging::LogStoreState;
+use crate::capabilities::{CoreCtx, EventSinkExt};
 use crate::models::download::FormatOptions;
 use crate::models::{MediaDiagnosticPayload, MediaFatalPayload, ParsedMedia, TrackType};
 use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_info::parse_ytdlp_info;
 use crate::runners::ytdlp_runner::YtdlpRunner;
 use std::borrow::Cow;
-use tauri::{AppHandle, Emitter, Manager};
 
 pub async fn run_ytdlp_info_fetch(
-  app: &AppHandle,
+  ctx: &CoreCtx,
   id: String,
   group_id: String,
   url: &str,
@@ -16,7 +15,7 @@ pub async fn run_ytdlp_info_fetch(
 ) -> Option<ParsedMedia> {
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
 
-  let runner = YtdlpRunner::new(app)
+  let runner = YtdlpRunner::new(ctx)
     .with_format_args(&format.unwrap_or(FormatOptions {
       track_type: TrackType::Both,
       asr: None,
@@ -31,7 +30,7 @@ pub async fn run_ytdlp_info_fetch(
   let matcher = match DiagnosticMatcher::from_json(RULES_JSON) {
     Ok(m) => m,
     Err(e) => {
-      let _ = app.emit(
+      let _ = ctx.events.emit(
         "media_fatal",
         MediaFatalPayload::internal(
           group_id.clone(),
@@ -49,7 +48,7 @@ pub async fn run_ytdlp_info_fetch(
   let output = match runner.shell().await {
     Ok(o) => o,
     Err(e) => {
-      let _ = app.emit(
+      let _ = ctx.events.emit(
         "media_fatal",
         MediaFatalPayload::with_exit(
           group_id.clone(),
@@ -65,8 +64,6 @@ pub async fn run_ytdlp_info_fetch(
   let stdout_text = String::from_utf8_lossy(&output.stdout);
   let stderr_text = String::from_utf8_lossy(&output.stderr);
 
-  let log_state = app.state::<LogStoreState>();
-
   {
     let mut lines: Vec<&str> = Vec::new();
     if !stderr_text.is_empty() {
@@ -77,20 +74,20 @@ pub async fn run_ytdlp_info_fetch(
     }
 
     {
-      let mut store = log_state.write();
-      store.append_lines(app, &group_id, stderr_text.lines());
+      let mut store = ctx.logging.write();
+      store.append_lines(ctx, &group_id, stderr_text.lines());
     }
 
     let events = error_parser.parse_lines(lines);
     for event in events {
-      let _ = app.emit(
+      let _ = ctx.events.emit(
         "media_diagnostic",
         MediaDiagnosticPayload::from_diagnostic_event(event),
       );
     }
   }
 
-  let status_code: i32 = output.status.code().unwrap_or(1);
+  let status_code: i32 = output.status_code;
   if status_code != 0 {
     // Truncate very large stderr payloads.
     let stderr_snippet: Cow<str> = if stderr_text.len() > 8_192 {
@@ -103,7 +100,7 @@ pub async fn run_ytdlp_info_fetch(
       stderr_text.clone()
     };
 
-    let _ = app.emit(
+    let _ = ctx.events.emit(
       "media_fatal",
       MediaFatalPayload::with_exit(
         group_id.clone(),
@@ -118,7 +115,7 @@ pub async fn run_ytdlp_info_fetch(
   match parse_ytdlp_info(&stdout_text, id.clone()) {
     Ok(media) => Some(media),
     Err(e) => {
-      let _ = app.emit(
+      let _ = ctx.events.emit(
         "media_fatal",
         MediaFatalPayload::with_exit(
           group_id,

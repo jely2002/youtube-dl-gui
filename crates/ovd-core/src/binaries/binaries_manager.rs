@@ -5,14 +5,13 @@ use crate::binaries::binaries_extractor::{
   extract_tar_bz2, extract_tar_bz2_bundle, extract_zip, extract_zip_bundle,
 };
 use crate::binaries::binaries_state::CheckResult;
-use crate::paths::PathsManager;
+use crate::capabilities::{CoreCtx, EventSinkExt};
 use base64::Engine;
 use ed25519_dalek::{Signature, Verifier, VerifyingKey};
 use fs_extra::dir::{move_dir, CopyOptions};
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use tauri::{AppHandle, Emitter, Error, Manager, Wry};
 use tokio::fs;
 use tokio::io::AsyncWriteExt;
 
@@ -59,6 +58,7 @@ struct BundleInfo {
 #[derive(Default, Serialize, Deserialize)]
 struct Metadata {
   versions: HashMap<String, String>,
+  #[serde(default)]
   is_locked: bool,
 }
 
@@ -96,30 +96,29 @@ struct ToolComplete {
 }
 
 pub struct BinariesManager {
-  app: AppHandle<Wry>,
+  ctx: CoreCtx,
   client: reqwest::Client,
   bin_dir: PathBuf,
 }
 
 impl BinariesManager {
-  pub fn new(app: &AppHandle<Wry>) -> Self {
-    let paths_manager = app.state::<PathsManager>();
+  pub fn new(ctx: &CoreCtx) -> Self {
     Self {
-      app: app.clone(),
+      ctx: ctx.clone(),
       client: reqwest::Client::new(),
-      bin_dir: paths_manager.bin_dir().clone(),
+      bin_dir: ctx.paths.bin_dir().clone(),
     }
   }
 
-  fn canonical_path(&self, tool: &str) -> Result<PathBuf, Error> {
+  fn canonical_path(&self, tool: &str) -> PathBuf {
     let base = &self.bin_dir;
     #[cfg(windows)]
     {
-      Ok(base.join(format!("{tool}.exe")))
+      base.join(format!("{tool}.exe"))
     }
     #[cfg(not(windows))]
     {
-      Ok(base.join(tool))
+      base.join(tool)
     }
   }
 
@@ -165,7 +164,7 @@ impl BinariesManager {
       }
 
       let version_ok = meta.versions.get(name).is_some_and(|v| v == &info.version);
-      let canonical = self.canonical_path(name)?;
+      let canonical = self.canonical_path(name);
       let exists = tokio::fs::metadata(&canonical).await.is_ok();
 
       if !version_ok || !exists {
@@ -230,7 +229,7 @@ impl BinariesManager {
 
     if let Err(e) = self.save_metadata(&meta_path, &meta).await {
       let msg = e.to_string();
-      let _ = self.app.emit(
+      let _ = self.ctx.events.emit(
         "binary_update_complete",
         ToolResult {
           successes,
@@ -241,7 +240,7 @@ impl BinariesManager {
       return Err(e);
     }
 
-    let _ = self.app.emit(
+    let _ = self.ctx.events.emit(
       "binary_update_complete",
       ToolResult {
         successes,
@@ -284,7 +283,7 @@ impl BinariesManager {
     };
     let dest = bin.join(filename);
 
-    let _ = self.app.emit(
+    let _ = self.ctx.events.emit(
       "binary_download_start",
       ToolStart {
         tool: name.to_string(),
@@ -306,12 +305,7 @@ impl BinariesManager {
       return self.fail_stage(name, &info.version, "download_verify", e.to_string());
     }
 
-    let canonical = self.canonical_path(name).map_err(|e| {
-      self
-        .fail_stage(name, &info.version, "canonical_path", e.to_string())
-        .err()
-        .unwrap()
-    })?;
+    let canonical = self.canonical_path(name);
 
     if tokio::fs::metadata(&canonical).await.is_err() {
       let err = format!(
@@ -321,7 +315,7 @@ impl BinariesManager {
       return self.fail_stage(name, &info.version, "post_install_check", err);
     }
 
-    let _ = self.app.emit(
+    let _ = self.ctx.events.emit(
       "binary_download_complete",
       ToolComplete {
         tool: name.to_string(),
@@ -397,7 +391,7 @@ impl BinariesManager {
       received += chunk.len() as u64;
       hasher.update(&chunk);
       file.write_all(&chunk).await?;
-      let _ = self.app.emit(
+      let _ = self.ctx.events.emit(
         "binary_download_progress",
         ToolProgress {
           tool: tool.to_string(),
@@ -414,7 +408,7 @@ impl BinariesManager {
 
     fs::rename(&tmp, dest).await?;
 
-    let canonical = self.canonical_path(tool)?;
+    let canonical = self.canonical_path(tool);
     let parent = dest.parent().unwrap();
 
     if let Some(ext) = dest.extension().and_then(|e| e.to_str()) {
@@ -494,7 +488,7 @@ impl BinariesManager {
   }
 
   fn emit_tool_error(&self, tool: &str, version: &str, stage: &str, error: impl Into<String>) {
-    let _ = self.app.emit(
+    let _ = self.ctx.events.emit(
       "binary_download_error",
       ToolError {
         tool: tool.to_string(),

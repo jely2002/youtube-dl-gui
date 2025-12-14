@@ -57,7 +57,7 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './src-tauri -> target'
+          workspaces: '. -> target'
 
       - name: Install frontend dependencies
         run: npm install
@@ -105,9 +105,7 @@ jobs:
           export SENTRY_RELEASE
           
           echo "Using Sentry release: $SENTRY_RELEASE"
-          
-          cd src-tauri
-          
+     
           sentry-cli debug-files upload --include-sources target
           
           if [ "${{ matrix.platform }}" = "ubuntu-22.04" ]; then
@@ -126,7 +124,7 @@ jobs:
         if: matrix.platform == 'windows-latest'
         shell: pwsh
         run: |
-          $releaseDir = "src-tauri/target/release"
+          $releaseDir = "target/release"
           $layoutRoot = "portable-layout"
           $portableFolder = "ovd-portable"
 

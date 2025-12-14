@@ -1,5 +1,5 @@
 use crate::commands::UpdateStore;
-use crate::paths::PathsManager;
+use ovd_core::capabilities::PathsManager;
 use tauri::{AppHandle, State};
 use tauri_plugin_updater::{Result as UpdaterResult, UpdaterExt};
 use tokio::sync::Mutex;

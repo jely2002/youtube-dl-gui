@@ -69,7 +69,6 @@ export const useMediaGroupStore = defineStore('media-group', () => {
         },
       };
 
-      console.log(leader);
       if (entry) {
         newGroup.playlistCount = leader?.playlistCount;
         newGroup.playlistUploader = leader?.uploader;

@@ -20,7 +20,7 @@ inputs:
   exe-path:
     description: 'Path to the built main .exe'
     required: false
-    default: 'src-tauri\target\release\open-video-downloader.exe'
+    default: 'target\release\open-video-downloader.exe'
 
   license-path:
     description: 'Path to 3rd party licenses file'

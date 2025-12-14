@@ -5,6 +5,12 @@ pub struct LogStoreState {
   inner: RwLock<LogStore>,
 }
 
+impl Default for LogStoreState {
+  fn default() -> Self {
+    Self::new()
+  }
+}
+
 impl LogStoreState {
   const MAX_LOG_BYTES: usize = 8 * 1024 * 1024;
 

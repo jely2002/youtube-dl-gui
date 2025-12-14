@@ -1,37 +1,38 @@
-mod binaries;
 mod commands;
 mod config;
-mod logging;
+mod events;
 mod menu;
-mod models;
-mod parsers;
 mod paths;
 mod runners;
-mod scheduling;
 mod stronghold;
 
-use crate::binaries::binaries_manager::BinariesManager;
-use crate::binaries::binaries_state::BinariesState;
 use crate::commands::*;
-use crate::logging::LogStoreState;
+use crate::config::{HandleConfigProvider, TauriJsonStore};
+use crate::events::TauriEventSink;
 use crate::menu::setup_menu;
-use crate::paths::PathsManager;
-use crate::scheduling::download_pipeline::{setup_download_dispatcher, DownloadSender};
-use crate::scheduling::fetch_pipeline::{setup_fetch_dispatcher, FetchSender};
-use config::ConfigHandle;
+use crate::paths::TauriAppPaths;
+use crate::runners::{TauriProcessRunner, TauriSpawner};
+use crate::stronghold::secrets_store::{KeyringMasterKeyProvider, StrongholdSecretsStore};
+use crate::stronghold::state::StrongholdTauriState;
+use crate::stronghold::vault::StrongholdVaultState;
+use ovd_core::binaries::binaries_manager::BinariesManager;
+use ovd_core::binaries::binaries_state::BinariesState;
+use ovd_core::capabilities::{
+  CoreCtx, DynConfigProvider, DynEventSink, DynProcessRunner, DynSecretsStore, PathsManager,
+  Spawner,
+};
+use ovd_core::config::ConfigHandle;
+use ovd_core::logging::LogStoreState;
+use ovd_core::scheduling::download_pipeline::{setup_download_dispatcher, DownloadSender};
+use ovd_core::scheduling::fetch_pipeline::{setup_fetch_dispatcher, FetchSender};
 use sentry::ClientInitGuard;
-use std::collections::HashMap;
-use std::sync::{Arc, LazyLock, Mutex as StdMutex};
-use stronghold::stronghold_state;
+use std::sync::Arc;
 use tauri::Manager;
 use tokio::sync::Mutex;
 use tracing_subscriber::filter::{LevelFilter, Targets};
 use tracing_subscriber::{fmt, prelude::*};
 
-type SharedConfig = Arc<ConfigHandle>;
-
-pub static RUNNING_GROUPS: LazyLock<StdMutex<HashMap<String, bool>>> =
-  LazyLock::new(|| StdMutex::new(HashMap::new()));
+type SharedConfig = Arc<ConfigHandle<TauriJsonStore>>;
 
 /// # Panics
 ///
@@ -49,6 +50,8 @@ pub fn run() {
     .setup(|app| {
       let handle = app.handle();
 
+      init_tracing();
+
       let sentry_client = sentry::init((
         "https://e5ff83f3c84f397db516955ec278c4c6@o762792.ingest.us.sentry.io/4510256640884736",
         sentry::ClientOptions {
@@ -60,47 +63,59 @@ pub fn run() {
       ));
       handle.manage::<ClientInitGuard>(sentry_client);
 
-      init_tracing();
+      let events: DynEventSink = Arc::new(TauriEventSink::new(handle.clone()));
 
-      // setup runtime mode detection / path management
-      let path_handle = PathsManager::new(handle);
-      handle.manage(path_handle.clone());
+      let spawner: Arc<dyn Spawner> = Arc::new(TauriSpawner);
+      let process: DynProcessRunner = Arc::new(TauriProcessRunner::new(handle.clone()));
 
-      // setup config management
-      let config_handle = ConfigHandle::init(handle)?;
-      let shared = Arc::new(config_handle);
-      handle.manage::<SharedConfig>(shared);
+      let paths = PathsManager::new(&TauriAppPaths::new(handle.clone()));
+      handle.manage(paths.clone());
 
-      // manage update store
-      handle.manage(Mutex::new(UpdateStore::default()));
+      let logging: Arc<LogStoreState> = Arc::new(LogStoreState::new());
+      handle.manage(logging.clone());
 
-      // manage log store
-      handle.manage(LogStoreState::new());
+      let store_path = paths.app_dir().join("config.store.json");
+      let json_store = Arc::new(TauriJsonStore::open(handle, store_path)?);
+      let cfg_handle: SharedConfig = Arc::new(ConfigHandle::init(json_store)?);
+      let config: DynConfigProvider = Arc::new(HandleConfigProvider::new(cfg_handle.clone()));
+      handle.manage(cfg_handle.clone());
 
-      // setup dispatchers
-      let fetch_dispatcher = setup_fetch_dispatcher(handle);
-      handle.manage(FetchSender(fetch_dispatcher.sender()));
-      let download_dispatcher = setup_download_dispatcher(handle);
-      handle.manage(DownloadSender(download_dispatcher.sender()));
+      let snapshot_path = paths.app_dir().join("vault.hold");
+      let vault = Arc::new(StrongholdVaultState::new(snapshot_path.clone()));
+      let key_provider = KeyringMasterKeyProvider::new(handle.clone());
 
-      // setup binaries
-      handle.manage(BinariesState::default());
-      handle.manage(BinariesManager::new(handle));
-
-      // setup stronghold
-      let app_path = path_handle.app_dir();
-      let stronghold_path = app_path.join("vault.hold");
-
-      handle.manage(stronghold_state::StrongholdState::new(stronghold_path));
+      let secrets: DynSecretsStore = Arc::new(StrongholdSecretsStore::new(vault, key_provider));
+      app.manage(StrongholdTauriState::new(secrets.clone()));
 
       // async init stronghold
       #[cfg(not(all(target_os = "macos", debug_assertions)))]
       {
-        let state_ref = handle.state::<stronghold_state::StrongholdState>();
-        stronghold_state::init_on_startup(handle, &state_ref);
+        let _ = secrets.init_or_unlock();
       }
 
-      // configure app menu
+      let core_ctx = CoreCtx {
+        events,
+        config,
+        process,
+        spawner,
+        secrets,
+        paths,
+        logging,
+      };
+
+      handle.manage(core_ctx.clone());
+
+      handle.manage(Mutex::new(UpdateStore::default()));
+
+      handle.manage(BinariesState::default());
+      handle.manage(BinariesManager::new(&core_ctx));
+
+      let fetch_dispatcher = setup_fetch_dispatcher(&core_ctx);
+      handle.manage(FetchSender(fetch_dispatcher.sender()));
+
+      let download_dispatcher = setup_download_dispatcher(&core_ctx);
+      handle.manage(DownloadSender(download_dispatcher.sender()));
+
       setup_menu(handle);
 
       Ok(())

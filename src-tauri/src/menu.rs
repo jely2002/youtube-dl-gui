@@ -1,4 +1,4 @@
-use crate::models::payloads::NavigatePayload;
+use ovd_core::models::payloads::NavigatePayload;
 use tauri::menu::{AboutMetadata, MenuBuilder, MenuItemBuilder, SubmenuBuilder};
 use tauri::{AppHandle, Emitter};
 

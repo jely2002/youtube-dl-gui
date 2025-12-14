@@ -1,7 +1,7 @@
-use crate::models::download::FormatOptions;
-use crate::scheduling::dispatcher::DispatchRequest;
-use crate::scheduling::fetch_pipeline::{FetchRequest, FetchSender};
-use crate::RUNNING_GROUPS;
+use ovd_core::models::download::FormatOptions;
+use ovd_core::scheduling::dispatcher::DispatchRequest;
+use ovd_core::scheduling::fetch_pipeline::{FetchRequest, FetchSender};
+use ovd_core::RUNNING_GROUPS;
 use tauri::State;
 
 #[tauri::command]
