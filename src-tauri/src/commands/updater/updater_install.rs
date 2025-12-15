@@ -24,5 +24,6 @@ pub async fn updater_install(app: AppHandle, store: State<'_, Mutex<UpdateStore>
 
   update.install(&bytes)?;
   let _ = app.emit("updater_finished", ());
+  app.request_restart();
   Ok(())
 }
