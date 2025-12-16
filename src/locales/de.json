@@ -554,7 +554,7 @@
         "select": "Datei auswählen",
         "placeholder": "Datei auswählen…",
         "invalid": "Ungültiger Dateipfad."
-		
+
       },
       "secretInput": {
         "hide": "Ausblenden",
