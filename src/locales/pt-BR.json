@@ -415,6 +415,10 @@
             "titleOnly": "Meu áudio.mp3",
             "titleQualityPlaylist": "03-Meu áudio-(320k).mp3"
           }
+        },
+        "restrictFilenames": {
+          "label": "Restringir nomes de arquivos:",
+          "hint": "Substitui espaços por sublinhados e remove caracteres especiais como \"&\" dos nomes dos arquivos."
         }
       },
       "outputFormat": {

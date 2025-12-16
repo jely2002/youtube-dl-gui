@@ -415,6 +415,10 @@
             "titleOnly": "Mijn Audio.mp3",
             "titleQualityPlaylist": "03-Mijn Audio-(320k).mp3"
           }
+        },
+        "restrictFilenames": {
+          "label": "Beperk bestandsnamen:",
+          "hint": "Vervangt spaties door onderstrepingstekens en verwijdert speciale tekens zoals \"&\" uit bestandsnamen."
         }
       },
       "outputFormat": {

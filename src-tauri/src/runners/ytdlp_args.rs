@@ -167,6 +167,10 @@ pub fn build_output_args(
     args.push("--add-metadata".into());
   }
 
+  if output_settings.restrict_filenames {
+    args.push("--restrict-filenames".into());
+  }
+
   args
 }
 
@@ -434,5 +438,31 @@ mod tests {
     .collect();
 
     assert_eq!(args, expected);
+  }
+
+  #[test]
+  fn restrict_filenames_adds_flag_on_enable() {
+    let format_options = make_video_format_options(Some(720), Some(60));
+
+    let mut settings = OutputSettings::default();
+    settings.video.policy = TranscodePolicy::Never;
+    settings.restrict_filenames = true;
+
+    let args = build_output_args(&format_options, &settings);
+
+    assert!(args.contains(&"--restrict-filenames".to_string()));
+  }
+
+  #[test]
+  fn restrict_filenames_omits_flag_on_disable() {
+    let format_options = make_video_format_options(Some(720), Some(60));
+
+    let mut settings = OutputSettings::default();
+    settings.video.policy = TranscodePolicy::Never;
+    settings.restrict_filenames = false;
+
+    let args = build_output_args(&format_options, &settings);
+
+    assert!(!args.contains(&"--restrict-filenames".to_string()));
   }
 }
