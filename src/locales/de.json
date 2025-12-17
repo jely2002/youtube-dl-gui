@@ -557,8 +557,24 @@
       "fileInput": {
         "select": "Datei auswählen",
         "placeholder": "Datei auswählen…",
-        "invalid": "Ungültiger Dateipfad."
-
+        "invalid": "Ungültige Datei.",
+        "clear": "Datei löschen",
+        "recents": {
+          "clear": "Letzte Dateien löschen",
+          "open": "Letzte Auswahlen öffnen",
+          "empty": "Keine letzten Auswahlen"
+        }
+      },
+      "folderInput": {
+        "select": "Ordner auswählen",
+        "placeholder": "Ordner auswählen…",
+        "invalid": "Ungültiger Ordner.",
+        "clear": "Ordner löschen",
+        "recents": {
+          "clear": "Letzte Ordner löschen",
+          "open": "Letzte Auswahlen öffnen",
+          "empty": "Keine letzten Auswahlen"
+        }
       },
       "secretInput": {
         "hide": "Ausblenden",

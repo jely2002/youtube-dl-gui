@@ -555,10 +555,26 @@
         "subtitle": "Aggiungi alla coda trascinando i video."
       },
       "fileInput": {
-        "select": "Selezione file",
+        "select": "Seleziona file",
         "placeholder": "Seleziona un file…",
-        "invalid": "Percorso file non valido."
-
+        "invalid": "File non valido.",
+        "clear": "Rimuovi file",
+        "recents": {
+          "clear": "Cancella file recenti",
+          "open": "Apri selezioni recenti",
+          "empty": "Nessuna selezione recente"
+        }
+      },
+      "folderInput": {
+        "select": "Seleziona cartella",
+        "placeholder": "Seleziona una cartella…",
+        "invalid": "Cartella non valida.",
+        "clear": "Rimuovi cartella",
+        "recents": {
+          "clear": "Cancella cartelle recenti",
+          "open": "Apri selezioni recenti",
+          "empty": "Nessuna selezione recente"
+        }
       },
       "secretInput": {
         "hide": "Nascondi",

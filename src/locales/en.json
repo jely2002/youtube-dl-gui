@@ -557,8 +557,24 @@
       "fileInput": {
         "select": "Select file",
         "placeholder": "Select a file…",
-        "invalid": "Invalid file path."
-
+        "invalid": "Invalid file.",
+        "clear": "Clear file",
+        "recents": {
+          "clear": "Clear recent files",
+          "open": "Open recent selections",
+          "empty": "No recent selections"
+        }
+      },
+      "folderInput": {
+        "select": "Select folder",
+        "placeholder": "Select a folder…",
+        "invalid": "Invalid folder.",
+        "clear": "Clear folder",
+        "recents": {
+          "clear": "Clear recent folders",
+          "open": "Open recent selections",
+          "empty": "No recent selections"
+        }
       },
       "secretInput": {
         "hide": "Hide",

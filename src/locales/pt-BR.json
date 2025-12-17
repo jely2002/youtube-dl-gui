@@ -555,9 +555,26 @@
         "subtitle": "Adicione à fila arrastando vídeos."
       },
       "fileInput": {
-        "select": "Selecione arquivo",
+        "select": "Selecionar arquivo",
         "placeholder": "Selecione um arquivo…",
-        "invalid": "Caminho de arquivo inválido."
+        "invalid": "Arquivo inválido.",
+        "clear": "Limpar arquivo",
+        "recents": {
+          "clear": "Limpar arquivos recentes",
+          "open": "Abrir seleções recentes",
+          "empty": "Nenhuma seleção recente"
+        }
+      },
+      "folderInput": {
+        "select": "Selecionar pasta",
+        "placeholder": "Selecione uma pasta…",
+        "invalid": "Pasta inválida.",
+        "clear": "Limpar pasta",
+        "recents": {
+          "clear": "Limpar pastas recentes",
+          "open": "Abrir seleções recentes",
+          "empty": "Nenhuma seleção recente"
+        }
       },
       "secretInput": {
         "hide": "Ocultar",

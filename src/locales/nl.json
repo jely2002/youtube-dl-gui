@@ -557,7 +557,24 @@
       "fileInput": {
         "select": "Bestand selecteren",
         "placeholder": "Selecteer een bestand…",
-        "invalid": "Ongeldig bestand."
+        "invalid": "Ongeldig bestand.",
+        "clear": "Bestand wissen",
+        "recents": {
+          "clear": "Recente bestanden wissen",
+          "open": "Recente selecties openen",
+          "empty": "Geen recente selecties"
+        }
+      },
+      "folderInput": {
+        "select": "Map selecteren",
+        "placeholder": "Selecteer een map…",
+        "invalid": "Ongeldige map.",
+        "clear": "Map wissen",
+        "recents": {
+          "clear": "Recente mappen wissen",
+          "open": "Recente selecties openen",
+          "empty": "Geen recente selecties"
+        }
       },
       "secretInput": {
         "hide": "Verbergen",

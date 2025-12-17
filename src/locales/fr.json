@@ -557,7 +557,24 @@
       "fileInput": {
         "select": "Sélectionner un fichier",
         "placeholder": "Sélectionnez un fichier…",
-        "invalid": "Chemin de fichier invalide."
+        "invalid": "Fichier non valide.",
+        "clear": "Effacer le fichier",
+        "recents": {
+          "clear": "Effacer les fichiers récents",
+          "open": "Ouvrir les sélections récentes",
+          "empty": "Aucune sélection récente"
+        }
+      },
+      "folderInput": {
+        "select": "Sélectionner un dossier",
+        "placeholder": "Sélectionnez un dossier…",
+        "invalid": "Dossier non valide.",
+        "clear": "Effacer le dossier",
+        "recents": {
+          "clear": "Effacer les dossiers récents",
+          "open": "Ouvrir les sélections récentes",
+          "empty": "Aucune sélection récente"
+        }
       },
       "secretInput": {
         "hide": "Masquer",
