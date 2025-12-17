@@ -60,7 +60,7 @@ const hasCookieChanges = computed(() => {
   return JSON.stringify(cookieFields.value) !== JSON.stringify(settingsStore.settings.auth);
 });
 const hasStrongholdChanges = computed(() => {
-  return JSON.stringify(strongholdFields.value) !== strongholdSnapshot.value;
+  return JSON.stringify(strongholdFields.value) !== strongholdSnapshot.value && strongholdStore.status.unlocked === true;
 });
 const hasChanges = computed(() => {
   return hasCookieChanges.value || hasStrongholdChanges.value;
