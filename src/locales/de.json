@@ -415,6 +415,10 @@
             "titleOnly": "Mein Audio.mp3",
             "titleQualityPlaylist": "03-Mein Audio-(320k).mp3"
           }
+        },
+        "restrictFilenames": {
+          "label": "Dateinamen einschränken:",
+          "hint": "Ersetzt Leerzeichen durch Unterstriche und entfernt Sonderzeichen wie \"&\" aus Dateinamen."
         }
       },
       "outputFormat": {

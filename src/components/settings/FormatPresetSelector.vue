@@ -38,7 +38,7 @@
           v-model="internalRestrictFilenames"
           class="toggle toggle-primary"
       />
-      <span class="label-text-alt opacity-70 mt-2">{{ restrictFilenamesHint }}</span>
+      <span class="label mt-2">{{ restrictFilenamesHint }}</span>
     </div>
 
     <p v-if="displayExample" class="font-semibold mb-2">
