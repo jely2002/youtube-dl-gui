@@ -50,6 +50,7 @@ export interface OutputSettings {
   downloadDir: string | null;
   fileNameTemplate: string;
   audioFileNameTemplate: string;
+  restrictFilenames: boolean;
 }
 
 export interface PerformanceSettings {
@@ -122,6 +123,7 @@ export const defaultOutputSettings: OutputSettings = {
   downloadDir: null,
   fileNameTemplate: '%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
   audioFileNameTemplate: '%(title).200s-(%(abr)dk).%(ext)s',
+  restrictFilenames: false,
 };
 
 export const defaultPerformanceSettings: PerformanceSettings = {

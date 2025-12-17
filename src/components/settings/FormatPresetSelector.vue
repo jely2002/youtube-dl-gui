@@ -28,11 +28,24 @@
         v-model="internalTemplate"
     />
 
-    <p v-if="example" class="font-semibold mb-2">
+    <div class="flex flex-col mb-4">
+      <label class="font-semibold mb-2" :for="`${idPrefix}-restrictFilenames`">
+        {{ restrictFilenamesLabel }}
+      </label>
+      <input
+          :id="`${idPrefix}-restrictFilenames`"
+          type="checkbox"
+          v-model="internalRestrictFilenames"
+          class="toggle toggle-primary"
+      />
+      <span class="label-text-alt opacity-70 mt-2">{{ restrictFilenamesHint }}</span>
+    </div>
+
+    <p v-if="displayExample" class="font-semibold mb-2">
       {{ exampleLabel }}
     </p>
-    <p v-if="example" class="text-[14px] mb-2">
-      {{ example }}
+    <p v-if="displayExample" class="text-[14px] mb-2">
+      {{ displayExample }}
     </p>
   </div>
 </template>
@@ -56,11 +69,15 @@ const props = defineProps<{
   presetLabel: string;
   formatLabel: string;
   exampleLabel: string;
+  restrictFilenames: boolean;
+  restrictFilenamesLabel: string;
+  restrictFilenamesHint: string;
 }>();
 
 const emit = defineEmits<{
   'update:modelValue': [string];
   'update:preset': [FormatPreset];
+  'update:restrictFilenames': [boolean];
 }>();
 
 const isCustom = computed(() => props.preset === FormatPreset.Custom);
@@ -96,6 +113,13 @@ const internalTemplate = computed<string>({
   },
 });
 
+const internalRestrictFilenames = computed<boolean>({
+  get: () => props.restrictFilenames,
+  set(val) {
+    emit('update:restrictFilenames', val);
+  },
+});
+
 const example = computed<string | undefined>(() => {
   if (isCustom.value) return undefined;
   return (
@@ -103,5 +127,14 @@ const example = computed<string | undefined>(() => {
     ?? props.modelValue
     ?? props.presets[0]?.example
   );
+});
+
+const displayExample = computed<string | undefined>(() => {
+  const base = example.value;
+  if (!base) return undefined;
+  if (props.restrictFilenames) {
+    return base.replace(/\s+/g, '_').replace(/&/g, '_and_');
+  }
+  return base;
 });
 </script>

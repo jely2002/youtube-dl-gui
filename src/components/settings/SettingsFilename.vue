@@ -14,9 +14,12 @@
             :presets="videoFormatPresets"
             v-model="videoTemplate"
             v-model:preset="selectedVideoFormatPreset"
+            v-model:restrict-filenames="restrictFilenames"
             :preset-label="t('settings.filename.formatPreset.label')"
             :format-label="t('settings.filename.outputFormat.label')"
             :example-label="t('settings.filename.formatPreset.exampleLabel')"
+            :restrict-filenames-label="t('settings.filename.formatPreset.restrictFilenames.label')"
+            :restrict-filenames-hint="t('settings.filename.formatPreset.restrictFilenames.hint')"
         />
       </template>
 
@@ -26,9 +29,12 @@
             :presets="audioFormatPresets"
             v-model="audioTemplate"
             v-model:preset="selectedAudioFormatPreset"
+            v-model:restrict-filenames="restrictFilenames"
             :preset-label="t('settings.filename.formatPreset.label')"
             :format-label="t('settings.filename.outputFormat.label')"
             :example-label="t('settings.filename.formatPreset.exampleLabel')"
+            :restrict-filenames-label="t('settings.filename.formatPreset.restrictFilenames.label')"
+            :restrict-filenames-hint="t('settings.filename.formatPreset.restrictFilenames.hint')"
         />
       </template>
     </tabbed-settings-pane>
@@ -131,6 +137,13 @@ const audioTemplate = computed<string>({
   get: () => settings.value.output.audioFileNameTemplate ?? '',
   set(val) {
     settings.value.output.audioFileNameTemplate = val;
+  },
+});
+
+const restrictFilenames = computed<boolean>({
+  get: () => settings.value.output.restrictFilenames ?? false,
+  set(val) {
+    settings.value.output.restrictFilenames = val;
   },
 });
 
