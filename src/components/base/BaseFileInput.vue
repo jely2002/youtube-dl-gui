@@ -1,13 +1,36 @@
 <template>
   <p class="font-semibold">{{ label }}</p>
+
   <div class="join group w-full" v-bind="$attrs">
-    <div class="w-full">
-      <label class="input validator join-item w-full">
-        <input ref="fileInput" @click="select" type="text" class="cursor-pointer w-full" readonly :value="inputText" required />
+    <div class="relative w-full">
+      <label class="input validator join-item w-full pr-10">
+        <input
+            ref="fileInput"
+            type="text"
+            class="cursor-pointer w-full"
+            readonly
+            :value="inputText"
+            required
+            @click="select"
+        />
       </label>
+      <button
+          v-if="clearable && path"
+          type="button"
+          class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-xs btn-circle btn-ghost transition-opacity"
+          @click.stop="clear"
+          aria-label="Clear"
+      >
+        <x-mark-icon class="w-5 h-5"/>
+      </button>
       <div class="validator-hint hidden">{{ validatorMessage }}</div>
     </div>
-    <button @click="select" type="button" class="btn btn-soft join-item group-hover:bg-base-200 group-hover:border-base-300">
+    <button
+        @click="select"
+        type="button"
+        class="btn btn-soft join-item group-focus-within:bg-base-200
+       group-focus-within:border-base-300"
+    >
       <template v-if="isSelecting">
         <span class="sr-only">{{ t('common.loading') }}</span>
         <span class="loading loading-spinner loading-sm"></span>
@@ -24,6 +47,7 @@
 import { computed, onMounted, PropType, ref, watchEffect } from 'vue';
 import { useDialog } from '../../composables/useDialog';
 import { useI18n } from 'vue-i18n';
+import { XMarkIcon } from '@heroicons/vue/24/solid';
 
 const { openPathDialog } = useDialog();
 const { t } = useI18n();
@@ -37,7 +61,7 @@ const isSelecting = ref(false);
 const path = defineModel({ type: String as PropType<string | null>, required: false, default: null });
 const fileInput = ref<HTMLInputElement | null>(null);
 
-const { invalid, validatorMessage, label } = defineProps({
+const { invalid, clearable, validatorMessage, label } = defineProps({
   label: {
     type: String,
     required: true,
@@ -46,6 +70,11 @@ const { invalid, validatorMessage, label } = defineProps({
     type: Boolean,
     required: false,
     default: false,
+  },
+  clearable: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
   validatorMessage: {
     type: String,
@@ -78,5 +107,10 @@ const select = async () => {
   } finally {
     isSelecting.value = false;
   }
+};
+
+const clear = () => {
+  path.value = null;
+  emit('update:modelValue', null);
 };
 </script>
