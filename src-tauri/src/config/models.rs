@@ -149,6 +149,7 @@ pub struct SubtitleSettings {
   pub include_auto_generated: bool,
   pub languages: Vec<String>,
   pub format_preference: Vec<String>,
+  pub embed_subtitles: bool,
 }
 
 impl Default for SubtitleSettings {
@@ -157,6 +158,7 @@ impl Default for SubtitleSettings {
       enabled: false,
       include_auto_generated: false,
       languages: vec!["en".into()],
+      embed_subtitles: true,
       format_preference: vec![
         "srt".into(),
         "vtt".into(),

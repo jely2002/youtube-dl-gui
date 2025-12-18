@@ -271,6 +271,10 @@
         "legendLabel": "Kies je gewenste ondertitelformaat. Als dit niet beschikbaar is, wordt het volgende beste formaat gebruikt.",
         "label": "Formaat"
       },
+      "embed": {
+        "label": "Ondertitelspoor toevoegen:",
+        "hint": "Voegt ondertitels toe aan het videobestand. Dit werkt voor MP4-, MKV- en WEBM-formaten."
+      },
       "languages": {
         "legend": "Talen",
         "legendLabel": "Kies de ondertiteltalen om te downloaden.",

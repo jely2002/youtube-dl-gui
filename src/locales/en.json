@@ -271,6 +271,10 @@
         "legendLabel": "Select your preferred subtitle format. If the format is not available, the next best format will be used.",
         "label": "Format"
       },
+      "embed": {
+        "label": "Add subtitles track:",
+        "hint": "Add subtitles to the video file, this works for mp4, mkv and webm formats."
+      },
       "languages": {
         "legend": "Languages",
         "legendLabel": "Pick the subtitle languages to download.",

@@ -271,6 +271,10 @@
         "legendLabel": "Seleziona il formato sottotitoli preferito. Se il formato non è disponibile, verrà usato il formato migliore successivo.",
         "label": "Formato"
       },
+      "embed": {
+        "label": "Aggiungi traccia sottotitoli:",
+        "hint": "Aggiunge i sottotitoli al file video. Funziona con i formati MP4, MKV e WEBM."
+      },
       "languages": {
         "legend": "Lingua",
         "legendLabel": "Scegli le lingue sottotitoli da scaricare.",

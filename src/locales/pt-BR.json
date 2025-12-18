@@ -271,6 +271,10 @@
         "legendLabel": "Selecione o formato de legenda preferido. Caso o formato não esteja disponível, será utilizado o próximo formato mais adequado.",
         "label": "Formato"
       },
+      "embed": {
+        "label": "Adicionar faixa de legendas:",
+        "hint": "Adiciona legendas ao arquivo de vídeo. Funciona com os formatos MP4, MKV e WebM."
+      },
       "languages": {
         "legend": "Idiomas",
         "legendLabel": "Selecione os idiomas das legendas para baixar.",

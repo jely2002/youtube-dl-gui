@@ -271,6 +271,10 @@
         "legendLabel": "Wähle dein bevorzugtes Untertitelformat. Wenn das Format nicht verfügbar ist, wird das nächstbeste Format verwendet.",
         "label": "Format"
       },
+      "embed": {
+        "label": "Untertitelspur hinzufügen:",
+        "hint": "Fügt Untertitel zur Videodatei hinzu. Funktioniert mit den Formaten MP4, MKV und WebM."
+      },
       "languages": {
         "legend": "Sprachen",
         "legendLabel": "Wähle die Untertitelsprachen aus, die heruntergeladen werden sollen.",

@@ -218,10 +218,17 @@ fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {
 
   let mut args = vec!["--write-subs".into()];
 
+  if settings.embed_subtitles {
+    args.push("--embed-subs".into());
+    // Remove the subtitle file after embedding it.
+    args.push("--no-write-auto-subs".into());
+    args.push("--no-write-subs".into());
+  } else {
+    args.push("--no-embed-subs".into());
+  }
+
   if settings.include_auto_generated {
     args.push("--write-auto-subs".into());
-  } else {
-    args.push("--no-write-auto-subs".into());
   }
 
   let formats = sanitize_subtitle_formats(&settings.format_preference);
@@ -335,7 +342,34 @@ mod tests {
       args,
       vec![
         "--write-subs",
+        "--embed-subs",
         "--no-write-auto-subs",
+        "--no-write-subs",
+        "--sub-format",
+        "srt/vtt/ass/ttml/json",
+        "--sub-langs",
+        "en"
+      ]
+    );
+  }
+
+  #[test]
+  fn subtitles_embed_and_include_auto_generated_enabled() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      embed_subtitles: true,
+      include_auto_generated: true,
+      ..Default::default()
+    };
+    let args = build_subtitle_args(&settings).expect("args");
+    assert_eq!(
+      args,
+      vec![
+        "--write-subs",
+        "--embed-subs",
+        "--no-write-auto-subs",
+        "--no-write-subs",
+        "--write-auto-subs",
         "--sub-format",
         "srt/vtt/ass/ttml/json",
         "--sub-langs",
@@ -350,6 +384,7 @@ mod tests {
       enabled: true,
       languages: vec!["all".into(), "en".into()],
       format_preference: vec!["srt".into(), "vtt".into()],
+      embed_subtitles: false,
       include_auto_generated: true,
     };
 
@@ -358,6 +393,7 @@ mod tests {
       args,
       vec![
         "--write-subs",
+        "--no-embed-subs",
         "--write-auto-subs",
         "--sub-format",
         "srt/vtt/ass/ttml/json",
@@ -376,7 +412,7 @@ mod tests {
       ..Default::default()
     };
     let args = build_subtitle_args(&settings).expect("args");
-    assert_eq!(args[3], "srt/vtt/ass/ttml/json");
-    assert_eq!(args[5], "en");
+    assert_eq!(args[5], "srt/vtt/ass/ttml/json");
+    assert_eq!(args[7], "en");
   }
 }
