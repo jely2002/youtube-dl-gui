@@ -1,6 +1,15 @@
 <template>
-  <details class="collapse collapse-arrow bg-base-100 border-base-300 border">
-    <summary style="display: flex;" class="collapse-title text-sm flex-row items-center gap-2">
+  <component
+      :is="hasDetails ? 'details' : 'section'"
+      class="collapse bg-base-100 border-base-300 border"
+      :class="{ 'collapse-arrow': hasDetails, 'cursor-auto': !hasDetails }"
+  >
+    <component
+        :is="hasDetails ? 'summary' : 'div'"
+        style="display: flex;"
+        class="collapse-title text-sm flex-row items-center gap-2"
+        :class="{ 'cursor-auto': !hasDetails }"
+    >
       <span
           v-if="diagnostic.component"
           class="badge badge-soft"
@@ -16,8 +25,8 @@
         {{ t('media.view.logs.failure') }}
       </span>
       <span v-html="diagnosticDisplay.message"/>
-    </summary>
-    <div class="collapse-content text-sm flex flex-col gap-2">
+    </component>
+    <div v-if="hasDetails" class="collapse-content text-sm flex flex-col gap-2">
       <p
           class="max-h-44 text-wrap overflow-y-scroll bg-base-200 p-4 rounded-box"
           v-if="diagnostic.raw"
@@ -33,7 +42,7 @@
         </template>
       </button>
     </div>
-  </details>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -57,6 +66,8 @@ const diagnosticBadgeClass = computed(() => {
     'badge-error': diagnostic.level === 'error',
   };
 });
+
+const hasDetails = computed(() => diagnostic.raw != '');
 
 const {
   diagnosticDisplay,
