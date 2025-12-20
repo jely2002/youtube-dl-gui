@@ -46,6 +46,7 @@ pub fn run() {
     .plugin(tauri_plugin_keyring::init())
     .plugin(tauri_plugin_shell::init())
     .plugin(tauri_plugin_opener::init())
+    .plugin(tauri_plugin_clipboard_manager::init())
     .setup(|app| {
       let handle = app.handle();
 
@@ -102,6 +103,9 @@ pub fn run() {
 
       // configure app menu
       setup_menu(handle);
+
+      // register shortcuts
+      register_shortcuts(&handle)?;
 
       Ok(())
     })

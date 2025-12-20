@@ -17,6 +17,7 @@ import { strongholdHandlers } from '../tests/utils/mocks/strongholdHandlers';
 import { getDefaultLocale, i18n } from './i18n';
 import { createSentryPiniaPlugin } from '@sentry/vue';
 import { createSentry } from './sentry.ts';
+import { startWindowSync } from './tauri/window.ts';
 
 const pinia = createPinia();
 pinia.use(createSentryPiniaPlugin());
@@ -54,5 +55,8 @@ settingsStore.load().then((settings) => {
   console.error(e);
 }).finally(() => {
   void invoke('app_ready');
+  if (!__E2E__) {
+    startWindowSync();
+  }
   app.mount('#app');
 });

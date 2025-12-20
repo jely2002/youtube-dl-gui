@@ -34,6 +34,7 @@ import { useClipboard } from '../composables/useClipboard';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '../stores/settings';
+import { isValidUrl } from '../helpers/url.ts';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -58,16 +59,7 @@ const inputPlaceholder = computed(() => {
   }
 });
 
-const clipboardHasValidUrl = computed(() => {
-  if (!clipboardContent.value) return false;
-  try {
-    const url = new URL(clipboardContent.value);
-    if (!/^https?:$/.test(url.protocol)) return false;
-    return url.hostname;
-  } catch {
-    return false;
-  }
-});
+const clipboardHasValidUrl = computed(() => isValidUrl(clipboardContent));
 
 const isInputDisabled = computed(() => {
   return url.value.length === 0 && !clipboardHasValidUrl.value;
