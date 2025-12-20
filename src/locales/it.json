@@ -335,6 +335,11 @@
         "label": "Preferisci un singolo video per i collegamenti alle playlist:",
         "hint": "Quando un collegamento contiene sia un video che una playlist, scarica solo il video anziché la playlist completa."
       },
+      "globalShortcuts": {
+        "label": "Abilita scorciatoie:",
+        "add_hint": "Aggiungi video alla coda con:",
+        "download_hint": "Scarica la coda con:"
+      },
       "authentication": {
         "label": "Accedi per scaricare video privati:",
         "link": "Configura autenticazione"

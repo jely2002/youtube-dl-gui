@@ -117,7 +117,7 @@ export function startWindowSync(): void {
     const totalCount = aggregateProgress.value.total ?? 0;
     const readyCount = aggregateProgress.value.ready ?? 0;
 
-    await setDockOrTaskbarBadge(activeDownloadCount);
+    await setDockOrTaskbarBadge(activeDownloadCount + readyCount);
 
     await setProgressBarState({
       activeDownloadCount,

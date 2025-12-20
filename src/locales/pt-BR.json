@@ -335,6 +335,11 @@
         "label": "Preferir vídeo único para links de playlist:",
         "hint": "Quando um link contiver um vídeo e uma playlist, baixar apenas o vídeo em vez da playlist completa."
       },
+      "globalShortcuts": {
+        "label": "Ativar atalhos:",
+        "add_hint": "Adicionar vídeos à fila com:",
+        "download_hint": "Baixar a fila com:"
+      },
       "authentication": {
         "label": "Fazer login para baixar vídeos privados:",
         "link": "Configurar autenticação"

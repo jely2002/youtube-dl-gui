@@ -105,7 +105,7 @@ pub fn run() {
       setup_menu(handle);
 
       // register shortcuts
-      register_shortcuts(&handle)?;
+      register_shortcuts(handle).expect("failed to register shortcuts");
 
       Ok(())
     })

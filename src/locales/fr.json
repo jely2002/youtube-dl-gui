@@ -335,6 +335,11 @@
         "label": "Préférer la vidéo seule pour les liens de playlist :",
         "hint": "Si un lien contient vidéo + playlist, ne télécharger que la vidéo."
       },
+      "globalShortcuts": {
+        "label": "Activer les raccourcis :",
+        "add_hint": "Ajouter des vidéos à la file d’attente avec :",
+        "download_hint": "Télécharger la file d’attente avec :"
+      },
       "authentication": {
         "label": "Se connecter pour télécharger les vidéos privées :",
         "link": "Configurer l’authentification"

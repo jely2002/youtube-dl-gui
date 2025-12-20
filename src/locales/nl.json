@@ -335,6 +335,11 @@
         "label": "Voorkeur voor losse video bij playlist-links:",
         "hint": "Als een link zowel een video als een playlist bevat, download dan alleen de video in plaats van de hele playlist."
       },
+      "globalShortcuts": {
+        "label": "Sneltoetsen inschakelen:",
+        "add_hint": "Voeg video’s toe aan de wachtrij met:",
+        "download_hint": "Download de wachtrij met:"
+      },
       "authentication": {
         "label": "Log in om privévideo’s te downloaden:",
         "link": "Authenticatie instellen"
