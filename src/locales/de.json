@@ -335,6 +335,11 @@
         "label": "Bei Playlist-Links einzelnes Video bevorzugen:",
         "hint": "Wenn ein Link sowohl ein Video als auch eine Playlist enthält, nur das Video statt der gesamten Playlist herunterladen."
       },
+      "globalShortcuts": {
+        "label": "Tastenkürzel aktivieren:",
+        "add_hint": "Videos zur Warteschlange hinzufügen mit:",
+        "download_hint": "Warteschlange herunterladen mit:"
+      },
       "authentication": {
         "label": "Anmelden, um private Videos herunterzuladen:",
         "link": "Authentifizierung konfigurieren"

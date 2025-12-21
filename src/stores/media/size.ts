@@ -27,7 +27,7 @@ export const useMediaSizeStore = defineStore('media-size', () => {
     return sizes.value[id]?.find((s) => {
       const matchesTrackType = s.trackType === format.trackType;
       const matchesVideo = format.height && s.height && s.height === format.height && s.fps === format.fps;
-      const matchesAudio = format.asr && s.asr && s.asr === format.asr;
+      const matchesAudio = format.abr && s.abr && s.abr === format.abr;
       return matchesTrackType && (matchesVideo || matchesAudio);
     });
   };

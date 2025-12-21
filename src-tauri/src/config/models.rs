@@ -55,6 +55,7 @@ impl Default for NetworkSettings {
 pub struct InputSettings {
   pub auto_fill_clipboard: bool,
   pub prefer_video_in_mixed_links: bool,
+  pub global_shortcuts: bool,
 }
 
 impl Default for InputSettings {
@@ -62,6 +63,7 @@ impl Default for InputSettings {
     Self {
       auto_fill_clipboard: true,
       prefer_video_in_mixed_links: false,
+      global_shortcuts: true,
     }
   }
 }

@@ -18,10 +18,10 @@ pub fn build_format_args(
       let mut sort_fields = Vec::new();
       sort_fields.push("lang".into());
 
-      if let Some(asr) = format_options.asr {
-        sort_fields.push(format!("asr~{asr}"));
+      if let Some(abr) = format_options.abr {
+        sort_fields.push(format!("abr~{abr}"));
       } else {
-        sort_fields.push("asr".into());
+        sort_fields.push("abr".into());
       }
 
       match output_settings.audio.format {
@@ -180,10 +180,10 @@ mod tests {
   use crate::models::download::{AudioFormat, FormatOptions, TranscodePolicy, VideoContainer};
   use crate::models::TrackType;
 
-  fn make_audio_format_options(asr: Option<u32>) -> FormatOptions {
+  fn make_audio_format_options(abr: Option<u32>) -> FormatOptions {
     FormatOptions {
       track_type: TrackType::Audio,
-      asr,
+      abr,
       height: None,
       fps: None,
     }
@@ -192,7 +192,7 @@ mod tests {
   fn make_video_format_options(height: Option<u32>, fps: Option<u32>) -> FormatOptions {
     FormatOptions {
       track_type: TrackType::Video,
-      asr: None,
+      abr: None,
       height,
       fps,
     }
@@ -201,20 +201,20 @@ mod tests {
   fn make_both_format_options(height: Option<u32>, fps: Option<u32>) -> FormatOptions {
     FormatOptions {
       track_type: TrackType::Both,
-      asr: None,
+      abr: None,
       height,
       fps,
     }
   }
 
   #[test]
-  fn audio_format_args_without_asr() {
+  fn audio_format_args_without_abr() {
     let format_options = make_audio_format_options(None);
     let settings = OutputSettings::default();
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,asr,aext:mp3"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr,aext:mp3"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -223,13 +223,13 @@ mod tests {
   }
 
   #[test]
-  fn audio_format_args_with_asr() {
+  fn audio_format_args_with_abr() {
     let format_options = make_audio_format_options(Some(44));
     let settings = OutputSettings::default();
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,asr~44,aext:mp3"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr~44,aext:mp3"]
       .into_iter()
       .map(String::from)
       .collect();

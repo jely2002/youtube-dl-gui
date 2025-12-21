@@ -335,6 +335,11 @@
         "label": "Prefer single video for playlist links:",
         "hint": "When a link contains both a video and a playlist, download only the video instead of the full playlist."
       },
+      "globalShortcuts": {
+        "label": "Enable shortcuts:",
+        "add_hint": "Add videos to the queue with:",
+        "download_hint": "Download the queue with:"
+      },
       "authentication": {
         "label": "Log in to download private videos:",
         "link": "Configure authentication"

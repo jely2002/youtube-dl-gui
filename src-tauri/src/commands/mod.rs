@@ -4,6 +4,7 @@ pub mod config;
 pub mod group;
 pub mod logging;
 pub mod media;
+pub mod shortcuts;
 pub mod stronghold;
 pub mod updater;
 
@@ -13,5 +14,6 @@ pub use config::*;
 pub use group::*;
 pub use logging::*;
 pub use media::*;
+pub use shortcuts::*;
 pub use stronghold::*;
 pub use updater::*;

@@ -27,7 +27,7 @@ export enum AudioFormat {
 
 export type DownloadOptions = {
   trackType: TrackType;
-  asr?: number;
+  abr?: number;
   height?: number;
   fps?: number;
 };
@@ -76,7 +76,7 @@ export interface EntryItem {
 export interface MediaFormat {
   id: string;
   height?: number;
-  asr?: number;
+  abr?: number;
   fps?: number;
   videoCodecs: string[];
 }

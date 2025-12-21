@@ -30,6 +30,31 @@
       {{ t('settings.input.authentication.link') }}
       <arrow-right-icon class="w-5 h-5 group-focus:translate-x-1 group-hover:translate-x-1 transition-transform"/>
     </router-link>
+    <section class="bg-base-100 flex justify-between w-full p-4 mt-2 rounded-box">
+      <div class="flex flex-col gap-2">
+        <label class="font-semibold" for="globalShortcuts">
+          {{ t('settings.input.globalShortcuts.label') }}
+        </label>
+        <input
+            id="globalShortcuts"
+            type="checkbox"
+            v-model="settings.input.globalShortcuts"
+            class="toggle toggle-primary"
+        />
+      </div>
+      <div class="flex flex-col justify-end" :class="{ 'opacity-70': settings.input.globalShortcuts === false }">
+        <p class="label">
+          {{ t('settings.input.globalShortcuts.add_hint') }}
+          <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
+          <kbd class="kbd">ctrl</kbd>+<kbd class="kbd">shift</kbd>+<kbd class="kbd">V</kbd>
+        </p>
+        <p class="label">
+          {{ t('settings.input.globalShortcuts.download_hint') }}
+          <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
+          <kbd class="kbd">ctrl</kbd>+<kbd class="kbd">shift</kbd>+<kbd class="kbd">Enter</kbd>
+        </p>
+      </div>
+    </section>
   </base-fieldset>
 </template>
 <script setup lang="ts">
@@ -41,3 +66,10 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 const settings = defineModel<Settings>({ required: true });
 </script>
+
+<style scoped>
+.kbd {
+  border-radius: 4px;
+  background-color: var(--color-base-300);
+}
+</style>

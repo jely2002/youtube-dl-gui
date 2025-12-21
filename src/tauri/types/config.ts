@@ -33,6 +33,7 @@ export interface AudioOutputSettings {
 export interface InputSettings {
   autoFillClipboard: boolean;
   preferVideoInMixedLinks: boolean;
+  globalShortcuts: boolean;
 }
 
 export enum FormatPreset {
@@ -108,6 +109,7 @@ export const defaultNetworkSettings: NetworkSettings = {
 export const defaultInputSettings: InputSettings = {
   autoFillClipboard: true,
   preferVideoInMixedLinks: false,
+  globalShortcuts: true,
 };
 
 export const defaultOutputSettings: OutputSettings = {
