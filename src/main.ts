@@ -18,6 +18,7 @@ import { getDefaultLocale, i18n } from './i18n';
 import { createSentryPiniaPlugin } from '@sentry/vue';
 import { createSentry } from './sentry.ts';
 import { startWindowSync } from './tauri/window.ts';
+import { usePreferencesStore } from './stores/preferences.ts';
 
 const pinia = createPinia();
 pinia.use(createSentryPiniaPlugin());
@@ -42,16 +43,9 @@ app.use(pinia);
 app.use(tauriListeners);
 
 const settingsStore = useSettingsStore();
-settingsStore.load().then((settings) => {
-  if (settings.appearance.theme !== 'system') {
-    applyTheme(settings.appearance.theme);
-  }
-  const locale = i18n.global.locale as Ref<string>;
-  locale.value = settings.appearance.language === 'system'
-    ? getDefaultLocale()
-    : settings.appearance.language;
-  document.documentElement.setAttribute('lang', locale.value);
-}).catch((e) => {
+const preferencesStore = usePreferencesStore();
+
+initStores().catch((e) => {
   console.error(e);
 }).finally(() => {
   void invoke('app_ready');
@@ -60,3 +54,25 @@ settingsStore.load().then((settings) => {
   }
   app.mount('#app');
 });
+
+async function initStores(): Promise<void> {
+  try {
+    await preferencesStore.load();
+  } catch (e) {
+    console.error(`Unable to load preferences: ${e}`);
+  }
+
+  try {
+    const settings = await settingsStore.load();
+    if (settings.appearance.theme !== 'system') {
+      applyTheme(settings.appearance.theme);
+    }
+    const locale = i18n.global.locale as Ref<string>;
+    locale.value = settings.appearance.language === 'system'
+      ? getDefaultLocale()
+      : settings.appearance.language;
+    document.documentElement.setAttribute('lang', locale.value);
+  } catch (e) {
+    console.error(`Unable to load settings: ${e}`);
+  }
+}

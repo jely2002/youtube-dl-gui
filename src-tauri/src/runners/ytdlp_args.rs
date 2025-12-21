@@ -1,6 +1,6 @@
-use crate::config::OutputSettings;
 use crate::models::download::{AudioFormat, FormatOptions, TranscodePolicy, VideoContainer};
 use crate::models::TrackType;
+use crate::state::config_models::OutputSettings;
 
 pub fn build_format_args(
   format_options: &FormatOptions,
@@ -179,6 +179,7 @@ mod tests {
   use super::*;
   use crate::models::download::{AudioFormat, FormatOptions, TranscodePolicy, VideoContainer};
   use crate::models::TrackType;
+  use crate::state::config_models::OutputSettings;
 
   fn make_audio_format_options(abr: Option<u32>) -> FormatOptions {
     FormatOptions {

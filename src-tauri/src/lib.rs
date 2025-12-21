@@ -1,6 +1,5 @@
 mod binaries;
 mod commands;
-mod config;
 mod logging;
 mod menu;
 mod models;
@@ -8,6 +7,7 @@ mod parsers;
 mod paths;
 mod runners;
 mod scheduling;
+mod state;
 mod stronghold;
 
 use crate::binaries::binaries_manager::BinariesManager;
@@ -18,7 +18,8 @@ use crate::menu::setup_menu;
 use crate::paths::PathsManager;
 use crate::scheduling::download_pipeline::{setup_download_dispatcher, DownloadSender};
 use crate::scheduling::fetch_pipeline::{setup_fetch_dispatcher, FetchSender};
-use config::ConfigHandle;
+use crate::state::config::ConfigHandle;
+use crate::state::preferences::PreferencesHandle;
 use sentry::ClientInitGuard;
 use std::collections::HashMap;
 use std::sync::{Arc, LazyLock, Mutex as StdMutex};
@@ -29,6 +30,7 @@ use tracing_subscriber::filter::{LevelFilter, Targets};
 use tracing_subscriber::{fmt, prelude::*};
 
 type SharedConfig = Arc<ConfigHandle>;
+type SharedPreferences = Arc<PreferencesHandle>;
 
 pub static RUNNING_GROUPS: LazyLock<StdMutex<HashMap<String, bool>>> =
   LazyLock::new(|| StdMutex::new(HashMap::new()));
@@ -69,8 +71,12 @@ pub fn run() {
 
       // setup config management
       let config_handle = ConfigHandle::init(handle)?;
-      let shared = Arc::new(config_handle);
-      handle.manage::<SharedConfig>(shared);
+      let shared_config = Arc::new(config_handle);
+      handle.manage::<SharedConfig>(shared_config);
+
+      let preferences_handle = PreferencesHandle::init(handle)?;
+      let shared_preferences = Arc::new(preferences_handle);
+      handle.manage::<SharedPreferences>(shared_preferences);
 
       // manage update store
       handle.manage(Mutex::new(UpdateStore::default()));
@@ -122,6 +128,9 @@ pub fn run() {
       config_get,
       config_reset,
       config_set,
+      preferences_get,
+      preferences_reset,
+      preferences_set,
       binaries_check,
       binaries_ensure,
       updater_check,

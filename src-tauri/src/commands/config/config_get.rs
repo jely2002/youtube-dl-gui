@@ -1,4 +1,4 @@
-use crate::config::Config;
+use crate::state::config_models::Config;
 use crate::SharedConfig;
 use tauri::State;
 
