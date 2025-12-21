@@ -8,6 +8,9 @@
         class="max-w-4xl"
         v-model="authSettings.cookieFile"
         :label="t('auth.cookies.file.label')"
+        :recent-values="recentValues"
+        @clear-recents="clearRecents"
+        show-recent
     />
     <span class="label mb-2 gap-1">
       <i18n-t keypath="auth.cookies.file.hint" scope="global">
@@ -50,15 +53,33 @@
 import BaseFieldset from '../base/BaseFieldset.vue';
 import BaseFileInput from '../base/BaseFileInput.vue';
 import { AuthSettings } from '../../tauri/types/config.ts';
-import { PropType } from 'vue';
+import { computed, PropType, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { usePreferencesStore } from '../../stores/preferences';
 
 const { t } = useI18n();
+const cookieFileRecentsKey = 'cookieFile';
+const preferencesStore = usePreferencesStore();
 
 const authSettings = defineModel({
   type: Object as PropType<AuthSettings>,
   required: true,
 });
+
+const recentValues = computed(() => preferencesStore.getRecentPaths(cookieFileRecentsKey));
+
+watch(
+  () => authSettings.value.cookieFile,
+  (newFile, oldFile) => {
+    if (newFile && newFile !== oldFile) {
+      void preferencesStore.addRecentPath(cookieFileRecentsKey, newFile);
+    }
+  },
+);
+
+const clearRecents = () => {
+  void preferencesStore.clearRecentPaths(cookieFileRecentsKey);
+};
 
 const cookieBrowserOptions = [
   'Brave',

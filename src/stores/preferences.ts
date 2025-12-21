@@ -21,6 +21,25 @@ export const usePreferencesStore = defineStore('preferences', () => {
     applyPreferences(newPrefs);
   }
 
+  async function addRecentPath(label: string, path: string): Promise<void> {
+    const currentForLabel = preferences.value.paths.recent[label] ?? [];
+    if (currentForLabel.includes(path)) {
+      currentForLabel.splice(currentForLabel.indexOf(path), 1);
+    }
+    currentForLabel.unshift(path);
+    preferences.value.paths.recent[label] = currentForLabel.slice(0, 5);
+    await patch({ paths: { recent: preferences.value.paths.recent } });
+  }
+
+  function getRecentPaths(label: string): string[] {
+    return preferences.value.paths.recent[label] ?? [];
+  }
+
+  async function clearRecentPaths(label: string): Promise<void> {
+    preferences.value.paths.recent[label] = [];
+    await patch({ paths: { recent: preferences.value.paths.recent } });
+  }
+
   async function reset(): Promise<Preferences> {
     const prefs = await invoke<Preferences>('preferences_reset');
     applyPreferences(prefs);
@@ -36,5 +55,8 @@ export const usePreferencesStore = defineStore('preferences', () => {
     load,
     patch,
     reset,
+    getRecentPaths,
+    addRecentPath,
+    clearRecentPaths,
   };
 });
