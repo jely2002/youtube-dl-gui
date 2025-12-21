@@ -1,7 +1,7 @@
-use crate::config::{Config, SubtitleSettings};
 use crate::models::download::FormatOptions;
 use crate::paths::PathsManager;
 use crate::runners::ytdlp_args::{build_format_args, build_output_args};
+use crate::state::config_models::{Config, SubtitleSettings};
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::SharedConfig;
 use std::collections::HashSet;
@@ -200,9 +200,9 @@ impl<'a> YtdlpRunner<'a> {
       self.args.push("--video-password".into());
       self.args.push(vp);
     }
-    if let Some(tok) = s.bearer_token {
+    if let Some(token) = s.bearer_token {
       self.args.push("--add-header".into());
-      self.args.push(format!("Authorization: Bearer {tok}"));
+      self.args.push(format!("Authorization:Bearer {token}"));
     }
     for h in s.headers {
       self.args.push("--add-header".into());
@@ -320,7 +320,7 @@ fn sanitize_vec(items: &[String]) -> Vec<String> {
 #[cfg(test)]
 mod tests {
   use super::build_subtitle_args;
-  use crate::config::SubtitleSettings;
+  use crate::state::config_models::SubtitleSettings;
 
   #[test]
   fn subtitles_disabled_returns_none() {
