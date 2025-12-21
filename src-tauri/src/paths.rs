@@ -17,6 +17,20 @@ impl PathsManager {
     let (app_dir, is_portable_app) = Self::resolve_app_dir(app);
     let (bin_dir, is_microsoft_store_app) = Self::resolve_bin_dir(app_dir.clone());
 
+    let mut environment_type = "installed";
+    if is_portable_app {
+      environment_type = "portable";
+    }
+    if is_microsoft_store_app {
+      environment_type = "microsoft-store"
+    }
+    tracing::debug!("automatically detected environment: {}", environment_type);
+    tracing::debug!(
+      "automatically detected paths: app_dir={:?}, bin_dir={:?}",
+      app_dir,
+      bin_dir
+    );
+
     Self {
       is_microsoft_store_app,
       is_portable_app,
