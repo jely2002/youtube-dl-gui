@@ -44,10 +44,11 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { computed, PropType, ref, watch, toRefs, reactive, useId } from 'vue';
+import { computed, PropType, ref, watch, toRefs, reactive, useId, ComputedRef } from 'vue';
 import { DownloadOptions, MediaFormat, TrackType } from '../../tauri/types/media.ts';
 import { SelectOption } from '../../helpers/forms.ts';
 import { approxAudio, approxVideo, sortFormats } from '../../helpers/formats.ts';
+import { usePreferencesStore } from '../../stores/preferences.ts';
 
 const i18n = useI18n();
 
@@ -91,12 +92,16 @@ const {
   approximate,
 } = toRefs(props);
 
-const selectedTrackType = ref<TrackType>(TrackType.both);
+const preferencesStore = usePreferencesStore();
+const selectedTrackType = ref<TrackType>(preferencesStore.preferences.formats.trackType);
 const selectedFormatId = ref('');
 const hasDefaulted = ref(false);
 const lastPick = reactive<{ audio?: string; video?: string }>({});
 
-const locale = computed(() => i18n.tm(localeKey.value));
+const locale: ComputedRef<{
+  formatSelect: Record<string, string>;
+  trackSelect: Record<string, string>;
+}> = computed(() => i18n.tm(localeKey.value));
 const isVideoLike = (t: TrackType) => t === TrackType.video || t === TrackType.both;
 
 function makeKey(format: MediaFormat): string {
@@ -157,6 +162,7 @@ watch(() => modelValue?.value, (val) => {
 }, { immediate: true });
 
 watch(selectedTrackType, (trackType, oldTrackType) => {
+  void preferencesStore.patch({ formats: { trackType } });
   if (!autoSelect.value) {
     selectedFormatId.value = '';
     return;
