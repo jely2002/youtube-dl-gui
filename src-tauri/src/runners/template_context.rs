@@ -79,9 +79,9 @@ impl TemplateContext {
 
           if width > 0 {
             if pad_zero {
-              out = format!("{:0width$}", num, width = width);
+              out = format!("{num:0width$}");
             } else {
-              out = format!("{:width$}", num, width = width);
+              out = format!("{num:width$}");
             }
           }
         }
