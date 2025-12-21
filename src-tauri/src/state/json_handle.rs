@@ -22,7 +22,8 @@ impl<T: JsonBackedState> JsonStoreHandle<T> {
       .get(T::ROOT_KEY)
       .unwrap_or_else(|| Value::Object(Map::new()));
 
-    let initial = T::materialize(&raw)?;
+    let mut initial = T::materialize(&raw)?;
+    T::before_initialized(app, &mut initial)?;
 
     let to_save = serde_json::to_value(&initial)?;
     store.set(T::ROOT_KEY, to_save);

@@ -301,6 +301,85 @@
       "json": "JSON (.json)"
     }
   },
+  "location": {
+    "title": "Local de download",
+    "downloadDir": {
+      "label": "Local de download",
+      "hint": "Clique no campo para selecionar onde os vídeos serão baixados."
+    },
+    "directory": {
+      "legend": "Organizar por",
+      "legendLabel": "Selecione como os downloads serão organizados em pastas.",
+      "videoDir": {
+        "label": "Local de download:",
+        "hint": "Substitui o local de download global ao baixar vídeos."
+      },
+      "audioDir": {
+        "label": "Local de download:",
+        "hint": "Substitui o local de download global ao baixar áudio."
+      },
+      "directoryPreset": {
+        "label": "Organizar downloads por:",
+        "exampleLabel": "Exemplo de saída:",
+        "options": {
+          "none": "Sem subpastas",
+          "playlist": "Playlist",
+          "channel": "Canal",
+          "channelPlaylist": "Canal → playlist",
+          "yearMonth": "Ano / mês",
+          "artistAlbum": "Artista → álbum",
+          "custom": "Personalizado"
+        },
+        "examples": {
+          "playlist": "Minha playlist/",
+          "channel": "MeuCanal/",
+          "channelPlaylist": "MeuCanal/Minha playlist/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "Nome do artista/Nome do álbum/"
+        }
+      },
+      "outputFormat": {
+        "label": "Formato do diretório:"
+      }
+    },
+    "filename": {
+      "legend": "Formato do nome do arquivo",
+      "legendLabel": "Selecione o nome que os arquivos baixados terão.",
+      "formatPreset": {
+        "label": "Predefinição do nome do arquivo:",
+        "exampleLabel": "Exemplo de saída:",
+        "options": {
+          "titleQuality": "Título + qualidade",
+          "titleOnly": "Apenas título",
+          "titleQualityPlaylist": "Título + qualidade + playlist",
+          "custom": "Personalizado"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Meu vídeo-(1080p30).mp4",
+            "titleOnly": "Meu vídeo.mp4",
+            "titleQualityPlaylist": "03-Meu vídeo-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Meu áudio-(320k).mp3",
+            "titleOnly": "Meu áudio.mp3",
+            "titleQualityPlaylist": "03-Meu áudio-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "Restringir nomes de arquivos:",
+          "hint": "Substitui espaços por sublinhados e remove caracteres especiais como \"&\" dos nomes dos arquivos."
+        }
+      },
+      "outputFormat": {
+        "label": "Formato do nome do arquivo:"
+      }
+    },
+    "toasts": {
+      "saved": "Locais salvos!",
+      "error": "Não foi possível salvar os locais."
+    }
+  },
   "settings": {
     "title": "Configurações",
     "reset": {
@@ -399,39 +478,6 @@
             }
           }
         }
-      }
-    },
-    "filename": {
-      "legend": "Nomes de arquivos",
-      "legendLabel": "Configurar como os arquivos baixados são salvos.",
-      "formatPreset": {
-        "label": "Predefinição do nome do arquivo:",
-        "exampleLabel": "Exemplo de saída:",
-        "options": {
-          "titleQuality": "Título + qualidade",
-          "titleOnly": "Apenas título",
-          "titleQualityPlaylist": "Título + qualidade + playlist",
-          "custom": "Personalizado"
-        },
-        "examples": {
-          "video": {
-            "titleQuality": "Meu vídeo-(1080p30).mp4",
-            "titleOnly": "Meu vídeo.mp4",
-            "titleQualityPlaylist": "03-Meu vídeo-(1080p30).mkv"
-          },
-          "audio": {
-            "titleQuality": "Meu áudio-(320k).mp3",
-            "titleOnly": "Meu áudio.mp3",
-            "titleQualityPlaylist": "03-Meu áudio-(320k).mp3"
-          }
-        },
-        "restrictFilenames": {
-          "label": "Restringir nomes de arquivos:",
-          "hint": "Substitui espaços por sublinhados e remove caracteres especiais como \"&\" dos nomes dos arquivos."
-        }
-      },
-      "outputFormat": {
-        "label": "Formato do nome do arquivo:"
       }
     },
     "appearance": {

@@ -43,6 +43,16 @@ export enum FormatPreset {
   Custom = 'custom',
 }
 
+export enum DirectoryPreset {
+  None = 'none',
+  Playlist = 'playlist',
+  Channel = 'channel',
+  ChannelPlaylist = 'channelPlaylist',
+  YearMonth = 'yearMonth',
+  ArtistAlbum = 'artistAlbum',
+  Custom = 'custom',
+}
+
 export interface OutputSettings {
   video: VideoOutputSettings;
   audio: AudioOutputSettings;

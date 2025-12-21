@@ -301,6 +301,85 @@
       "json": "JSON (.json)"
     }
   },
+  "location": {
+    "title": "Emplacement de téléchargement",
+    "downloadDir": {
+      "label": "Emplacement de téléchargement",
+      "hint": "Cliquez dans le champ pour sélectionner où les vidéos seront téléchargées."
+    },
+    "directory": {
+      "legend": "Organiser par",
+      "legendLabel": "Sélectionnez comment les téléchargements sont organisés en dossiers.",
+      "videoDir": {
+        "label": "Emplacement de téléchargement :",
+        "hint": "Remplace l’emplacement de téléchargement global pour les vidéos."
+      },
+      "audioDir": {
+        "label": "Emplacement de téléchargement :",
+        "hint": "Remplace l’emplacement de téléchargement global lors du téléchargement audio."
+      },
+      "directoryPreset": {
+        "label": "Organiser les téléchargements par :",
+        "exampleLabel": "Exemple de sortie :",
+        "options": {
+          "none": "Aucun sous-dossier",
+          "playlist": "Playlist",
+          "channel": "Chaîne",
+          "channelPlaylist": "Chaîne → playlist",
+          "yearMonth": "Année / mois",
+          "artistAlbum": "Artiste → album",
+          "custom": "Personnalisé"
+        },
+        "examples": {
+          "playlist": "Ma playlist/",
+          "channel": "MaChaîne/",
+          "channelPlaylist": "MaChaîne/Ma playlist/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "Nom de l’artiste/Nom de l’album/"
+        }
+      },
+      "outputFormat": {
+        "label": "Format du dossier :"
+      }
+    },
+    "filename": {
+      "legend": "Format du nom de fichier",
+      "legendLabel": "Sélectionnez le nom que porteront les fichiers téléchargés.",
+      "formatPreset": {
+        "label": "Préréglage du nom :",
+        "exampleLabel": "Exemple de sortie :",
+        "options": {
+          "titleQuality": "Titre + qualité",
+          "titleOnly": "Titre seul",
+          "titleQualityPlaylist": "Playlist + titre + qualité",
+          "custom": "Personnalisé"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Ma vidéo-(1080p30).mp4",
+            "titleOnly": "Ma vidéo.mp4",
+            "titleQualityPlaylist": "03-Ma vidéo-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Mon audio-(320k).mp3",
+            "titleOnly": "Mon audio.mp3",
+            "titleQualityPlaylist": "03-Mon audio-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "Restriction des noms de fichiers :",
+          "hint": "Remplace les espaces par des traits de soulignement et supprime les caractères spéciaux tels que «&» des noms de fichiers."
+        }
+      },
+      "outputFormat": {
+        "label": "Format du nom de fichier :"
+      }
+    },
+    "toasts": {
+      "saved": "Emplacements enregistrés !",
+      "error": "Impossible d’enregistrer les emplacements."
+    }
+  },
   "settings": {
     "title": "Paramètres",
     "reset": {
@@ -399,39 +478,6 @@
             }
           }
         }
-      }
-    },
-    "filename": {
-      "legend": "Noms de fichiers",
-      "legendLabel": "Configurer comment les fichiers téléchargés sont nommés.",
-      "formatPreset": {
-        "label": "Préréglage du nom :",
-        "exampleLabel": "Exemple de sortie :",
-        "options": {
-          "titleQuality": "Titre + qualité",
-          "titleOnly": "Titre seul",
-          "titleQualityPlaylist": "Playlist + titre + qualité",
-          "custom": "Personnalisé"
-        },
-        "examples": {
-          "video": {
-            "titleQuality": "Ma vidéo-(1080p30).mp4",
-            "titleOnly": "Ma vidéo.mp4",
-            "titleQualityPlaylist": "03-Ma vidéo-(1080p30).mkv"
-          },
-          "audio": {
-            "titleQuality": "Mon audio-(320k).mp3",
-            "titleOnly": "Mon audio.mp3",
-            "titleQualityPlaylist": "03-Mon audio-(320k).mp3"
-          }
-        },
-        "restrictFilenames": {
-          "label": "Restriction des noms de fichiers :",
-          "hint": "Remplace les espaces par des traits de soulignement et supprime les caractères spéciaux tels que «&» des noms de fichiers."
-        }
-      },
-      "outputFormat": {
-        "label": "Format du nom de fichier :"
       }
     },
     "appearance": {

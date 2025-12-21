@@ -2,6 +2,10 @@ import { TrackType } from './media.ts';
 
 export interface PathPreferences {
   recent: Record<string, string[]>;
+  audioDownloadDir: string | null;
+  videoDownloadDir: string | null;
+  videoDirectoryTemplate: string | null;
+  audioDirectoryTemplate: string | null;
 }
 
 export interface FormatPreferences {
@@ -15,6 +19,10 @@ export interface Preferences {
 
 export const defaultPathPreferences: PathPreferences = {
   recent: {},
+  audioDownloadDir: null,
+  videoDownloadDir: null,
+  videoDirectoryTemplate: null,
+  audioDirectoryTemplate: null,
 };
 
 export const defaultFormatPreferences: FormatPreferences = {

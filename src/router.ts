@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from './views/app/HomeView.vue';
-import SettingsView from './views/app/SettingsView.vue';
 import MediaView from './views/app/MediaView.vue';
-import AuthenticationView from './views/app/AuthenticationView.vue';
 import SubtitleView from './views/app/SubtitleView.vue';
 import FullLayout from './layouts/FullLayout.vue';
 import AppLayout from './layouts/AppLayout.vue';
@@ -38,13 +36,19 @@ const routes = [
       {
         path: 'settings',
         name: 'settings',
-        component: SettingsView,
+        component: () => import('./views/app/SettingsView.vue'),
+        meta: { index: 1 },
+      },
+      {
+        path: 'location',
+        name: 'location',
+        component: () => import('./views/app/LocationView.vue'),
         meta: { index: 1 },
       },
       {
         path: 'authentication',
         name: 'authentication',
-        component: AuthenticationView,
+        component: () => import('./views/app/AuthenticationView.vue'),
         meta: { index: 1 },
       },
       {

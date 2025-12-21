@@ -28,66 +28,54 @@
         v-model="internalTemplate"
     />
 
-    <div class="flex flex-col mb-4">
-      <label class="font-semibold mb-2" :for="`${idPrefix}-restrictFilenames`">
-        {{ restrictFilenamesLabel }}
-      </label>
-      <input
-          :id="`${idPrefix}-restrictFilenames`"
-          type="checkbox"
-          v-model="internalRestrictFilenames"
-          class="toggle toggle-primary"
-      />
-      <span class="label mt-2">{{ restrictFilenamesHint }}</span>
-    </div>
-
     <p v-if="displayExample" class="font-semibold mb-2">
       {{ exampleLabel }}
     </p>
     <p v-if="displayExample" class="text-[14px] mb-2">
-      {{ displayExample }}
+      {{ fullExample }}
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { FormatPreset } from '../../tauri/types/config.ts';
+import { DirectoryPreset } from '../../tauri/types/config.ts';
+import { usePreferencesStore } from '../../stores/preferences';
+import { TrackType } from '../../tauri/types/media';
 
 interface PresetDef {
   label: string;
-  value: FormatPreset;
+  value: DirectoryPreset;
   format: string;
   example?: string;
 }
+
+const preferencesStore = usePreferencesStore();
 
 const props = defineProps<{
   idPrefix: string;
   presets: PresetDef[];
   modelValue: string;
-  preset: FormatPreset;
+  preset: DirectoryPreset;
+  trackType: TrackType;
   presetLabel: string;
   formatLabel: string;
   exampleLabel: string;
-  restrictFilenames: boolean;
-  restrictFilenamesLabel: string;
-  restrictFilenamesHint: string;
 }>();
 
 const emit = defineEmits<{
   'update:modelValue': [string];
-  'update:preset': [FormatPreset];
-  'update:restrictFilenames': [boolean];
+  'update:preset': [DirectoryPreset];
 }>();
 
-const isCustom = computed(() => props.preset === FormatPreset.Custom);
+const isCustom = computed(() => props.preset === DirectoryPreset.Custom);
 
-const internalPreset = computed<FormatPreset>({
+const internalPreset = computed<DirectoryPreset>({
   get: () => props.preset,
   set(val) {
     emit('update:preset', val);
 
-    if (val !== FormatPreset.Custom) {
+    if (val !== DirectoryPreset.Custom) {
       const preset = props.presets.find(p => p.value === val);
       if (preset) {
         emit('update:modelValue', preset.format);
@@ -113,13 +101,6 @@ const internalTemplate = computed<string>({
   },
 });
 
-const internalRestrictFilenames = computed<boolean>({
-  get: () => props.restrictFilenames,
-  set(val) {
-    emit('update:restrictFilenames', val);
-  },
-});
-
 const example = computed<string | undefined>(() => {
   if (isCustom.value) return undefined;
   return (
@@ -131,10 +112,15 @@ const example = computed<string | undefined>(() => {
 
 const displayExample = computed<string | undefined>(() => {
   const base = example.value;
-  if (!base) return undefined;
-  if (props.restrictFilenames) {
-    return base.replace(/\s+/g, '_').replace(/&/g, '_and_');
+  if (!base) {
+    preferencesStore.setPathExample(props.trackType, '');
+    return undefined;
   }
+  preferencesStore.setPathExample(props.trackType, base);
   return base;
+});
+
+const fullExample = computed<string>(() => {
+  return preferencesStore.getPathExample(props.trackType);
 });
 </script>

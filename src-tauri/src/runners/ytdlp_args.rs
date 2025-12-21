@@ -1,6 +1,9 @@
 use crate::models::download::{AudioFormat, FormatOptions, TranscodePolicy, VideoContainer};
 use crate::models::TrackType;
+use crate::runners::template_context::TemplateContext;
 use crate::state::config_models::OutputSettings;
+use crate::state::preferences_models::PathPreferences;
+use std::path::PathBuf;
 
 pub fn build_format_args(
   format_options: &FormatOptions,
@@ -172,6 +175,53 @@ pub fn build_output_args(
   }
 
   args
+}
+
+pub fn build_location_args(
+  track_type: &TrackType,
+  template_context: &TemplateContext,
+  output_settings: &OutputSettings,
+  path_preferences: &PathPreferences,
+  fallback_dir: PathBuf,
+) -> Vec<String> {
+  let global_dir = if let Some(dir) = &output_settings.download_dir {
+    PathBuf::from(dir)
+  } else {
+    fallback_dir
+  };
+
+  let base_dir = match track_type {
+    TrackType::Both | TrackType::Video => {
+      if let Some(dir) = &path_preferences.video_download_dir {
+        PathBuf::from(dir)
+      } else {
+        global_dir.clone()
+      }
+    }
+    TrackType::Audio => {
+      if let Some(dir) = &path_preferences.audio_download_dir {
+        PathBuf::from(dir)
+      } else {
+        global_dir.clone()
+      }
+    }
+  };
+
+  let prefix_dir = match track_type {
+    TrackType::Both | TrackType::Video => path_preferences.video_directory_template.clone(),
+    TrackType::Audio => path_preferences.audio_directory_template.clone(),
+  };
+
+  let filename = match track_type {
+    TrackType::Both | TrackType::Video => output_settings.file_name_template.clone(),
+    TrackType::Audio => output_settings.audio_file_name_template.clone(),
+  };
+
+  let output_path = base_dir.join(prefix_dir).join(filename);
+  let output_str = output_path.to_string_lossy();
+  let rendered_output_str = template_context.render_template(output_str.as_ref());
+
+  vec!["-o".into(), rendered_output_str]
 }
 
 #[cfg(test)]

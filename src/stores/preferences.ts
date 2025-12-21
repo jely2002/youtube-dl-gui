@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import { defaultPreferences, Preferences } from '../tauri/types/preferences.ts';
+import { TrackType } from '../tauri/types/media';
 
 type DeepPartial<T> = T extends object ? {
   [P in keyof T]?: DeepPartial<T[P]>;
@@ -9,6 +10,8 @@ type DeepPartial<T> = T extends object ? {
 
 export const usePreferencesStore = defineStore('preferences', () => {
   const preferences = ref<Preferences>(defaultPreferences);
+  const pathExamples = ref<Record<string, string>>({});
+  const filenameExamples = ref<Record<string, string>>({});
 
   async function load(): Promise<Preferences> {
     const prefs = await invoke<Preferences>('preferences_get');
@@ -40,6 +43,18 @@ export const usePreferencesStore = defineStore('preferences', () => {
     await patch({ paths: { recent: preferences.value.paths.recent } });
   }
 
+  function setPathExample(trackType: TrackType, example: string): void {
+    pathExamples.value[trackType] = example;
+  }
+
+  function setFilenameExample(trackType: TrackType, example: string): void {
+    filenameExamples.value[trackType] = example;
+  }
+
+  function getPathExample(trackType: TrackType): string {
+    return (pathExamples.value[trackType] ?? '') + (filenameExamples.value[trackType] ?? '');
+  }
+
   async function reset(): Promise<Preferences> {
     const prefs = await invoke<Preferences>('preferences_reset');
     applyPreferences(prefs);
@@ -52,11 +67,16 @@ export const usePreferencesStore = defineStore('preferences', () => {
 
   return {
     preferences,
+    pathExamples,
+    filenameExamples,
     load,
     patch,
     reset,
     getRecentPaths,
     addRecentPath,
     clearRecentPaths,
+    setPathExample,
+    setFilenameExample,
+    getPathExample,
   };
 });
