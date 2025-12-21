@@ -1,3 +1,4 @@
+use crate::commands::{register_shortcuts, unregister_shortcuts};
 use crate::config::Config;
 use crate::paths::PathsManager;
 use arc_swap::ArcSwap;
@@ -42,7 +43,11 @@ impl ConfigHandle {
     self.swap.load_full()
   }
 
-  pub fn apply_patch(&self, patch: &Value) -> Result<Config, Box<dyn std::error::Error>> {
+  pub fn apply_patch(
+    &self,
+    patch: &Value,
+    app_handle: &AppHandle,
+  ) -> Result<Config, Box<dyn std::error::Error>> {
     let mut raw = self
       .store
       .get(CONFIG_KEY)
@@ -51,8 +56,13 @@ impl ConfigHandle {
     json_merge(&mut raw, patch);
 
     let new_cfg = materialize_config(&raw)?;
+    if new_cfg.input.global_shortcuts {
+      register_shortcuts(app_handle)?;
+    } else {
+      unregister_shortcuts(app_handle)?;
+    }
 
-    self.store.set(CONFIG_KEY, raw);
+    self.store.set(CONFIG_KEY, raw.clone());
     self.store.save()?;
     self.swap.store(Arc::new(new_cfg.clone()));
 
