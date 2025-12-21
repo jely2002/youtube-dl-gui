@@ -104,7 +104,7 @@ function makeKey(format: MediaFormat): string {
     `id=${format.id}`,
     `h=${format.height ?? ''}`,
     `fps=${format.fps ?? ''}`,
-    `asr=${format.asr ?? ''}`,
+    `abr=${format.abr ?? ''}`,
   ].join('|');
 }
 
@@ -131,7 +131,7 @@ const trackOptions = computed<SelectOption[]>(() => {
 const formatsByTrackType = computed<Record<TrackType, MediaFormat[]>>(() => {
   const list = formats.value ?? [];
   return {
-    [TrackType.audio]: sortFormats(list.filter(f => f.asr)),
+    [TrackType.audio]: sortFormats(list.filter(f => f.abr)),
     [TrackType.video]: sortFormats(list.filter(f => f.height)),
     [TrackType.both]: sortFormats(list.filter(f => f.height)),
   };
@@ -254,8 +254,8 @@ function matchByDownloadOptions(options: DownloadOptions): MediaFormat | undefin
   let match: MediaFormat | undefined;
   if (options.trackType === TrackType.audio) {
     match
-      = (formats.value ?? []).find(f => f.asr === options.asr)
-        || (approximate.value ? approxAudio(filteredFormats.value, options.asr) : undefined);
+      = (formats.value ?? []).find(f => f.abr === options.abr)
+        || (approximate.value ? approxAudio(filteredFormats.value, options.abr) : undefined);
   } else {
     match
       = (formats.value ?? []).find(f => f.height === options.height && f.fps === options.fps)
@@ -267,7 +267,7 @@ function matchByDownloadOptions(options: DownloadOptions): MediaFormat | undefin
 function getFormatLabel(format: MediaFormat, trackType: TrackType): string {
   switch (trackType) {
     case TrackType.audio:
-      return `${format.asr}kbps`;
+      return `${format.abr}kbps`;
     case TrackType.video:
     case TrackType.both:
     default:

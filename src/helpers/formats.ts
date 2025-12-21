@@ -9,8 +9,8 @@ export function sortFormat(a: MediaFormat, b: MediaFormat): number {
   if (a.height && b.height) {
     const heightDiff = b.height - a.height;
     return heightDiff !== 0 ? heightDiff : (b.fps ?? 0) - (a.fps ?? 0);
-  } else if (a.asr && b.asr) {
-    return b.asr - a.asr;
+  } else if (a.abr && b.abr) {
+    return b.abr - a.abr;
   } else {
     return b.id.localeCompare(a.id);
   }
@@ -33,18 +33,18 @@ export function nearestBy<T>(
   return best;
 }
 
-export function approxAudio(formats: MediaFormat[], targetAsr?: number) {
-  const audio = formats.filter(f => f.asr != null);
+export function approxAudio(formats: MediaFormat[], targetAbr?: number) {
+  const audio = formats.filter(f => f.abr != null);
   if (!audio.length) return undefined;
 
-  if (targetAsr == null) {
-    return audio.reduce((best, f) => ((f.asr ?? 0) > (best.asr ?? 0) ? f : best), audio[0]);
+  if (targetAbr == null) {
+    return audio.reduce((best, f) => ((f.abr ?? 0) > (best.abr ?? 0) ? f : best), audio[0]);
   }
 
   return nearestBy(
     audio,
-    f => Math.abs((f.asr ?? 0) - targetAsr),
-    (a, b) => (a.asr ?? 0) - (b.asr ?? 0),
+    f => Math.abs((f.abr ?? 0) - targetAbr),
+    (a, b) => (a.abr ?? 0) - (b.abr ?? 0),
   );
 }
 

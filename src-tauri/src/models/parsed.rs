@@ -12,7 +12,7 @@ pub enum ParsedMedia {
 #[serde(rename_all = "camelCase")]
 pub struct MediaFormat {
   pub id: String,
-  pub asr: Option<u64>,
+  pub abr: Option<u64>,
   pub height: Option<u64>,
   pub fps: Option<u64>,
   pub codecs: Vec<String>,
