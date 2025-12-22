@@ -5,7 +5,6 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct PathPreferences {
-  pub recent: IndexMap<String, Vec<String>>,
   pub audio_download_dir: Option<String>,
   pub video_download_dir: Option<String>,
   pub video_directory_template: String,
@@ -15,11 +14,24 @@ pub struct PathPreferences {
 impl Default for PathPreferences {
   fn default() -> Self {
     Self {
-      recent: IndexMap::new(),
       audio_download_dir: None,
       video_download_dir: None,
       video_directory_template: "".to_string(),
       audio_directory_template: "".to_string(),
+    }
+  }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct RecentPreferences {
+  pub recent: IndexMap<String, Vec<String>>,
+}
+
+impl Default for RecentPreferences {
+  fn default() -> Self {
+    Self {
+      recent: IndexMap::new(),
     }
   }
 }
@@ -42,5 +54,6 @@ impl Default for FormatPreferences {
 #[serde(default, rename_all = "camelCase")]
 pub struct Preferences {
   pub paths: PathPreferences,
+  pub recents: RecentPreferences,
   pub formats: FormatPreferences,
 }

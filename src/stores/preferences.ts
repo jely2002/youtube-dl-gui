@@ -25,22 +25,22 @@ export const usePreferencesStore = defineStore('preferences', () => {
   }
 
   async function addRecentPath(label: string, path: string): Promise<void> {
-    const currentForLabel = preferences.value.paths.recent[label] ?? [];
+    const currentForLabel = preferences.value.recents.recent[label] ?? [];
     if (currentForLabel.includes(path)) {
       currentForLabel.splice(currentForLabel.indexOf(path), 1);
     }
     currentForLabel.unshift(path);
-    preferences.value.paths.recent[label] = currentForLabel.slice(0, 5);
-    await patch({ paths: { recent: preferences.value.paths.recent } });
+    preferences.value.recents.recent[label] = currentForLabel.slice(0, 5);
+    await patch({ recents: { recent: preferences.value.recents.recent } });
   }
 
   function getRecentPaths(label: string): string[] {
-    return preferences.value.paths.recent[label] ?? [];
+    return preferences.value.recents.recent[label] ?? [];
   }
 
   async function clearRecentPaths(label: string): Promise<void> {
-    preferences.value.paths.recent[label] = [];
-    await patch({ paths: { recent: preferences.value.paths.recent } });
+    preferences.value.recents.recent[label] = [];
+    await patch({ recents: { recent: preferences.value.recents.recent } });
   }
 
   function setPathExample(trackType: TrackType, example: string): void {

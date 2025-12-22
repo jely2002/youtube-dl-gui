@@ -21,7 +21,7 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
     .with_input_args()
     .with_output_args(&entry.format)
     .with_location_args(&entry.format.track_type, &entry.template_context)
-    .with_args(["--output-na-placeholder", "\"\"", &entry.url]);
+    .with_args(["--output-na-placeholder", "None", &entry.url]);
 
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
   let matcher = DiagnosticMatcher::from_json(RULES_JSON).expect("invalid rules");

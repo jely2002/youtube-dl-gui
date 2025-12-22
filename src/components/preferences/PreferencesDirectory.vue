@@ -129,7 +129,7 @@ const dirPresets: PresetDef[] = [
     label: t('location.directory.directoryPreset.options.artistAlbum'),
     example: t('location.directory.directoryPreset.examples.artistAlbum'),
     value: DirectoryPreset.ArtistAlbum,
-    format: '%(artist|uploader)s/%(album|playlist_title)s',
+    format: '%(artist,uploader)s/%(album,playlist_title)s',
   },
   {
     label: t('location.directory.directoryPreset.options.custom'),

@@ -60,11 +60,11 @@ const isSaving = ref(false);
 const hasSettingsChanges = computed(() => {
   return JSON.stringify(settingsDraft.value) !== JSON.stringify(settingsStore.settings);
 });
-const hasPreferencesChanges = computed(() => {
-  return JSON.stringify(preferencesDraft.value) !== JSON.stringify(preferencesStore.preferences);
+const hasPathPreferencesChanges = computed(() => {
+  return JSON.stringify(preferencesDraft.value.paths) !== JSON.stringify(preferencesStore.preferences.paths);
 });
 const hasChanges = computed(() => {
-  return hasSettingsChanges.value || hasPreferencesChanges.value;
+  return hasSettingsChanges.value || hasPathPreferencesChanges.value;
 });
 
 const recentValues = computed(() => ({
@@ -90,7 +90,7 @@ const save = async () => {
   isSaving.value = true;
   try {
     await settingsStore.patch(settingsDraft.value);
-    await preferencesStore.patch(preferencesDraft.value);
+    await preferencesStore.patch({ paths: preferencesDraft.value.paths });
     toastStore.showToast(t('location.toasts.saved'), { style: 'success' });
   } catch (e) {
     console.error(e);
