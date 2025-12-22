@@ -7,6 +7,9 @@ import AppLayout from './layouts/AppLayout.vue';
 import InstallView from './views/full/InstallView.vue';
 import TheMediaMetadata from './components/media-view/TheMediaMetadata.vue';
 import TheMediaLogs from './components/media-view/TheMediaLogs.vue';
+import LocationView from './views/app/LocationView.vue';
+import SettingsView from './views/app/SettingsView.vue';
+import AuthenticationView from './views/app/AuthenticationView.vue';
 
 const routes = [
   {
@@ -36,19 +39,19 @@ const routes = [
       {
         path: 'settings',
         name: 'settings',
-        component: () => import('./views/app/SettingsView.vue'),
+        component: SettingsView,
         meta: { index: 1 },
       },
       {
         path: 'location',
         name: 'location',
-        component: () => import('./views/app/LocationView.vue'),
+        component: LocationView,
         meta: { index: 1 },
       },
       {
         path: 'authentication',
         name: 'authentication',
-        component: () => import('./views/app/AuthenticationView.vue'),
+        component: () => AuthenticationView,
         meta: { index: 1 },
       },
       {
