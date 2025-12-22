@@ -51,7 +51,7 @@
         <span class="sr-only">{{ t('layout.footer.queue.empty') }}</span>
         <trash-icon class="w-6 h-6"/>
       </base-button>
-      <base-button class="btn-primary" :disabled="progress.total <= 0" @click="downloadAll" :loading="isStartingDownload">
+      <base-button class="btn-primary" :disabled="progress.ready <= 0" @click="downloadAll" :loading="isStartingDownload">
         {{ t('common.download') }}
       </base-button>
     </div>
