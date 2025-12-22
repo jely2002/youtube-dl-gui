@@ -1,5 +1,5 @@
 use std::error::Error;
-use tauri::{AppHandle, Wry};
+use tauri::{AppHandle, Manager, Wry};
 
 use crate::commands::{register_shortcuts, unregister_shortcuts};
 use crate::state::config_models::Config;
@@ -12,6 +12,17 @@ impl JsonBackedState for Config {
 
   fn default_value() -> Self {
     Config::default()
+  }
+
+  fn before_initialized(app: &AppHandle<Wry>, value: &mut Self) -> Result<(), Box<dyn Error>> {
+    if value.output.download_dir.is_none() {
+      let download_path = app
+        .path()
+        .download_dir()
+        .unwrap_or_else(|_| std::env::current_dir().expect("couldn’t get current dir"));
+      value.output.download_dir = Some(download_path.to_str().unwrap().to_string());
+    }
+    Ok(())
   }
 
   fn on_updated(app: &AppHandle<Wry>, new_value: &Self) -> Result<(), Box<dyn Error>> {

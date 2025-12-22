@@ -41,7 +41,7 @@
         <chevron-down-icon class="w-5 h-5"/>
       </button>
 
-      <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box shadow w-96 p-2">
+      <ul tabindex="0" class="dropdown-content menu bg-base-300 rounded-box shadow w-96 p-2">
         <li v-for="recentValue in recentValues" :key="recentValue">
           <button type="button" class="justify-between" @click="selectRecent($event, recentValue)">
             <span tabindex="-1" class="truncate" v-if="!directory" :title="basename(recentValue)">{{ basename(recentValue) }}</span>
@@ -55,7 +55,7 @@
         </li>
 
         <li class="mt-1" v-if="hasRecents">
-          <button type="button" class="text-error" @click="clearRecents">
+          <button type="button" class="text-error hover:bg-error/10" @click="clearRecents">
             <trash-icon class="w-5 h-5"/>
             {{ directory ? t('components.base.folderInput.recents.clear') : t('components.base.fileInput.recents.clear') }}
           </button>
@@ -157,6 +157,7 @@ const select = async () => {
   isSelecting.value = true;
   try {
     const selected = await openPathDialog(false, directory);
+    if (!clearable && !selected) return;
     path.value = selected;
     emit('update:modelValue', selected);
   } catch (e) {

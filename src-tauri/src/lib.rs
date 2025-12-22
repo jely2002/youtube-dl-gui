@@ -150,6 +150,10 @@ pub fn init_tracing() {
   let fmt_layer = fmt::layer().with_filter(
     Targets::new()
       .with_target("tauri_plugin_updater", LevelFilter::OFF)
+      .with_target(
+        "tao::platform_impl::platform::event_loop::runner",
+        LevelFilter::OFF,
+      )
       .with_default(tracing_levels()),
   );
 

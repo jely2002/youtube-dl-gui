@@ -68,7 +68,6 @@ import SettingsOutput from '../../components/settings/SettingsOutput.vue';
 import SettingsAppearance from '../../components/settings/SettingsAppearance.vue';
 import SettingsNetwork from '../../components/settings/SettingsNetwork.vue';
 import SettingsSponsorBlock from '../../components/settings/SettingsSponsorBlock.vue';
-import SettingsFilename from '../../components/settings/SettingsFilename.vue';
 import { Settings } from '../../tauri/types/config.ts';
 import BaseFieldset from '../../components/base/BaseFieldset.vue';
 import { useOpener } from '../../composables/useOpener.ts';
@@ -117,7 +116,6 @@ const sections = [
   SettingsPerformance,
   SettingsInput,
   SettingsOutput,
-  SettingsFilename,
   SettingsAppearance,
   SettingsNetwork,
   SettingsUpdate,

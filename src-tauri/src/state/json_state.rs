@@ -18,6 +18,9 @@ pub trait JsonBackedState:
     Ok(serde_json::from_value(merged)?)
   }
 
+  fn before_initialized(_app: &AppHandle<Wry>, _value: &mut Self) -> Result<(), Box<dyn Error>> {
+    Ok(())
+  }
   fn on_updated(_app: &AppHandle<Wry>, _new_value: &Self) -> Result<(), Box<dyn Error>> {
     Ok(())
   }
