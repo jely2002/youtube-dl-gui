@@ -4,7 +4,6 @@ import { resolveResource } from '@tauri-apps/api/path';
 export function useOpener() {
   const openInternalPath = async (path: string, executable?: string) => {
     const internalPath = await resolveResource(path);
-    console.log(internalPath);
     await openPath(internalPath, executable);
   };
 

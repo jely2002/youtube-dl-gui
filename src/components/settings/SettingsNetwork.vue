@@ -38,11 +38,12 @@ import BaseFieldset from '../base/BaseFieldset.vue';
 import { Settings } from '../../tauri/types/config.ts';
 import { useI18n } from 'vue-i18n';
 import { SelectOption } from '../../helpers/forms.ts';
+import { computed, ComputedRef } from 'vue';
 
 const { t } = useI18n();
 const settings = defineModel<Settings>({ required: true });
 
-const impersonatePresets: SelectOption[] = [
+const impersonatePresets: ComputedRef<SelectOption[]> = computed(() => ([
   { value: 'none', label: t('settings.network.impersonate.options.none') },
   { value: 'any', label: t('settings.network.impersonate.options.any') },
   { value: 'chrome-131:windows-10', label: 'Chrome 131 - Windows 10' },
@@ -58,5 +59,5 @@ const impersonatePresets: SelectOption[] = [
   { value: 'safari-17.0:macos-14', label: 'Safari 17.0 - macOS 14' },
   { value: 'safari-15.5:macos-14', label: 'Safari 15.5 - macOS 14' },
   { value: 'tor-14.5:macos-14', label: 'Tor 14.5 - macOS 14' },
-];
+]));
 </script>

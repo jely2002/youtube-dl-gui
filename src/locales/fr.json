@@ -17,7 +17,8 @@
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
     "video": "vidéo",
-    "unknown": "inconnu"
+    "unknown": "inconnu",
+    "confirm": "Confirmer"
   },
   "layout": {
     "header": {
@@ -270,6 +271,10 @@
         "legendLabel": "Sélectionnez votre format de sous-titre préféré. Si non disponible, le format suivant sera utilisé.",
         "label": "Format"
       },
+      "embed": {
+        "label": "Ajouter une piste de sous-titres :",
+        "hint": "Ajoute des sous-titres au fichier vidéo. Fonctionne avec les formats MP4, MKV et WebM."
+      },
       "languages": {
         "legend": "Langues",
         "legendLabel": "Choisissez les langues des sous-titres à télécharger.",
@@ -296,8 +301,91 @@
       "json": "JSON (.json)"
     }
   },
+  "location": {
+    "title": "Emplacement de téléchargement",
+    "downloadDir": {
+      "label": "Emplacement de téléchargement",
+      "hint": "Cliquez dans le champ pour sélectionner où les vidéos seront téléchargées."
+    },
+    "directory": {
+      "legend": "Organiser par",
+      "legendLabel": "Sélectionnez comment les téléchargements sont organisés en dossiers.",
+      "videoDir": {
+        "label": "Emplacement de téléchargement :",
+        "hint": "Remplace l’emplacement de téléchargement global pour les vidéos."
+      },
+      "audioDir": {
+        "label": "Emplacement de téléchargement :",
+        "hint": "Remplace l’emplacement de téléchargement global lors du téléchargement audio."
+      },
+      "directoryPreset": {
+        "label": "Organiser les téléchargements par :",
+        "exampleLabel": "Exemple de sortie :",
+        "options": {
+          "none": "Aucun sous-dossier",
+          "playlist": "Playlist",
+          "channel": "Chaîne",
+          "channelPlaylist": "Chaîne → playlist",
+          "yearMonth": "Année / mois",
+          "artistAlbum": "Artiste → album",
+          "custom": "Personnalisé"
+        },
+        "examples": {
+          "playlist": "Ma playlist/",
+          "channel": "MaChaîne/",
+          "channelPlaylist": "MaChaîne/Ma playlist/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "Nom de l’artiste/Nom de l’album/"
+        }
+      },
+      "outputFormat": {
+        "label": "Format du dossier :"
+      }
+    },
+    "filename": {
+      "legend": "Format du nom de fichier",
+      "legendLabel": "Sélectionnez le nom que porteront les fichiers téléchargés.",
+      "formatPreset": {
+        "label": "Préréglage du nom :",
+        "exampleLabel": "Exemple de sortie :",
+        "options": {
+          "titleQuality": "Titre + qualité",
+          "titleOnly": "Titre seul",
+          "titleQualityPlaylist": "Playlist + titre + qualité",
+          "custom": "Personnalisé"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Ma vidéo-(1080p30).mp4",
+            "titleOnly": "Ma vidéo.mp4",
+            "titleQualityPlaylist": "03-Ma vidéo-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Mon audio-(320k).mp3",
+            "titleOnly": "Mon audio.mp3",
+            "titleQualityPlaylist": "03-Mon audio-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "Restriction des noms de fichiers :",
+          "hint": "Remplace les espaces par des traits de soulignement et supprime les caractères spéciaux tels que «&» des noms de fichiers."
+        }
+      },
+      "outputFormat": {
+        "label": "Format du nom de fichier :"
+      }
+    },
+    "toasts": {
+      "saved": "Emplacements enregistrés !",
+      "error": "Impossible d’enregistrer les emplacements."
+    }
+  },
   "settings": {
     "title": "Paramètres",
+    "reset": {
+      "label": "Réinitialiser",
+      "confirm": "Cliquez encore"
+    },
     "performance": {
       "legend": "Performance",
       "legendLabel": "Configurez l’utilisation des ressources système.",
@@ -325,6 +413,11 @@
       "preferVideoInMixedLinks": {
         "label": "Préférer la vidéo seule pour les liens de playlist :",
         "hint": "Si un lien contient vidéo + playlist, ne télécharger que la vidéo."
+      },
+      "globalShortcuts": {
+        "label": "Activer les raccourcis :",
+        "add_hint": "Ajouter des vidéos à la file d’attente avec :",
+        "download_hint": "Télécharger la file d’attente avec :"
       },
       "authentication": {
         "label": "Se connecter pour télécharger les vidéos privées :",
@@ -367,7 +460,9 @@
               "m4a": "M4A",
               "ogg": "OGG",
               "aac": "AAC",
-              "opus": "Opus"
+              "opus": "Opus",
+              "wav": "WAV",
+              "flac": "FLAC"
             }
           }
         },
@@ -383,35 +478,6 @@
             }
           }
         }
-      }
-    },
-    "filename": {
-      "legend": "Noms de fichiers",
-      "legendLabel": "Configurer comment les fichiers téléchargés sont nommés.",
-      "formatPreset": {
-        "label": "Préréglage du nom :",
-        "exampleLabel": "Exemple de sortie :",
-        "options": {
-          "titleQuality": "Titre + qualité",
-          "titleOnly": "Titre seul",
-          "titleQualityPlaylist": "Playlist + titre + qualité",
-          "custom": "Personnalisé"
-        },
-        "examples": {
-          "video": {
-            "titleQuality": "Ma vidéo-(1080p30).mp4",
-            "titleOnly": "Ma vidéo.mp4",
-            "titleQualityPlaylist": "03-Ma vidéo-(1080p30).mkv"
-          },
-          "audio": {
-            "titleQuality": "Mon audio-(320k).mp3",
-            "titleOnly": "Mon audio.mp3",
-            "titleQualityPlaylist": "03-Mon audio-(320k).mp3"
-          }
-        }
-      },
-      "outputFormat": {
-        "label": "Format du nom de fichier :"
       }
     },
     "appearance": {
@@ -509,7 +575,8 @@
       }
     },
     "toasts": {
-      "saved": "Paramètres enregistrés !"
+      "saved": "Paramètres enregistrés !",
+      "reset": "Paramètres réinitialisés par défaut."
     }
   },
   "updater": {
@@ -545,7 +612,24 @@
       "fileInput": {
         "select": "Sélectionner un fichier",
         "placeholder": "Sélectionnez un fichier…",
-        "invalid": "Chemin de fichier invalide."
+        "invalid": "Fichier non valide.",
+        "clear": "Effacer le fichier",
+        "recents": {
+          "clear": "Effacer les fichiers récents",
+          "open": "Ouvrir les sélections récentes",
+          "empty": "Aucune sélection récente"
+        }
+      },
+      "folderInput": {
+        "select": "Sélectionner un dossier",
+        "placeholder": "Sélectionnez un dossier…",
+        "invalid": "Dossier non valide.",
+        "clear": "Effacer le dossier",
+        "recents": {
+          "clear": "Effacer les dossiers récents",
+          "open": "Ouvrir les sélections récentes",
+          "empty": "Aucune sélection récente"
+        }
       },
       "secretInput": {
         "hide": "Masquer",

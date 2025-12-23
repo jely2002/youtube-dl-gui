@@ -10,7 +10,7 @@
       {{ t('layout.footer.progress.ready', progress.ready) }}
     </base-progress>
     <div class="w-full flex gap-4 justify-around max-w-4xl self-center">
-      <base-button @click="selectDownloadFolder" tooltip-location="right" :tooltip="t('layout.footer.nav.downloadLocation')" :loading="isDownloadButtonLoading">
+      <base-button :to="{ name: 'location' }" tooltip-location="right" :tooltip="t('layout.footer.nav.downloadLocation')">
         <span class="sr-only">{{ t('layout.footer.nav.downloadLocation') }}</span>
         <folder-icon class="w-6 h-6"/>
       </base-button>
@@ -51,7 +51,7 @@
         <span class="sr-only">{{ t('layout.footer.queue.empty') }}</span>
         <trash-icon class="w-6 h-6"/>
       </base-button>
-      <base-button class="btn-primary" :disabled="progress.total <= 0" @click="downloadAll" :loading="isStartingDownload">
+      <base-button class="btn-primary" :disabled="progress.ready <= 0" @click="downloadAll" :loading="isStartingDownload">
         {{ t('common.download') }}
       </base-button>
     </div>
@@ -70,7 +70,6 @@ import {
   KeyIcon as KeyIconOutline,
 } from '@heroicons/vue/24/outline';
 import BaseProgress from './base/BaseProgress.vue';
-import { useDialog } from '../composables/useDialog';
 import { useSettingsStore } from '../stores/settings';
 import { computed, ref, watch } from 'vue';
 import BaseButton from './base/BaseButton.vue';
@@ -87,7 +86,6 @@ import { useMediaGroupStore } from '../stores/media/group.ts';
 const i18n = useI18n();
 const t = i18n.t;
 
-const { openPathDialog } = useDialog();
 const settingsStore = useSettingsStore();
 const strongholdStore = useStrongholdStore();
 const mediaStore = useMediaStore();
@@ -95,20 +93,7 @@ const progressStore = useMediaProgressStore();
 const groupStore = useMediaGroupStore();
 const optionsStore = useMediaOptionsStore();
 
-const isDownloadButtonLoading = ref(false);
 const isStartingDownload = ref(false);
-
-const selectDownloadFolder = async (): Promise<void> => {
-  isDownloadButtonLoading.value = true;
-  try {
-    const path = await openPathDialog(false, true);
-    await settingsStore.patch({ output: { downloadDir: path } });
-  } catch (e) {
-    console.error(e);
-  } finally {
-    isDownloadButtonLoading.value = false;
-  }
-};
 
 const clearGroups = (): void => {
   mediaStore.deleteAllGroups();

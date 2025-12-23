@@ -31,15 +31,29 @@ impl TemplateContext {
         None => (field_part, None),
       };
 
-      let mut resolved_value: Option<String> = None;
+      let field_specs: Vec<&str> = fields_part
+        .split(',')
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .collect();
+
+      if field_specs.is_empty() {
+        return whole.to_string();
+      }
+
+      let primary_spec = field_specs[0];
+      let primary_key = primary_spec
+        .split_once('>')
+        .map(|(k, _)| k)
+        .unwrap_or(primary_spec)
+        .trim();
+
       let mut any_known_field = false;
 
-      for field_spec in fields_part.split(',') {
-        let field_spec = field_spec.trim();
-        if field_spec.is_empty() {
-          continue;
-        }
+      let mut resolved_value: Option<String> = None;
+      let mut resolved_index: Option<usize> = None;
 
+      for (idx, field_spec) in field_specs.iter().enumerate() {
         let key = field_spec
           .split_once('>')
           .map(|(k, _)| k)
@@ -51,6 +65,7 @@ impl TemplateContext {
 
           if !val.is_empty() && resolved_value.is_none() {
             resolved_value = Some(val.clone());
+            resolved_index = Some(idx);
           }
         }
       }
@@ -59,35 +74,45 @@ impl TemplateContext {
         return whole.to_string();
       }
 
-      let mut out = if let Some(val) = resolved_value {
-        if let Some(repl) = replacement_part {
-          repl.to_string()
-        } else {
-          val
-        }
-      } else {
-        default_part.unwrap_or("").to_string()
-      };
+      if let Some(val) = resolved_value {
+        let from_primary = resolved_index == Some(0);
 
-      let ty = fmt.chars().last().unwrap_or('s'); // 's' or 'd'
-      let width_str = &fmt[..fmt.len().saturating_sub(1)];
+        if from_primary {
+          let mut out = if let Some(repl) = replacement_part {
+            repl.to_string()
+          } else {
+            val
+          };
 
-      if ty == 'd' && !width_str.is_empty() {
-        if let Ok(num) = out.trim().parse::<i64>() {
-          let pad_zero = width_str.starts_with('0');
-          let width: usize = width_str.trim_start_matches('0').parse().unwrap_or(0);
+          let ty = fmt.chars().last().unwrap_or('s');
+          let width_str = &fmt[..fmt.len().saturating_sub(1)];
 
-          if width > 0 {
-            if pad_zero {
-              out = format!("{:0width$}", num, width = width);
-            } else {
-              out = format!("{:width$}", num, width = width);
+          if ty == 'd' && !width_str.is_empty() {
+            if let Ok(num) = out.trim().parse::<i64>() {
+              let pad_zero = width_str.starts_with('0');
+              let width: usize = width_str.trim_start_matches('0').parse().unwrap_or(0);
+              if width > 0 {
+                out = if pad_zero {
+                  format!("{num:0width$}")
+                } else {
+                  format!("{num:width$}")
+                };
+              }
             }
           }
+
+          return out;
         }
+
+        let mut fallback = val;
+        fallback = fallback.replace('|', "_");
+        fallback = fallback.replace('\\', "_");
+        fallback = fallback.replace('/', "_");
+
+        return format!("%({primary_key}|{fallback}){fmt}");
       }
 
-      out
+      default_part.unwrap_or("").to_string()
     });
 
     replaced.replace("%%", "%")
@@ -148,7 +173,7 @@ mod tests {
 
     let ctx2 = create_context(&[("title", "Only Title")]);
     let out2 = ctx2.render_template("%(primary,title)s");
-    assert_eq!(out2, "Only Title");
+    assert_eq!(out2, "%(primary|Only Title)s");
   }
 
   #[test]
@@ -242,5 +267,36 @@ mod tests {
 
     let out = ctx.render_template("%(playlist_count).0d-%(title).200s");
     assert_eq!(out, "4-%(title).200s");
+  }
+
+  #[test]
+  fn combined_fields_right() {
+    let ctx = create_context(&[("playlist_title", "my playlist")]);
+
+    let out = ctx.render_template("%(album,playlist_title).s-%(title).200s");
+    assert_eq!(out, "%(album|my playlist).s-%(title).200s");
+  }
+
+  #[test]
+  fn combined_fields_left() {
+    let ctx = create_context(&[("playlist_title", "my playlist")]);
+
+    let out = ctx.render_template("%(playlist_title,album)s-%(title).200s");
+    assert_eq!(out, "my playlist-%(title).200s");
+  }
+
+  #[test]
+  fn combined_fields_center() {
+    let ctx = create_context(&[("playlist_title", "my playlist")]);
+
+    let out = ctx.render_template("%(uploader,playlist_title,album)s-%(title).200s");
+    assert_eq!(out, "%(uploader|my playlist)s-%(title).200s");
+  }
+
+  #[test]
+  fn combined_fields_unknown_keeps_placeholder() {
+    let ctx = create_context(&[]);
+    let out = ctx.render_template("%(album,playlist_title)s-%(title)s");
+    assert_eq!(out, "%(album,playlist_title)s-%(title)s");
   }
 }

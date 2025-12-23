@@ -1,14 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from './views/app/HomeView.vue';
-import SettingsView from './views/app/SettingsView.vue';
 import MediaView from './views/app/MediaView.vue';
-import AuthenticationView from './views/app/AuthenticationView.vue';
 import SubtitleView from './views/app/SubtitleView.vue';
 import FullLayout from './layouts/FullLayout.vue';
 import AppLayout from './layouts/AppLayout.vue';
 import InstallView from './views/full/InstallView.vue';
 import TheMediaMetadata from './components/media-view/TheMediaMetadata.vue';
 import TheMediaLogs from './components/media-view/TheMediaLogs.vue';
+import LocationView from './views/app/LocationView.vue';
+import SettingsView from './views/app/SettingsView.vue';
+import AuthenticationView from './views/app/AuthenticationView.vue';
 
 const routes = [
   {
@@ -39,6 +40,12 @@ const routes = [
         path: 'settings',
         name: 'settings',
         component: SettingsView,
+        meta: { index: 1 },
+      },
+      {
+        path: 'location',
+        name: 'location',
+        component: LocationView,
         meta: { index: 1 },
       },
       {

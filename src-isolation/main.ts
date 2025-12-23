@@ -13,6 +13,10 @@ const allowedCommands: Set<string> = new Set([
     'updater_install',
     'config_set',
     'config_get',
+    'config_reset',
+    'preferences_set',
+    'preferences_get',
+    'preferences_reset',
     'group_cancel',
     'logging_subscribe',
     'logging_unsubscribe',
@@ -31,6 +35,9 @@ const allowedCommands: Set<string> = new Set([
     'plugin:clipboard-manager|read_text',
     'plugin:dialog|open',
     'plugin:webview|internal_toggle_devtools',
+    'plugin:window|set_badge_count',
+    'plugin:window|set_progress_bar',
+    'plugin:window|request_user_attention'
 ]);
 
 window.__TAURI_ISOLATION_HOOK__ = (payload) => {

@@ -3,7 +3,7 @@
       :legend="t('settings.output.legend')"
       :label="t('settings.output.legendLabel')"
   >
-    <tabbed-settings-pane
+    <base-tabbed-pane
         v-model="activeTab"
         :tabs="tabs"
         id-prefix="output"
@@ -55,7 +55,7 @@
             class="mb-2"
         />
       </template>
-    </tabbed-settings-pane>
+    </base-tabbed-pane>
 
     <label class="font-semibold mt-2" for="addThumbnail">
       {{ t('settings.output.addThumbnail.label') }}
@@ -101,7 +101,7 @@
 <script setup lang="ts">
 import BaseFieldset from '../base/BaseFieldset.vue';
 import BaseSelect from '../base/BaseSelect.vue';
-import TabbedSettingsPane from './TabbedSettingsPane.vue';
+import BaseTabbedPane from '../base/BaseTabbedPane.vue';
 
 import { Settings } from '../../tauri/types/config';
 import { AudioFormat, TranscodePolicy, VideoContainer } from '../../tauri/types/media';

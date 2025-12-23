@@ -1,6 +1,9 @@
-use crate::config::OutputSettings;
 use crate::models::download::{AudioFormat, FormatOptions, TranscodePolicy, VideoContainer};
 use crate::models::TrackType;
+use crate::runners::template_context::TemplateContext;
+use crate::state::config_models::OutputSettings;
+use crate::state::preferences_models::PathPreferences;
+use std::path::PathBuf;
 
 pub fn build_format_args(
   format_options: &FormatOptions,
@@ -18,10 +21,31 @@ pub fn build_format_args(
       let mut sort_fields = Vec::new();
       sort_fields.push("lang".into());
 
-      if let Some(asr) = format_options.asr {
-        sort_fields.push(format!("asr~{asr}"));
+      if let Some(abr) = format_options.abr {
+        sort_fields.push(format!("abr~{abr}"));
       } else {
-        sort_fields.push("asr".into());
+        sort_fields.push("abr".into());
+      }
+
+      match output_settings.audio.format {
+        AudioFormat::M4a | AudioFormat::Aac => {
+          sort_fields.push("aext:m4a".into());
+          sort_fields.push("acodec:aac".into());
+        }
+        AudioFormat::Opus => {
+          sort_fields.push("acodec:opus".into());
+          sort_fields.push("aext:webm".into());
+        }
+        AudioFormat::Ogg => {
+          sort_fields.push("aext:ogg".into());
+          sort_fields.push("acodec:vorbis".into());
+        }
+        AudioFormat::Flac | AudioFormat::Wav => {
+          sort_fields.push("acodec:opus".into());
+        }
+        AudioFormat::Mp3 => {
+          sort_fields.push("aext:mp3".into());
+        }
       }
 
       let sort_arg = sort_fields.join(",");
@@ -54,10 +78,10 @@ pub fn build_format_args(
       }
 
       if matches!(output_settings.video.container, VideoContainer::Mp4) {
-        sort_fields.push("ext:mp4".into());
-        sort_fields.push("ext:m4a".into());
+        sort_fields.push("vext:mp4".into());
+        sort_fields.push("vext:m4a".into());
       } else {
-        sort_fields.push("ext".into());
+        sort_fields.push("vext".into());
       }
 
       let sort_arg = sort_fields.join(",");
@@ -93,17 +117,16 @@ pub fn build_output_args(
         let fmt = match output_settings.audio.format {
           AudioFormat::Mp3 => "mp3",
           AudioFormat::M4a => "m4a",
-          AudioFormat::Ogg => "ogg",
-          AudioFormat::Aac => "aac",
           AudioFormat::Opus => "opus",
+          AudioFormat::Aac => "aac",
+          AudioFormat::Ogg => "ogg",
+          AudioFormat::Flac => "flac",
+          AudioFormat::Wav => "wav",
         };
         args.push(fmt.into());
 
         if output_settings.add_thumbnail
-          && matches!(
-            output_settings.audio.format,
-            AudioFormat::Mp3 | AudioFormat::M4a
-          )
+          && output_settings.audio.format.supports_embedded_thumbnail()
         {
           args.push("--embed-thumbnail".into());
         }
@@ -147,7 +170,58 @@ pub fn build_output_args(
     args.push("--add-metadata".into());
   }
 
+  if output_settings.restrict_filenames {
+    args.push("--restrict-filenames".into());
+  }
+
   args
+}
+
+pub fn build_location_args(
+  track_type: &TrackType,
+  template_context: &TemplateContext,
+  output_settings: &OutputSettings,
+  path_preferences: &PathPreferences,
+  fallback_dir: PathBuf,
+) -> Vec<String> {
+  let global_dir = if let Some(dir) = &output_settings.download_dir {
+    PathBuf::from(dir)
+  } else {
+    fallback_dir
+  };
+
+  let base_dir = match track_type {
+    TrackType::Both | TrackType::Video => {
+      if let Some(dir) = &path_preferences.video_download_dir {
+        PathBuf::from(dir)
+      } else {
+        global_dir.clone()
+      }
+    }
+    TrackType::Audio => {
+      if let Some(dir) = &path_preferences.audio_download_dir {
+        PathBuf::from(dir)
+      } else {
+        global_dir.clone()
+      }
+    }
+  };
+
+  let prefix_dir = match track_type {
+    TrackType::Both | TrackType::Video => path_preferences.video_directory_template.clone(),
+    TrackType::Audio => path_preferences.audio_directory_template.clone(),
+  };
+
+  let filename = match track_type {
+    TrackType::Both | TrackType::Video => output_settings.file_name_template.clone(),
+    TrackType::Audio => output_settings.audio_file_name_template.clone(),
+  };
+
+  let output_path = base_dir.join(prefix_dir).join(filename);
+  let output_str = output_path.to_string_lossy();
+  let rendered_output_str = template_context.render_template(output_str.as_ref());
+
+  vec!["-o".into(), rendered_output_str]
 }
 
 #[cfg(test)]
@@ -155,11 +229,12 @@ mod tests {
   use super::*;
   use crate::models::download::{AudioFormat, FormatOptions, TranscodePolicy, VideoContainer};
   use crate::models::TrackType;
+  use crate::state::config_models::OutputSettings;
 
-  fn make_audio_format_options(asr: Option<u32>) -> FormatOptions {
+  fn make_audio_format_options(abr: Option<u32>) -> FormatOptions {
     FormatOptions {
       track_type: TrackType::Audio,
-      asr,
+      abr,
       height: None,
       fps: None,
     }
@@ -168,7 +243,7 @@ mod tests {
   fn make_video_format_options(height: Option<u32>, fps: Option<u32>) -> FormatOptions {
     FormatOptions {
       track_type: TrackType::Video,
-      asr: None,
+      abr: None,
       height,
       fps,
     }
@@ -177,20 +252,20 @@ mod tests {
   fn make_both_format_options(height: Option<u32>, fps: Option<u32>) -> FormatOptions {
     FormatOptions {
       track_type: TrackType::Both,
-      asr: None,
+      abr: None,
       height,
       fps,
     }
   }
 
   #[test]
-  fn audio_format_args_without_asr() {
+  fn audio_format_args_without_abr() {
     let format_options = make_audio_format_options(None);
     let settings = OutputSettings::default();
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,asr"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr,aext:mp3"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -199,13 +274,13 @@ mod tests {
   }
 
   #[test]
-  fn audio_format_args_with_asr() {
+  fn audio_format_args_with_abr() {
     let format_options = make_audio_format_options(Some(44));
     let settings = OutputSettings::default();
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,asr~44"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr~44,aext:mp3"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -220,7 +295,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,ext:mp4,ext:m4a"]
+    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext:mp4,vext:m4a"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -237,7 +312,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,ext"]
+    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -256,7 +331,7 @@ mod tests {
       "-f",
       "bv*+ba/bv+ba/best",
       "-S",
-      "lang,res:1080,fps:30,ext:mp4,ext:m4a",
+      "lang,res:1080,fps:30,vext:mp4,vext:m4a",
     ]
     .into_iter()
     .map(String::from)
@@ -316,10 +391,15 @@ mod tests {
 
     let args = build_output_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["--audio-format", "ogg", "--add-metadata"]
-      .into_iter()
-      .map(String::from)
-      .collect();
+    let expected: Vec<String> = vec![
+      "--audio-format",
+      "ogg",
+      "--embed-thumbnail",
+      "--add-metadata",
+    ]
+    .into_iter()
+    .map(String::from)
+    .collect();
 
     assert_eq!(args, expected);
   }
@@ -409,5 +489,31 @@ mod tests {
     .collect();
 
     assert_eq!(args, expected);
+  }
+
+  #[test]
+  fn restrict_filenames_adds_flag_on_enable() {
+    let format_options = make_video_format_options(Some(720), Some(60));
+
+    let mut settings = OutputSettings::default();
+    settings.video.policy = TranscodePolicy::Never;
+    settings.restrict_filenames = true;
+
+    let args = build_output_args(&format_options, &settings);
+
+    assert!(args.contains(&"--restrict-filenames".to_string()));
+  }
+
+  #[test]
+  fn restrict_filenames_omits_flag_on_disable() {
+    let format_options = make_video_format_options(Some(720), Some(60));
+
+    let mut settings = OutputSettings::default();
+    settings.video.policy = TranscodePolicy::Never;
+    settings.restrict_filenames = false;
+
+    let args = build_output_args(&format_options, &settings);
+
+    assert!(!args.contains(&"--restrict-filenames".to_string()));
   }
 }

@@ -1,9 +1,9 @@
 <template>
   <base-fieldset
-      :legend="t('settings.filename.legend')"
-      :label="t('settings.filename.legendLabel')"
+      :legend="t('location.filename.legend')"
+      :label="t('location.filename.legendLabel')"
   >
-    <tabbed-settings-pane
+    <base-tabbed-pane
         v-model="activeTab"
         :tabs="tabs"
         id-prefix="filename"
@@ -14,9 +14,13 @@
             :presets="videoFormatPresets"
             v-model="videoTemplate"
             v-model:preset="selectedVideoFormatPreset"
-            :preset-label="t('settings.filename.formatPreset.label')"
-            :format-label="t('settings.filename.outputFormat.label')"
-            :example-label="t('settings.filename.formatPreset.exampleLabel')"
+            v-model:restrict-filenames="restrictFilenames"
+            :track-type="TrackType.video"
+            :preset-label="t('location.filename.formatPreset.label')"
+            :format-label="t('location.filename.outputFormat.label')"
+            :example-label="t('location.filename.formatPreset.exampleLabel')"
+            :restrict-filenames-label="t('location.filename.formatPreset.restrictFilenames.label')"
+            :restrict-filenames-hint="t('location.filename.formatPreset.restrictFilenames.hint')"
         />
       </template>
 
@@ -26,22 +30,27 @@
             :presets="audioFormatPresets"
             v-model="audioTemplate"
             v-model:preset="selectedAudioFormatPreset"
-            :preset-label="t('settings.filename.formatPreset.label')"
-            :format-label="t('settings.filename.outputFormat.label')"
-            :example-label="t('settings.filename.formatPreset.exampleLabel')"
+            v-model:restrict-filenames="restrictFilenames"
+            :track-type="TrackType.audio"
+            :preset-label="t('location.filename.formatPreset.label')"
+            :format-label="t('location.filename.outputFormat.label')"
+            :example-label="t('location.filename.formatPreset.exampleLabel')"
+            :restrict-filenames-label="t('location.filename.formatPreset.restrictFilenames.label')"
+            :restrict-filenames-hint="t('location.filename.formatPreset.restrictFilenames.hint')"
         />
       </template>
-    </tabbed-settings-pane>
+    </base-tabbed-pane>
   </base-fieldset>
 </template>
 
 <script setup lang="ts">
 import BaseFieldset from '../base/BaseFieldset.vue';
-import TabbedSettingsPane from './TabbedSettingsPane.vue';
+import BaseTabbedPane from '../base/BaseTabbedPane.vue';
 import FormatPresetSelector from './FormatPresetSelector.vue';
 import { FormatPreset, Settings } from '../../tauri/types/config';
 import { useI18n } from 'vue-i18n';
 import { computed, onMounted, ref } from 'vue';
+import { TrackType } from '../../tauri/types/media';
 
 interface TabDef {
   id: string;
@@ -67,25 +76,25 @@ const tabs: TabDef[] = [
 
 const videoFormatPresets: PresetDef[] = [
   {
-    label: t('settings.filename.formatPreset.options.titleQuality'),
-    example: t('settings.filename.formatPreset.examples.video.titleQuality'),
+    label: t('location.filename.formatPreset.options.titleQuality'),
+    example: t('location.filename.formatPreset.examples.video.titleQuality'),
     value: FormatPreset.TitleQuality,
     format: '%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
   },
   {
-    label: t('settings.filename.formatPreset.options.titleOnly'),
-    example: t('settings.filename.formatPreset.examples.video.titleOnly'),
+    label: t('location.filename.formatPreset.options.titleOnly'),
+    example: t('location.filename.formatPreset.examples.video.titleOnly'),
     value: FormatPreset.TitleOnly,
     format: '%(title).200s.%(ext)s',
   },
   {
-    label: t('settings.filename.formatPreset.options.titleQualityPlaylist'),
-    example: t('settings.filename.formatPreset.examples.video.titleQualityPlaylist'),
+    label: t('location.filename.formatPreset.options.titleQualityPlaylist'),
+    example: t('location.filename.formatPreset.examples.video.titleQualityPlaylist'),
     value: FormatPreset.TitleQualityPlaylist,
     format: '%(playlist_index)02d-%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
   },
   {
-    label: t('settings.filename.formatPreset.options.custom'),
+    label: t('location.filename.formatPreset.options.custom'),
     value: FormatPreset.Custom,
     format: '',
   },
@@ -93,25 +102,25 @@ const videoFormatPresets: PresetDef[] = [
 
 const audioFormatPresets: PresetDef[] = [
   {
-    label: t('settings.filename.formatPreset.options.titleQuality'),
-    example: t('settings.filename.formatPreset.examples.audio.titleQuality'),
+    label: t('location.filename.formatPreset.options.titleQuality'),
+    example: t('location.filename.formatPreset.examples.audio.titleQuality'),
     value: FormatPreset.TitleQuality,
     format: '%(title).200s-(%(abr)dk).%(ext)s',
   },
   {
-    label: t('settings.filename.formatPreset.options.titleOnly'),
-    example: t('settings.filename.formatPreset.examples.audio.titleOnly'),
+    label: t('location.filename.formatPreset.options.titleOnly'),
+    example: t('location.filename.formatPreset.examples.audio.titleOnly'),
     value: FormatPreset.TitleOnly,
     format: '%(title).200s.%(ext)s',
   },
   {
-    label: t('settings.filename.formatPreset.options.titleQualityPlaylist'),
-    example: t('settings.filename.formatPreset.examples.audio.titleQualityPlaylist'),
+    label: t('location.filename.formatPreset.options.titleQualityPlaylist'),
+    example: t('location.filename.formatPreset.examples.audio.titleQualityPlaylist'),
     value: FormatPreset.TitleQualityPlaylist,
     format: '%(playlist_index)02d-%(title).200s-(%(abr)dk).%(ext)s',
   },
   {
-    label: t('settings.filename.formatPreset.options.custom'),
+    label: t('location.filename.formatPreset.options.custom'),
     value: FormatPreset.Custom,
     format: '',
   },
@@ -131,6 +140,13 @@ const audioTemplate = computed<string>({
   get: () => settings.value.output.audioFileNameTemplate ?? '',
   set(val) {
     settings.value.output.audioFileNameTemplate = val;
+  },
+});
+
+const restrictFilenames = computed<boolean>({
+  get: () => settings.value.output.restrictFilenames ?? false,
+  set(val) {
+    settings.value.output.restrictFilenames = val;
   },
 });
 

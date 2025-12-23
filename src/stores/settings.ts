@@ -14,28 +14,39 @@ export const useSettingsStore = defineStore('settings', () => {
 
   async function load(): Promise<Settings> {
     const cfg = await invoke<Settings>('config_get');
-    Object.assign(settings.value, cfg);
+    applySettings(cfg);
     return cfg;
   }
 
   async function patch(partial: DeepPartial<Settings>) {
     const newCfg = await invoke<Settings>('config_set', { patch: partial });
-    Object.assign(settings.value, newCfg);
-    if (newCfg.appearance.language) {
-      const locale = i18n.global.locale as Ref<string>;
-      locale.value = newCfg.appearance.language === 'system' ? getDefaultLocale() : newCfg.appearance.language;
-      document.documentElement.setAttribute('lang', locale.value);
-    }
+    applySettings(newCfg);
+  }
+
+  async function reset() {
+    const cfg = await invoke<Settings>('config_reset');
+    applySettings(cfg);
+    return cfg;
   }
 
   function hasAuthConfigured() {
     return settings.value.auth.cookieFile !== null || settings.value.auth.cookieBrowser !== 'none';
   }
 
+  function applySettings(cfg: Settings) {
+    Object.assign(settings.value, cfg);
+    if (cfg.appearance.language) {
+      const locale = i18n.global.locale as Ref<string>;
+      locale.value = cfg.appearance.language === 'system' ? getDefaultLocale() : cfg.appearance.language;
+      document.documentElement.setAttribute('lang', locale.value);
+    }
+  }
+
   return {
     settings,
     load,
     patch,
+    reset,
     hasAuthConfigured,
   };
 });

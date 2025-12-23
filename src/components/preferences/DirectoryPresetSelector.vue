@@ -28,31 +28,36 @@
         v-model="internalTemplate"
     />
 
-    <p v-if="example" class="font-semibold mb-2">
+    <p v-if="displayExample" class="font-semibold mb-2">
       {{ exampleLabel }}
     </p>
-    <p v-if="example" class="text-[14px] mb-2">
-      {{ example }}
+    <p v-if="displayExample" class="text-[14px] mb-2">
+      {{ fullExample }}
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { FormatPreset } from '../../tauri/types/config.ts';
+import { DirectoryPreset } from '../../tauri/types/config.ts';
+import { usePreferencesStore } from '../../stores/preferences';
+import { TrackType } from '../../tauri/types/media';
 
 interface PresetDef {
   label: string;
-  value: FormatPreset;
+  value: DirectoryPreset;
   format: string;
   example?: string;
 }
+
+const preferencesStore = usePreferencesStore();
 
 const props = defineProps<{
   idPrefix: string;
   presets: PresetDef[];
   modelValue: string;
-  preset: FormatPreset;
+  preset: DirectoryPreset;
+  trackType: TrackType;
   presetLabel: string;
   formatLabel: string;
   exampleLabel: string;
@@ -60,17 +65,17 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:modelValue': [string];
-  'update:preset': [FormatPreset];
+  'update:preset': [DirectoryPreset];
 }>();
 
-const isCustom = computed(() => props.preset === FormatPreset.Custom);
+const isCustom = computed(() => props.preset === DirectoryPreset.Custom);
 
-const internalPreset = computed<FormatPreset>({
+const internalPreset = computed<DirectoryPreset>({
   get: () => props.preset,
   set(val) {
     emit('update:preset', val);
 
-    if (val !== FormatPreset.Custom) {
+    if (val !== DirectoryPreset.Custom) {
       const preset = props.presets.find(p => p.value === val);
       if (preset) {
         emit('update:modelValue', preset.format);
@@ -103,5 +108,19 @@ const example = computed<string | undefined>(() => {
     ?? props.modelValue
     ?? props.presets[0]?.example
   );
+});
+
+const displayExample = computed<string | undefined>(() => {
+  const base = example.value;
+  if (!base) {
+    preferencesStore.setPathExample(props.trackType, '');
+    return undefined;
+  }
+  preferencesStore.setPathExample(props.trackType, base);
+  return base;
+});
+
+const fullExample = computed<string>(() => {
+  return preferencesStore.getPathExample(props.trackType);
 });
 </script>

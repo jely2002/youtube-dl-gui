@@ -6,17 +6,11 @@ use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_progress::YtdlpProgressParser;
 use crate::runners::ytdlp_runner::YtdlpRunner;
 use crate::scheduling::download_pipeline::DownloadEntry;
-use crate::{SharedConfig, RUNNING_GROUPS};
-use std::path::PathBuf;
+use crate::RUNNING_GROUPS;
 use tauri::{AppHandle, Emitter, Manager, State};
 use tauri_plugin_shell::process::CommandEvent;
 
 pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
-  let output_path = resolve_output_path(&app);
-  let output_str = output_path.to_string_lossy();
-  let rendered_output_str = entry.template_context.render_template(output_str.as_ref());
-  println!("Running yt-dlp with output: {}", rendered_output_str);
-  println!("{:?}", entry.template_context.values);
   let runner = YtdlpRunner::new(&app)
     .with_progress_args()
     .with_network_args()
@@ -26,13 +20,8 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
     .with_format_args(&entry.format)
     .with_input_args()
     .with_output_args(&entry.format)
-    .with_args([
-      "-o",
-      rendered_output_str.as_ref(),
-      "--output-na-placeholder",
-      "\"\"",
-      &entry.url,
-    ]);
+    .with_location_args(&entry.format.track_type, &entry.template_context)
+    .with_args(["--output-na-placeholder", "None", &entry.url]);
 
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
   let matcher = DiagnosticMatcher::from_json(RULES_JSON).expect("invalid rules");
@@ -148,22 +137,4 @@ fn parse_error_line(line: &str, error_parser: &YtdlpErrorParser, app: &AppHandle
       )
       .ok();
   }
-}
-
-fn resolve_output_path(app: &AppHandle) -> PathBuf {
-  let cfg_handle = app.state::<SharedConfig>();
-  let cfg = cfg_handle.load();
-
-  let base_dir = if let Some(dir) = &cfg.output.download_dir {
-    PathBuf::from(dir)
-  } else {
-    app
-      .path()
-      .download_dir()
-      .unwrap_or_else(|_| std::env::current_dir().expect("couldn’t get current dir"))
-  };
-
-  let filename = cfg.output.file_name_template.clone();
-
-  base_dir.join(filename)
 }

@@ -45,7 +45,7 @@ pub struct YtdlpFormat {
   pub format_id: Option<String>,
   pub height: Option<u64>,
   pub fps: Option<f64>,
-  pub asr: Option<f64>,
+  pub abr: Option<f64>,
   pub ext: Option<String>,
   pub vcodec: Option<String>,
   pub acodec: Option<String>,

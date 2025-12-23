@@ -55,6 +55,7 @@ impl Default for NetworkSettings {
 pub struct InputSettings {
   pub auto_fill_clipboard: bool,
   pub prefer_video_in_mixed_links: bool,
+  pub global_shortcuts: bool,
 }
 
 impl Default for InputSettings {
@@ -62,6 +63,7 @@ impl Default for InputSettings {
     Self {
       auto_fill_clipboard: true,
       prefer_video_in_mixed_links: false,
+      global_shortcuts: true,
     }
   }
 }
@@ -90,6 +92,7 @@ pub struct OutputSettings {
   pub download_dir: Option<String>,
   pub file_name_template: String,
   pub audio_file_name_template: String,
+  pub restrict_filenames: bool,
 }
 
 impl Default for OutputSettings {
@@ -107,7 +110,8 @@ impl Default for OutputSettings {
       add_thumbnail: true,
       download_dir: None,
       file_name_template: "%(title).200s-(%(height)sp%(fps).0d).%(ext)s".into(),
-      audio_file_name_template: "%(title).200s-%(abr)dk.%(ext)s".into(),
+      audio_file_name_template: "%(title).200s-(%(abr)dk).%(ext)s".into(),
+      restrict_filenames: false,
     }
   }
 }
@@ -147,6 +151,7 @@ pub struct SubtitleSettings {
   pub include_auto_generated: bool,
   pub languages: Vec<String>,
   pub format_preference: Vec<String>,
+  pub embed_subtitles: bool,
 }
 
 impl Default for SubtitleSettings {
@@ -155,6 +160,7 @@ impl Default for SubtitleSettings {
       enabled: false,
       include_auto_generated: false,
       languages: vec!["en".into()],
+      embed_subtitles: true,
       format_preference: vec![
         "srt".into(),
         "vtt".into(),

@@ -5,6 +5,7 @@ import { registerBinaryListeners } from '../tauri/listeners/binaries';
 import { registerUpdaterListeners } from '../tauri/listeners/updater';
 import { registerDiagnosticsListeners } from '../tauri/listeners/diagnostics.ts';
 import { registerAppListeners } from '../tauri/listeners/app.ts';
+import { registerShortcutListeners } from '../tauri/listeners/shortcuts.ts';
 
 export default {
   install() {
@@ -15,5 +16,6 @@ export default {
     registerBinaryListeners();
     registerUpdaterListeners();
     registerDiagnosticsListeners();
+    registerShortcutListeners();
   },
 };

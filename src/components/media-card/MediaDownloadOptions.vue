@@ -44,10 +44,11 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { computed, PropType, ref, watch, toRefs, reactive, useId } from 'vue';
+import { computed, PropType, ref, watch, toRefs, reactive, useId, ComputedRef } from 'vue';
 import { DownloadOptions, MediaFormat, TrackType } from '../../tauri/types/media.ts';
 import { SelectOption } from '../../helpers/forms.ts';
 import { approxAudio, approxVideo, sortFormats } from '../../helpers/formats.ts';
+import { usePreferencesStore } from '../../stores/preferences.ts';
 
 const i18n = useI18n();
 
@@ -91,12 +92,16 @@ const {
   approximate,
 } = toRefs(props);
 
-const selectedTrackType = ref<TrackType>(TrackType.both);
+const preferencesStore = usePreferencesStore();
+const selectedTrackType = ref<TrackType>(preferencesStore.preferences.formats.trackType);
 const selectedFormatId = ref('');
 const hasDefaulted = ref(false);
 const lastPick = reactive<{ audio?: string; video?: string }>({});
 
-const locale = computed(() => i18n.tm(localeKey.value));
+const locale: ComputedRef<{
+  formatSelect: Record<string, string>;
+  trackSelect: Record<string, string>;
+}> = computed(() => i18n.tm(localeKey.value));
 const isVideoLike = (t: TrackType) => t === TrackType.video || t === TrackType.both;
 
 function makeKey(format: MediaFormat): string {
@@ -104,7 +109,7 @@ function makeKey(format: MediaFormat): string {
     `id=${format.id}`,
     `h=${format.height ?? ''}`,
     `fps=${format.fps ?? ''}`,
-    `asr=${format.asr ?? ''}`,
+    `abr=${format.abr ?? ''}`,
   ].join('|');
 }
 
@@ -131,7 +136,7 @@ const trackOptions = computed<SelectOption[]>(() => {
 const formatsByTrackType = computed<Record<TrackType, MediaFormat[]>>(() => {
   const list = formats.value ?? [];
   return {
-    [TrackType.audio]: sortFormats(list.filter(f => f.asr)),
+    [TrackType.audio]: sortFormats(list.filter(f => f.abr)),
     [TrackType.video]: sortFormats(list.filter(f => f.height)),
     [TrackType.both]: sortFormats(list.filter(f => f.height)),
   };
@@ -157,6 +162,7 @@ watch(() => modelValue?.value, (val) => {
 }, { immediate: true });
 
 watch(selectedTrackType, (trackType, oldTrackType) => {
+  void preferencesStore.patch({ formats: { trackType } });
   if (!autoSelect.value) {
     selectedFormatId.value = '';
     return;
@@ -254,8 +260,8 @@ function matchByDownloadOptions(options: DownloadOptions): MediaFormat | undefin
   let match: MediaFormat | undefined;
   if (options.trackType === TrackType.audio) {
     match
-      = (formats.value ?? []).find(f => f.asr === options.asr)
-        || (approximate.value ? approxAudio(filteredFormats.value, options.asr) : undefined);
+      = (formats.value ?? []).find(f => f.abr === options.abr)
+        || (approximate.value ? approxAudio(filteredFormats.value, options.abr) : undefined);
   } else {
     match
       = (formats.value ?? []).find(f => f.height === options.height && f.fps === options.fps)
@@ -267,7 +273,7 @@ function matchByDownloadOptions(options: DownloadOptions): MediaFormat | undefin
 function getFormatLabel(format: MediaFormat, trackType: TrackType): string {
   switch (trackType) {
     case TrackType.audio:
-      return `${format.asr}kbps`;
+      return `${format.abr}kbps`;
     case TrackType.video:
     case TrackType.both:
     default:

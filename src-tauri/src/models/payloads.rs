@@ -104,3 +104,9 @@ pub struct AppendLogPayload {
   pub group_id: String,
   pub line: String,
 }
+
+#[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ShortcutPayload {
+  pub action: &'static str,
+}

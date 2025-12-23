@@ -17,7 +17,8 @@
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
     "video": "video",
-    "unknown": "unknown"
+    "unknown": "unknown",
+    "confirm": "Confirm"
   },
   "layout": {
     "header": {
@@ -270,6 +271,10 @@
         "legendLabel": "Select your preferred subtitle format. If the format is not available, the next best format will be used.",
         "label": "Format"
       },
+      "embed": {
+        "label": "Add subtitles track:",
+        "hint": "Add subtitles to the video file, this works for mp4, mkv and webm formats."
+      },
       "languages": {
         "legend": "Languages",
         "legendLabel": "Pick the subtitle languages to download.",
@@ -296,8 +301,91 @@
       "json": "JSON (.json)"
     }
   },
+  "location": {
+    "title": "Download location",
+    "downloadDir": {
+      "label": "Download location",
+      "hint": "Click in the box to select where videos get downloaded to."
+    },
+    "directory": {
+      "legend": "Organise by",
+      "legendLabel": "Select how downloads get organised in folders.",
+      "videoDir": {
+        "label": "Download location:",
+        "hint": "Override the global download location when downloading videos."
+      },
+      "audioDir": {
+        "label": "Download location:",
+        "hint": "Override the global download location when downloading audio."
+      },
+      "directoryPreset": {
+        "label": "Organise downloads by:",
+        "exampleLabel": "Example output:",
+        "options": {
+          "none": "No subfolders",
+          "playlist": "Playlist",
+          "channel": "Channel",
+          "channelPlaylist": "Channel → playlist",
+          "yearMonth": "Year / month",
+          "artistAlbum": "Artist → album",
+          "custom": "Custom"
+        },
+        "examples": {
+          "playlist": "My Playlist/",
+          "channel": "MyChannel/",
+          "channelPlaylist": "MyChannel/My Playlist/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "Artist Name/Album Name/"
+        }
+      },
+      "outputFormat": {
+        "label": "Directory format:"
+      }
+    },
+    "filename": {
+      "legend": "Filename format",
+      "legendLabel": "Select the filename that downloads will have.",
+      "formatPreset": {
+        "label": "Filename preset:",
+        "exampleLabel": "Example output:",
+        "options": {
+          "titleQuality": "Title + quality",
+          "titleOnly": "Title only",
+          "titleQualityPlaylist": "Playlist + title + quality",
+          "custom": "Custom"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "My Video-(1080p30).mp4",
+            "titleOnly": "My Video.mp4",
+            "titleQualityPlaylist": "03-My Video-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "My Audio-(320k).mp3",
+            "titleOnly": "My Audio.mp3",
+            "titleQualityPlaylist": "03-My Audio-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "Restrict filenames:",
+          "hint": "Replaces spaces with underscores and removes special characters like \"&\" from filenames."
+        }
+      },
+      "outputFormat": {
+        "label": "Filename format:"
+      }
+    },
+    "toasts": {
+      "saved": "Locations saved!",
+      "error": "Unable to save locations."
+    }
+  },
   "settings": {
     "title": "Settings",
+    "reset": {
+      "label": "Reset",
+      "confirm": "Click again to reset"
+    },
     "performance": {
       "legend": "Performance",
       "legendLabel": "Configure how many system resources are used.",
@@ -325,6 +413,11 @@
       "preferVideoInMixedLinks": {
         "label": "Prefer single video for playlist links:",
         "hint": "When a link contains both a video and a playlist, download only the video instead of the full playlist."
+      },
+      "globalShortcuts": {
+        "label": "Enable shortcuts:",
+        "add_hint": "Add videos to the queue with:",
+        "download_hint": "Download the queue with:"
       },
       "authentication": {
         "label": "Log in to download private videos:",
@@ -367,7 +460,9 @@
               "m4a": "M4A",
               "ogg": "OGG",
               "aac": "AAC",
-              "opus": "Opus"
+              "opus": "Opus",
+              "wav": "WAV",
+              "flac": "FLAC"
             }
           }
         },
@@ -383,35 +478,6 @@
             }
           }
         }
-      }
-    },
-    "filename": {
-      "legend": "Filenames",
-      "legendLabel": "Configure how downloaded files are saved.",
-      "formatPreset": {
-        "label": "Filename preset:",
-        "exampleLabel": "Example output:",
-        "options": {
-          "titleQuality": "Title + quality",
-          "titleOnly": "Title only",
-          "titleQualityPlaylist": "Playlist + title + quality",
-          "custom": "Custom"
-        },
-        "examples": {
-          "video": {
-            "titleQuality": "My Video-(1080p30).mp4",
-            "titleOnly": "My Video.mp4",
-            "titleQualityPlaylist": "03-My Video-(1080p30).mkv"
-          },
-          "audio": {
-            "titleQuality": "My Audio-(320k).mp3",
-            "titleOnly": "My Audio.mp3",
-            "titleQualityPlaylist": "03-My Audio-(320k).mp3"
-          }
-        }
-      },
-      "outputFormat": {
-        "label": "Filename format:"
       }
     },
     "appearance": {
@@ -509,7 +575,8 @@
       }
     },
     "toasts": {
-      "saved": "Settings saved!"
+      "saved": "Settings saved!",
+      "reset": "Reset settings to defaults."
     }
   },
   "updater": {
@@ -545,8 +612,24 @@
       "fileInput": {
         "select": "Select file",
         "placeholder": "Select a file…",
-        "invalid": "Invalid file path."
-
+        "invalid": "Invalid file.",
+        "clear": "Clear file",
+        "recents": {
+          "clear": "Clear recent files",
+          "open": "Open recent selections",
+          "empty": "No recent selections"
+        }
+      },
+      "folderInput": {
+        "select": "Select folder",
+        "placeholder": "Select a folder…",
+        "invalid": "Invalid folder.",
+        "clear": "Clear folder",
+        "recents": {
+          "clear": "Clear recent folders",
+          "open": "Open recent selections",
+          "empty": "No recent selections"
+        }
       },
       "secretInput": {
         "hide": "Hide",

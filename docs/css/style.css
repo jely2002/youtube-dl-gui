@@ -1,5 +1,5 @@
 body {
-    background: #292929;
+    background: oklch(25.522% 0.007 17.911);
 }
 
 .hamburger {
@@ -21,7 +21,7 @@ body {
 nav {
     width: 100%;
     padding: 1rem 0;
-    background-color: #212121;
+    background-color: oklch(19.203% 0.007 17.911);
 }
 
 nav ul {
@@ -30,7 +30,7 @@ nav ul {
 }
 
 nav li+li {
-    border-left: 1px solid #fff
+    border-left: 1px solid oklch(83.768% 0.001 17.911);
 }
 
 nav ul li {
@@ -39,28 +39,21 @@ nav ul li {
 }
 
 nav ul li a {
-    color: #fff;
+    color: oklch(83.768% 0.001 17.911);;
     text-decoration: none;
     font-size: 1.5rem;
 }
 
 header {
-    height: 70vh;
     width: 100%;
-    background: #212121;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    background: oklch(26.84% 0.008 17.911);
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.skewed {
-    height: 20vh;
-    width: 100%;
-    display: block;
-    background: #212121;
-    transform: skewY(-3deg) translateY(-50%);
+    box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
     z-index: 1;
-    box-shadow: 0 4px 5px rgba(0, 0, 0, .25);
 }
 
 .header-image img {
@@ -75,7 +68,7 @@ header {
 }
 
 .header-content {
-    color: #fff;
+    color: oklch(83.768% 0.001 17.911);;
     text-align: center;
     flex-grow: 1;
     z-index: 2;
@@ -86,8 +79,9 @@ header {
 }
 
 .header-content h1 {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: 400;
+    margin-top: 3rem;
     margin-bottom: 0.2rem;
 }
 
@@ -101,25 +95,36 @@ header {
     font-size: 1.5rem;
 }
 
-.header-content img {
+.header-content > img {
     width: 25%;
     margin-bottom: -2.5rem;
 }
 
 .header-content a {
-    color: #fff;
+    color: oklch(83.768% 0.001 17.911);
 }
 
 .header-content button {
     display: block;
     padding: 1rem 4rem;
     background: none;
-    color: #fff;
+    color: oklch(83.768% 0.001 17.911);
     border: 1px solid #fff;
     border-radius: 6px;
     margin: 1.5rem auto 1.5rem auto;
     cursor: pointer;
     transition: 0.2s;
+}
+
+.header-content .ms-download-button {
+    width: 90%;
+    max-width: 20rem;
+    margin: 1.5rem auto 1.5rem auto;
+    display: none;
+}
+
+.header-content .ms-download-button > img {
+    width: 100%;
 }
 
 .header-content button:hover {
@@ -146,8 +151,8 @@ header {
 }
 
 .card {
-    color: #fff;
-    background-color: #212121;
+    color: oklch(83.768% 0.001 17.911);
+    background-color: oklch(26.84% 0.008 17.911);
     padding: 2rem 4rem;
     border-radius: 12px;
     width: 20%;
@@ -190,7 +195,7 @@ header {
 
 .description {
     flex-grow: 1;
-    color: #fff;
+    color: oklch(83.768% 0.001 17.911);
 }
 
 .description li:nth-child(even) {
@@ -219,8 +224,8 @@ footer {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    background: #212121;
-    color: #fff;
+    background: oklch(19.203% 0.007 17.911);
+    color: oklch(83.768% 0.001 17.911);
     font-size: 1.5rem;
     margin-top: 4rem;
 }
@@ -230,7 +235,7 @@ footer p, footer > a {
 }
 
 footer a {
-    color: #fff;
+    color: oklch(83.768% 0.001 17.911);
     text-decoration: underline;
 }
 
@@ -266,6 +271,8 @@ footer a {
     header {
         flex-wrap: nowrap;
         flex-direction: column;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
     }
 
     .header-content {
@@ -276,7 +283,7 @@ footer a {
         display: none;
     }
 
-    .header-content img {
+    .header-content > img {
         width: 35%;
     }
 

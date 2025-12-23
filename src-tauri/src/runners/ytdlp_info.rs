@@ -19,7 +19,7 @@ pub async fn run_ytdlp_info_fetch(
   let runner = YtdlpRunner::new(app)
     .with_format_args(&format.unwrap_or(FormatOptions {
       track_type: TrackType::Both,
-      asr: None,
+      abr: None,
       height: None,
       fps: None,
     }))

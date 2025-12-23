@@ -10,6 +10,7 @@ import { DownloadOptions, MediaAddPayload, MediaItem, TrackType } from '../../ta
 import { useMediaSizeStore } from './size.ts';
 import { useMediaDiagnosticsStore } from './diagnostics.ts';
 import { useSettingsStore } from '../settings.ts';
+import { Group } from '../../tauri/types/group.ts';
 
 export const useMediaStore = defineStore('media', () => {
   const groupStore = useMediaGroupStore();
@@ -113,27 +114,43 @@ export const useMediaStore = defineStore('media', () => {
     const newState = group.isCombined ? MediaState.downloadingList : MediaState.downloading;
     items.forEach(item => stateStore.setState(item.id, newState));
 
-    console.log(group);
-    await invoke<string>('media_download', {
-      groupId,
-      items: itemsWithoutLeader.map(item => ({
-        id: item.id,
-        url: item.url,
-        format: options,
-        templateContext: {
-          values: {
-            playlist_index: item.playlistIndex?.toString(),
-            playlist_id: group.playlistId,
-            playlist_title: group.playlistTitle,
-            playlist: group.playlistTitle,
-            playlist_uploader: group.uploader,
-            playlist_uploader_id: group.uploaderId,
-            playlist_count: group.playlistCount?.toString(),
-            n_entries: group.entries?.length?.toString(),
+    try {
+      await invoke<string>('media_download', {
+        groupId,
+        items: itemsWithoutLeader.map(item => ({
+          id: item.id,
+          url: item.url,
+          format: options,
+          templateContext: {
+            values: buildTemplateContext(item, group),
           },
-        },
-      })),
-    });
+        })),
+      });
+    } catch (e) {
+      diagnosticsStore.processMediaFatalPayload({
+        groupId,
+        id: groupId,
+        exitCode: 1,
+        internal: true,
+        message: `${e}`,
+        details: null,
+        timestamp: Date.now(),
+      });
+      console.error(e);
+    }
+  }
+
+  function buildTemplateContext(item: MediaItem, group: Group): Record<string, string | undefined> {
+    return {
+      playlist_index: item.playlistIndex?.toString(),
+      playlist_id: group.playlistId ?? undefined,
+      playlist_title: group.playlistTitle ?? undefined,
+      playlist: group.playlistTitle ?? undefined,
+      playlist_uploader: group.uploader ?? undefined,
+      playlist_uploader_id: group.uploaderId ?? undefined,
+      playlist_count: group.playlistCount?.toString(),
+      n_entries: group.entries?.length?.toString(),
+    };
   }
 
   async function downloadAllGroups() {

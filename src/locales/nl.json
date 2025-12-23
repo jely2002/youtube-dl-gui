@@ -17,7 +17,8 @@
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
     "video": "video",
-    "unknown": "onbekend"
+    "unknown": "onbekend",
+    "confirm": "Bevestigen"
   },
   "layout": {
     "header": {
@@ -270,6 +271,10 @@
         "legendLabel": "Kies je gewenste ondertitelformaat. Als dit niet beschikbaar is, wordt het volgende beste formaat gebruikt.",
         "label": "Formaat"
       },
+      "embed": {
+        "label": "Ondertitelspoor toevoegen:",
+        "hint": "Voegt ondertitels toe aan het videobestand. Dit werkt voor MP4-, MKV- en WEBM-formaten."
+      },
       "languages": {
         "legend": "Talen",
         "legendLabel": "Kies de ondertiteltalen om te downloaden.",
@@ -296,8 +301,91 @@
       "json": "JSON (.json)"
     }
   },
+  "location": {
+    "title": "Downloadlocatie",
+    "downloadDir": {
+      "label": "Downloadlocatie",
+      "hint": "Klik in het veld om te kiezen waar video’s worden gedownload."
+    },
+    "directory": {
+      "legend": "Organiseren op",
+      "legendLabel": "Kies hoe downloads in mappen worden georganiseerd.",
+      "videoDir": {
+        "label": "Downloadlocatie:",
+        "hint": "Overschrijft de globale downloadlocatie voor video’s."
+      },
+      "audioDir": {
+        "label": "Downloadlocatie:",
+        "hint": "Overschrijft de globale downloadlocatie bij het downloaden van audio."
+      },
+      "directoryPreset": {
+        "label": "Downloads organiseren op:",
+        "exampleLabel": "Voorbeeldoutput:",
+        "options": {
+          "none": "Geen submappen",
+          "playlist": "Afspeellijst",
+          "channel": "Kanaal",
+          "channelPlaylist": "Kanaal → afspeellijst",
+          "yearMonth": "Jaar / maand",
+          "artistAlbum": "Artiest → album",
+          "custom": "Aangepast"
+        },
+        "examples": {
+          "playlist": "Mijn afspeellijst/",
+          "channel": "MijnKanaal/",
+          "channelPlaylist": "MijnKanaal/Mijn afspeellijst/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "Artiestnaam/Albummnaam/"
+        }
+      },
+      "outputFormat": {
+        "label": "Mapstructuur:"
+      }
+    },
+    "filename": {
+      "legend": "Bestandsnaamformaat",
+      "legendLabel": "Selecteer de bestandsnaam voor downloads.",
+      "formatPreset": {
+        "label": "Bestandsnaam-preset:",
+        "exampleLabel": "Voorbeeld:",
+        "options": {
+          "titleQuality": "Titel + kwaliteit",
+          "titleOnly": "Alleen titel",
+          "titleQualityPlaylist": "afspeellijst + titel + kwaliteit",
+          "custom": "Aangepast"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Mijn Video-(1080p30).mp4",
+            "titleOnly": "Mijn Video.mp4",
+            "titleQualityPlaylist": "03-Mijn Video-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Mijn Audio-(320k).mp3",
+            "titleOnly": "Mijn Audio.mp3",
+            "titleQualityPlaylist": "03-Mijn Audio-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "Beperk bestandsnamen:",
+          "hint": "Vervangt spaties door onderstrepingstekens en verwijdert speciale tekens zoals \"&\" uit bestandsnamen."
+        }
+      },
+      "outputFormat": {
+        "label": "Bestandsnaam-formaat:"
+      }
+    },
+    "toasts": {
+      "saved": "Locaties opgeslagen!",
+      "error": "Kan locaties niet opslaan."
+    }
+  },
   "settings": {
     "title": "Instellingen",
+    "reset": {
+      "label": "Reset",
+      "confirm": "Klik nogmaals"
+    },
     "performance": {
       "legend": "Prestaties",
       "legendLabel": "Bepaal hoeveel systeembronnen worden gebruikt.",
@@ -325,6 +413,11 @@
       "preferVideoInMixedLinks": {
         "label": "Voorkeur voor losse video bij playlist-links:",
         "hint": "Als een link zowel een video als een playlist bevat, download dan alleen de video in plaats van de hele playlist."
+      },
+      "globalShortcuts": {
+        "label": "Sneltoetsen inschakelen:",
+        "add_hint": "Voeg video’s toe aan de wachtrij met:",
+        "download_hint": "Download de wachtrij met:"
       },
       "authentication": {
         "label": "Log in om privévideo’s te downloaden:",
@@ -367,7 +460,9 @@
               "m4a": "M4A",
               "ogg": "OGG",
               "aac": "AAC",
-              "opus": "Opus"
+              "opus": "Opus",
+              "wav": "WAV",
+              "flac": "FLAC"
             }
           }
         },
@@ -383,35 +478,6 @@
             }
           }
         }
-      }
-    },
-    "filename": {
-      "legend": "Bestandsnamen",
-      "legendLabel": "Bepaal hoe gedownloade bestanden worden opgeslagen.",
-      "formatPreset": {
-        "label": "Bestandsnaam-preset:",
-        "exampleLabel": "Voorbeeld:",
-        "options": {
-          "titleQuality": "Titel + kwaliteit",
-          "titleOnly": "Alleen titel",
-          "titleQualityPlaylist": "afspeellijst + titel + kwaliteit",
-          "custom": "Aangepast"
-        },
-        "examples": {
-          "video": {
-            "titleQuality": "Mijn Video-(1080p30).mp4",
-            "titleOnly": "Mijn Video.mp4",
-            "titleQualityPlaylist": "03-Mijn Video-(1080p30).mkv"
-          },
-          "audio": {
-            "titleQuality": "Mijn Audio-(320k).mp3",
-            "titleOnly": "Mijn Audio.mp3",
-            "titleQualityPlaylist": "03-Mijn Audio-(320k).mp3"
-          }
-        }
-      },
-      "outputFormat": {
-        "label": "Bestandsnaam-formaat:"
       }
     },
     "appearance": {
@@ -509,7 +575,8 @@
       }
     },
     "toasts": {
-      "saved": "Instellingen opgeslagen!"
+      "saved": "Instellingen opgeslagen!",
+      "reset": "Instellingen teruggezet."
     }
   },
   "updater": {
@@ -545,7 +612,24 @@
       "fileInput": {
         "select": "Bestand selecteren",
         "placeholder": "Selecteer een bestand…",
-        "invalid": "Ongeldig bestand."
+        "invalid": "Ongeldig bestand.",
+        "clear": "Bestand wissen",
+        "recents": {
+          "clear": "Recente bestanden wissen",
+          "open": "Recente selecties openen",
+          "empty": "Geen recente selecties"
+        }
+      },
+      "folderInput": {
+        "select": "Map selecteren",
+        "placeholder": "Selecteer een map…",
+        "invalid": "Ongeldige map.",
+        "clear": "Map wissen",
+        "recents": {
+          "clear": "Recente mappen wissen",
+          "open": "Recente selecties openen",
+          "empty": "Geen recente selecties"
+        }
       },
       "secretInput": {
         "hide": "Verbergen",

@@ -58,17 +58,31 @@ function getAssetDownload(os, release) {
   }
 }
 
+function setupMicrosoftButton(os) {
+  if (os !== 'Windows') {
+    return;
+  }
+
+  const msButton = document.getElementById('ms-download-button');
+  msButton.style.display = 'block';
+  const button = document.getElementById('download-button');
+  button.style.display = 'none';
+}
+
 function setOtherVersionsText(os) {
   if (os === 'MacOS Silicon') {
     document.getElementById('other-versions').innerHTML = 'Other versions (MacOS Intel)';
   } else if (os === 'Linux x64') {
-    document.getElementById('other-versions').innerHTML = 'Other versions (Linux ARM / deb)';
+    document.getElementById('other-versions').innerHTML = 'Other versions (Linux ARM / deb / rpm)';
+  } else if (os === 'Windows') {
+    document.getElementById('other-versions').innerHTML = 'Other versions (Portable / Installer)';
   }
 }
 
 async function setDownloadButton() {
   const os = getOS();
   setOtherVersionsText(os);
+  setupMicrosoftButton(os);
   const versionData = await httpGet('https://api.github.com/repos/jely2002/youtube-dl-gui/releases/latest');
   if (versionData == null) {
     const download = 'https://github.com/jely2002/youtube-dl-gui/releases/latest';

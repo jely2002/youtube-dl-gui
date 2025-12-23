@@ -36,7 +36,14 @@ jobs:
         if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'ubuntu-22.04-arm'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
+          sudo apt-get install -y libappindicator3-dev librsvg2-dev patchelf xdg-utils
+          sudo apt-get install -y \
+            libwebkit2gtk-4.0-37=2.36.0-2ubuntu1 \
+            libwebkit2gtk-4.0-dev=2.36.0-2ubuntu1 \
+            libjavascriptcoregtk-4.0-18=2.36.0-2ubuntu1 \
+            libjavascriptcoregtk-4.0-dev=2.36.0-2ubuntu1 \
+            gir1.2-javascriptcoregtk-4.0=2.36.0-2ubuntu1 \
+            gir1.2-webkit2-4.0=2.36.0-2ubuntu1
 
       - name: setup node
         uses: actions/setup-node@v4
@@ -62,12 +69,30 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
-      - name: Import Apple Developer certificate (MacOS only)
+      - name: Import Apple Developer Certificate (MacOS only)
         if: startsWith(matrix.platform, 'macos')
-        uses: apple-actions/import-codesign-certs@v3
-        with:
-          p12-file-base64: ${{ secrets.APPLE_CERTIFICATE }}
-          p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          echo $APPLE_CERTIFICATE | base64 --decode > certificate.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+          security find-identity -v -p codesigning build.keychain
+
+      - name: Prepare notarization key (macOS only)
+        if: startsWith(matrix.platform, 'macos')
+        env:
+          APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
+          APPLE_API_KEY_PATH: ${{ secrets.APPLE_API_KEY_PATH }}
+        run: |
+          mkdir -p "$(dirname "$APPLE_API_KEY_PATH")"
+          printf '%s' "$APPLE_API_KEY_P8" > "$APPLE_API_KEY_PATH"
 
       - name: Setup Sentry CLI
         uses: matbour/setup-sentry-cli@v2
@@ -83,6 +108,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_PATH: ${{ secrets.APPLE_API_KEY_PATH }}
         with:
           tagName: app-v__VERSION__
           releaseName: 'Open Video Downloader v__VERSION__'
@@ -154,10 +182,12 @@ jobs:
 
       - name: Upload Portable (Windows only)
         if: matrix.platform == 'windows-latest'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          files: ${{ env.PORTABLE_ASSET }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Uploading ${PORTABLE_ASSET} to release ${RELEASE_TAG}"
+          gh release upload "${RELEASE_TAG}" "${PORTABLE_ASSET}" --clobber
 
       - name: Build and sign MSIX (Windows only)
         if: matrix.platform == 'windows-latest'

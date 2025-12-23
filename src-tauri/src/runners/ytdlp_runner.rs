@@ -1,9 +1,12 @@
-use crate::config::{Config, SubtitleSettings};
 use crate::models::download::FormatOptions;
+use crate::models::TrackType;
 use crate::paths::PathsManager;
-use crate::runners::ytdlp_args::{build_format_args, build_output_args};
+use crate::runners::template_context::TemplateContext;
+use crate::runners::ytdlp_args::{build_format_args, build_location_args, build_output_args};
+use crate::state::config_models::{Config, SubtitleSettings};
+use crate::state::preferences_models::Preferences;
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
-use crate::SharedConfig;
+use crate::{SharedConfig, SharedPreferences};
 use std::collections::HashSet;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -15,6 +18,7 @@ use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 pub struct YtdlpRunner<'a> {
   app: &'a AppHandle,
   cfg: Arc<Config>,
+  prefs: Arc<Preferences>,
   args: Vec<String>,
   bin_dir: PathBuf,
 }
@@ -26,10 +30,13 @@ impl<'a> YtdlpRunner<'a> {
     let args = vec!["--encoding".into(), "utf-8".into()];
     let cfg_handle = app.state::<SharedConfig>();
     let cfg = cfg_handle.load();
+    let prefs_handle = app.state::<SharedPreferences>();
+    let prefs = prefs_handle.load();
 
     Self {
       app,
       cfg,
+      prefs,
       args,
       bin_dir,
     }
@@ -156,6 +163,26 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
+  pub fn with_location_args(
+    mut self,
+    track_type: &TrackType,
+    template_context: &TemplateContext,
+  ) -> Self {
+    let fallback_dir = self
+      .app
+      .path()
+      .download_dir()
+      .unwrap_or_else(|_| std::env::current_dir().expect("couldn’t get current dir"));
+    self.args.extend(build_location_args(
+      track_type,
+      template_context,
+      &self.cfg.output,
+      &self.prefs.paths,
+      fallback_dir,
+    ));
+    self
+  }
+
   pub async fn shell(self) -> Result<Output, String> {
     tracing::info!("Running command: yt-dlp {}", self.args.join(" "));
     let separator = if cfg!(windows) { ';' } else { ':' };
@@ -200,9 +227,9 @@ impl<'a> YtdlpRunner<'a> {
       self.args.push("--video-password".into());
       self.args.push(vp);
     }
-    if let Some(tok) = s.bearer_token {
+    if let Some(token) = s.bearer_token {
       self.args.push("--add-header".into());
-      self.args.push(format!("Authorization: Bearer {tok}"));
+      self.args.push(format!("Authorization:Bearer {token}"));
     }
     for h in s.headers {
       self.args.push("--add-header".into());
@@ -218,10 +245,17 @@ fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {
 
   let mut args = vec!["--write-subs".into()];
 
+  if settings.embed_subtitles {
+    args.push("--embed-subs".into());
+    // Remove the subtitle file after embedding it.
+    args.push("--no-write-auto-subs".into());
+    args.push("--no-write-subs".into());
+  } else {
+    args.push("--no-embed-subs".into());
+  }
+
   if settings.include_auto_generated {
     args.push("--write-auto-subs".into());
-  } else {
-    args.push("--no-write-auto-subs".into());
   }
 
   let formats = sanitize_subtitle_formats(&settings.format_preference);
@@ -313,7 +347,7 @@ fn sanitize_vec(items: &[String]) -> Vec<String> {
 #[cfg(test)]
 mod tests {
   use super::build_subtitle_args;
-  use crate::config::SubtitleSettings;
+  use crate::state::config_models::SubtitleSettings;
 
   #[test]
   fn subtitles_disabled_returns_none() {
@@ -335,7 +369,34 @@ mod tests {
       args,
       vec![
         "--write-subs",
+        "--embed-subs",
         "--no-write-auto-subs",
+        "--no-write-subs",
+        "--sub-format",
+        "srt/vtt/ass/ttml/json",
+        "--sub-langs",
+        "en"
+      ]
+    );
+  }
+
+  #[test]
+  fn subtitles_embed_and_include_auto_generated_enabled() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      embed_subtitles: true,
+      include_auto_generated: true,
+      ..Default::default()
+    };
+    let args = build_subtitle_args(&settings).expect("args");
+    assert_eq!(
+      args,
+      vec![
+        "--write-subs",
+        "--embed-subs",
+        "--no-write-auto-subs",
+        "--no-write-subs",
+        "--write-auto-subs",
         "--sub-format",
         "srt/vtt/ass/ttml/json",
         "--sub-langs",
@@ -350,6 +411,7 @@ mod tests {
       enabled: true,
       languages: vec!["all".into(), "en".into()],
       format_preference: vec!["srt".into(), "vtt".into()],
+      embed_subtitles: false,
       include_auto_generated: true,
     };
 
@@ -358,6 +420,7 @@ mod tests {
       args,
       vec![
         "--write-subs",
+        "--no-embed-subs",
         "--write-auto-subs",
         "--sub-format",
         "srt/vtt/ass/ttml/json",
@@ -376,7 +439,7 @@ mod tests {
       ..Default::default()
     };
     let args = build_subtitle_args(&settings).expect("args");
-    assert_eq!(args[3], "srt/vtt/ass/ttml/json");
-    assert_eq!(args[5], "en");
+    assert_eq!(args[5], "srt/vtt/ass/ttml/json");
+    assert_eq!(args[7], "en");
   }
 }

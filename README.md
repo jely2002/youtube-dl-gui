@@ -37,9 +37,9 @@ No command-line setup is required.
 | **Linux generic (x64)**               | `Open.Video.Downloader_x.x.x_amd64.AppImage`   |
 | **Linux generic (aarch64)**           | `Open.Video.Downloader_x.x.x_aarch64.AppImage` |
 | **Linux Debian/Ubuntu (x64)**         | `Open.Video.Downloader_x.x.x_amd64.deb`        |
-| **Linux Debian/Ubuntu (aarch64)**     | `Open.Video.Downloader_x.x.x_aarch64.deb`      |
-| **Linux Fedora/RHEL (x64)**           | `Open.Video.Downloader_x.x.x_amd64.rpm`        |
-| **Linux Fedora/RHEL (aarch64)**       | `Open.Video.Downloader_x.x.x_aarch64.rpm`      |
+| **Linux Debian/Ubuntu (aarch64)**     | `Open.Video.Downloader_x.x.x_arm64.deb`        |
+| **Linux Fedora/RHEL (x64)**           | `Open.Video.Downloader_x.x.x-x_amd64.rpm`      |
+| **Linux Fedora/RHEL (aarch64)**       | `Open.Video.Downloader_x.x.x-x_aarch64.rpm`    |
 
 ## How it works
 

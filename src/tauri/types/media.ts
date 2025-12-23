@@ -18,14 +18,16 @@ export enum VideoContainer {
 export enum AudioFormat {
   mp3 = 'mp3',
   m4a = 'm4a',
-  ogg = 'ogg',
-  aac = 'aac',
   opus = 'opus',
+  aac = 'aac',
+  ogg = 'ogg',
+  flac = 'flac',
+  wav = 'wav',
 }
 
 export type DownloadOptions = {
   trackType: TrackType;
-  asr?: number;
+  abr?: number;
   height?: number;
   fps?: number;
 };
@@ -74,7 +76,7 @@ export interface EntryItem {
 export interface MediaFormat {
   id: string;
   height?: number;
-  asr?: number;
+  abr?: number;
   fps?: number;
   videoCodecs: string[];
 }

@@ -21,5 +21,5 @@ test('it uses global track and format options for new items', async ({ page }) =
   const cardFormat = page.locator('select[id$="-format"]').nth(1);
 
   await expect(cardTrack).toHaveValue('video');
-  await expect(cardFormat).toHaveValue('id=f720|h=720|fps=30|asr=');
+  await expect(cardFormat).toHaveValue('id=f720|h=720|fps=30|abr=');
 });
