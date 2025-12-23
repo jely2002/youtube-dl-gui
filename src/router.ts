@@ -51,7 +51,7 @@ const routes = [
       {
         path: 'authentication',
         name: 'authentication',
-        component: () => AuthenticationView,
+        component: AuthenticationView,
         meta: { index: 1 },
       },
       {
