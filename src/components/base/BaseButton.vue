@@ -1,6 +1,13 @@
 <template>
   <div :class="{ tooltip, [tooltipLocationClass]: true }" :data-tip="tooltip">
-    <router-link v-if="to" :to="to" class="btn btn-subtle" v-bind="$attrs" :disabled="disabled ? true : undefined">
+    <router-link
+        v-if="to"
+        :to="to"
+        class="btn btn-subtle"
+        v-bind="$attrs"
+        :disabled="disabled ? true : undefined"
+        activeClass="border-primary"
+    >
       <slot v-if="loading" name="loader">
         <span class="sr-only">{{ t('common.loading') }}</span>
         <span class="loading loading-spinner loading-sm"></span>
