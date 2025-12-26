@@ -50,10 +50,23 @@ impl Default for FormatPreferences {
   }
 }
 
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct WindowPreferences {
+  pub width: u32,
+  pub height: u32,
+  pub maximized: bool,
+  pub x: i32,
+  pub y: i32,
+  pub prev_x: i32,
+  pub prev_y: i32,
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Preferences {
   pub paths: PathPreferences,
   pub recents: RecentPreferences,
   pub formats: FormatPreferences,
+  pub window: WindowPreferences,
 }

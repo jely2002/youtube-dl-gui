@@ -25,6 +25,7 @@ const allowedCommands: Set<string> = new Set([
     'stronghold_keys',
     'stronghold_get',
     'stronghold_set',
+    'get_platform',
     'plugin:shell|open',
     'plugin:event|listen',
     'plugin:event|unlisten',
