@@ -437,6 +437,10 @@
         "label": "Add title & artist info:",
         "hint": "Save metadata such as title, uploader/artist and description inside the file."
       },
+      "location": {
+        "label": "Download location & filenames",
+        "link": "Configure download locations"
+      },
       "subtitles": {
         "label": "Add subtitles:",
         "link": "Configure subtitles"
@@ -574,6 +578,40 @@
       "updateApp": {
         "label": "Automatically update the app:",
         "hint": "Turn this on to receive new features and bug fixes as soon as a new version is released."
+      }
+    },
+    "system": {
+      "legend": "System",
+      "legendLabel": "Configure how this application integrates with the system.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Show menu bar icon",
+          "generic": "Show system tray icon"
+        },
+        "hint": {
+          "mac": "Shows a menu bar icon for quick access.",
+          "generic": "Shows an icon in the system tray for quick access."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Minimize to tray on close",
+        "hint": "Closing the window hides the app in the system tray instead of quitting."
+      },
+      "autoStart": {
+        "label": "Start at login",
+        "hint": "Launch Open Video Downloader automatically when you sign in."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Start hidden at login",
+          "windows": "Start minimized to tray at login",
+          "generic": "Start hidden at login (not recommended)"
+        },
+        "hint": {
+          "mac": "When the app starts at login, it won’t open a window. Use the menu bar or Dock icon to open it.",
+          "windows": "When the app starts at login, it will start in the system tray without opening a window.",
+          "generic": "When the app starts at login, it won’t open a window."
+        }
       }
     },
     "toasts": {

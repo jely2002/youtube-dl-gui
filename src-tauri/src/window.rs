@@ -1,5 +1,6 @@
+use crate::state::config_models::CloseBehavior;
 use crate::state::json_merge;
-use crate::SharedPreferences;
+use crate::{SharedConfig, SharedPreferences};
 use serde::Serialize;
 use serde_json::Value;
 use std::sync::Arc;
@@ -266,6 +267,49 @@ pub fn track_main_window(app: &AppHandle<Wry>) {
       }
 
       _ => {}
+    }
+  });
+}
+
+pub fn setup_close_behaviour(app: &AppHandle<Wry>) {
+  let window = match app.get_window("main") {
+    Some(w) => w,
+    None => {
+      tracing::warn!("Main window not found; cannot wire close behavior");
+      return;
+    }
+  };
+
+  let app_handle = app.clone();
+  let window_for_events = window.clone();
+
+  window.on_window_event(move |event| {
+    let WindowEvent::CloseRequested { api, .. } = event else {
+      return;
+    };
+
+    let cfg_handle = match app_handle.try_state::<SharedConfig>() {
+      Some(h) => h,
+      None => {
+        tracing::warn!("Config handle missing; allowing close");
+        return;
+      }
+    };
+
+    let cfg = cfg_handle.load();
+
+    if !cfg.system.tray_enabled {
+      return;
+    }
+
+    match cfg.system.close_behavior {
+      CloseBehavior::Exit => {}
+      CloseBehavior::Hide => {
+        api.prevent_close();
+        if let Err(e) = window_for_events.hide() {
+          tracing::warn!("Failed to hide window on close: {e}");
+        }
+      }
     }
   });
 }

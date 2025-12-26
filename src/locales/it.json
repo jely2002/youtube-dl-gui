@@ -437,6 +437,10 @@
         "label": "Aggiungi info su titolo e artista:",
         "hint": "Salva metadati all'interno del file (titolo, utente che ha caricato/artista e descrizione)."
       },
+      "location": {
+        "label": "Percorso di download e nomi dei file",
+        "link": "Configura le posizioni di download"
+      },
       "subtitles": {
         "label": "Aggiungi sottotitoli:",
         "link": "Configura sottotitoli"
@@ -574,6 +578,40 @@
       "updateApp": {
         "label": "Aggiorna automaticamente app:",
         "hint": "Attiva questa opzione per ricevere nuove funzionalità e correzioni di bug non appena viene rilasciata una nuova versione dell'app."
+      }
+    },
+    "system": {
+      "legend": "Sistema",
+      "legendLabel": "Configura come l'applicazione si integra con il sistema.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Mostra icona nella barra dei menu",
+          "generic": "Mostra icona nella barra di sistema"
+        },
+        "hint": {
+          "mac": "Mostra un'icona nella barra dei menu per un accesso rapido.",
+          "generic": "Mostra un'icona nella barra di sistema per un accesso rapido."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Minimizza nella barra di sistema alla chiusura",
+        "hint": "Chiudendo la finestra, l'app viene nascosta nella barra di sistema invece di essere chiusa."
+      },
+      "autoStart": {
+        "label": "Avvia all'accesso",
+        "hint": "Avvia automaticamente Open Video Downloader quando accedi."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Avvia nascosto all’accesso",
+          "windows": "Avvia ridotto nella barra di sistema all’accesso",
+          "generic": "Avvia nascosto all’accesso (non consigliato)"
+        },
+        "hint": {
+          "mac": "Quando l’app si avvia all’accesso, non viene aperta alcuna finestra. Usa l’icona nella barra dei menu o nel Dock per aprirla.",
+          "windows": "Quando l’app si avvia all’accesso, viene avviata nella barra di sistema senza aprire una finestra.",
+          "generic": "Quando l’app si avvia all’accesso, non viene aperta alcuna finestra."
+        }
       }
     },
     "toasts": {

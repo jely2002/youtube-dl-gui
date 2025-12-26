@@ -437,6 +437,10 @@
         "label": "Titel & artiest opslaan:",
         "hint": "Slaat info zoals titel, uploader/artist en beschrijving op in het bestand."
       },
+      "location": {
+        "label": "Downloadlocatie en bestandsnamen",
+        "link": "Downloadlocaties configureren"
+      },
       "subtitles": {
         "label": "Ondertitels toevoegen:",
         "link": "Ondertitels instellen"
@@ -574,6 +578,40 @@
       "updateApp": {
         "label": "App automatisch updaten:",
         "hint": "Krijg direct nieuwe functies en bugfixes zodra er een nieuwe versie beschikbaar is."
+      }
+    },
+    "system": {
+      "legend": "Systeem",
+      "legendLabel": "Configureer hoe deze applicatie met het systeem integreert.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Menubalkpictogram tonen",
+          "generic": "Systeemvakpictogram tonen"
+        },
+        "hint": {
+          "mac": "Toont een pictogram in de menubalk voor snelle toegang.",
+          "generic": "Toont een pictogram in het systeemvak voor snelle toegang."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Minimaliseren naar systeemvak bij sluiten",
+        "hint": "Bij het sluiten van het venster wordt de app verborgen in het systeemvak in plaats van afgesloten."
+      },
+      "autoStart": {
+        "label": "Starten bij aanmelden",
+        "hint": "Start Open Video Downloader automatisch wanneer u zich aanmeldt."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Verborgen starten bij aanmelden",
+          "windows": "Geminimaliseerd naar systeemvak starten bij aanmelden",
+          "generic": "Verborgen starten bij aanmelden (niet aanbevolen)"
+        },
+        "hint": {
+          "mac": "Wanneer de app bij het aanmelden start, wordt er geen venster geopend. Gebruik het menubalk- of Dock-pictogram om het te openen.",
+          "windows": "Wanneer de app bij het aanmelden start, wordt deze in het systeemvak gestart zonder een venster te openen.",
+          "generic": "Wanneer de app bij het aanmelden start, wordt er geen venster geopend."
+        }
       }
     },
     "toasts": {

@@ -73,6 +73,7 @@ import BaseFieldset from '../../components/base/BaseFieldset.vue';
 import { useOpener } from '../../composables/useOpener.ts';
 import SettingsUpdate from '../../components/settings/SettingsUpdate.vue';
 import SettingsInput from '../../components/settings/SettingsInput.vue';
+import SettingsSystem from '../../components/settings/SettingsSystem.vue';
 
 const settingsStore = useSettingsStore();
 const toastStore = useToastStore();
@@ -119,6 +120,7 @@ const sections = [
   SettingsAppearance,
   SettingsNetwork,
   SettingsUpdate,
+  SettingsSystem,
   SettingsSponsorBlock,
 ];
 

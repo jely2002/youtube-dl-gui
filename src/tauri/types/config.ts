@@ -89,6 +89,18 @@ export interface UpdateSettings {
   updateApp: boolean;
 }
 
+export enum CloseBehavior {
+  Exit = 'exit',
+  Hide = 'hide',
+}
+
+export interface SystemSettings {
+  trayEnabled: boolean;
+  autoStartEnabled: boolean;
+  autoStartMinimised: boolean;
+  closeBehavior: CloseBehavior;
+}
+
 export interface Settings {
   appearance: AppearanceSettings;
   auth: AuthSettings;
@@ -99,6 +111,7 @@ export interface Settings {
   sponsorBlock: SponsorBlockSettings;
   subtitles: SubtitleSettings;
   update: UpdateSettings;
+  system: SystemSettings;
 }
 
 export const defaultAppearanceSettings: AppearanceSettings = {
@@ -164,6 +177,13 @@ export const defaultUpdateSettings: UpdateSettings = {
   updateApp: true,
 };
 
+export const defaultSystemSettings: SystemSettings = {
+  trayEnabled: false,
+  autoStartEnabled: false,
+  autoStartMinimised: false,
+  closeBehavior: CloseBehavior.Exit,
+};
+
 export const defaultSettings: Settings = {
   appearance: defaultAppearanceSettings,
   auth: defaultAuthSettings,
@@ -182,4 +202,5 @@ export const defaultSettings: Settings = {
     formatPreference: [...defaultSubtitleSettings.formatPreference],
   },
   update: defaultUpdateSettings,
+  system: defaultSystemSettings,
 };
