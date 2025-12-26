@@ -9,6 +9,7 @@ mod runners;
 mod scheduling;
 mod state;
 mod stronghold;
+mod window;
 
 use crate::binaries::binaries_manager::BinariesManager;
 use crate::binaries::binaries_state::BinariesState;
@@ -20,6 +21,7 @@ use crate::scheduling::download_pipeline::{setup_download_dispatcher, DownloadSe
 use crate::scheduling::fetch_pipeline::{setup_fetch_dispatcher, FetchSender};
 use crate::state::config::ConfigHandle;
 use crate::state::preferences::PreferencesHandle;
+use crate::window::{restore_main_window, track_main_window};
 use sentry::ClientInitGuard;
 use std::collections::HashMap;
 use std::sync::{Arc, LazyLock, Mutex as StdMutex};
@@ -77,6 +79,10 @@ pub fn run() {
       let preferences_handle = PreferencesHandle::init(handle)?;
       let shared_preferences = Arc::new(preferences_handle);
       handle.manage::<SharedPreferences>(shared_preferences);
+
+      // setup window management
+      restore_main_window(handle);
+      track_main_window(handle);
 
       // manage update store
       handle.manage(Mutex::new(UpdateStore::default()));

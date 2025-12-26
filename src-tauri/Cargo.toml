@@ -19,7 +19,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = ["isolation"] }
 
 [dependencies]
-tauri = { version = "2.9.5", features = ["isolation", "image-png"] }
+tauri = { version = "2.9.5", features = ["isolation", "image-png", "unstable"] }
 tauri-plugin-opener = "2.5.2"
 tauri-plugin-global-shortcut = "2.3.1"
 serde = { version = "1", features = ["derive"] }
