@@ -9,6 +9,7 @@ mod runners;
 mod scheduling;
 mod state;
 mod stronghold;
+mod tray;
 mod window;
 
 use crate::binaries::binaries_manager::BinariesManager;
@@ -21,12 +22,14 @@ use crate::scheduling::download_pipeline::{setup_download_dispatcher, DownloadSe
 use crate::scheduling::fetch_pipeline::{setup_fetch_dispatcher, FetchSender};
 use crate::state::config::ConfigHandle;
 use crate::state::preferences::PreferencesHandle;
-use crate::window::{restore_main_window, track_main_window};
+use crate::tray::{create_tray, TrayState};
+use crate::window::{restore_main_window, setup_close_behaviour, track_main_window};
 use sentry::ClientInitGuard;
 use std::collections::HashMap;
 use std::sync::{Arc, LazyLock, Mutex as StdMutex};
 use stronghold::stronghold_state;
-use tauri::Manager;
+use tauri::{AppHandle, Manager};
+use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
 use tokio::sync::Mutex;
 use tracing_subscriber::filter::{LevelFilter, Targets};
 use tracing_subscriber::{fmt, prelude::*};
@@ -43,6 +46,7 @@ pub static RUNNING_GROUPS: LazyLock<StdMutex<HashMap<String, bool>>> =
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
+    .plugin(tauri_plugin_autostart::Builder::new().build())
     .plugin(tauri_plugin_updater::Builder::new().build())
     .plugin(tauri_plugin_store::Builder::new().build())
     .plugin(tauri_plugin_dialog::init())
@@ -51,6 +55,15 @@ pub fn run() {
     .plugin(tauri_plugin_shell::init())
     .plugin(tauri_plugin_opener::init())
     .plugin(tauri_plugin_global_shortcut::Builder::new().build())
+    .plugin(tauri_plugin_autostart::init(
+      MacosLauncher::LaunchAgent,
+      Some(vec!["--auto-start"]),
+    ))
+    .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+      let window = app.get_webview_window("main").expect("no main window");
+      let _ = window.show();
+      window.set_focus().expect("Failure focusing window.");
+    }))
     .setup(|app| {
       let handle = app.handle();
 
@@ -83,6 +96,16 @@ pub fn run() {
       // setup window management
       restore_main_window(handle);
       track_main_window(handle);
+      setup_close_behaviour(handle);
+
+      // setup tray
+      handle.manage(TrayState {
+        tray: StdMutex::new(None),
+      });
+      create_tray(handle);
+
+      // setup autostart
+      init_autostart(handle);
 
       // manage update store
       handle.manage(Mutex::new(UpdateStore::default()));
@@ -100,7 +123,7 @@ pub fn run() {
       handle.manage(BinariesState::default());
       handle.manage(BinariesManager::new(handle));
 
-      // setup stronghold
+      // set up stronghold
       let app_path = path_handle.app_dir();
       let stronghold_path = app_path.join("vault.hold");
 
@@ -147,6 +170,7 @@ pub fn run() {
       stronghold_keys,
       stronghold_get,
       stronghold_set,
+      get_platform,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
@@ -173,6 +197,19 @@ pub fn init_tracing() {
     .with(fmt_layer)
     .with(sentry_layer)
     .init();
+}
+
+pub fn init_autostart(app: &AppHandle) {
+  let cfg_handle = app.state::<SharedConfig>();
+  let cfg = cfg_handle.load();
+  let autostart_manager = app.autolaunch();
+  let is_enabled = autostart_manager.is_enabled().unwrap_or(false);
+
+  if cfg.system.auto_start_enabled && !is_enabled {
+    let _ = autostart_manager.enable();
+  } else if !cfg.system.auto_start_enabled && is_enabled {
+    let _ = autostart_manager.disable();
+  }
 }
 
 #[cfg(debug_assertions)]

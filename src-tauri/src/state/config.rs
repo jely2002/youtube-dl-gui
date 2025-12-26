@@ -1,10 +1,11 @@
-use std::error::Error;
-use tauri::{AppHandle, Manager, Wry};
-
 use crate::commands::{register_shortcuts, unregister_shortcuts};
 use crate::state::config_models::Config;
 use crate::state::json_handle::JsonStoreHandle;
 use crate::state::json_state::JsonBackedState;
+use crate::tray::{create_tray, destroy_tray};
+use std::error::Error;
+use tauri::{AppHandle, Manager, Wry};
+use tauri_plugin_autostart::ManagerExt;
 
 impl JsonBackedState for Config {
   const STORE_FILE: &'static str = "config.store.json";
@@ -30,6 +31,18 @@ impl JsonBackedState for Config {
       register_shortcuts(app)?;
     } else {
       unregister_shortcuts(app)?;
+    }
+
+    if new_value.system.tray_enabled {
+      create_tray(app);
+    } else {
+      destroy_tray(app);
+    }
+
+    if new_value.system.auto_start_enabled {
+      let _ = app.autolaunch().enable();
+    } else {
+      let _ = app.autolaunch().disable();
     }
     Ok(())
   }

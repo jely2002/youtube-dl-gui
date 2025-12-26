@@ -103,7 +103,6 @@ export function startWindowSync(): void {
     if (nowMs < attentionCooldownUntilMs.value) return;
 
     attentionCooldownUntilMs.value = nowMs + 2000;
-
     try {
       await windowHandle.requestUserAttention(UserAttentionType.Informational);
     } catch {

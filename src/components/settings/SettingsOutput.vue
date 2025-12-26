@@ -84,6 +84,18 @@
     </p>
 
     <p class="font-semibold mt-2">
+      {{ t('settings.output.location.label') }}
+    </p>
+    <router-link
+        class="text-primary group font-semibold flex gap-1 items-center"
+        :to="{ name: 'location' }"
+    >
+      {{ t('settings.output.location.link') }}
+      <arrow-right-icon
+          class="w-5 h-5 group-focus:translate-x-1 group-hover:translate-x-1 transition-transform"
+      />
+    </router-link>
+    <p class="font-semibold mt-2">
       {{ t('settings.output.subtitles.label') }}
     </p>
     <router-link
