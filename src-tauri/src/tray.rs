@@ -2,7 +2,7 @@ use crate::models::payloads::ShortcutPayload;
 use crate::SharedConfig;
 use std::sync::Mutex;
 use tauri::menu::{MenuBuilder, MenuItem};
-use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent, TrayIconId};
+use tauri::tray::{TrayIconBuilder, TrayIconId};
 use tauri::{AppHandle, Emitter, Manager};
 
 pub struct TrayState {
@@ -120,22 +120,6 @@ pub fn create_tray(app: &AppHandle) {
 
       _ => {}
     })
-    .on_tray_icon_event(|tray, event| match event {
-      #[cfg(target_os = "windows")]
-      TrayIconEvent::Click {
-        button: MouseButton::Left,
-        button_state: MouseButtonState::Up,
-        ..
-      } => {
-        let app = tray.app_handle();
-        if let Some(window) = app.get_webview_window("main") {
-          let _ = window.unminimize();
-          let _ = window.show();
-          let _ = window.set_focus();
-        }
-      }
-      _ => {}
-    })
     .build(app)
   {
     Ok(t) => t,
@@ -144,6 +128,27 @@ pub fn create_tray(app: &AppHandle) {
       return;
     }
   };
+
+  #[cfg(target_os = "windows")]
+  {
+    use tauri::tray::{MouseButton, MouseButtonState, TrayIconEvent};
+
+    tray.on_tray_icon_event(|tray, event| {
+      if let TrayIconEvent::Click {
+        button: MouseButton::Left,
+        button_state: MouseButtonState::Up,
+        ..
+      } = event
+      {
+        let app = tray.app_handle();
+        if let Some(window) = app.get_webview_window("main") {
+          let _ = window.unminimize();
+          let _ = window.show();
+          let _ = window.set_focus();
+        }
+      }
+    });
+  }
 
   *guard = Some(tray.id().clone());
 }
