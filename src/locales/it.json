@@ -273,7 +273,7 @@
       },
       "embed": {
         "label": "Aggiungi traccia sottotitoli:",
-        "hint": "Aggiunge i sottotitoli al file video. Funziona con i formati MP4, MKV e WEBM."
+        "hint": "Aggiungi i sottotitoli al file video. Funziona con i formati MP4, MKV e WEBM."
       },
       "languages": {
         "legend": "Lingua",
@@ -302,27 +302,27 @@
     }
   },
   "location": {
-    "title": "Percorso di download",
+    "title": "Percorso download",
     "downloadDir": {
-      "label": "Percorso di download",
-      "hint": "Clicca nel campo per selezionare dove verranno scaricati i video."
+      "label": "Percorso download",
+      "hint": "Clic nel campo per selezionare dove verranno salvati i video."
     },
     "directory": {
       "legend": "Organizza per",
       "legendLabel": "Seleziona come organizzare i download nelle cartelle.",
       "videoDir": {
-        "label": "Percorso di download:",
-        "hint": "Sovrascrive il percorso di download globale per i video."
+        "label": "Percorso download:",
+        "hint": "Sovrascrivi percorso download globale per i video."
       },
       "audioDir": {
-        "label": "Percorso di download:",
-        "hint": "Sovrascrive il percorso di download globale per l’audio."
+        "label": "Percorso download:",
+        "hint": "Sovrascrivi percorso di download globale per l’audio."
       },
       "directoryPreset": {
         "label": "Organizza i download per:",
-        "exampleLabel": "Output di esempio:",
+        "exampleLabel": "Esempio output:",
         "options": {
-          "none": "Nessuna sottocartella",
+          "none": "Nessuna sotto cartella",
           "playlist": "Playlist",
           "channel": "Canale",
           "channelPlaylist": "Canale → playlist",
@@ -331,15 +331,15 @@
           "custom": "Personalizzato"
         },
         "examples": {
-          "playlist": "La mia playlist/",
-          "channel": "MioCanale/",
-          "channelPlaylist": "MioCanale/La mia playlist/",
+          "playlist": "Mia playlist/",
+          "channel": "Mio canale/",
+          "channelPlaylist": "Mio canale/Mia playlist/",
           "yearMonth": "2025/03/",
           "artistAlbum": "Nome artista/Nome album/"
         }
       },
       "outputFormat": {
-        "label": "Formato directory:"
+        "label": "Formato cartella:"
       }
     },
     "filename": {
@@ -347,7 +347,7 @@
       "legendLabel": "Seleziona il nome che avranno i file scaricati.",
       "formatPreset": {
         "label": "Prefisso nome file:",
-        "exampleLabel": "Output di esempio:",
+        "exampleLabel": "Esempio output:",
         "options": {
           "titleQuality": "Titolo + qualità",
           "titleOnly": "Titolo",
@@ -356,19 +356,19 @@
         },
         "examples": {
           "video": {
-            "titleQuality": "Il mio video-(1080p30).mp4",
-            "titleOnly": "Il mio video.mp4",
-            "titleQualityPlaylist": "03-Il mio video-(1080p30).mkv"
+            "titleQuality": "Mio video-(1080p30).mp4",
+            "titleOnly": "Mio video.mp4",
+            "titleQualityPlaylist": "03-Mio video-(1080p30).mkv"
           },
           "audio": {
-            "titleQuality": "Il mio audio-(320k).mp3",
-            "titleOnly": "Il mio audio.mp3",
-            "titleQualityPlaylist": "03-Il mio audio-(320k).mp3"
+            "titleQuality": "Mio audio-(320k).mp3",
+            "titleOnly": "Mio audio.mp3",
+            "titleQualityPlaylist": "03-Mio audio-(320k).mp3"
           }
         },
         "restrictFilenames": {
-          "label": "Limitare i nomi dei file:",
-          "hint": "Sostituisce gli spazi con trattini bassi e rimuove i caratteri speciali come \"&\" dai nomi dei file."
+          "label": "Limita i nomi dei file:",
+          "hint": "Nei nomi dei file sostituisci gli spazi con trattini bassi e rimuovi i caratteri speciali come \"&\"."
         }
       },
       "outputFormat": {
@@ -384,7 +384,7 @@
     "title": "Impostazioni",
     "reset": {
       "label": "Ripristina",
-      "confirm": "Clicca di nuovo"
+      "confirm": "Clic di nuovo"
     },
     "performance": {
       "legend": "Prestazioni",
@@ -415,7 +415,7 @@
         "hint": "Quando un collegamento contiene sia un video che una playlist, scarica solo il video anziché la playlist completa."
       },
       "globalShortcuts": {
-        "label": "Abilita scorciatoie:",
+        "label": "Abilita tasti rapidi:",
         "add_hint": "Aggiungi video alla coda con:",
         "download_hint": "Scarica la coda con:"
       },
@@ -506,7 +506,7 @@
       },
       "impersonate": {
         "label": "Simulazione:",
-        "hint": "Simula un sistema operativo o un browser specifico per impedire il rilevamento delle firme.",
+        "hint": "Per impedire il rilevamento delle firme simula un sistema operativo o un browser specifico.",
         "options": {
           "none": "Non simulare s.o.",
           "any": "Simula un client casuale"
@@ -786,7 +786,7 @@
     "links": {
       "github": "GitHub",
       "wiki": "Wiki",
-      "reportABug": "Segnala un bug"
+      "reportABug": "Segnala bug"
     }
   }
 }
