@@ -66,7 +66,7 @@ impl YtdlpProgressParser {
         group_id: self.group_id.clone(),
         is_merged: true,
         destination: MediaDestinationPath {
-          confidence: 100,
+          confidence: 80,
           path: destination,
         },
       }));
@@ -75,14 +75,22 @@ impl YtdlpProgressParser {
   }
 
   fn try_destination(&self, line: &str) -> Option<ProgressEvent> {
-    let (prefix_part, rest) = line.split_once("] Destination:")?;
-    let prefix = prefix_part.trim_start_matches('[');
-    let confidence = match prefix {
-      "Merger" | "ExtractAudio" => 95,
-      "download" => 80,
-      _ => 70,
-    };
+    let (_, rest) = line.split_once("Destination:")?;
     let full_path = rest.trim().to_string();
+
+    let tag = line
+      .split(']')
+      .next()
+      .map(|s| s.trim_start_matches('['))
+      .unwrap_or("unknown");
+
+    let confidence = match tag {
+      "VideoConvertor" => 95,
+      "VideoRemuxer" => 90,
+      "Merger" | "ExtractAudio" => 70,
+      "download" => 60,
+      _ => 50,
+    };
 
     Some(ProgressEvent::Destination(MediaDestination {
       id: self.id.clone(),
