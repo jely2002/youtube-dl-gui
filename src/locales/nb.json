@@ -1,0 +1,792 @@
+{
+  "common": {
+    "download": "Last ned",
+    "save": "Lagre",
+    "later": "Senere",
+    "load": "Last inn",
+    "install": "Installer",
+    "percentage": "{percent}%",
+    "add": "Legg til",
+    "back": "Tilbake",
+    "continue": "Fortsett",
+    "retry": "Prøv igjen",
+    "enable": "Aktiver",
+    "pleaseWait": "Vennligst vent…",
+    "loading": "Laster",
+    "emptySearch": "Ingen resultater funnet.",
+    "parenthesis": "({content})",
+    "divide": "{left} / {right}",
+    "video": "video",
+    "unknown": "ukjent",
+    "confirm": "Bekreft"
+  },
+  "layout": {
+    "header": {
+      "placeholder": "Skriv inn en video-/spilleliste-URL for å legge til i køen",
+      "nav": {
+        "settings": "App-innstillinger"
+      }
+    },
+    "footer": {
+      "progress": {
+        "downloading": "Laster ned kø - {done} av {total} fullført.",
+        "completed": "Nedlasting fullført – {n} element lastet ned. | Nedlasting fullført – {n} elementer lastet ned.",
+        "ready": "Klar til nedlasting! {n} element i kø. | Klar til nedlasting! {n} elementer i kø."
+      },
+      "nav": {
+        "downloadLocation": "Nedlastingssted",
+        "login": {
+          "screenReader": {
+            "on": "Rediger pålogging (for øyeblikket pålogget)",
+            "off": "Rediger pålogging (for øyeblikket ikke pålogget)"
+          },
+          "tooltip": {
+            "on": "Rediger pålogging",
+            "off": "Logg inn"
+          }
+        },
+        "subtitles": {
+          "screenReader": {
+            "on": "Rediger undertekster (for øyeblikket aktivert)",
+            "off": "Rediger undertekster (for øyeblikket deaktivert)"
+          },
+          "tooltip": "Undertekster"
+        }
+      },
+      "format": {
+        "trackSelect": {
+          "screenReader": "Velg spor for alle videoer"
+        },
+        "formatSelect": {
+          "noFormats": "Ingen formater",
+          "placeholder": "Velg format",
+          "screenReader": "Velg format for alle videoer"
+        }
+      },
+      "queue": {
+        "empty": "Tom kø"
+      }
+    }
+  },
+  "auth": {
+    "title": "Autentisering",
+    "cookies": {
+      "legend": "Informasjonskapsler",
+      "legendBadge": "Anbefalt",
+      "legendLabel": "Bruk påloggede økter fra en informasjonskapselfil eller importer fra nettleseren din.",
+      "file": {
+        "label": "Last inn informasjonskapsler fra en cookies.txt-fil",
+        "hint": "For å eksportere informasjonskapslene dine til en fil {link}",
+        "hintLink": "se veiledningen."
+      },
+      "browser": {
+        "label": "Last automatisk inn informasjonskapsler fra en nettleser:",
+        "placeholder": "Ikke last inn informasjonskapsler fra en nettleser",
+        "hint": "Noen nettlesere støtter kanskje ikke innlasting av informasjonskapsler. Se {link}",
+        "hintLink": "liste over kompatible nettlesere."
+      }
+    },
+    "credentials": {
+      "title": "Avanserte metoder",
+      "description": "Bruk metoder som grunnleggende autentisering, bærer-token, overskrifter, videopassord, osv.",
+      "labels": {
+        "username": "Brukernavn",
+        "password": "Passord",
+        "token": "Token",
+        "headers": "Headers"
+      },
+      "basicAuth": {
+        "legend": "Basic autentisering",
+        "legendLabel": "Brukes for nettsteder med enkel autentisering."
+      },
+      "videoPassword": {
+        "legend": "Video passord",
+        "legendLabel": "Oppgi et passord for å få tilgang til beskyttede videoer."
+      },
+      "bearerToken": {
+        "legend": "Bearer token",
+        "legendLabel": "Oppgi et bærer-token for å få tilgang til private ressurser."
+      },
+      "customHeaders": {
+        "legend": "Egendefinerte headers",
+        "legendBadge": "Avansert",
+        "legendLabel": "En per linje: FELT:VERDI",
+        "placeholder": "X-Api-Key:…"
+      }
+    },
+    "init": {
+      "title": "Secrets store ikke aktivert",
+      "description": "For å bruke avanserte autentiseringsmetoder må secrets store aktiveres.",
+      "hint": "Secrets store bruker systemets nøkkelring, dette kan kreve et passord.",
+      "error": {
+        "title": "Kan ikke aktivere secrets store",
+        "description": "Det oppstod en feil under aktivering av secrets store, vennligst prøv igjen.",
+        "hint": "Feil: {error}",
+        "unknown": "Ukjent feil"
+      },
+      "toasts": {
+        "error": "Kan ikke initialisere secrets store: {error}"
+      }
+    },
+    "toasts": {
+      "error": "Kan ikke lagre autentiseringsinnstillinger. {error}",
+      "saved": "Autentiseringsinnstillinger lagret!"
+    }
+  },
+  "media": {
+    "view": {
+      "tabs": {
+        "metadata": "Metadata",
+        "logs": "Logger"
+      },
+      "thumbnailAlt": "Miniatyrbilde for {title}",
+      "metadata": {
+        "uploader": "Opplaster:",
+        "extractor": "Ekstraktor:",
+        "link": "Lenke:",
+        "description": "Beskrivelse:"
+      },
+      "stats": {
+        "title": "Video Statistikk",
+        "views": "Visninger",
+        "likes": "Liker",
+        "dislikes": "Misliker",
+        "comments": "Kommentarer",
+        "rating": "Vurdering",
+        "duration": "Varighet"
+      },
+      "logs": {
+        "failure": "Feil",
+        "errors": {
+          "count": "Feil ({count})",
+          "empty": "Ingen feil funnet."
+        },
+        "warnings": {
+          "count": "Advarsler ({count})",
+          "empty": "Ingen advarsler funnet."
+        },
+        "all": {
+          "title": "Alle logger",
+          "empty": "Ingen logger funnet."
+        },
+        "toasts": {
+          "reported": "Feil har blitt rapportert.",
+          "error": "Kan ikke rapportere feil."
+        }
+      }
+    },
+    "steps": {
+      "fetch": {
+        "progress": "{percentage}% — {done} av {total}",
+        "progressLabel": "Henter metadata…"
+      },
+      "configure": {
+        "format": {
+          "trackSelect": {
+            "screenReader": "Velg spor å laste ned"
+          },
+          "formatSelect": {
+            "noFormats": "Ingen formater",
+            "placeholder": "Velg format",
+            "screenReader": "Velg format for sporet"
+          }
+        },
+        "metadata": {
+          "duration": "Varighet: {duration}",
+          "size": "Størrelse: ",
+          "items": "Elementer: {amount} {failedCount}",
+          "failedCount": "({amount} mislyktes)"
+        },
+        "trackTypes": {
+          "both": "Video + Lyd",
+          "audio": "Lyd",
+          "video": "Video"
+        }
+      },
+      "download": {
+        "progress": "Laster ned {category}… — {percentage}%",
+        "progressList": "Laster ned… {percentage}% — {done} av {total}",
+        "indeterminate": "{status}…",
+        "category": {
+          "video": "video",
+          "audio": "lyd",
+          "subtitles": "undertekster",
+          "thumbnail": "miniatyrbilde",
+          "metadata": "metadata",
+          "other": "annet"
+        },
+        "status": {
+          "initializing": "Initialiserer",
+          "downloading": "Laster ned",
+          "merging": "Slår sammen",
+          "finalizing": "Rydder opp"
+        },
+        "metadata": {
+          "eta": "Estimert tid: {eta}",
+          "speed": "Hastighet: {speed}"
+        }
+      },
+      "done": {
+        "complete": "Nedlasting fullført — 100%",
+        "showFolder": "Vis i mappe",
+        "open": "Åpne fil",
+        "openFirst": "Åpne første fil",
+        "undeterminedLocation": "Nedlastingsstedet kunne ikke bestemmes for dette elementet."
+      },
+      "error": {
+        "errorPrefix": "Feil - {message}",
+        "report": "Rapporter",
+        "showFull": "Vis full feil"
+      }
+    },
+    "card": {
+      "actions": {
+        "remove": "Fjern",
+        "externalUrl": "Besøk på ekstern URL",
+        "retry": "Prøv nedlasting på nytt",
+        "download": "Last ned individuelt",
+        "metadata": "Vis metadata"
+      },
+      "toasts": {
+        "retry": "Prøver nedlasting på nytt.",
+        "retryError": "Kunne ikke prøve nedlasting på nytt."
+      }
+    }
+  },
+  "subtitles": {
+    "title": "Undertekster",
+    "options": {
+      "enable": {
+        "legend": "Nedlasting av undertekster",
+        "legendLabel": "Velg hvordan undertekster skal hentes ved nedlasting av media.",
+        "label": "Aktiver undertekster",
+        "hint": "Last ned undertekstfiler sammen med mediene dine."
+      },
+      "autoGenerated": {
+        "label": "Inkluder automatisk genererte undertekster",
+        "hint": "Last ned automatisk genererte undertekster i tillegg til de som er levert av skaperen."
+      },
+      "format": {
+        "legend": "Foretrukket format",
+        "legendLabel": "Velg ditt foretrukne undertekstformat. Hvis formatet ikke er tilgjengelig, vil det neste beste formatet bli brukt.",
+        "label": "Format"
+      },
+      "embed": {
+        "label": "Legg til undertekstspor:",
+        "hint": "Legg til undertekster i videofilen, dette fungerer for mp4-, mkv- og webm-formater."
+      },
+      "languages": {
+        "legend": "Språk",
+        "legendLabel": "Velg undertekstspråkene som skal lastes ned.",
+        "downloadAll": "Last ned alle tilgjengelige undertekster.",
+        "search": "Søk etter språk",
+        "searchPlaceholder": "Søk etter språknavn",
+        "suggested": "Anbefalt for deg",
+        "all": "Alle språk",
+        "noResult": "Ingen språk samsvarer med \"{query}\".",
+        "selected": "Valgt:",
+        "allSelected": "Alle tilgjengelige undertekster",
+        "searchHint": "Tips: Bruk søkeboksen for å raskt filtrere listen. Valgte språk forblir uthevet."
+      }
+    },
+    "toasts": {
+      "saved": "Innstillinger for undertekster lagret!",
+      "error": "Kunne ikke lagre innstillinger for undertekster. {error}"
+    },
+    "formats": {
+      "srt": "SubRip (.srt)",
+      "vtt": "WebVTT (.vtt)",
+      "ass": "Advanced SubStation Alpha (.ass)",
+      "ttml": "Timed Text Markup (.ttml)",
+      "json": "JSON (.json)"
+    }
+  },
+  "location": {
+    "title": "Nedlastingssted",
+    "downloadDir": {
+      "label": "Nedlastingssted",
+      "hint": "Klikk i boksen for å velge hvor videoer lastes ned."
+    },
+    "directory": {
+      "legend": "Organiser etter",
+      "legendLabel": "Velg hvordan nedlastinger organiseres i mapper.",
+      "videoDir": {
+        "label": "Nedlastingssted:",
+        "hint": "Overstyr det globale nedlastingsstedet når du laster ned videoer."
+      },
+      "audioDir": {
+        "label": "Nedlastingssted:",
+        "hint": "Overstyr det globale nedlastingsstedet når du laster ned lyd."
+      },
+      "directoryPreset": {
+        "label": "Organiser nedlastinger etter:",
+        "exampleLabel": "Eksempel på utdata:",
+        "options": {
+          "none": "Ingen undermapper",
+          "playlist": "Spilleliste",
+          "channel": "Kanal",
+          "channelPlaylist": "Kanal → spilleliste",
+          "yearMonth": "År / måned",
+          "artistAlbum": "Artist → album",
+          "custom": "Egendefinert"
+        },
+        "examples": {
+          "playlist": "Min Spilleliste/",
+          "channel": "Min Kanal/",
+          "channelPlaylist": "Min Kanal/Min Spilleliste/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "Artist Navn/Album Navn/"
+        }
+      },
+      "outputFormat": {
+        "label": "Mappestruktur:"
+      }
+    },
+    "filename": {
+      "legend": "Filnavnformat",
+      "legendLabel": "Velg filnavnet som nedlastinger vil ha.",
+      "formatPreset": {
+        "label": "Filnavnmal:",
+        "exampleLabel": "Eksempel på utdata:",
+        "options": {
+          "titleQuality": "Tittel + kvalitet",
+          "titleOnly": "Kun tittel",
+          "titleQualityPlaylist": "Spilleliste + tittel + kvalitet",
+          "custom": "Egendefinert"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Min Video-(1080p30).mp4",
+            "titleOnly": "Min Video.mp4",
+            "titleQualityPlaylist": "03-Min Video-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Min Lyd-(320k).mp3",
+            "titleOnly": "Min Lyd.mp3",
+            "titleQualityPlaylist": "03-Min Lyd-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "Begrens filnavn:",
+          "hint": "Erstatter mellomrom med understreker og fjerner spesialtegn som \"&\" fra filnavn."
+        }
+      },
+      "outputFormat": {
+        "label": "Filnavnformat:"
+      }
+    },
+    "toasts": {
+      "saved": "Nedlastingssteder lagret!",
+      "error": "Kunne ikke lagre nedlastingssteder."
+    }
+  },
+  "settings": {
+    "title": "Innstillinger",
+    "reset": {
+      "label": "Tilbakestill",
+      "confirm": "Klikk igjen for å tilbakestille"
+    },
+    "performance": {
+      "legend": "Ytelse",
+      "legendLabel": "Konfigurer hvor mange systemressurser som brukes.",
+      "maxConcurrency": {
+        "label": "Maks samtidige jobber:"
+      },
+      "splitPlaylistThreshold": {
+        "label": "Del spillelister i separate videoer når:",
+        "options": {
+          "never": "Del aldri",
+          "lessThan": "Mindre enn {number} videoer"
+        }
+      },
+      "autoLoadSize": {
+        "label": "Last automatisk inn videostørrelse:"
+      }
+    },
+    "input": {
+      "legend": "Input",
+      "legendLabel": "Velg hvordan du starter nedlasting med OVD.",
+      "autoFillClipboard": {
+        "label": "Fyll automatisk inn kopierte lenker:",
+        "hint": "Oppdag lenker du har kopiert, slik at du kan laste dem ned med ett klikk."
+      },
+      "preferVideoInMixedLinks": {
+        "label": "Foretrekk enkeltvideo for spilleliste-lenker:",
+        "hint": "Når en lenke inneholder både en video og en spilleliste, last ned bare videoen i stedet for hele spillelisten."
+      },
+      "globalShortcuts": {
+        "label": "Aktiver hurtigtaster:",
+        "add_hint": "Legg til videoer i køen med:",
+        "download_hint": "Last ned køen med:"
+      },
+      "authentication": {
+        "label": "Logg inn for å laste ned private videoer:",
+        "link": "Konfigurer autentisering"
+      }
+    },
+    "output": {
+      "legend": "Output",
+      "legendLabel": "Konfigurer hvilke typer filer som lastes ned.",
+      "addThumbnail": {
+        "label": "Legg til omslagsbilde:",
+        "hint": "Legg inn miniatyren i filen slik at mediespillere kan vise omslagsbildet."
+      },
+      "addMetadata": {
+        "label": "Legg til tittel- og artistinformasjon:",
+        "hint": "Lagre metadata som tittel, opplaster/artist og beskrivelse i filen."
+      },
+      "subtitles": {
+        "label": "Legg til undertekster:",
+        "link": "Konfigurer undertekster"
+      },
+      "policy": {
+        "label": "Konverteringsmodus:",
+        "hint": "Hvis den nedlastede filen ikke allerede samsvarer med det valgte formatet, kan det hende den må konverteres. Hopp over konvertering: raskest, kan ignorere valgt format. Konverter om mulig: prøver å endre beholder uten re-koding. Konverter om nødvendig: bruker alltid valgt format, men er tregere og bruker mer CPU.",
+        "options": {
+          "never": "Hopp over konvertering",
+          "remuxOnly": "Konverter om mulig (anbefalt)",
+          "allowReencode": "Konverter om nødvendig (tregere)"
+        }
+      },
+      "tabs": {
+        "audio": {
+          "screenreader": "Lydinnstillinger",
+          "label": "Lyd",
+          "format": {
+            "label": "Lydformat:",
+            "hint": "Velg foretrukket lydformat. Konverteringsmodus avgjør om filen faktisk vil bli konvertert.",
+            "options": {
+              "mp3": "MP3 (anbefalt)",
+              "m4a": "M4A",
+              "ogg": "OGG",
+              "aac": "AAC",
+              "opus": "Opus",
+              "wav": "WAV",
+              "flac": "FLAC"
+            }
+          }
+        },
+        "video": {
+          "screenreader": "Videoinnstillinger",
+          "label": "Video",
+          "container": {
+            "label": "Videoformat:",
+            "hint": "Velg foretrukket videoformat. Konverteringsmodus avgjør om filen faktisk vil bli konvertert.",
+            "options": {
+              "mp4": "MP4",
+              "mkv": "MKV"
+            }
+          }
+        }
+      }
+    },
+    "appearance": {
+      "legend": "Utseende",
+      "legendLabel": "Konfigurer hvordan applikasjonen ser ut og føles.",
+      "theme": {
+        "label": "Tema:",
+        "options": {
+          "system": "System ({theme})",
+          "light": "Lys",
+          "dark": "Mørk"
+        }
+      },
+      "language": {
+        "label": "Språk",
+        "options": {
+          "system": "System ({language})"
+        }
+      }
+    },
+    "network": {
+      "legend": "Nettverk",
+      "legendLabel": "Konfigurer hvordan applikasjonen kobler til internett.",
+      "proxy": {
+        "label": "Proxy-konfigurasjon:"
+      },
+      "impersonate": {
+        "label": "Impersonering:",
+        "hint": "Impersoner et spesifikt OS eller nettleser for å forhindre fingeravtrykk.",
+        "options": {
+          "none": "Ikke impersoner",
+          "any": "Impersoner en tilfeldig klient"
+        }
+      }
+    },
+    "sponsorBlock": {
+      "legend": "SponsorBlock",
+      "legendLabel": "Fjern eller merk deler av en video.",
+      "removeParts": {
+        "label": "Deler å fjerne",
+        "placeholder": "Velg 1 eller flere deler å fjerne fra videoen."
+      },
+      "markParts": {
+        "label": "Deler å merke",
+        "placeholder": "Velg 1 eller flere deler å merke med et kapittel."
+      },
+      "apiUrl": {
+        "label": "API URL"
+      },
+      "parts": {
+        "sponsor": {
+          "label": "Sponsor",
+          "description": "Betalt produkt- eller tjenestepromotering av skaper eller tredjepart"
+        },
+        "selfpromo": {
+          "label": "Egenpromotering / Ubetalt",
+          "description": "Skaperens egen promotering av merch, tjenester eller kanaler (ubetalt)."
+        },
+        "interaction": {
+          "label": "Interaksjonspåminnelse",
+          "description": "Påminnelser om å like/abonnere/følge eller interagere med skaperen."
+        },
+        "intro": {
+          "label": "Intro / Intermission",
+          "description": "Intro-animasjon, pause eller ikke-innhold ved starten."
+        },
+        "outro": {
+          "label": "Outro / Sluttkort / Kreditter",
+          "description": "Sluttkort, kreditter eller avslutningssegment nær slutten."
+        },
+        "preview": {
+          "label": "Forhåndsvisning / Oppsummering",
+          "description": "Forhåndsvisning av kommende innhold eller oppsummering av tidligere segmenter."
+        },
+        "filler": {
+          "label": "Fyll / Tangents",
+          "description": "Tangents, vitser eller fyllscener som ikke er nødvendige for å forstå hovedinnholdet."
+        },
+        "chapter": {
+          "label": "Kapittel",
+          "description": "Markerer et kapittel/avsnitt i videoen (brukes med kapittel-handlingstype)."
+        }
+      }
+    },
+    "update": {
+      "legend": "Oppdateringer",
+      "legendLabel": "Velg hvilke deler av appen som skal oppdateres automatisk.",
+      "updateBinaries": {
+        "label": "Oppdater verktøy automatisk:",
+        "hint": "OVD bruker verktøy som yt-dlp og ffmpeg for å laste ned videoer. Aktiver dette for å holde dem oppdatert."
+      },
+      "updateApp": {
+        "label": "Oppdater appen automatisk:",
+        "hint": "Aktiver dette for å motta nye funksjoner og feilrettinger så snart en ny versjon blir utgitt."
+      }
+    },
+    "toasts": {
+      "saved": "Innstillinger lagret!",
+      "reset": "Tilbakestill innstillinger til standard."
+    }
+  },
+  "updater": {
+    "available": "Oppdatering tilgjengelig!",
+    "install": {
+      "title": "Installer oppdatering",
+      "subtitle": "Dette vil starte appen på nytt."
+    },
+    "downloading": "Laster ned oppdatering…"
+  },
+  "install": {
+    "title": {
+      "installing": "Installerer nødvendige verktøy…",
+      "failed": "Kunne ikke installere noen nødvendige verktøy.",
+      "installed": "Nødvendige verktøy installert."
+    },
+    "subtitle": {
+      "installing": "Vi gjør alt klart.",
+      "failed": "Appen kan fungere uventet, vennligst rapporter dette.",
+      "installed": "Klar til å laste ned!"
+    }
+  },
+  "components": {
+    "base": {
+      "emptyState": {
+        "title": "Køen din er tom",
+        "subtitle": "Legg til noen videoer for å komme i gang."
+      },
+      "dragState": {
+        "title": "Slipp for å legge til i køen",
+        "subtitle": "Legg til i køen ved å dra videoer."
+      },
+      "fileInput": {
+        "select": "Velg fil",
+        "placeholder": "Velg en fil…",
+        "invalid": "Ugyldig fil.",
+        "clear": "Fjern fil",
+        "recents": {
+          "clear": "Fjern nylige filer",
+          "open": "Åpne nylige valg",
+          "empty": "Ingen nylige valg"
+        }
+      },
+      "folderInput": {
+        "select": "Velg mappe",
+        "placeholder": "Velg en mappe…",
+        "invalid": "Ugyldig mappe.",
+        "clear": "Fjern mappe",
+        "recents": {
+          "clear": "Fjern nylige mapper",
+          "open": "Åpne nylige valg",
+          "empty": "Ingen nylige valg"
+        }
+      },
+      "secretInput": {
+        "hide": "Skjul",
+        "show": "Vis",
+        "clear": "Fjern {label}"
+      },
+      "toolCard": {
+        "failed": "Kunne ikke installere dette verktøyet. Utvid for mer informasjon."
+      }
+    }
+  },
+  "errors": {
+    "runner": {
+      "internal": {
+        "shortMessage": "Intern feil",
+        "message": "En intern feil oppstod under behandling av dette elementet."
+      },
+      "signInRequired": {
+        "shortMessage": "Innlogging kreves",
+        "message": "Du må logge inn for å se dette innholdet."
+      },
+      "membersOnly": {
+        "shortMessage": "Kun tilgjengelig for medlemmer",
+        "message": "Denne videoen er kun tilgjengelig for kanalmedlemmer."
+      },
+      "geoBlocked": {
+        "shortMessage": "Region blokkert",
+        "message": "Dette innholdet er ikke tilgjengelig i din region."
+      },
+      "accessForbidden403": {
+        "shortMessage": "Tilgang nektet",
+        "message": "Du har ikke tillatelse til å få tilgang til denne ressursen (HTTP 403)."
+      },
+      "notFound404": {
+        "shortMessage": "Ikke funnet",
+        "message": "Den forespurte videoen eller spillelisten kunne ikke bli funnet (HTTP 404)."
+      },
+      "server5xx": {
+        "shortMessage": "Serverfeil",
+        "message": "Det oppstod et midlertidig serverproblem. Prøv igjen senere."
+      },
+      "rateLimited429": {
+        "shortMessage": "Begrenset antall forespørsler",
+        "message": "For mange forespørsler ble sendt. Vennligst vent og prøv igjen."
+      },
+      "requestedFormatUnavailable": {
+        "shortMessage": "Format utilgjengelig",
+        "message": "Det valgte formatet er ikke tilgjengelig for denne videoen."
+      },
+      "unableToExtractInitialData": {
+        "shortMessage": "Kunne ikke hente data",
+        "message": "Kunne ikke hente de nødvendige innledende videodataene."
+      },
+      "unableToExtractIdOrInfo": {
+        "shortMessage": "Metadata-feil",
+        "message": "Kunne ikke hente video- eller opplasterinformasjon."
+      },
+      "nsigExtractionFailed": {
+        "shortMessage": "Signaturfeil",
+        "message": "Kunne ikke hente eller dekode videosignaturen."
+      },
+      "embedOnly": {
+        "shortMessage": "Embed-only video",
+        "message": "Denne videoen kan kun åpnes gjennom en innebygd spiller."
+      },
+      "urlUnsupported": {
+        "shortMessage": "Ugyldig URL",
+        "message": "Den oppgitte lenken støttes ikke eller er ikke gjenkjent."
+      },
+      "unknownUrlType": {
+        "shortMessage": "Ukjent URL-type",
+        "message": "Den oppgitte URL-en bruker en protokoll som ikke støttes."
+      },
+      "networkNameResolutionFailed": {
+        "shortMessage": "Nettverksfeil",
+        "message": "Kunne ikke løse vertsnavnet. Sjekk internettforbindelsen din."
+      },
+      "playlistPrivateOrMissing": {
+        "shortMessage": "Spilleliste utilgjengelig",
+        "message": "Denne spillelisten er privat eller finnes ikke lenger."
+      },
+      "videoNotFoundOrPrivate": {
+        "shortMessage": "Video utilgjengelig",
+        "message": "Denne videoen ble fjernet eller satt til privat."
+      },
+      "channelUnavailable": {
+        "shortMessage": "Kanal utilgjengelig",
+        "message": "Kanalen som inneholder dette innholdet er ikke lenger tilgjengelig."
+      },
+      "ffmpegNotFound": {
+        "shortMessage": "ffmpeg ikke funnet",
+        "message": "Transkoding til mp3 eller mp4 krever ffmpeg."
+      },
+      "ffmpegFailed": {
+        "shortMessage": "ffmpeg feilet",
+        "message": "FFmpeg støtte på en feil under behandlingen."
+      },
+      "cannotAllocateMemory": {
+        "shortMessage": "Minnefeil",
+        "message": "FFmpeg gikk tom for minne under behandlingen av videoen."
+      },
+      "permissionDenied": {
+        "shortMessage": "Tillatelse nektet",
+        "message": "Appen har ikke tillatelse til å få tilgang til denne filen eller mappen."
+      },
+      "noWritePermission": {
+        "shortMessage": "Skrivetillatelse nektet",
+        "message": "Destinasjonsbanen er ikke skrivbar."
+      },
+      "windowsFileMissing": {
+        "shortMessage": "Fil mangler",
+        "message": "Den refererte filen kunne ikke bli funnet (WinError 2)."
+      },
+      "blockedGeneric": {
+        "shortMessage": "Video blokkert",
+        "message": "Denne videoen er blokkert og kan ikke lastes ned."
+      },
+      "copyrightClaimed": {
+        "shortMessage": "Copyright blokkert",
+        "message": "Videoen ble blokkert på grunn av en opphavsrettsklage."
+      },
+      "notPremieredYet": {
+        "shortMessage": "Ikke vist ennå",
+        "message": "Denne videoen er ikke tilgjengelig før premieren begynner."
+      },
+      "livestreamNotStarted": {
+        "shortMessage": "Direktesending ikke startet",
+        "message": "Direktesendingen har ikke startet ennå. Vennligst sjekk tilbake senere."
+      },
+      "sslVerifyFailed": {
+        "shortMessage": "SSL-feil",
+        "message": "Den sikre tilkoblingen kunne ikke verifiseres. Sjekk sertifikatene dine eller dato/tid."
+      },
+      "sponsorBlockUnreachable": {
+        "shortMessage": "SponsorBlock utilgjengelig",
+        "message": "Kunne ikke koble til SponsorBlock API for segmentdata."
+      },
+      "downloadRetryingFragment": {
+        "shortMessage": "Prøver igjen med fragment",
+        "message": "Nedlasting av et fragment mislyktes og vil bli forsøkt på nytt automatisk."
+      },
+      "unknown": {
+        "shortMessage": "Ukjent feil",
+        "message": "En ukjent feil oppstod under behandlingen av dette elementet."
+      }
+    }
+  },
+  "about": {
+    "title": "Om",
+    "credit": "Laget med ❤ av jely2002 & bidragsytere",
+    "poweredBy": "Drevet av åpen kildekode:",
+    "viewLicenses": "Vis lisenser",
+    "version": "Versjon: {version}",
+    "links": {
+      "github": "GitHub",
+      "wiki": "Wiki",
+      "reportABug": "Rapporter en feil"
+    }
+  }
+}
