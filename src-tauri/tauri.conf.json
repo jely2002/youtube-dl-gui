@@ -55,7 +55,7 @@
       "../licenses/3rdpartylicenses.txt": "licenses/3rdpartylicenses.txt"
     },
     "macOS": {
-      "signingIdentity": "Apple Development"
+      "signingIdentity": "Developer ID Application"
     },
     "windows": {
       "nsis": {
