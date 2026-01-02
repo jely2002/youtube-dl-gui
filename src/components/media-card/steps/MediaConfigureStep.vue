@@ -7,12 +7,17 @@
         v-model="selectedOptions"
         approximate
     />
-    <p class="mt-2">
+    <p class="mt-2 flex items-center">
       {{ t('media.steps.configure.metadata.duration', { duration: useDuration(group).value }) }}
     </p>
-    <p v-if="!group.isCombined" class="mt-2">
+    <p v-if="!group.isCombined" class="mt-2 gap-1 flex items-center">
       {{ t('media.steps.configure.metadata.size') }}
-      <span v-if="size">{{ size }}</span>
+      <template v-if="size">
+        <span v-if="size">{{ size }}</span>
+        <div class="tooltip tooltip-bottom" :data-tip="t('media.steps.configure.metadata.sizeInfo')">
+          <information-circle-icon class="h-5 w-5 hover:opacity-60 transition-opacity"/>
+        </div>
+      </template>
       <button
         v-else-if="!settingsStore.settings.performance.autoLoadSize && !isSizeLoading"
         class="btn btn-soft btn-xs"
@@ -22,7 +27,7 @@
       </button>
       <span v-else class="loading loading-spinner loading-xs"></span>
     </p>
-    <p v-else class="mt-2">
+    <p v-else class="mt-2 flex items-center">
       {{ t('media.steps.configure.metadata.items', { amount: group.total, failedCount: failedItemDisplay }) }}
     </p>
   </div>
@@ -39,6 +44,7 @@ import { Group } from '../../../tauri/types/group';
 import { useMediaOptionsStore } from '../../../stores/media/options';
 import { useI18n } from 'vue-i18n';
 import MediaDownloadOptions from '../MediaDownloadOptions.vue';
+import { InformationCircleIcon } from '@heroicons/vue/24/outline';
 
 const i18n = useI18n();
 const t = i18n.t;

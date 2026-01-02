@@ -24,6 +24,10 @@ export const useMediaSizeStore = defineStore('media-size', () => {
     id: string,
     format: DownloadOptions,
   ): Size | undefined => {
+    if (!format.abr && !format.fps && !format.height) {
+      // Find the best format's size, if no options are passed.
+      return sizes.value[id]?.find(s => !s.abr && !s.fps && !s.height);
+    }
     return sizes.value[id]?.find((s) => {
       const matchesTrackType = s.trackType === format.trackType;
       const matchesVideo = format.height && s.height && s.height === format.height && s.fps === format.fps;

@@ -136,7 +136,7 @@ const trackOptions = computed<SelectOption[]>(() => {
 const formatsByTrackType = computed<Record<TrackType, MediaFormat[]>>(() => {
   const list = formats.value ?? [];
   return {
-    [TrackType.audio]: sortFormats(list.filter(f => f.abr)),
+    [TrackType.audio]: [{ id: 'best', videoCodecs: [] }, ...sortFormats(list.filter(f => f.abr))],
     [TrackType.video]: sortFormats(list.filter(f => f.height)),
     [TrackType.both]: sortFormats(list.filter(f => f.height)),
   };
@@ -146,12 +146,13 @@ const filteredFormats = computed<MediaFormat[]>(() =>
   formatsByTrackType.value[selectedTrackType.value],
 );
 
-const formatOptions = computed<SelectOption[]>(() =>
-  filteredFormats.value.map(format => ({
+const formatOptions = computed<SelectOption[]>(() => {
+  const options: SelectOption[] = filteredFormats.value.map(format => ({
     value: makeKey(format),
     label: getFormatLabel(format, selectedTrackType.value),
-  })),
-);
+  }));
+  return options;
+});
 
 const selectedFormat = computed<MediaFormat | undefined>(() =>
   formatByKey.value.get(selectedFormatId.value),
@@ -259,6 +260,12 @@ function syncFromModel(model: DownloadOptions | undefined) {
 function matchByDownloadOptions(options: DownloadOptions): MediaFormat | undefined {
   let match: MediaFormat | undefined;
   if (options.trackType === TrackType.audio) {
+    if (!options.height && !options.fps && !options.abr) {
+      return {
+        id: 'best',
+        videoCodecs: [],
+      };
+    }
     match
       = (formats.value ?? []).find(f => f.abr === options.abr)
         || (approximate.value ? approxAudio(filteredFormats.value, options.abr) : undefined);
@@ -273,6 +280,9 @@ function matchByDownloadOptions(options: DownloadOptions): MediaFormat | undefin
 function getFormatLabel(format: MediaFormat, trackType: TrackType): string {
   switch (trackType) {
     case TrackType.audio:
+      if (format.id === 'best') {
+        return i18n.t('common.best');
+      }
       return `${format.abr}kbps`;
     case TrackType.video:
     case TrackType.both:
