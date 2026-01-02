@@ -18,7 +18,8 @@
     "divide": "{left} / {right}",
     "video": "video",
     "unknown": "sconosciuto",
-    "confirm": "Conferma"
+    "confirm": "Conferma",
+    "best": "Migliore"
   },
   "layout": {
     "header": {
@@ -194,6 +195,7 @@
         "metadata": {
           "duration": "Durata: {duration}",
           "size": "Dimensione: ",
+          "sizeInfo": "La quantità di dati che verrà scaricata.\nNon è la dimensione finale del file.",
           "items": "Elementi: {amount} {failedCount}",
           "failedCount": "({amount} falliti)"
         },

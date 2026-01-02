@@ -18,7 +18,8 @@
     "divide": "{left} / {right}",
     "video": "video",
     "unknown": "onbekend",
-    "confirm": "Bevestigen"
+    "confirm": "Bevestigen",
+    "best": "Beste"
   },
   "layout": {
     "header": {
@@ -194,6 +195,7 @@
         "metadata": {
           "duration": "Duur: {duration}",
           "size": "Grootte: ",
+          "sizeInfo": "De hoeveelheid data die wordt gedownload.\nNiet de uiteindelijke bestandsgrootte.",
           "items": "Items: {amount} {failedCount}",
           "failedCount": "({amount} mislukt)"
         },
