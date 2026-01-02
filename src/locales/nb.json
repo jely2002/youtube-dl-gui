@@ -18,7 +18,8 @@
     "divide": "{left} / {right}",
     "video": "video",
     "unknown": "ukjent",
-    "confirm": "Bekreft"
+    "confirm": "Bekreft",
+    "best": "Best"
   },
   "layout": {
     "header": {
@@ -194,6 +195,7 @@
         "metadata": {
           "duration": "Varighet: {duration}",
           "size": "Størrelse: ",
+          "sizeInfo": "Mengden data som vil bli lastet ned.\nIkke den endelige filstørrelsen.",
           "items": "Elementer: {amount} {failedCount}",
           "failedCount": "({amount} mislyktes)"
         },
