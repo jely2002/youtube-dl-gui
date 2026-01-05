@@ -25,6 +25,8 @@ const allowedCommands: Set<string> = new Set([
     'stronghold_keys',
     'stronghold_get',
     'stronghold_set',
+    'get_platform',
+    'notify',
     'plugin:shell|open',
     'plugin:event|listen',
     'plugin:event|unlisten',
@@ -37,7 +39,7 @@ const allowedCommands: Set<string> = new Set([
     'plugin:webview|internal_toggle_devtools',
     'plugin:window|set_badge_count',
     'plugin:window|set_progress_bar',
-    'plugin:window|request_user_attention'
+    'plugin:window|request_user_attention',
 ]);
 
 window.__TAURI_ISOLATION_HOOK__ = (payload) => {

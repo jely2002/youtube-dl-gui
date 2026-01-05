@@ -4,3 +4,5 @@ mod json_handle;
 mod json_state;
 pub mod preferences;
 pub mod preferences_models;
+
+pub use json_state::json_merge;

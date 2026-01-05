@@ -1,0 +1,46 @@
+{
+  "tray": {
+    "quit": "Sair",
+    "showOrHide": "Mostrar/Ocultar janela",
+    "addToQueue": "Adicionar da área de transferência",
+    "downloadQueue": "Baixar fila",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Adicionado à fila",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Baixando fila",
+      "body": "Baixando {n} item | Baixando {n} itens"
+    },
+    "queueFinished": {
+      "title": "Fila concluída",
+      "body": "Download concluído de {n} item | Download concluído de {n} itens"
+    },
+    "videoFinished": {
+      "title": "Download concluído",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Playlist concluída",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Pronto para baixar",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Playlist pronta para baixar",
+      "body": "{title} | {title} ({n} item) | {title} ({n} itens)"
+    },
+    "downloadFailed": {
+      "title": "Falha no download",
+      "body": "{title}\n{message}"
+    }
+  }
+}

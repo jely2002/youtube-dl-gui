@@ -437,6 +437,10 @@
         "label": "Titel- und Künstlerinfos hinzufügen:",
         "hint": "Metadaten wie Titel, Uploader/Künstler und Beschreibung in der Datei speichern."
       },
+      "location": {
+        "label": "Download-Speicherort & Dateinamen:",
+        "link": "Download-Speicherorte konfigurieren"
+      },
       "subtitles": {
         "label": "Untertitel hinzufügen:",
         "link": "Untertitel konfigurieren"
@@ -574,6 +578,67 @@
       "updateApp": {
         "label": "App automatisch aktualisieren:",
         "hint": "Aktiviere dies, um neue Funktionen und Bugfixes zu erhalten, sobald eine neue Version veröffentlicht wird."
+      }
+    },
+    "system": {
+      "legend": "System",
+      "legendLabel": "Konfigurieren Sie, wie sich diese Anwendung in das System integriert.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Menüleistensymbol anzeigen",
+          "generic": "Systemtray-Symbol anzeigen"
+        },
+        "hint": {
+          "mac": "Zeigt ein Symbol in der Menüleiste für schnellen Zugriff an.",
+          "generic": "Zeigt ein Symbol im Systemtray für schnellen Zugriff an."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Beim Schließen ins Systemtray minimieren",
+        "hint": "Beim Schließen des Fensters wird die App im Systemtray ausgeblendet, anstatt beendet zu werden."
+      },
+      "autoStart": {
+        "label": "Beim Anmelden starten",
+        "hint": "Open Video Downloader automatisch beim Anmelden starten."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Beim Anmelden verborgen starten",
+          "windows": "Beim Anmelden minimiert im Systemtray starten",
+          "generic": "Beim Anmelden verborgen starten (nicht empfohlen)"
+        },
+        "hint": {
+          "mac": "Wenn die App beim Anmelden startet, wird kein Fenster geöffnet. Verwenden Sie das Menüleisten- oder Dock-Symbol, um sie zu öffnen.",
+          "windows": "Wenn die App beim Anmelden startet, wird sie im Systemtray gestartet, ohne ein Fenster zu öffnen.",
+          "generic": "Wenn die App beim Anmelden startet, wird kein Fenster geöffnet."
+        }
+      }
+    },
+    "notifications": {
+      "legend": "Benachrichtigungen",
+      "legendLabel": "Festlegen, wann Benachrichtigungen gesendet werden.",
+      "behavior": {
+        "label": "Benachrichtigungen anzeigen:",
+        "options": {
+          "always": "Immer",
+          "onBackground": "Im Hintergrund",
+          "never": "Nie"
+        },
+        "hint": "Tipp: Benachrichtigungen sind nützlich bei der Nutzung von Tastenkürzeln."
+      },
+      "disabled": {
+        "label": "Bestimmte Benachrichtigungen aktivieren/deaktivieren",
+        "disabledScreenReader": "Diese Option ist deaktiviert.",
+        "kinds": {
+          "queueAdded": "Warteschlange hinzugefügt",
+          "queueDownloading": "Warteschlange wird heruntergeladen",
+          "queueFinished": "Warteschlange abgeschlossen",
+          "videoFinished": "Video abgeschlossen",
+          "playlistFinished": "Playlist abgeschlossen",
+          "downloadFailed": "Download fehlgeschlagen",
+          "videoReady": "Video bereit",
+          "playlistReady": "Playlist bereit"
+        }
       }
     },
     "toasts": {

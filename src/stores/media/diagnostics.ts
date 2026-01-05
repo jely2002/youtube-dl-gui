@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { MediaState, useMediaStateStore } from './state.ts';
 import { useMediaGroupStore } from './group.ts';
+import { notifyGroup } from '../../tauri/notifications';
+import { NotificationKind } from '../../tauri/types/app';
 
 export const useMediaDiagnosticsStore = defineStore('media-diagnostics', () => {
   const diagnostics = ref<Record<string, MediaDiagnostic[]>>({});
@@ -29,6 +31,7 @@ export const useMediaDiagnosticsStore = defineStore('media-diagnostics', () => {
     } else {
       // We are not combined, so we set all items to error.
       stateStore.setGroupState(groupId, MediaState.error);
+      void notifyGroup(NotificationKind.DownloadFailed, group, { message: payload.message });
     }
   }
 

@@ -2,8 +2,10 @@ import { computed, ref, watch } from 'vue';
 import { getCurrentWindow, ProgressBarStatus, UserAttentionType } from '@tauri-apps/api/window';
 import { useMediaProgressStore } from '../stores/media/progress';
 import { MediaState, useMediaStateStore } from '../stores/media/state';
+import { notify } from './notifications';
+import { NotificationKind } from './types/app';
 
-export function startWindowSync(): void {
+export function startWindowWatcher(): void {
   const windowHandle = getCurrentWindow();
   const progressStore = useMediaProgressStore();
   const stateStore = useMediaStateStore();
@@ -30,7 +32,7 @@ export function startWindowSync(): void {
       if (mediaState === MediaState.downloading || mediaState === MediaState.downloadingList) {
         const percent = itemProgress.percentage;
 
-        if (typeof percent === 'number' && Number.isFinite(percent)) {
+        if (percent !== undefined && Number.isFinite(percent)) {
           return Math.round(clampPercent0to100(percent));
         }
 
@@ -104,6 +106,9 @@ export function startWindowSync(): void {
 
     attentionCooldownUntilMs.value = nowMs + 2000;
 
+    if (previousActiveDownloadCount.value > 1) {
+      await notify(NotificationKind.QueueFinished, { n: previousActiveDownloadCount.value.toString() });
+    }
     try {
       await windowHandle.requestUserAttention(UserAttentionType.Informational);
     } catch {

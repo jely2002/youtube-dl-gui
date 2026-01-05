@@ -437,6 +437,10 @@
         "label": "Legg til tittel- og artistinformasjon:",
         "hint": "Lagre metadata som tittel, opplaster/artist og beskrivelse i filen."
       },
+      "location": {
+        "label": "Nedlastingsplassering og filnavn:",
+        "link": "Konfigurer nedlastingsplassering"
+      },
       "subtitles": {
         "label": "Legg til undertekster:",
         "link": "Konfigurer undertekster"
@@ -574,6 +578,67 @@
       "updateApp": {
         "label": "Oppdater appen automatisk:",
         "hint": "Aktiver dette for å motta nye funksjoner og feilrettinger så snart en ny versjon blir utgitt."
+      }
+    },
+    "system": {
+      "legend": "System",
+      "legendLabel": "Konfigurer hvordan denne applikasjonen integreres med systemet.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Vis ikon i menylinjen",
+          "generic": "Vis ikon i systemstatusfeltet"
+        },
+        "hint": {
+          "mac": "Viser et ikon i menylinjen for rask tilgang.",
+          "generic": "Viser et ikon i systemstatusfeltet for rask tilgang."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Minimer til systemstatusfeltet ved lukking",
+        "hint": "Når vinduet lukkes, skjules appen i systemstatusfeltet i stedet for å avsluttes."
+      },
+      "autoStart": {
+        "label": "Start ved pålogging",
+        "hint": "Start Open Video Downloader automatisk når du logger på."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Start skjult ved pålogging",
+          "windows": "Start minimert til systemstatusfeltet ved pålogging",
+          "generic": "Start skjult ved pålogging (ikke anbefalt)"
+        },
+        "hint": {
+          "mac": "Når appen starter ved pålogging, åpnes ingen vindu. Bruk menylinjen eller Dock-ikonet for å åpne den.",
+          "windows": "Når appen starter ved pålogging, starter den i systemstatusfeltet uten å åpne et vindu.",
+          "generic": "Når appen starter ved pålogging, åpnes ingen vindu."
+        }
+      }
+    },
+    "notifications": {
+      "legend": "Varsler",
+      "legendLabel": "Konfigurer når varsler sendes.",
+      "behavior": {
+        "label": "Vis varsler:",
+        "options": {
+          "always": "Alltid",
+          "onBackground": "Når appen er i bakgrunnen",
+          "never": "Aldri"
+        },
+        "hint": "Tips: varsler kan være nyttige når du bruker hurtigtaster."
+      },
+      "disabled": {
+        "label": "Aktiver/deaktiver spesifikke varsler",
+        "disabledScreenReader": "Dette alternativet er deaktivert.",
+        "kinds": {
+          "queueAdded": "Kø lagt til",
+          "queueDownloading": "Kø lastes ned",
+          "queueFinished": "Kø fullført",
+          "videoFinished": "Video fullført",
+          "playlistFinished": "Spilleliste fullført",
+          "downloadFailed": "Nedlasting mislyktes",
+          "videoReady": "Video klar",
+          "playlistReady": "Spilleliste klar"
+        }
       }
     },
     "toasts": {

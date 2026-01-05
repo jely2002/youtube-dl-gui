@@ -1,0 +1,46 @@
+{
+  "tray": {
+    "quit": "Afsluiten",
+    "showOrHide": "Venster tonen/verbergen",
+    "addToQueue": "Toevoegen vanuit klembord",
+    "downloadQueue": "Wachtrij downloaden",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Toegevoegd aan wachtrij",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Wachtrij downloaden",
+      "body": "{n} item downloaden | {n} items downloaden"
+    },
+    "queueFinished": {
+      "title": "Wachtrij voltooid",
+      "body": "{n} item gedownload | {n} items gedownload"
+    },
+    "videoFinished": {
+      "title": "Download voltooid",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Afspeellijst voltooid",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Klaar om te downloaden",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Afspeellijst klaar om te downloaden",
+      "body": "{title} | {title} ({n} item) | {title} ({n} items)"
+    },
+    "downloadFailed": {
+      "title": "Download mislukt",
+      "body": "{title}\n{message}"
+    }
+  }
+}

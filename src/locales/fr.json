@@ -437,6 +437,10 @@
         "label": "Ajouter titre & artiste :",
         "hint": "Enregistre les métadonnées comme le titre, l’uploader/artiste et la description."
       },
+      "location": {
+        "label": "Emplacement de téléchargement et noms de fichiers:",
+        "link": "Configurer les emplacements de téléchargement"
+      },
       "subtitles": {
         "label": "Ajouter des sous-titres :",
         "link": "Configurer les sous-titres"
@@ -574,6 +578,67 @@
       "updateApp": {
         "label": "Mettre à jour automatiquement l’app :",
         "hint": "Activez pour recevoir les nouveautés et correctifs dès qu’une nouvelle version sort."
+      }
+    },
+    "system": {
+      "legend": "Système",
+      "legendLabel": "Configurer la manière dont cette application s’intègre au système.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Afficher l’icône dans la barre de menus",
+          "generic": "Afficher l’icône dans la zone de notification"
+        },
+        "hint": {
+          "mac": "Affiche une icône dans la barre de menus pour un accès rapide.",
+          "generic": "Affiche une icône dans la zone de notification pour un accès rapide."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Réduire dans la zone de notification à la fermeture",
+        "hint": "Fermer la fenêtre masque l’application dans la zone de notification au lieu de la quitter."
+      },
+      "autoStart": {
+        "label": "Démarrer à la connexion",
+        "hint": "Lancer automatiquement Open Video Downloader lors de la connexion."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Démarrer masqué à la connexion",
+          "windows": "Démarrer réduit dans la zone de notification à la connexion",
+          "generic": "Démarrer masqué à la connexion (non recommandé)"
+        },
+        "hint": {
+          "mac": "Lorsque l’application démarre à la connexion, aucune fenêtre ne s’ouvre. Utilisez l’icône de la barre de menus ou du Dock pour l’ouvrir.",
+          "windows": "Lorsque l’application démarre à la connexion, elle se lance dans la zone de notification sans ouvrir de fenêtre.",
+          "generic": "Lorsque l’application démarre à la connexion, aucune fenêtre ne s’ouvre."
+        }
+      }
+    },
+    "notifications": {
+      "legend": "Notifications",
+      "legendLabel": "Configurer quand les notifications sont envoyées.",
+      "behavior": {
+        "label": "Afficher les notifications :",
+        "options": {
+          "always": "Toujours",
+          "onBackground": "En arrière-plan",
+          "never": "Jamais"
+        },
+        "hint": "Astuce : les notifications sont utiles lors de l’utilisation de raccourcis."
+      },
+      "disabled": {
+        "label": "Activer/désactiver des notifications spécifiques",
+        "disabledScreenReader": "Cette option est désactivée.",
+        "kinds": {
+          "queueAdded": "File ajoutée",
+          "queueDownloading": "Téléchargement de la file",
+          "queueFinished": "File terminée",
+          "videoFinished": "Vidéo terminée",
+          "playlistFinished": "Playlist terminée",
+          "downloadFailed": "Échec du téléchargement",
+          "videoReady": "Vidéo prête",
+          "playlistReady": "Playlist prête"
+        }
       }
     },
     "toasts": {

@@ -1,0 +1,46 @@
+{
+  "tray": {
+    "quit": "Beenden",
+    "showOrHide": "Fenster anzeigen/ausblenden",
+    "addToQueue": "Aus Zwischenablage hinzufügen",
+    "downloadQueue": "Warteschlange herunterladen",
+    "shortcuts": {
+      "ctrlShiftV": "Strg + Umschalt + V",
+      "ctrlShiftEnter": "Strg + Umschalt + Eingabe"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Zur Warteschlange hinzugefügt",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Warteschlange wird heruntergeladen",
+      "body": "{n} Element wird heruntergeladen | {n} Elemente werden heruntergeladen"
+    },
+    "queueFinished": {
+      "title": "Warteschlange abgeschlossen",
+      "body": "{n} Element heruntergeladen | {n} Elemente heruntergeladen"
+    },
+    "videoFinished": {
+      "title": "Download abgeschlossen",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Playlist abgeschlossen",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Bereit zum Download",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Playlist bereit zum Download",
+      "body": "{title} | {title} ({n} Element) | {title} ({n} Elemente)"
+    },
+    "downloadFailed": {
+      "title": "Download fehlgeschlagen",
+      "body": "{title}\n{message}"
+    }
+  }
+}

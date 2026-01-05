@@ -29,4 +29,5 @@ export type Group = {
   playlistCount?: number;
   playlistUploader?: string;
   playlistUploaderId?: string;
+  fromShortcut?: boolean;
 };

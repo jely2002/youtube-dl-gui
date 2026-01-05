@@ -437,6 +437,10 @@
         "label": "Adicionar o título e as informações do artista:",
         "hint": "Salve metadados como título, autor/artista e descrição dentro do arquivo."
       },
+      "location": {
+        "label": "Local de download e nomes de arquivos:",
+        "link": "Configurar locais de download"
+      },
       "subtitles": {
         "label": "Adicionar legendas:",
         "link": "Configurar legendas"
@@ -574,6 +578,67 @@
       "updateApp": {
         "label": "Atualizar automaticamente o aplicativo:",
         "hint": "Ative esta opção para receber novos recursos e correções de erros assim que uma nova versão seja lançada."
+      }
+    },
+    "system": {
+      "legend": "Sistema",
+      "legendLabel": "Configure como este aplicativo se integra ao sistema.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Mostrar ícone na barra de menus",
+          "generic": "Mostrar ícone na bandeja do sistema"
+        },
+        "hint": {
+          "mac": "Mostra um ícone na barra de menus para acesso rápido.",
+          "generic": "Mostra um ícone na bandeja do sistema para acesso rápido."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Minimizar para a bandeja ao fechar",
+        "hint": "Ao fechar a janela, o aplicativo é ocultado na bandeja do sistema em vez de ser encerrado."
+      },
+      "autoStart": {
+        "label": "Iniciar ao entrar",
+        "hint": "Inicia o Open Video Downloader automaticamente ao entrar."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Iniciar oculto ao entrar",
+          "windows": "Iniciar minimizado na bandeja ao entrar",
+          "generic": "Iniciar oculto ao entrar (não recomendado)"
+        },
+        "hint": {
+          "mac": "Quando o aplicativo inicia ao entrar, nenhuma janela é aberta. Use o ícone da barra de menus ou do Dock para abri-lo.",
+          "windows": "Quando o aplicativo inicia ao entrar, ele é iniciado na bandeja do sistema sem abrir uma janela.",
+          "generic": "Quando o aplicativo inicia ao entrar, nenhuma janela é aberta."
+        }
+      }
+    },
+    "notifications": {
+      "legend": "Notificações",
+      "legendLabel": "Configure quando as notificações são enviadas.",
+      "behavior": {
+        "label": "Mostrar notificações:",
+        "options": {
+          "always": "Sempre",
+          "onBackground": "Quando em segundo plano",
+          "never": "Nunca"
+        },
+        "hint": "Dica: notificações podem ser úteis ao usar atalhos."
+      },
+      "disabled": {
+        "label": "Ativar/desativar notificações específicas",
+        "disabledScreenReader": "Esta opção está desativada.",
+        "kinds": {
+          "queueAdded": "Fila adicionada",
+          "queueDownloading": "Fila em download",
+          "queueFinished": "Fila concluída",
+          "videoFinished": "Vídeo concluído",
+          "playlistFinished": "Playlist concluída",
+          "downloadFailed": "Falha no download",
+          "videoReady": "Vídeo pronto",
+          "playlistReady": "Playlist pronta"
+        }
       }
     },
     "toasts": {
