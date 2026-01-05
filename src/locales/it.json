@@ -438,8 +438,8 @@
         "hint": "Salva metadati all'interno del file (titolo, utente che ha caricato/artista e descrizione)."
       },
       "location": {
-        "label": "Percorso di download e nomi dei file:",
-        "link": "Configura le posizioni di download"
+        "label": "Percorso download e nomi file:",
+        "link": "Configura percorsi download"
       },
       "subtitles": {
         "label": "Aggiungi sottotitoli:",
@@ -585,30 +585,30 @@
       "legendLabel": "Configura come l'applicazione si integra con il sistema.",
       "trayEnabled": {
         "label": {
-          "mac": "Mostra icona nella barra dei menu",
-          "generic": "Mostra icona nella barra di sistema"
+          "mac": "Visualizza icona nella barra dei menu",
+          "generic": "Visualiza icona nella barra di sistema"
         },
         "hint": {
-          "mac": "Mostra un'icona nella barra dei menu per un accesso rapido.",
-          "generic": "Mostra un'icona nella barra di sistema per un accesso rapido."
+          "mac": "Visualizza un'icona nella barra dei menu per un accesso rapido.",
+          "generic": "Visualizza un'icona nella barra di sistema per un accesso rapido."
         }
       },
       "minimiseToTray": {
-        "label": "Minimizza nella barra di sistema alla chiusura",
+        "label": "Alla chiusura mninimizza nella barra di sistema",
         "hint": "Chiudendo la finestra, l'app viene nascosta nella barra di sistema invece di essere chiusa."
       },
       "autoStart": {
-        "label": "Avvia all'accesso",
-        "hint": "Avvia automaticamente Open Video Downloader quando accedi."
+        "label": "Avvio automatico",
+        "hint": "Esegui automaticamente Open Video Downloader all'avviuo sistema."
       },
       "autoStartMinimised": {
         "label": {
-          "mac": "Avvia nascosto all’accesso",
-          "windows": "Avvia ridotto nella barra di sistema all’accesso",
-          "generic": "Avvia nascosto all’accesso (non consigliato)"
+          "mac": "Esegui in modo nascosto",
+          "windows": "Avvia ridotto nella barra di sistema",
+          "generic": "Avvia nascosto (non consigliato)"
         },
         "hint": {
-          "mac": "Quando l’app si avvia all’accesso, non viene aperta alcuna finestra. Usa l’icona nella barra dei menu o nel Dock per aprirla.",
+          "mac": "Quando l’app si avvia, non viene aperta alcuna finestra. Usa l’icona nella barra dei menu o nel Dock per aprirla.",
           "windows": "Quando l’app si avvia all’accesso, viene avviata nella barra di sistema senza aprire una finestra.",
           "generic": "Quando l’app si avvia all’accesso, non viene aperta alcuna finestra."
         }
@@ -630,14 +630,14 @@
         "label": "Abilita/disabilita notifiche specifiche",
         "disabledScreenReader": "Questa opzione è disabilitata.",
         "kinds": {
-          "queueAdded": "Coda aggiunta",
-          "queueDownloading": "Coda in download",
-          "queueFinished": "Coda completata",
-          "videoFinished": "Video completato",
+          "queueAdded": "Coda aggiunti",
+          "queueDownloading": "Coda download",
+          "queueFinished": "Coda completati",
+          "videoFinished": "Video completati",
           "playlistFinished": "Playlist completata",
-          "downloadFailed": "Download non riuscito",
-          "videoReady": "Video pronto",
-          "playlistReady": "Playlist pronta"
+          "downloadFailed": "Download fallito",
+          "videoReady": "Video pronti",
+          "playlistReady": "Playlist pronte"
         }
       }
     },
@@ -661,7 +661,7 @@
       "installed": "Installazione strumenti richiesti completata."
     },
     "subtitle": {
-      "installing": "Stiamo preparando tutto.",
+      "installing": "Prerparazione…",
       "failed": "L'app potrebbe non funzionare come previsto, segnalalo.",
       "installed": "Pronto per il download!"
     }
@@ -682,7 +682,7 @@
         "invalid": "File non valido.",
         "clear": "Rimuovi file",
         "recents": {
-          "clear": "Cancella file recenti",
+          "clear": "Azzera elenco file recenti",
           "open": "Apri selezioni recenti",
           "empty": "Nessuna selezione recente"
         }
@@ -693,7 +693,7 @@
         "invalid": "Cartella non valida.",
         "clear": "Rimuovi cartella",
         "recents": {
-          "clear": "Cancella cartelle recenti",
+          "clear": "Azzera elenco cartelle recenti",
           "open": "Apri selezioni recenti",
           "empty": "Nessuna selezione recente"
         }
