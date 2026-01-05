@@ -39,8 +39,8 @@
           <input
               type="checkbox"
               class="toggle toggle-primary"
-              :checked="!isDisabled(kind)"
-              @change="setDisabled(kind, !($event.target as HTMLInputElement).checked)"
+              :checked="!isDisabled(kind as NotificationKind)"
+              @change="setDisabled(kind as NotificationKind, !($event.target as HTMLInputElement).checked)"
           />
           <span class="label-text">{{ label }}</span>
         </label>
