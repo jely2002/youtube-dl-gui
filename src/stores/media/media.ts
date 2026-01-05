@@ -11,6 +11,8 @@ import { useMediaSizeStore } from './size.ts';
 import { useMediaDiagnosticsStore } from './diagnostics.ts';
 import { useSettingsStore } from '../settings.ts';
 import { Group } from '../../tauri/types/group.ts';
+import { notify, notifyGroup } from '../../tauri/notifications';
+import { NotificationKind } from '../../tauri/types/app';
 
 export const useMediaStore = defineStore('media', () => {
   const groupStore = useMediaGroupStore();
@@ -53,14 +55,18 @@ export const useMediaStore = defineStore('media', () => {
       if (group.total < splitThreshold) {
         // Too few to combine, split up into separate groups.
         const newGroups = groupStore.splitGroup(group);
+        void notifyGroup(NotificationKind.PlaylistReady, group, {}, newGroups.length);
         for (const newGroup of newGroups) {
           stateStore.setGroupState(newGroup.id, MediaState.configure);
         }
       } else {
         // Combine into a group with one leader.
         groupStore.consolidateGroup(group);
+        void notifyGroup(NotificationKind.PlaylistReady, group, {}, group.entries?.length ?? 1);
         stateStore.setGroupState(group.id, MediaState.configure);
       }
+    } else if (group.total === 1) {
+      void notifyGroup(NotificationKind.VideoReady, group);
     }
 
     const next = total > 1 && isFirst
@@ -69,12 +75,12 @@ export const useMediaStore = defineStore('media', () => {
     stateStore.setState(item.id, next);
   }
 
-  async function dispatchMediaInfoFetch(url: string) {
+  async function dispatchMediaInfoFetch(url: string, fromShortcut: boolean = false) {
     const id = uuidv4();
     const groupId = uuidv4();
 
     stateStore.setState(id, MediaState.fetching);
-    groupStore.createGroup({
+    const newGroup: Group = {
       id: groupId,
       total: 1,
       processed: 0,
@@ -84,6 +90,7 @@ export const useMediaStore = defineStore('media', () => {
       audioCodecs: [],
       formats: [],
       filesize: 0,
+      fromShortcut,
       items: {
         [id]: {
           id,
@@ -94,9 +101,11 @@ export const useMediaStore = defineStore('media', () => {
           filesize: 0,
         },
       },
-    });
+    };
+    groupStore.createGroup(newGroup);
 
     await invoke('media_info', { url, id, groupId });
+    await notifyGroup(NotificationKind.QueueAdded, newGroup);
   }
 
   async function downloadGroup(
@@ -153,7 +162,7 @@ export const useMediaStore = defineStore('media', () => {
     };
   }
 
-  async function downloadAllGroups() {
+  async function downloadAllGroups(fromShortcut: boolean = false) {
     const group_ids = Object.keys(groupStore.groups)
       .filter(gid => stateStore.getGroupState(gid) === MediaState.configure);
 
@@ -161,6 +170,7 @@ export const useMediaStore = defineStore('media', () => {
       const opts = optionsStore.getOptions(gid) ?? { trackType: TrackType.both };
       return downloadGroup(gid, opts);
     }));
+    await notify(NotificationKind.QueueDownloading, { n: group_ids.length.toString() }, fromShortcut);
   }
 
   function deleteGroup(id: string) {

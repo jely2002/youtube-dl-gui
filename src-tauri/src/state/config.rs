@@ -1,4 +1,5 @@
 use crate::commands::{register_shortcuts, unregister_shortcuts};
+use crate::i18n::I18nManager;
 use crate::state::config_models::Config;
 use crate::state::json_handle::JsonStoreHandle;
 use crate::state::json_state::JsonBackedState;
@@ -37,6 +38,22 @@ impl JsonBackedState for Config {
       create_tray(app);
     } else {
       destroy_tray(app);
+    }
+
+    if new_value.appearance.language.is_empty() {
+      let i18n_handle = app.state::<I18nManager>();
+      i18n_handle.set_locale("unset");
+      if new_value.system.tray_enabled {
+        destroy_tray(app);
+        create_tray(app);
+      }
+    } else {
+      let i18n_handle = app.state::<I18nManager>();
+      i18n_handle.set_locale(&new_value.appearance.language);
+      if new_value.system.tray_enabled {
+        destroy_tray(app);
+        create_tray(app);
+      }
     }
 
     if new_value.system.auto_start_enabled {

@@ -614,6 +614,33 @@
         }
       }
     },
+    "notifications": {
+      "legend": "Meldingen",
+      "legendLabel": "Stel in wanneer meldingen worden verzonden.",
+      "behavior": {
+        "label": "Meldingen tonen:",
+        "options": {
+          "always": "Altijd",
+          "onBackground": "Wanneer op de achtergrond",
+          "never": "Nooit"
+        },
+        "hint": "Tip: meldingen zijn handig bij het gebruik van sneltoetsen."
+      },
+      "disabled": {
+        "label": "Specifieke meldingen in- of uitschakelen",
+        "disabledScreenReader": "Deze optie is uitgeschakeld.",
+        "kinds": {
+          "queueAdded": "Wachtrij toegevoegd",
+          "queueDownloading": "Wachtrij wordt gedownload",
+          "queueFinished": "Wachtrij voltooid",
+          "videoFinished": "Video voltooid",
+          "playlistFinished": "Afspeellijst voltooid",
+          "downloadFailed": "Download mislukt",
+          "videoReady": "Video gereed",
+          "playlistReady": "Afspeellijst gereed"
+        }
+      }
+    },
     "toasts": {
       "saved": "Instellingen opgeslagen!",
       "reset": "Instellingen teruggezet."

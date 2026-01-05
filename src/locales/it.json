@@ -614,6 +614,33 @@
         }
       }
     },
+    "notifications": {
+      "legend": "Notifiche",
+      "legendLabel": "Configura quando vengono inviate le notifiche.",
+      "behavior": {
+        "label": "Mostra notifiche:",
+        "options": {
+          "always": "Sempre",
+          "onBackground": "Quando in background",
+          "never": "Mai"
+        },
+        "hint": "Suggerimento: le notifiche sono utili quando si usano le scorciatoie."
+      },
+      "disabled": {
+        "label": "Abilita/disabilita notifiche specifiche",
+        "disabledScreenReader": "Questa opzione è disabilitata.",
+        "kinds": {
+          "queueAdded": "Coda aggiunta",
+          "queueDownloading": "Coda in download",
+          "queueFinished": "Coda completata",
+          "videoFinished": "Video completato",
+          "playlistFinished": "Playlist completata",
+          "downloadFailed": "Download non riuscito",
+          "videoReady": "Video pronto",
+          "playlistReady": "Playlist pronta"
+        }
+      }
+    },
     "toasts": {
       "saved": "Impostazioni salvate!",
       "reset": "Impostazioni ripristinate ai valori predefiniti."

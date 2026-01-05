@@ -614,6 +614,33 @@
         }
       }
     },
+    "notifications": {
+      "legend": "Benachrichtigungen",
+      "legendLabel": "Festlegen, wann Benachrichtigungen gesendet werden.",
+      "behavior": {
+        "label": "Benachrichtigungen anzeigen:",
+        "options": {
+          "always": "Immer",
+          "onBackground": "Im Hintergrund",
+          "never": "Nie"
+        },
+        "hint": "Tipp: Benachrichtigungen sind nützlich bei der Nutzung von Tastenkürzeln."
+      },
+      "disabled": {
+        "label": "Bestimmte Benachrichtigungen aktivieren/deaktivieren",
+        "disabledScreenReader": "Diese Option ist deaktiviert.",
+        "kinds": {
+          "queueAdded": "Warteschlange hinzugefügt",
+          "queueDownloading": "Warteschlange wird heruntergeladen",
+          "queueFinished": "Warteschlange abgeschlossen",
+          "videoFinished": "Video abgeschlossen",
+          "playlistFinished": "Playlist abgeschlossen",
+          "downloadFailed": "Download fehlgeschlagen",
+          "videoReady": "Video bereit",
+          "playlistReady": "Playlist bereit"
+        }
+      }
+    },
     "toasts": {
       "saved": "Einstellungen gespeichert!",
       "reset": "Einstellungen auf Standardwerte zurückgesetzt."

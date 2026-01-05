@@ -14,11 +14,11 @@ export function registerShortcutListeners() {
         if (!isValidUrl(url)) {
           return;
         }
-        await mediaStore.dispatchMediaInfoFetch(url);
+        await mediaStore.dispatchMediaInfoFetch(url, true);
         break;
       }
       case 'download_all': {
-        mediaStore.downloadAllGroups();
+        await mediaStore.downloadAllGroups(true);
         break;
       }
       default: {

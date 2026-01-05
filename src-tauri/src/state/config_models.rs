@@ -1,3 +1,4 @@
+use crate::commands::NotificationKind;
 use crate::models::download::{AudioFormat, TranscodePolicy, VideoContainer};
 use serde::{Deserialize, Serialize};
 use std::thread;
@@ -238,6 +239,30 @@ impl Default for SystemConfig {
   }
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum NotificationBehavior {
+  Always,
+  OnBackground,
+  Never,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct NotificationConfig {
+  pub notification_behavior: NotificationBehavior,
+  pub disabled_notifications: Vec<NotificationKind>,
+}
+
+impl Default for NotificationConfig {
+  fn default() -> Self {
+    Self {
+      notification_behavior: NotificationBehavior::Never,
+      disabled_notifications: vec![],
+    }
+  }
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Config {
@@ -251,4 +276,5 @@ pub struct Config {
   pub subtitles: SubtitleSettings,
   pub update: UpdateSettings,
   pub system: SystemConfig,
+  pub notifications: NotificationConfig,
 }

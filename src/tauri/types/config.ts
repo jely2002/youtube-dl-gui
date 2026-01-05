@@ -1,6 +1,7 @@
 import { AudioFormat, TranscodePolicy, VideoContainer } from './media.ts';
 import { Locale } from 'vue-i18n';
 import { DEFAULT_SUBTITLE_FORMAT_ORDER } from '../../helpers/subtitles/sanitize.ts';
+import { NotificationKind } from './app';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type LocaleOption = Locale | 'system';
@@ -101,6 +102,17 @@ export interface SystemSettings {
   closeBehavior: CloseBehavior;
 }
 
+export enum NotificationBehavior {
+  Always = 'always',
+  OnBackground = 'onBackground',
+  Never = 'never',
+}
+
+export interface NotificationSettings {
+  notificationBehavior: NotificationBehavior;
+  disabledNotifications: NotificationKind[];
+}
+
 export interface Settings {
   appearance: AppearanceSettings;
   auth: AuthSettings;
@@ -112,6 +124,7 @@ export interface Settings {
   subtitles: SubtitleSettings;
   update: UpdateSettings;
   system: SystemSettings;
+  notifications: NotificationSettings;
 }
 
 export const defaultAppearanceSettings: AppearanceSettings = {
@@ -184,6 +197,11 @@ export const defaultSystemSettings: SystemSettings = {
   closeBehavior: CloseBehavior.Exit,
 };
 
+export const defaultNotificationSettings: NotificationSettings = {
+  notificationBehavior: NotificationBehavior.Never,
+  disabledNotifications: [],
+};
+
 export const defaultSettings: Settings = {
   appearance: defaultAppearanceSettings,
   auth: defaultAuthSettings,
@@ -203,4 +221,5 @@ export const defaultSettings: Settings = {
   },
   update: defaultUpdateSettings,
   system: defaultSystemSettings,
+  notifications: defaultNotificationSettings,
 };

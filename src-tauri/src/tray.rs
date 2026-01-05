@@ -1,3 +1,4 @@
+use crate::i18n::I18nManager;
 use crate::models::payloads::ShortcutPayload;
 use crate::SharedConfig;
 use std::sync::Mutex;
@@ -23,7 +24,10 @@ pub fn create_tray(app: &AppHandle) {
     return;
   }
 
-  let quit_i = match MenuItem::with_id(app, "quit", "Quit", true, None::<&str>) {
+  let i18n_handle = app.state::<I18nManager>();
+
+  let quit_i = match MenuItem::with_id(app, "quit", i18n_handle.t("tray.quit"), true, None::<&str>)
+  {
     Ok(i) => i,
     Err(e) => {
       tracing::warn!("Failed to create quit menu item: {e}");
@@ -31,21 +35,26 @@ pub fn create_tray(app: &AppHandle) {
     }
   };
 
-  let hide_toggle_i =
-    match MenuItem::with_id(app, "hide_toggle", "Show/Hide Window", true, None::<&str>) {
-      Ok(i) => i,
-      Err(e) => {
-        tracing::warn!("Failed to create hide toggle menu item: {e}");
-        return;
-      }
-    };
+  let hide_toggle_i = match MenuItem::with_id(
+    app,
+    "hide_toggle",
+    i18n_handle.t("tray.showOrHide"),
+    true,
+    None::<&str>,
+  ) {
+    Ok(i) => i,
+    Err(e) => {
+      tracing::warn!("Failed to create hide toggle menu item: {e}");
+      return;
+    }
+  };
 
   let add_to_queue_i = match MenuItem::with_id(
     app,
     "add_to_queue",
-    "Add from clipboard",
+    i18n_handle.t("tray.addToQueue"),
     true,
-    Some("Ctrl + Shift + V"),
+    Some(i18n_handle.t("tray.shortcuts.ctrlShiftV")),
   ) {
     Ok(i) => i,
     Err(e) => {
@@ -57,9 +66,9 @@ pub fn create_tray(app: &AppHandle) {
   let download_i = match MenuItem::with_id(
     app,
     "download",
-    "Download queue",
+    i18n_handle.t("tray.downloadQueue"),
     true,
-    Some("Ctrl + Shift + Enter"),
+    Some(i18n_handle.t("tray.shortcuts.ctrlShiftEnter")),
   ) {
     Ok(i) => i,
     Err(e) => {

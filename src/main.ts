@@ -17,7 +17,7 @@ import { strongholdHandlers } from '../tests/utils/mocks/strongholdHandlers';
 import { getDefaultLocale, i18n } from './i18n';
 import { createSentryPiniaPlugin } from '@sentry/vue';
 import { createSentry } from './sentry.ts';
-import { startWindowSync } from './tauri/window.ts';
+import { startWindowWatcher } from './tauri/window.ts';
 import { usePreferencesStore } from './stores/preferences.ts';
 
 const pinia = createPinia();
@@ -50,7 +50,7 @@ initStores().catch((e) => {
 }).finally(() => {
   void invoke('app_ready');
   if (!__E2E__) {
-    startWindowSync();
+    startWindowWatcher();
   }
   app.mount('#app');
 });

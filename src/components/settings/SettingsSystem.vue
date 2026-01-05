@@ -6,7 +6,7 @@
     <label v-if="isMac" class="font-semibold mt-2" for="trayEnabled">
       {{ t('settings.system.trayEnabled.label.mac') }}
     </label>
-    <label class="font-semibold mt-2" for="trayEnabled">
+    <label v-else class="font-semibold mt-2" for="trayEnabled">
       {{ t('settings.system.trayEnabled.label.generic') }}
     </label>
     <input

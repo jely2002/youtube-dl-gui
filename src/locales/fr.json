@@ -614,7 +614,33 @@
         }
       }
     },
-
+    "notifications": {
+      "legend": "Notifications",
+      "legendLabel": "Configurer quand les notifications sont envoyées.",
+      "behavior": {
+        "label": "Afficher les notifications :",
+        "options": {
+          "always": "Toujours",
+          "onBackground": "En arrière-plan",
+          "never": "Jamais"
+        },
+        "hint": "Astuce : les notifications sont utiles lors de l’utilisation de raccourcis."
+      },
+      "disabled": {
+        "label": "Activer/désactiver des notifications spécifiques",
+        "disabledScreenReader": "Cette option est désactivée.",
+        "kinds": {
+          "queueAdded": "File ajoutée",
+          "queueDownloading": "Téléchargement de la file",
+          "queueFinished": "File terminée",
+          "videoFinished": "Vidéo terminée",
+          "playlistFinished": "Playlist terminée",
+          "downloadFailed": "Échec du téléchargement",
+          "videoReady": "Vidéo prête",
+          "playlistReady": "Playlist prête"
+        }
+      }
+    },
     "toasts": {
       "saved": "Paramètres enregistrés !",
       "reset": "Paramètres réinitialisés par défaut."

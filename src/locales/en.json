@@ -614,6 +614,33 @@
         }
       }
     },
+    "notifications": {
+      "legend": "Notifications",
+      "legendLabel": "Configure when notifications are sent.",
+      "behavior": {
+        "label": "Show notifications:",
+        "options": {
+          "always": "Always",
+          "onBackground": "When in the background",
+          "never": "Never"
+        },
+        "hint": "Tip: notifications can be useful when using the app with shortcuts."
+      },
+      "disabled": {
+        "label": "Enable/disable specific notifications",
+        "disabledScreenReader": "This option is disabled.",
+        "kinds": {
+          "queueAdded": "Queue added",
+          "queueDownloading": "Queue downloading",
+          "queueFinished": "Queue finished",
+          "videoFinished": "Video finished",
+          "playlistFinished": "Playlist finished",
+          "downloadFailed": "Download failed",
+          "videoReady": "Video ready",
+          "playlistReady": "Playlist ready"
+        }
+      }
+    },
     "toasts": {
       "saved": "Settings saved!",
       "reset": "Reset settings to defaults."

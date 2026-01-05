@@ -1,5 +1,6 @@
 mod binaries;
 mod commands;
+mod i18n;
 mod logging;
 mod menu;
 mod models;
@@ -15,6 +16,7 @@ mod window;
 use crate::binaries::binaries_manager::BinariesManager;
 use crate::binaries::binaries_state::BinariesState;
 use crate::commands::*;
+use crate::i18n::I18nManager;
 use crate::logging::LogStoreState;
 use crate::menu::setup_menu;
 use crate::paths::PathsManager;
@@ -46,6 +48,7 @@ pub static RUNNING_GROUPS: LazyLock<StdMutex<HashMap<String, bool>>> =
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
+    .plugin(tauri_plugin_notification::init())
     .plugin(tauri_plugin_autostart::Builder::new().build())
     .plugin(tauri_plugin_updater::Builder::new().build())
     .plugin(tauri_plugin_store::Builder::new().build())
@@ -92,6 +95,9 @@ pub fn run() {
       let preferences_handle = PreferencesHandle::init(handle)?;
       let shared_preferences = Arc::new(preferences_handle);
       handle.manage::<SharedPreferences>(shared_preferences);
+
+      // setup i18n management
+      handle.manage(I18nManager::new(handle));
 
       // setup window management
       restore_main_window(handle);
@@ -171,6 +177,7 @@ pub fn run() {
       stronghold_get,
       stronghold_set,
       get_platform,
+      notify,
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

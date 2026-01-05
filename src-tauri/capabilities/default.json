@@ -32,6 +32,7 @@
     "core:window:allow-request-user-attention",
     "dialog:default",
     "store:default",
-    "updater:default"
+    "updater:default",
+    "notification:default"
   ]
 }
