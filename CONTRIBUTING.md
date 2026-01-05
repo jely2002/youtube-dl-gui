@@ -79,18 +79,21 @@ Thank you for helping translate OVD!
     npm install  
     npm run tauri dev
     ```
-2. Edit the English locale to preview:
+2. Edit the English locales to preview:
+   `src-tauri/locales/en.json`
    `src/locales/en.json`
 
     Temporarily modify the text on the right-hand side of each key.  
     Do not change any keys. The UI will update automatically when the file is saved.
 
-3. Create your own language file:
-
+3. Create your own language files:
+   `src-tauri/locales/<language-code>.json`
    `src/locales/<language-code>.json`
 
 For example: `it.json`, `de.json`, `fr.json`.  
 Please restore `en.json` back to English before opening a pull request.
+
+**Good to know:** Open Video Downloader has 2 locale folders. One for the front-end and one for back-end things like the tray menu and notifications.
 
 ### Translation guidelines
 
