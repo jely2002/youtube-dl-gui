@@ -554,6 +554,14 @@
           "label": "Outro / Endkarten / Credits",
           "description": "Endkarten, Credits oder Abschlussteil nahe dem Ende."
         },
+        "hook": {
+          "label": "Intro / Begrüßung",
+          "description": "Gesprochene Intros für das kommende Video sowie Begrüßungen und Verabschiedungen."
+        },
+        "music_offtopic": {
+          "label": "Nicht-musikalischer Abschnitt",
+          "description": "Gesprochene Passagen oder Ablenkungen in Videos mit Musik."
+        },
         "preview": {
           "label": "Vorschau / Rückblick",
           "description": "Vorschau auf kommende Inhalte oder Rückblick auf vorherige Abschnitte."

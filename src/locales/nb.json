@@ -554,6 +554,14 @@
           "label": "Outro / Sluttkort / Kreditter",
           "description": "Sluttkort, kreditter eller avslutningssegment nær slutten."
         },
+        "hook": {
+          "label": "Intro / Hilsen",
+          "description": "Fortalte introer til kommende video, hilsener og avslutninger."
+        },
+        "music_offtopic": {
+          "label": "Ikke-musikalsk del",
+          "description": "Snakk eller avbrytelser i videoer med musikk."
+        },
         "preview": {
           "label": "Forhåndsvisning / Oppsummering",
           "description": "Forhåndsvisning av kommende innhold eller oppsummering av tidligere segmenter."

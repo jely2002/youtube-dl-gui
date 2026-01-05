@@ -554,6 +554,14 @@
           "label": "Outro / Endcards / Credits",
           "description": "End cards, credits or closing segment near the end."
         },
+        "hook": {
+          "label": "Hook / Greetings",
+          "description": "Narrated trailers for the upcoming video, greetings and goodbyes."
+        },
+        "music_offtopic": {
+          "label": "Non-Music Section",
+          "description": "Bits of talking or distractions in videos with music."
+        },
         "preview": {
           "label": "Preview / Recap",
           "description": "Preview of upcoming content or recap of previous segments."

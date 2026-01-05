@@ -554,6 +554,14 @@
           "label": "Altro/parti finali/ringraziamenti",
           "description": "Parti finali, ringraziamenti o segmento di chiusura verso la fine."
         },
+        "hook": {
+          "label": "Intro / Saluti",
+          "description": "Introduzioni narrate per il video in arrivo, saluti iniziali e finali."
+        },
+        "music_offtopic": {
+          "label": "Sezione non musicale",
+          "description": "Parti parlate o distrazioni nei video con musica."
+        },
         "preview": {
           "label": "Anteprima/riepilogo",
           "description": "Anteprima dei prossimi contenuti o riepilogo dei segmenti precedenti."

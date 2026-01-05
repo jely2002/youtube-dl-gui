@@ -68,12 +68,11 @@ import { Settings } from '../../tauri/types/config.ts';
 const i18n = useI18n();
 const t = i18n.t;
 const settings = defineModel<Settings>({ required: true });
-
-const sponsorBlockParts = ['sponsor', 'selfpromo', 'interaction', 'intro', 'outro', 'preview', 'filler', 'chapter'];
+const sponsorBlockParts = ['sponsor', 'selfpromo', 'interaction', 'intro', 'outro', 'music_offtopic', 'preview', 'filler', 'chapter', 'hook', 'poi_highlight'];
 const sponsorBlockLocalization: Record<string, { label: string; description: string }> = i18n.tm('settings.sponsorBlock.parts');
 const sponsorBlockMarkOptions = computed(() => sponsorBlockParts.map(part => ({
   ...sponsorBlockLocalization[part],
   value: part,
 })));
-const sponsorBlockOptions = computed(() => sponsorBlockMarkOptions.value.filter(option => option.value !== 'chapter'));
+const sponsorBlockOptions = computed(() => sponsorBlockMarkOptions.value.filter(option => !['chapter', 'poi_highlight'].includes(option.value)));
 </script>

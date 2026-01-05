@@ -554,6 +554,14 @@
           "label": "Outro / Credits",
           "description": "Eindkaarten, credits of afsluitend deel."
         },
+        "hook": {
+          "label": "Intro / Begroeting",
+          "description": "Ingesproken intro’s voor de aankomende video, begroetingen en afsluitingen."
+        },
+        "music_offtopic": {
+          "label": "Niet-muzikale sectie",
+          "description": "Gesproken stukjes of afleiding in video’s met muziek."
+        },
         "preview": {
           "label": "Preview / Samenvatting",
           "description": "Korte vooruitblik of terugblik."
