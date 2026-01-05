@@ -32,7 +32,7 @@
       },
       "csp": {
         "default-src": "'self' asset:",
-        "connect-src": "ipc: http://ipc.localhost",
+        "connect-src": "ipc: http://ipc.localhost https://*.sentry.io",
         "img-src": "'self' asset: http://asset.localhost blob: data: http: https:",
         "style-src": "'self' 'unsafe-inline'",
         "font-src": "'self'",
