@@ -1,6 +1,5 @@
-use crate::state::config_models::CloseBehavior;
 use crate::state::json_merge;
-use crate::{SharedConfig, SharedPreferences};
+use crate::SharedPreferences;
 use serde::Serialize;
 use serde_json::Value;
 use std::sync::Arc;
@@ -280,7 +279,6 @@ pub fn setup_close_behaviour(app: &AppHandle<Wry>) {
     }
   };
 
-  let app_handle = app.clone();
   let window_for_events = window.clone();
 
   window.on_window_event(move |event| {
@@ -288,27 +286,41 @@ pub fn setup_close_behaviour(app: &AppHandle<Wry>) {
       return;
     };
 
-    let cfg_handle = match app_handle.try_state::<SharedConfig>() {
-      Some(h) => h,
-      None => {
-        tracing::warn!("Config handle missing; allowing close");
+    #[cfg(not(target_os = "macos"))]
+    {
+      use crate::state::config_models::CloseBehavior;
+      use crate::SharedConfig;
+
+      let app_handle = app.clone();
+      let cfg_handle = match app_handle.try_state::<SharedConfig>() {
+        Some(h) => h,
+        None => {
+          tracing::warn!("Config handle missing; allowing close");
+          return;
+        }
+      };
+      let cfg = cfg_handle.load();
+
+      if !cfg.system.tray_enabled {
         return;
       }
-    };
 
-    let cfg = cfg_handle.load();
-
-    if !cfg.system.tray_enabled {
-      return;
+      match cfg.system.close_behavior {
+        CloseBehavior::Exit => {}
+        CloseBehavior::Hide => {
+          api.prevent_close();
+          if let Err(e) = window_for_events.hide() {
+            tracing::warn!("Failed to hide window on close: {e}");
+          }
+        }
+      }
     }
 
-    match cfg.system.close_behavior {
-      CloseBehavior::Exit => {}
-      CloseBehavior::Hide => {
-        api.prevent_close();
-        if let Err(e) = window_for_events.hide() {
-          tracing::warn!("Failed to hide window on close: {e}");
-        }
+    #[cfg(target_os = "macos")]
+    {
+      api.prevent_close();
+      if let Err(e) = window_for_events.hide() {
+        tracing::warn!("Failed to hide window on close: {e}");
       }
     }
   });
