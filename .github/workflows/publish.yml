@@ -36,14 +36,7 @@ jobs:
         if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'ubuntu-22.04-arm'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libappindicator3-dev librsvg2-dev patchelf xdg-utils
-          sudo apt-get install -y \
-            libwebkit2gtk-4.0-37=2.36.0-2ubuntu1 \
-            libwebkit2gtk-4.0-dev=2.36.0-2ubuntu1 \
-            libjavascriptcoregtk-4.0-18=2.36.0-2ubuntu1 \
-            libjavascriptcoregtk-4.0-dev=2.36.0-2ubuntu1 \
-            gir1.2-javascriptcoregtk-4.0=2.36.0-2ubuntu1 \
-            gir1.2-webkit2-4.0=2.36.0-2ubuntu1
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
 
       - name: setup node
         uses: actions/setup-node@v4
@@ -136,7 +129,7 @@ jobs:
           
           cd src-tauri
           
-          sentry-cli debug-files upload --include-sources target
+          sentry-cli debug-files upload --include-sources target/release
           
           if [ "${{ matrix.platform }}" = "ubuntu-22.04" ]; then
             sentry-cli releases new "$SENTRY_RELEASE" || true
@@ -202,3 +195,32 @@ jobs:
         with:
           name: ovd-msix
           path: OpenVideoDownloader_x64.msix
+
+      - name: Update winget manifest (Windows only)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          set-strictmode -version latest
+          $ErrorActionPreference = "Stop"
+
+          $pkg = Get-Content -Raw "package.json" | ConvertFrom-Json
+          $version = $pkg.version
+
+          $tag = "app-v$version"
+          $installerUrl = "https://github.com/jely2002/youtube-dl-gui/releases/download/$tag/Open.Video.Downloader_$version_x64-setup.exe
+
+          Write-Host "Updating winget manifest for version $version"
+          Write-Host "Installer URL: $installerUrl"
+
+          Invoke-WebRequest `
+            -Uri https://aka.ms/wingetcreate/latest `
+            -OutFile wingetcreate.exe
+
+          ./wingetcreate.exe update `
+            jely2002.youtube-dl-gui `
+            --version $version `
+            --urls $installerUrl `
+            --submit `
+            --token $env:WINGET_TOKEN
