@@ -438,7 +438,7 @@
         "hint": "Salva metadati all'interno del file (titolo, utente che ha caricato/artista e descrizione)."
       },
       "location": {
-        "label": "Percorso di download e nomi dei file",
+        "label": "Percorso di download e nomi dei file:",
         "link": "Configura le posizioni di download"
       },
       "subtitles": {

@@ -438,7 +438,7 @@
         "hint": "Enregistre les métadonnées comme le titre, l’uploader/artiste et la description."
       },
       "location": {
-        "label": "Emplacement de téléchargement et noms de fichiers",
+        "label": "Emplacement de téléchargement et noms de fichiers:",
         "link": "Configurer les emplacements de téléchargement"
       },
       "subtitles": {

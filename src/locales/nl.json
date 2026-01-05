@@ -438,7 +438,7 @@
         "hint": "Slaat info zoals titel, uploader/artist en beschrijving op in het bestand."
       },
       "location": {
-        "label": "Downloadlocatie en bestandsnamen",
+        "label": "Downloadlocatie en bestandsnamen:",
         "link": "Downloadlocaties configureren"
       },
       "subtitles": {

@@ -438,7 +438,7 @@
         "hint": "Salve metadados como título, autor/artista e descrição dentro do arquivo."
       },
       "location": {
-        "label": "Local de download e nomes de arquivos",
+        "label": "Local de download e nomes de arquivos:",
         "link": "Configurar locais de download"
       },
       "subtitles": {

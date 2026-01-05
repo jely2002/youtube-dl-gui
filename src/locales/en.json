@@ -438,7 +438,7 @@
         "hint": "Save metadata such as title, uploader/artist and description inside the file."
       },
       "location": {
-        "label": "Download location & filenames",
+        "label": "Download location & filenames:",
         "link": "Configure download locations"
       },
       "subtitles": {

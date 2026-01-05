@@ -438,7 +438,7 @@
         "hint": "Metadaten wie Titel, Uploader/Künstler und Beschreibung in der Datei speichern."
       },
       "location": {
-        "label": "Download-Speicherort & Dateinamen",
+        "label": "Download-Speicherort & Dateinamen:",
         "link": "Download-Speicherorte konfigurieren"
       },
       "subtitles": {
