@@ -2,7 +2,7 @@ use crate::state::config_models::NotificationBehavior;
 use crate::SharedConfig;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tauri::{Manager, State};
+use tauri::{AppHandle, Manager, State};
 use tauri_plugin_notification::NotificationExt;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -45,7 +45,7 @@ impl NotificationKind {
 
 #[tauri::command]
 pub fn notify(
-  app: tauri::AppHandle,
+  app: AppHandle,
   cfg: State<'_, SharedConfig>,
   i18n: State<'_, crate::i18n::I18nManager>,
   kind: NotificationKind,

@@ -47,7 +47,7 @@ pub static RUNNING_GROUPS: LazyLock<StdMutex<HashMap<String, bool>>> =
 /// Will panic if an error occurs during tauri setup.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-  tauri::Builder::default()
+  let app = tauri::Builder::default()
     .plugin(tauri_plugin_notification::init())
     .plugin(tauri_plugin_autostart::Builder::new().build())
     .plugin(tauri_plugin_updater::Builder::new().build())
@@ -63,9 +63,7 @@ pub fn run() {
       Some(vec!["--auto-start"]),
     ))
     .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-      let window = app.get_webview_window("main").expect("no main window");
-      let _ = window.show();
-      window.set_focus().expect("Failure focusing window.");
+      reopen_window(app)
     }))
     .setup(|app| {
       let handle = app.handle();
@@ -179,8 +177,23 @@ pub fn run() {
       get_platform,
       notify,
     ])
-    .run(tauri::generate_context!())
+    .build(tauri::generate_context!())
     .expect("error while running tauri application");
+
+  app.run(|app_handle, event| {
+    #[cfg(target_os = "macos")]
+    {
+      if let tauri::RunEvent::Reopen {
+        has_visible_windows,
+        ..
+      } = event
+      {
+        if !has_visible_windows {
+          reopen_window(app_handle);
+        }
+      }
+    }
+  });
 }
 
 pub fn init_tracing() {
@@ -217,6 +230,12 @@ pub fn init_autostart(app: &AppHandle) {
   } else if !cfg.system.auto_start_enabled && is_enabled {
     let _ = autostart_manager.disable();
   }
+}
+
+pub fn reopen_window(app: &AppHandle) {
+  let window = app.get_webview_window("main").expect("no main window");
+  let _ = window.show();
+  window.set_focus().expect("Failure focusing window.");
 }
 
 #[cfg(debug_assertions)]

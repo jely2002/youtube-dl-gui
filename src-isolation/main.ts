@@ -40,6 +40,7 @@ const allowedCommands: Set<string> = new Set([
     'plugin:window|set_badge_count',
     'plugin:window|set_progress_bar',
     'plugin:window|request_user_attention',
+    'plugin:notification|is_permission_granted',
 ]);
 
 window.__TAURI_ISOLATION_HOOK__ = (payload) => {
