@@ -271,7 +271,9 @@ pub fn track_main_window(app: &AppHandle<Wry>) {
 }
 
 pub fn setup_close_behaviour(app: &AppHandle<Wry>) {
-  let window = match app.get_window("main") {
+  let app_handle = app.clone();
+
+  let window = match app_handle.get_window("main") {
     Some(w) => w,
     None => {
       tracing::warn!("Main window not found; cannot wire close behavior");
@@ -291,7 +293,6 @@ pub fn setup_close_behaviour(app: &AppHandle<Wry>) {
       use crate::state::config_models::CloseBehavior;
       use crate::SharedConfig;
 
-      let app_handle = app.clone();
       let cfg_handle = match app_handle.try_state::<SharedConfig>() {
         Some(h) => h,
         None => {

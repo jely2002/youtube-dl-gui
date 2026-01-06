@@ -56,6 +56,11 @@ impl I18nManager {
     true
   }
 
+  pub fn unset_locale(&self) -> bool {
+    let locale = resolve_locale_from_sources(&self.locales, None);
+    self.set_locale(&locale)
+  }
+
   pub fn t(&self, key: &str) -> String {
     let locale = self
       .current_locale

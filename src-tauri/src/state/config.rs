@@ -40,9 +40,9 @@ impl JsonBackedState for Config {
       destroy_tray(app);
     }
 
-    if new_value.appearance.language.is_empty() {
+    if new_value.appearance.language == "system" {
       let i18n_handle = app.state::<I18nManager>();
-      i18n_handle.set_locale("unset");
+      i18n_handle.unset_locale();
       if new_value.system.tray_enabled {
         destroy_tray(app);
         create_tray(app);
