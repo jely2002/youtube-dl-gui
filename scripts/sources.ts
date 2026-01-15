@@ -152,7 +152,7 @@ export async function fetchSources(): Promise<ToolSource[]> {
       },
     },
     {
-      name: 'Deno',
+      name: 'deno',
       version: denoRel.tag_name,
       files: {
         'linux-x86_64': { entry: 'deno', url: assetUrl(denoRel, 'deno-x86_64-unknown-linux-gnu.zip') },
