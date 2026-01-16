@@ -95,6 +95,17 @@ jobs:
           organization: ${{ secrets.SENTRY_ORG }}
           project: ${{ secrets.SENTRY_PROJECT }}
 
+      # TEMPORARY WORKAROUND:
+      # Use a custom tauri-cli branch to enable the new "truly portable" AppImage format.
+      # This relies on TAURI_BUNDLER_NEW_APPIMAGE_FORMAT=true and can be removed once
+      # https://github.com/tauri-apps/tauri/pull/12491 is merged and released upstream.
+      - name: Override tauri-cli (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'ubuntu-22.04-arm'
+        shell: bash
+        run: |
+          cargo install tauri-cli --git https://github.com/tauri-apps/tauri --branch feat/truly-portable-appimage --locked --force
+          echo "TAURI_BUNDLER_NEW_APPIMAGE_FORMAT=true" >> $GITHUB_ENV
+
       - uses: tauri-apps/tauri-action@v0
         id: tauri
         env:
