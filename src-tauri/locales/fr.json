@@ -1,0 +1,46 @@
+{
+  "tray": {
+    "quit": "Quitter",
+    "showOrHide": "Afficher/Masquer la fenêtre",
+    "addToQueue": "Ajouter depuis le presse-papiers",
+    "downloadQueue": "Télécharger la file",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Maj + V",
+      "ctrlShiftEnter": "Ctrl + Maj + Entrée"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Ajouté à la file",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Téléchargement de la file",
+      "body": "Téléchargement de {n} élément | Téléchargement de {n} éléments"
+    },
+    "queueFinished": {
+      "title": "File terminée",
+      "body": "Téléchargement terminé de {n} élément | Téléchargement terminé de {n} éléments"
+    },
+    "videoFinished": {
+      "title": "Téléchargement terminé",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Playlist terminée",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Prêt à télécharger",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Playlist prête à télécharger",
+      "body": "{title} | {title} ({n} élément) | {title} ({n} éléments)"
+    },
+    "downloadFailed": {
+      "title": "Échec du téléchargement",
+      "body": "{title}\n{message}"
+    }
+  }
+}

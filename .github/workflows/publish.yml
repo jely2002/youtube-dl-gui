@@ -60,7 +60,7 @@ jobs:
           workspaces: './src-tauri -> target'
 
       - name: Install frontend dependencies
-        run: npm install
+        run: npm ci
 
       - name: Import Apple Developer Certificate (MacOS only)
         if: startsWith(matrix.platform, 'macos')
@@ -94,6 +94,17 @@ jobs:
           token: ${{ secrets.SENTRY_AUTH_TOKEN }}
           organization: ${{ secrets.SENTRY_ORG }}
           project: ${{ secrets.SENTRY_PROJECT }}
+
+      # TEMPORARY WORKAROUND:
+      # Use a custom tauri-cli branch to enable the new "truly portable" AppImage format.
+      # This relies on TAURI_BUNDLER_NEW_APPIMAGE_FORMAT=true and can be removed once
+      # https://github.com/tauri-apps/tauri/pull/12491 is merged and released upstream.
+      - name: Override tauri-cli (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'ubuntu-22.04-arm'
+        shell: bash
+        run: |
+          cargo install tauri-cli --git https://github.com/tauri-apps/tauri --branch feat/truly-portable-appimage --locked --force
+          echo "TAURI_BUNDLER_NEW_APPIMAGE_FORMAT=true" >> $GITHUB_ENV
 
       - uses: tauri-apps/tauri-action@v0
         id: tauri
@@ -129,7 +140,7 @@ jobs:
           
           cd src-tauri
           
-          sentry-cli debug-files upload --include-sources target
+          sentry-cli debug-files upload --include-sources target/release
           
           if [ "${{ matrix.platform }}" = "ubuntu-22.04" ]; then
             sentry-cli releases new "$SENTRY_RELEASE" || true
@@ -195,3 +206,32 @@ jobs:
         with:
           name: ovd-msix
           path: OpenVideoDownloader_x64.msix
+
+      - name: Update winget manifest (Windows only)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          set-strictmode -version latest
+          $ErrorActionPreference = "Stop"
+
+          $pkg = Get-Content -Raw "package.json" | ConvertFrom-Json
+          $version = $pkg.version
+
+          $tag = "app-v$version"
+          $installerUrl = "https://github.com/jely2002/youtube-dl-gui/releases/download/$tag/Open.Video.Downloader_$version_x64-setup.exe
+
+          Write-Host "Updating winget manifest for version $version"
+          Write-Host "Installer URL: $installerUrl"
+
+          Invoke-WebRequest `
+            -Uri https://aka.ms/wingetcreate/latest `
+            -OutFile wingetcreate.exe
+
+          ./wingetcreate.exe update `
+            jely2002.youtube-dl-gui `
+            --version $version `
+            --urls $installerUrl `
+            --submit `
+            --token $env:WINGET_TOKEN

@@ -1,3 +1,4 @@
+use crate::commands::NotificationKind;
 use crate::models::download::{AudioFormat, TranscodePolicy, VideoContainer};
 use serde::{Deserialize, Serialize};
 use std::thread;
@@ -188,6 +189,80 @@ impl Default for UpdateSettings {
   }
 }
 
+#[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum CloseBehavior {
+  Exit,
+  Hide,
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct SystemConfig {
+  pub tray_enabled: bool,
+  pub auto_start_enabled: bool,
+  pub auto_start_minimised: bool,
+  pub close_behavior: CloseBehavior,
+}
+
+impl Default for SystemConfig {
+  fn default() -> Self {
+    #[cfg(target_os = "windows")]
+    {
+      Self {
+        tray_enabled: false,
+        auto_start_enabled: false,
+        auto_start_minimised: false,
+        close_behavior: CloseBehavior::Exit,
+      }
+    }
+
+    #[cfg(target_os = "macos")]
+    {
+      Self {
+        tray_enabled: false,
+        auto_start_enabled: false,
+        auto_start_minimised: false,
+        close_behavior: CloseBehavior::Hide,
+      }
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+      Self {
+        tray_enabled: false,
+        auto_start_enabled: false,
+        auto_start_minimised: false,
+        close_behavior: CloseBehavior::Exit,
+      }
+    }
+  }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum NotificationBehavior {
+  Always,
+  OnBackground,
+  Never,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct NotificationConfig {
+  pub notification_behavior: NotificationBehavior,
+  pub disabled_notifications: Vec<NotificationKind>,
+}
+
+impl Default for NotificationConfig {
+  fn default() -> Self {
+    Self {
+      notification_behavior: NotificationBehavior::Never,
+      disabled_notifications: vec![],
+    }
+  }
+}
+
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Config {
@@ -200,4 +275,6 @@ pub struct Config {
   pub sponsor_block: SponsorBlockSettings,
   pub subtitles: SubtitleSettings,
   pub update: UpdateSettings,
+  pub system: SystemConfig,
+  pub notifications: NotificationConfig,
 }

@@ -5,7 +5,29 @@ use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_info::parse_ytdlp_info;
 use crate::runners::ytdlp_runner::YtdlpRunner;
 use std::borrow::Cow;
+use std::fmt;
 use tauri::{AppHandle, Emitter, Manager};
+
+#[derive(Debug)]
+pub enum YtdlpInfoFetchError {
+  InvalidDiagnosticRules(String),
+  RunnerFailed(String),
+  NonZeroExit(i32),
+  ParseFailed(String),
+}
+
+impl fmt::Display for YtdlpInfoFetchError {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    match self {
+      Self::InvalidDiagnosticRules(e) => write!(f, "Invalid diagnostic rules: {e}"),
+      Self::RunnerFailed(e) => write!(f, "yt-dlp invocation failed: {e}"),
+      Self::NonZeroExit(code) => write!(f, "yt-dlp exited with code {code}"),
+      Self::ParseFailed(e) => write!(f, "Failed to parse yt-dlp output: {e}"),
+    }
+  }
+}
+
+impl std::error::Error for YtdlpInfoFetchError {}
 
 pub async fn run_ytdlp_info_fetch(
   app: &AppHandle,
@@ -13,7 +35,7 @@ pub async fn run_ytdlp_info_fetch(
   group_id: String,
   url: &str,
   format: Option<FormatOptions>,
-) -> Option<ParsedMedia> {
+) -> Result<Option<ParsedMedia>, YtdlpInfoFetchError> {
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
 
   let runner = YtdlpRunner::new(app)
@@ -40,7 +62,7 @@ pub async fn run_ytdlp_info_fetch(
           None,
         ),
       );
-      return None;
+      return Err(YtdlpInfoFetchError::InvalidDiagnosticRules(e.to_string()));
     }
   };
 
@@ -58,7 +80,7 @@ pub async fn run_ytdlp_info_fetch(
           format!("Failed to spawn yt-dlp: {e}"),
         ),
       );
-      return None;
+      return Err(YtdlpInfoFetchError::RunnerFailed(e));
     }
   };
 
@@ -112,22 +134,22 @@ pub async fn run_ytdlp_info_fetch(
         stderr_snippet.into_owned(),
       ),
     );
-    return None;
+    return Err(YtdlpInfoFetchError::NonZeroExit(status_code));
   }
 
   match parse_ytdlp_info(&stdout_text, id.clone()) {
-    Ok(media) => Some(media),
+    Ok(media) => Ok(Some(media)),
     Err(e) => {
       let _ = app.emit(
         "media_fatal",
         MediaFatalPayload::with_exit(
-          group_id,
-          id,
+          group_id.clone(),
+          id.clone(),
           1,
           format!("Failed to parse yt-dlp output: {e}"),
         ),
       );
-      None
+      Err(YtdlpInfoFetchError::ParseFailed(e.to_string()))
     }
   }
 }

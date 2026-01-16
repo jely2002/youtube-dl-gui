@@ -1,0 +1,46 @@
+{
+  "tray": {
+    "quit": "Avslutt",
+    "showOrHide": "Vis/skjul vindu",
+    "addToQueue": "Legg til fra utklippstavle",
+    "downloadQueue": "Last ned kø",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Lagt til i kø",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Laster ned kø",
+      "body": "Laster ned {n} element | Laster ned {n} elementer"
+    },
+    "queueFinished": {
+      "title": "Kø fullført",
+      "body": "Nedlasting fullført av {n} element | Nedlasting fullført av {n} elementer"
+    },
+    "videoFinished": {
+      "title": "Nedlasting fullført",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Spilleliste fullført",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Klar til nedlasting",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Spilleliste klar til nedlasting",
+      "body": "{title} | {title} ({n} element) | {title} ({n} elementer)"
+    },
+    "downloadFailed": {
+      "title": "Nedlasting mislyktes",
+      "body": "{title}\n{message}"
+    }
+  }
+}

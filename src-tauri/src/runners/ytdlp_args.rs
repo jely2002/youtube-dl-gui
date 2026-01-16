@@ -125,6 +125,21 @@ pub fn build_output_args(
         };
         args.push(fmt.into());
 
+        // Set audio quality to highest if:
+        // 1. We are re-encoding audio.
+        // 2. The audio format supports audio quality selection, it is lossy.
+        // 3. No ABR is selected, which means we want the best.
+        if output_settings.audio.policy == TranscodePolicy::AllowReencode
+          && output_settings
+            .audio
+            .format
+            .supports_audio_quality_selection()
+          && format_options.abr.is_none()
+        {
+          args.push("--audio-quality".into());
+          args.push("0".into());
+        }
+
         if output_settings.add_thumbnail
           && output_settings.audio.format.supports_embedded_thumbnail()
         {
@@ -359,7 +374,7 @@ mod tests {
   }
 
   #[test]
-  fn audio_output_args_allow_reencode_mp3() {
+  fn audio_output_args_allow_reencode_mp3_best() {
     let format_options = make_audio_format_options(None);
 
     let mut settings = OutputSettings::default();
@@ -371,6 +386,8 @@ mod tests {
     let expected: Vec<String> = vec![
       "--audio-format",
       "mp3",
+      "--audio-quality",
+      "0",
       "--embed-thumbnail",
       "--add-metadata",
     ]
@@ -383,7 +400,7 @@ mod tests {
 
   #[test]
   fn audio_output_args_allow_reencode_ogg() {
-    let format_options = make_audio_format_options(None);
+    let format_options = make_audio_format_options(Some(160));
 
     let mut settings = OutputSettings::default();
     settings.audio.policy = TranscodePolicy::AllowReencode;

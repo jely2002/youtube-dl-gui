@@ -1,6 +1,7 @@
 import { AudioFormat, TranscodePolicy, VideoContainer } from './media.ts';
 import { Locale } from 'vue-i18n';
 import { DEFAULT_SUBTITLE_FORMAT_ORDER } from '../../helpers/subtitles/sanitize.ts';
+import { NotificationKind } from './app';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type LocaleOption = Locale | 'system';
@@ -89,6 +90,29 @@ export interface UpdateSettings {
   updateApp: boolean;
 }
 
+export enum CloseBehavior {
+  Exit = 'exit',
+  Hide = 'hide',
+}
+
+export interface SystemSettings {
+  trayEnabled: boolean;
+  autoStartEnabled: boolean;
+  autoStartMinimised: boolean;
+  closeBehavior: CloseBehavior;
+}
+
+export enum NotificationBehavior {
+  Always = 'always',
+  OnBackground = 'onBackground',
+  Never = 'never',
+}
+
+export interface NotificationSettings {
+  notificationBehavior: NotificationBehavior;
+  disabledNotifications: NotificationKind[];
+}
+
 export interface Settings {
   appearance: AppearanceSettings;
   auth: AuthSettings;
@@ -99,6 +123,8 @@ export interface Settings {
   sponsorBlock: SponsorBlockSettings;
   subtitles: SubtitleSettings;
   update: UpdateSettings;
+  system: SystemSettings;
+  notifications: NotificationSettings;
 }
 
 export const defaultAppearanceSettings: AppearanceSettings = {
@@ -164,6 +190,18 @@ export const defaultUpdateSettings: UpdateSettings = {
   updateApp: true,
 };
 
+export const defaultSystemSettings: SystemSettings = {
+  trayEnabled: false,
+  autoStartEnabled: false,
+  autoStartMinimised: false,
+  closeBehavior: CloseBehavior.Exit,
+};
+
+export const defaultNotificationSettings: NotificationSettings = {
+  notificationBehavior: NotificationBehavior.Never,
+  disabledNotifications: [],
+};
+
 export const defaultSettings: Settings = {
   appearance: defaultAppearanceSettings,
   auth: defaultAuthSettings,
@@ -182,4 +220,6 @@ export const defaultSettings: Settings = {
     formatPreference: [...defaultSubtitleSettings.formatPreference],
   },
   update: defaultUpdateSettings,
+  system: defaultSystemSettings,
+  notifications: defaultNotificationSettings,
 };

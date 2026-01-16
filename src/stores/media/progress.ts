@@ -11,6 +11,8 @@ import {
   ProgressCategory,
   ProgressStage,
 } from '../../tauri/types/progress';
+import { notifyGroup } from '../../tauri/notifications';
+import { NotificationKind } from '../../tauri/types/app';
 
 export type MediaProgress = MediaProgressPayload & MediaProgressStagePayload;
 export type MediaGroupProgress = MediaGroupProgressPayload & MediaProgressStagePayload;
@@ -57,8 +59,11 @@ export const useMediaProgressStore = defineStore('media-progress', () => {
       const items = Object.values(group.items);
       const isDone = !items.some(p => stateStore.getState(p.id) !== MediaState.done && !p.isLeader);
       if (isDone) {
+        void notifyGroup(NotificationKind.PlaylistFinished, group, {}, items.length);
         stateStore.setGroupState(group.id, MediaState.done);
       }
+    } else {
+      void notifyGroup(NotificationKind.VideoFinished, group);
     }
   }
 

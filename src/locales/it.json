@@ -18,7 +18,8 @@
     "divide": "{left} / {right}",
     "video": "video",
     "unknown": "sconosciuto",
-    "confirm": "Conferma"
+    "confirm": "Conferma",
+    "best": "Migliore"
   },
   "layout": {
     "header": {
@@ -194,6 +195,7 @@
         "metadata": {
           "duration": "Durata: {duration}",
           "size": "Dimensione: ",
+          "sizeInfo": "La quantità di dati che verrà scaricata.\nNon è la dimensione finale del file.",
           "items": "Elementi: {amount} {failedCount}",
           "failedCount": "({amount} falliti)"
         },
@@ -273,7 +275,7 @@
       },
       "embed": {
         "label": "Aggiungi traccia sottotitoli:",
-        "hint": "Aggiunge i sottotitoli al file video. Funziona con i formati MP4, MKV e WEBM."
+        "hint": "Aggiungi i sottotitoli al file video. Funziona con i formati MP4, MKV e WEBM."
       },
       "languages": {
         "legend": "Lingua",
@@ -302,27 +304,27 @@
     }
   },
   "location": {
-    "title": "Percorso di download",
+    "title": "Percorso download",
     "downloadDir": {
-      "label": "Percorso di download",
-      "hint": "Clicca nel campo per selezionare dove verranno scaricati i video."
+      "label": "Percorso download",
+      "hint": "Clic nel campo per selezionare dove verranno salvati i video."
     },
     "directory": {
       "legend": "Organizza per",
       "legendLabel": "Seleziona come organizzare i download nelle cartelle.",
       "videoDir": {
-        "label": "Percorso di download:",
-        "hint": "Sovrascrive il percorso di download globale per i video."
+        "label": "Percorso download:",
+        "hint": "Sovrascrivi percorso download globale per i video."
       },
       "audioDir": {
-        "label": "Percorso di download:",
-        "hint": "Sovrascrive il percorso di download globale per l’audio."
+        "label": "Percorso download:",
+        "hint": "Sovrascrivi percorso di download globale per l’audio."
       },
       "directoryPreset": {
         "label": "Organizza i download per:",
-        "exampleLabel": "Output di esempio:",
+        "exampleLabel": "Esempio output:",
         "options": {
-          "none": "Nessuna sottocartella",
+          "none": "Nessuna sotto cartella",
           "playlist": "Playlist",
           "channel": "Canale",
           "channelPlaylist": "Canale → playlist",
@@ -331,15 +333,15 @@
           "custom": "Personalizzato"
         },
         "examples": {
-          "playlist": "La mia playlist/",
-          "channel": "MioCanale/",
-          "channelPlaylist": "MioCanale/La mia playlist/",
+          "playlist": "Mia playlist/",
+          "channel": "Mio canale/",
+          "channelPlaylist": "Mio canale/Mia playlist/",
           "yearMonth": "2025/03/",
           "artistAlbum": "Nome artista/Nome album/"
         }
       },
       "outputFormat": {
-        "label": "Formato directory:"
+        "label": "Formato cartella:"
       }
     },
     "filename": {
@@ -347,7 +349,7 @@
       "legendLabel": "Seleziona il nome che avranno i file scaricati.",
       "formatPreset": {
         "label": "Prefisso nome file:",
-        "exampleLabel": "Output di esempio:",
+        "exampleLabel": "Esempio output:",
         "options": {
           "titleQuality": "Titolo + qualità",
           "titleOnly": "Titolo",
@@ -356,19 +358,19 @@
         },
         "examples": {
           "video": {
-            "titleQuality": "Il mio video-(1080p30).mp4",
-            "titleOnly": "Il mio video.mp4",
-            "titleQualityPlaylist": "03-Il mio video-(1080p30).mkv"
+            "titleQuality": "Mio video-(1080p30).mp4",
+            "titleOnly": "Mio video.mp4",
+            "titleQualityPlaylist": "03-Mio video-(1080p30).mkv"
           },
           "audio": {
-            "titleQuality": "Il mio audio-(320k).mp3",
-            "titleOnly": "Il mio audio.mp3",
-            "titleQualityPlaylist": "03-Il mio audio-(320k).mp3"
+            "titleQuality": "Mio audio-(320k).mp3",
+            "titleOnly": "Mio audio.mp3",
+            "titleQualityPlaylist": "03-Mio audio-(320k).mp3"
           }
         },
         "restrictFilenames": {
-          "label": "Limitare i nomi dei file:",
-          "hint": "Sostituisce gli spazi con trattini bassi e rimuove i caratteri speciali come \"&\" dai nomi dei file."
+          "label": "Limita i nomi dei file:",
+          "hint": "Nei nomi dei file sostituisci gli spazi con trattini bassi e rimuovi i caratteri speciali come \"&\"."
         }
       },
       "outputFormat": {
@@ -384,7 +386,7 @@
     "title": "Impostazioni",
     "reset": {
       "label": "Ripristina",
-      "confirm": "Clicca di nuovo"
+      "confirm": "Clic di nuovo"
     },
     "performance": {
       "legend": "Prestazioni",
@@ -415,7 +417,7 @@
         "hint": "Quando un collegamento contiene sia un video che una playlist, scarica solo il video anziché la playlist completa."
       },
       "globalShortcuts": {
-        "label": "Abilita scorciatoie:",
+        "label": "Abilita tasti rapidi:",
         "add_hint": "Aggiungi video alla coda con:",
         "download_hint": "Scarica la coda con:"
       },
@@ -434,6 +436,10 @@
       "addMetadata": {
         "label": "Aggiungi info su titolo e artista:",
         "hint": "Salva metadati all'interno del file (titolo, utente che ha caricato/artista e descrizione)."
+      },
+      "location": {
+        "label": "Percorso download e nomi file:",
+        "link": "Configura percorsi download"
       },
       "subtitles": {
         "label": "Aggiungi sottotitoli:",
@@ -506,7 +512,7 @@
       },
       "impersonate": {
         "label": "Simulazione:",
-        "hint": "Simula un sistema operativo o un browser specifico per impedire il rilevamento delle firme.",
+        "hint": "Per impedire il rilevamento delle firme simula un sistema operativo o un browser specifico.",
         "options": {
           "none": "Non simulare s.o.",
           "any": "Simula un client casuale"
@@ -548,6 +554,14 @@
           "label": "Altro/parti finali/ringraziamenti",
           "description": "Parti finali, ringraziamenti o segmento di chiusura verso la fine."
         },
+        "hook": {
+          "label": "Intro / Saluti",
+          "description": "Introduzioni narrate per il video in arrivo, saluti iniziali e finali."
+        },
+        "music_offtopic": {
+          "label": "Sezione non musicale",
+          "description": "Parti parlate o distrazioni nei video con musica."
+        },
         "preview": {
           "label": "Anteprima/riepilogo",
           "description": "Anteprima dei prossimi contenuti o riepilogo dei segmenti precedenti."
@@ -574,6 +588,67 @@
         "hint": "Attiva questa opzione per ricevere nuove funzionalità e correzioni di bug non appena viene rilasciata una nuova versione dell'app."
       }
     },
+    "system": {
+      "legend": "Sistema",
+      "legendLabel": "Configura come l'applicazione si integra con il sistema.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Visualizza icona nella barra dei menu",
+          "generic": "Visualiza icona nella barra di sistema"
+        },
+        "hint": {
+          "mac": "Visualizza un'icona nella barra dei menu per un accesso rapido.",
+          "generic": "Visualizza un'icona nella barra di sistema per un accesso rapido."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Alla chiusura mninimizza nella barra di sistema",
+        "hint": "Chiudendo la finestra, l'app viene nascosta nella barra di sistema invece di essere chiusa."
+      },
+      "autoStart": {
+        "label": "Avvio automatico",
+        "hint": "Esegui automaticamente Open Video Downloader all'avviuo sistema."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Esegui in modo nascosto",
+          "windows": "Avvia ridotto nella barra di sistema",
+          "generic": "Avvia nascosto (non consigliato)"
+        },
+        "hint": {
+          "mac": "Quando l’app si avvia, non viene aperta alcuna finestra. Usa l’icona nella barra dei menu o nel Dock per aprirla.",
+          "windows": "Quando l’app si avvia all’accesso, viene avviata nella barra di sistema senza aprire una finestra.",
+          "generic": "Quando l’app si avvia all’accesso, non viene aperta alcuna finestra."
+        }
+      }
+    },
+    "notifications": {
+      "legend": "Notifiche",
+      "legendLabel": "Configura quando vengono inviate le notifiche.",
+      "behavior": {
+        "label": "Mostra notifiche:",
+        "options": {
+          "always": "Sempre",
+          "onBackground": "Quando in background",
+          "never": "Mai"
+        },
+        "hint": "Suggerimento: le notifiche sono utili quando si usano le scorciatoie."
+      },
+      "disabled": {
+        "label": "Abilita/disabilita notifiche specifiche",
+        "disabledScreenReader": "Questa opzione è disabilitata.",
+        "kinds": {
+          "queueAdded": "Coda aggiunti",
+          "queueDownloading": "Coda download",
+          "queueFinished": "Coda completati",
+          "videoFinished": "Video completati",
+          "playlistFinished": "Playlist completata",
+          "downloadFailed": "Download fallito",
+          "videoReady": "Video pronti",
+          "playlistReady": "Playlist pronte"
+        }
+      }
+    },
     "toasts": {
       "saved": "Impostazioni salvate!",
       "reset": "Impostazioni ripristinate ai valori predefiniti."
@@ -594,7 +669,7 @@
       "installed": "Installazione strumenti richiesti completata."
     },
     "subtitle": {
-      "installing": "Stiamo preparando tutto.",
+      "installing": "Prerparazione…",
       "failed": "L'app potrebbe non funzionare come previsto, segnalalo.",
       "installed": "Pronto per il download!"
     }
@@ -615,7 +690,7 @@
         "invalid": "File non valido.",
         "clear": "Rimuovi file",
         "recents": {
-          "clear": "Cancella file recenti",
+          "clear": "Azzera elenco file recenti",
           "open": "Apri selezioni recenti",
           "empty": "Nessuna selezione recente"
         }
@@ -626,7 +701,7 @@
         "invalid": "Cartella non valida.",
         "clear": "Rimuovi cartella",
         "recents": {
-          "clear": "Cancella cartelle recenti",
+          "clear": "Azzera elenco cartelle recenti",
           "open": "Apri selezioni recenti",
           "empty": "Nessuna selezione recente"
         }
@@ -786,7 +861,7 @@
     "links": {
       "github": "GitHub",
       "wiki": "Wiki",
-      "reportABug": "Segnala un bug"
+      "reportABug": "Segnala bug"
     }
   }
 }

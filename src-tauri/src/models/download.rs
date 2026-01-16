@@ -32,9 +32,15 @@ impl AudioFormat {
   pub fn supports_embedded_thumbnail(&self) -> bool {
     !matches!(self, AudioFormat::Wav)
   }
+  pub fn supports_audio_quality_selection(&self) -> bool {
+    matches!(
+      self,
+      AudioFormat::Mp3 | AudioFormat::M4a | AudioFormat::Aac | AudioFormat::Ogg | AudioFormat::Opus
+    )
+  }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum TranscodePolicy {
   Never,
