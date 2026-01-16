@@ -1,7 +1,7 @@
 use crate::models::download::FormatOptions;
 use crate::models::payloads::MediaAddWithFormatPayload;
 use crate::models::{MediaAddPayload, MediaFatalPayload};
-use crate::runners::ytdlp_info::run_ytdlp_info_fetch;
+use crate::runners::ytdlp_info::{run_ytdlp_info_fetch, YtdlpInfoFetchError};
 use crate::{
   models::{ParsedMedia, ParsedPlaylist},
   scheduling::dispatcher::{DispatchEntry, DispatchRequest, GenericDispatcher},
@@ -154,6 +154,24 @@ async fn handle_fetch_entry(
 
   let result = run_ytdlp_info_fetch(&app, id.clone(), group_id.clone(), &url, format.clone()).await;
 
+  let result = match result {
+    Ok(v) => v,
+    Err(e) => {
+      tracing::warn!(
+        fetch_id = %id,
+        group_id = %group_id,
+        url = %url,
+        error = %e,
+        "run_ytdlp_info_fetch failed"
+      );
+      if should_report_to_sentry(&e) {
+        sentry::capture_error(&e);
+      }
+
+      None
+    }
+  };
+
   match result {
     Some(ParsedMedia::Single(single)) => {
       if let Some(format) = format {
@@ -219,4 +237,13 @@ async fn handle_fetch_entry(
       // Do nothing if no parsed result is returned. The events have already been sent.
     }
   }
+}
+
+fn should_report_to_sentry(err: &YtdlpInfoFetchError) -> bool {
+  matches!(
+    err,
+    YtdlpInfoFetchError::InvalidDiagnosticRules(_)
+      | YtdlpInfoFetchError::RunnerFailed(_)
+      | YtdlpInfoFetchError::ParseFailed(_)
+  )
 }

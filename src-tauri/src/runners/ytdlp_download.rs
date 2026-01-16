@@ -7,10 +7,37 @@ use crate::parsers::ytdlp_progress::YtdlpProgressParser;
 use crate::runners::ytdlp_runner::YtdlpRunner;
 use crate::scheduling::download_pipeline::DownloadEntry;
 use crate::RUNNING_GROUPS;
+use std::fmt;
 use tauri::{AppHandle, Emitter, Manager, State};
 use tauri_plugin_shell::process::CommandEvent;
 
-pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
+#[derive(Debug)]
+pub enum YtdlpDownloadError {
+  InvalidDiagnosticRules(String),
+  SpawnFailed(String),
+  RunnerError(String),
+  NonZeroExit(i32),
+  EventStreamEnded,
+}
+
+impl fmt::Display for YtdlpDownloadError {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    match self {
+      Self::InvalidDiagnosticRules(e) => write!(f, "Invalid diagnostic rules: {e}"),
+      Self::SpawnFailed(e) => write!(f, "Failed to spawn yt-dlp: {e}"),
+      Self::RunnerError(e) => write!(f, "yt-dlp runner error: {e}"),
+      Self::NonZeroExit(code) => write!(f, "yt-dlp exited with code {code}"),
+      Self::EventStreamEnded => write!(f, "yt-dlp event stream ended unexpectedly"),
+    }
+  }
+}
+
+impl std::error::Error for YtdlpDownloadError {}
+
+pub async fn run_ytdlp_download(
+  app: AppHandle,
+  entry: DownloadEntry,
+) -> Result<(), YtdlpDownloadError> {
   let runner = YtdlpRunner::new(&app)
     .with_progress_args()
     .with_network_args()
@@ -24,20 +51,26 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
     .with_args(["--output-na-placeholder", "None", &entry.url]);
 
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
-  let matcher = DiagnosticMatcher::from_json(RULES_JSON).expect("invalid rules");
+  let matcher = DiagnosticMatcher::from_json(RULES_JSON)
+    .map_err(|e| YtdlpDownloadError::InvalidDiagnosticRules(e.to_string()))?;
+
   let error_parser = YtdlpErrorParser::new(&entry.id, &entry.group_id, matcher);
   let mut progress_parser = YtdlpProgressParser::new(&entry.id, &entry.group_id);
 
-  let (mut rx, child) = runner.spawn().expect("Failed to spawn yt-dlp");
+  let (mut rx, child) = runner.spawn().map_err(YtdlpDownloadError::SpawnFailed)?;
 
   while let Some(event) = rx.recv().await {
-    {
-      let map = RUNNING_GROUPS.lock().unwrap();
-      if !map.get(&entry.group_id).copied().unwrap_or(true) {
-        tracing::info!("Cancelled processing for group_id {0}", entry.group_id);
-        child.kill().ok();
-        break;
-      }
+    let cancelled = {
+      let map = RUNNING_GROUPS
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+      !map.get(&entry.group_id).copied().unwrap_or(true)
+    };
+
+    if cancelled {
+      tracing::info!("Cancelled processing for group_id {}", entry.group_id);
+      let _ = child.kill();
+      return Ok(());
     }
 
     let log_state = app.state::<LogStoreState>();
@@ -55,46 +88,47 @@ pub async fn run_ytdlp_download(app: AppHandle, entry: DownloadEntry) {
       }
       CommandEvent::Terminated(term) => {
         if term.code == Some(0) {
-          app
-            .emit(
-              "media_complete",
-              MediaProgressComplete {
-                id: entry.id.clone(),
-                group_id: entry.group_id.clone(),
-              },
-            )
-            .ok();
-        } else {
-          app
-            .emit(
-              "media_fatal",
-              MediaFatalPayload::with_exit(
-                entry.group_id.clone(),
-                entry.id.clone(),
-                term.code.unwrap_or(1),
-                format!("Download failed for group {0}", entry.group_id),
-              ),
-            )
-            .ok();
+          let _ = app.emit(
+            "media_complete",
+            MediaProgressComplete {
+              id: entry.id.clone(),
+              group_id: entry.group_id.clone(),
+            },
+          );
+          return Ok(());
         }
-        break;
+
+        let exit = term.code.unwrap_or(1);
+        let _ = app.emit(
+          "media_fatal",
+          MediaFatalPayload::with_exit(
+            entry.group_id.clone(),
+            entry.id.clone(),
+            exit,
+            format!("Download failed for group {}", entry.group_id),
+          ),
+        );
+        return Err(YtdlpDownloadError::NonZeroExit(exit));
       }
       CommandEvent::Error(err) => {
-        app
-          .emit(
-            "media_fatal",
-            MediaFatalPayload::internal(
-              entry.id.clone(),
-              entry.group_id.clone(),
-              format!("Download failed for group {0}: {1}", entry.group_id, err),
-              Some(err),
-            ),
-          )
-          .ok();
+        let msg = format!("Download failed for group {}: {}", entry.group_id, err);
+        let _ = app.emit(
+          "media_fatal",
+          MediaFatalPayload::internal(
+            entry.id.clone(),
+            entry.group_id.clone(),
+            msg.clone(),
+            Some(err.clone()),
+          ),
+        );
+
+        return Err(YtdlpDownloadError::RunnerError(err));
       }
       _ => {}
     }
   }
+
+  Err(YtdlpDownloadError::EventStreamEnded)
 }
 
 fn store_log_line(
