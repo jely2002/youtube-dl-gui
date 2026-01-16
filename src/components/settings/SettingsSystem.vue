@@ -18,7 +18,7 @@
     <p class="label" v-if="isMac">{{ t('settings.system.trayEnabled.hint.mac') }}</p>
     <p class="label" v-else>{{ t('settings.system.trayEnabled.hint.generic') }}</p>
 
-    <template v-if="isWindows">
+    <template v-if="!isMac">
       <label class="font-semibold mt-2" for="minimiseToTray">
         {{ t('settings.system.minimiseToTray.label') }}
       </label>
@@ -41,7 +41,7 @@
         class="toggle toggle-primary"
     />
     <p class="label">{{ t('settings.system.autoStart.hint') }}</p>
-    <label v-if="isWindows" class="font-semibold mt-2" for="autoStartMinimised">
+    <label v-if="!isMac" class="font-semibold mt-2" for="autoStartMinimised">
       {{ t('settings.system.autoStartMinimised.label.windows') }}
     </label>
     <label v-else-if="isMac" class="font-semibold mt-2" for="autoStartMinimised">
