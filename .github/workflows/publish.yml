@@ -115,6 +115,7 @@ jobs:
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
           APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
           APPLE_API_KEY_PATH: ${{ secrets.APPLE_API_KEY_PATH }}
+          TAURI_BUNDLER_NEW_APPIMAGE_FORMAT: "true"
         with:
           tagName: app-v__VERSION__
           releaseName: 'Open Video Downloader v__VERSION__'
