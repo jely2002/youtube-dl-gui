@@ -106,6 +106,14 @@ jobs:
           cargo install tauri-cli --git https://github.com/tauri-apps/tauri --branch feat/truly-portable-appimage --locked --force
           echo "TAURI_BUNDLER_NEW_APPIMAGE_FORMAT=true" >> $GITHUB_ENV
 
+      # TEMPORARY WORKAROUND:
+      # Because we use "cargo tauri" in that tauri build step, we always have to install tauri cli here.
+      - name: Install tauri-cli
+        if: matrix.platform != 'ubuntu-22.04' && matrix.platform != 'ubuntu-22.04-arm'
+        shell: bash
+        run: |
+          cargo install tauri-cli
+
       - uses: tauri-apps/tauri-action@v0
         id: tauri
         env:
@@ -115,6 +123,8 @@ jobs:
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
           APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
           APPLE_API_KEY_PATH: ${{ secrets.APPLE_API_KEY_PATH }}
+          # TEMPORARY WORKAROUND:
+          # This environment variable is needed to enable the new appimage features.
           TAURI_BUNDLER_NEW_APPIMAGE_FORMAT: "true"
         with:
           tagName: app-v__VERSION__
@@ -124,6 +134,8 @@ jobs:
           prerelease: false
           includeUpdaterJson: true
           updaterJsonPreferNsis: true
+          # TEMPORARY WORKAROUND:
+          # This option is needed to use the possibly overriden branch of tauri-cli, to fix appimages.
           tauriScript: 'cargo tauri'
           args: ${{ matrix.args }}
 
