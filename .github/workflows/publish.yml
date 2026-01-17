@@ -124,6 +124,7 @@ jobs:
           prerelease: false
           includeUpdaterJson: true
           updaterJsonPreferNsis: true
+          tauriScript: 'cargo tauri'
           args: ${{ matrix.args }}
 
       - name: Upload debug symbols to Sentry
