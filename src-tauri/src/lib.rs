@@ -144,9 +144,7 @@ pub fn run() {
       setup_menu(handle);
 
       // register shortcuts
-      if let Err(err) = register_shortcuts(handle) {
-        tracing::warn!(error = %err, "Global shortcuts disabled (could not register)");
-      }
+      register_shortcuts(handle);
 
       Ok(())
     })

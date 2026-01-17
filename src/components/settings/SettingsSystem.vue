@@ -66,11 +66,12 @@
 import BaseFieldset from '../base/BaseFieldset.vue';
 import { CloseBehavior, Settings } from '../../tauri/types/config.ts';
 import { useI18n } from 'vue-i18n';
-import { Platform } from '../../tauri/types/app';
-import { invoke } from '@tauri-apps/api/core';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, watch } from 'vue';
+import { usePlatform } from '../../composables/usePlatform.ts';
 
 const { t } = useI18n();
+const { isWindows, isMac } = usePlatform();
+
 const settings = defineModel<Settings>({ required: true });
 const minimiseToTray = computed<boolean>({
   get: () => settings.value.system.closeBehavior === CloseBehavior.Hide && settings.value.system.trayEnabled === true,
@@ -93,15 +94,4 @@ watch(() => settings.value.system.autoStartEnabled, (newVal, oldVal) => {
     settings.value.system.autoStartMinimised = false;
   }
 });
-
-const platform = ref<Platform>(Platform.Unknown);
-onMounted(async () => {
-  try {
-    platform.value = await invoke<Platform>('get_platform');
-  } catch (e) {
-    console.warn('Unable to retrieve platform from Rust.', e);
-  }
-});
-const isWindows = computed(() => platform.value === Platform.Windows);
-const isMac = computed(() => platform.value === Platform.MacOS);
 </script>

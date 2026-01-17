@@ -169,7 +169,5 @@ pub fn destroy_tray(app: &AppHandle) {
   let tray_id = guard.take();
   if let Some(tray_id) = tray_id {
     let _ = app.remove_tray_by_id::<TrayIconId>(&tray_id);
-  } else {
-    tracing::warn!("No tray icon found to remove");
   }
 }
