@@ -221,8 +221,7 @@ jobs:
           $version = $pkg.version
 
           $tag = "app-v$version"
-          $installerUrl = "https://github.com/jely2002/youtube-dl-gui/releases/download/$tag/Open.Video.Downloader_$version_x64-setup.exe"
-
+          $installerUrl = "https://github.com/jely2002/youtube-dl-gui/releases/download/$tag/Open.Video.Downloader_${version}_x64-setup.exe"
           Write-Host "Updating winget manifest for version $version"
           Write-Host "Installer URL: $installerUrl"
 
