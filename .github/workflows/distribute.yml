@@ -1,0 +1,41 @@
+name: 'Distribute'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  distribute-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout release branch for current package.json
+        uses: actions/checkout@v4
+        with:
+          ref: release
+          path: release
+      - name: Update winget manifest (Windows only)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          set-strictmode -version latest
+          $ErrorActionPreference = "Stop"
+
+          $pkg = Get-Content -Raw "package.json" | ConvertFrom-Json
+          $version = $pkg.version
+
+          $tag = "app-v$version"
+          $installerUrl = "https://github.com/jely2002/youtube-dl-gui/releases/download/$tag/Open.Video.Downloader_${version}_x64-setup.exe"
+          Write-Host "Updating winget manifest for version $version"
+          Write-Host "Installer URL: $installerUrl"
+
+          Invoke-WebRequest `
+            -Uri https://aka.ms/wingetcreate/latest `
+            -OutFile wingetcreate.exe
+
+          ./wingetcreate.exe update `
+            jely2002.youtube-dl-gui `
+            --version $version `
+            --urls $installerUrl `
+            --submit `
+            --token $env:WINGET_TOKEN
