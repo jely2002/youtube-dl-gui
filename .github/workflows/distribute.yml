@@ -12,8 +12,7 @@ jobs:
         with:
           ref: release
           path: release
-      - name: Update winget manifest (Windows only)
-        if: matrix.platform == 'windows-latest'
+      - name: Update winget manifest
         shell: pwsh
         env:
           WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
