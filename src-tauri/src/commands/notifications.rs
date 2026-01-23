@@ -3,7 +3,6 @@ use crate::SharedConfig;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tauri::{AppHandle, Manager, State};
-use tauri_plugin_notification::NotificationExt;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -76,13 +75,34 @@ pub fn notify(
   let title = i18n.t_with(&kind.title_key(), params.as_ref());
   let body = i18n.t_with(&kind.body_key(), params.as_ref());
 
-  app
-    .notification()
-    .builder()
-    .title(title)
-    .body(body)
-    .show()
-    .map_err(|e| e.to_string())?;
+  #[cfg(target_os = "linux")]
+  {
+    use notify_rust::Notification;
+
+    let handle = Notification::new()
+      .summary(title.as_str())
+      .body(body.as_str())
+      .icon("open-video-downloader")
+      .show()
+      .map_err(|e| e.to_string())?;
+
+    std::thread::spawn(move || {
+      handle.on_close(|_| {});
+    });
+  }
+
+  #[cfg(not(target_os = "linux"))]
+  {
+    use tauri_plugin_notification::NotificationExt;
+
+    app
+      .notification()
+      .builder()
+      .title(title)
+      .body(body)
+      .show()
+      .map_err(|e| e.to_string())?;
+  }
 
   Ok(())
 }

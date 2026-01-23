@@ -236,7 +236,6 @@ pub fn track_main_window(app: &AppHandle<Wry>) {
           });
         }
       }
-
       WindowEvent::Resized(_) => {
         if window_for_events.is_maximized().unwrap_or(false) {
           return;
@@ -258,13 +257,25 @@ pub fn track_main_window(app: &AppHandle<Wry>) {
           }
         }
       }
-
       WindowEvent::CloseRequested { .. } => {
         tauri::async_runtime::spawn(async move {
           debouncer.flush_now().await;
         });
       }
+      #[cfg(target_os = "linux")]
+      // Workaround for Wayland environments on Linux:
+      // On KWayland, after hiding and showing the window,
+      // the title-bar buttons (close, minimize, maximize) may stop working.
+      // Toggling the resizable property appears to resolve this issue.
+      // Info: https://github.com/tauri-apps/tao/issues/1046
+      WindowEvent::Focused(focused) => {
+        if !focused {
+          return;
+        }
 
+        let _ = window_for_events.set_resizable(false);
+        let _ = window_for_events.set_resizable(true);
+      }
       _ => {}
     }
   });

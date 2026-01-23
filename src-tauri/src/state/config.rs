@@ -4,7 +4,6 @@ use crate::state::config_models::Config;
 use crate::state::json_handle::JsonStoreHandle;
 use crate::state::json_state::JsonBackedState;
 use crate::tray::{create_tray, destroy_tray};
-use std::error::Error;
 use tauri::{AppHandle, Manager, Wry};
 use tauri_plugin_autostart::ManagerExt;
 
@@ -16,7 +15,7 @@ impl JsonBackedState for Config {
     Config::default()
   }
 
-  fn before_initialized(app: &AppHandle<Wry>, value: &mut Self) -> Result<(), Box<dyn Error>> {
+  fn before_initialized(app: &AppHandle<Wry>, value: &mut Self) {
     if value.output.download_dir.is_none() {
       let download_path = app
         .path()
@@ -24,14 +23,13 @@ impl JsonBackedState for Config {
         .unwrap_or_else(|_| std::env::current_dir().expect("couldn’t get current dir"));
       value.output.download_dir = Some(download_path.to_str().unwrap().to_string());
     }
-    Ok(())
   }
 
-  fn on_updated(app: &AppHandle<Wry>, new_value: &Self) -> Result<(), Box<dyn Error>> {
+  fn on_updated(app: &AppHandle<Wry>, new_value: &Self) {
     if new_value.input.global_shortcuts {
-      register_shortcuts(app)?;
+      register_shortcuts(app);
     } else {
-      unregister_shortcuts(app)?;
+      unregister_shortcuts(app);
     }
 
     if new_value.system.tray_enabled {
@@ -61,7 +59,6 @@ impl JsonBackedState for Config {
     } else {
       let _ = app.autolaunch().disable();
     }
-    Ok(())
   }
 }
 

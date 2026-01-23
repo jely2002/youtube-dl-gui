@@ -133,10 +133,12 @@ const trackOptions = computed<SelectOption[]>(() => {
   }));
 });
 
+const BEST_AUDIO_FORMAT: MediaFormat = Object.freeze({ id: 'best', videoCodecs: [] });
+
 const formatsByTrackType = computed<Record<TrackType, MediaFormat[]>>(() => {
   const list = formats.value ?? [];
   return {
-    [TrackType.audio]: [{ id: 'best', videoCodecs: [] }, ...sortFormats(list.filter(f => f.abr))],
+    [TrackType.audio]: [BEST_AUDIO_FORMAT, ...sortFormats(list.filter(f => f.abr))],
     [TrackType.video]: sortFormats(list.filter(f => f.height)),
     [TrackType.both]: sortFormats(list.filter(f => f.height)),
   };

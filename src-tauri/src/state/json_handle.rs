@@ -23,7 +23,7 @@ impl<T: JsonBackedState> JsonStoreHandle<T> {
       .unwrap_or_else(|| Value::Object(Map::new()));
 
     let mut initial = T::materialize(&raw)?;
-    T::before_initialized(app, &mut initial)?;
+    T::before_initialized(app, &mut initial);
 
     let to_save = serde_json::to_value(&initial)?;
     store.set(T::ROOT_KEY, to_save);
@@ -49,7 +49,7 @@ impl<T: JsonBackedState> JsonStoreHandle<T> {
     json_merge(&mut raw, patch);
 
     let new_value = T::materialize(&raw)?;
-    T::on_updated(app, &new_value)?;
+    T::on_updated(app, &new_value);
 
     self.store.set(T::ROOT_KEY, raw.clone());
     self.store.save()?;
@@ -62,7 +62,7 @@ impl<T: JsonBackedState> JsonStoreHandle<T> {
     let default_value = T::default_value();
     let raw = serde_json::to_value(&default_value)?;
 
-    T::on_updated(app, &default_value)?;
+    T::on_updated(app, &default_value);
 
     self.store.set(T::ROOT_KEY, raw);
     self.store.save()?;

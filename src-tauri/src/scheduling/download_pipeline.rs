@@ -1,7 +1,7 @@
 use crate::models::download::FormatOptions;
 use crate::models::DownloadItem;
 use crate::runners::template_context::TemplateContext;
-use crate::runners::ytdlp_download::run_ytdlp_download;
+use crate::runners::ytdlp_download::{run_ytdlp_download, YtdlpDownloadError};
 use crate::scheduling::dispatcher::{DispatchEntry, DispatchRequest, GenericDispatcher};
 use crate::SharedConfig;
 use std::sync::LazyLock;
@@ -91,7 +91,19 @@ pub fn setup_download_dispatcher(app: &AppHandle) -> GenericDispatcher<DownloadR
     },
     |tx, app: AppHandle, entry: DownloadEntry| async move {
       tracing::info!("starting download id={} url={}", entry.id, entry.url);
-      run_ytdlp_download(app.clone(), entry.clone()).await;
+
+      if let Err(e) = run_ytdlp_download(app.clone(), entry.clone()).await {
+        tracing::warn!(
+          download_id = %entry.id,
+          group_id = %entry.group_id,
+          error = %e,
+          "Failed to run ytdlp download",
+        );
+        if should_report_to_sentry(&e) {
+          sentry::capture_error(&e);
+        }
+      }
+
       let mut counters = DOWNLOAD_COUNTERS.lock().unwrap();
       if let Some(cnt) = counters.get_mut(&entry.group_id) {
         *cnt -= 1;
@@ -103,5 +115,14 @@ pub fn setup_download_dispatcher(app: &AppHandle) -> GenericDispatcher<DownloadR
         }
       }
     },
+  )
+}
+
+fn should_report_to_sentry(err: &YtdlpDownloadError) -> bool {
+  matches!(
+    err,
+    YtdlpDownloadError::SpawnFailed(_)
+      | YtdlpDownloadError::InvalidDiagnosticRules(_)
+      | YtdlpDownloadError::EventStreamEnded
   )
 }

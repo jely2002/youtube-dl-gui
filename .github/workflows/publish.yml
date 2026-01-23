@@ -21,9 +21,9 @@ jobs:
             args: '--target aarch64-apple-darwin'
           - platform: 'macos-latest'
             args: '--target x86_64-apple-darwin'
-          - platform: 'ubuntu-22.04'
+          - platform: 'ubuntu-24.04'
             args: ''
-          - platform: 'ubuntu-22.04-arm'
+          - platform: 'ubuntu-24.04-arm'
             args: ''
           - platform: 'windows-latest'
             args: ''
@@ -33,10 +33,21 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04' || matrix.platform == 'ubuntu-22.04-arm'
+        if: matrix.platform == 'ubuntu-24.04' || matrix.platform == 'ubuntu-24.04-arm'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf xdg-utils
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libssl-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            xdg-utils
 
       - name: setup node
         uses: actions/setup-node@v4
@@ -95,6 +106,25 @@ jobs:
           organization: ${{ secrets.SENTRY_ORG }}
           project: ${{ secrets.SENTRY_PROJECT }}
 
+      # TEMPORARY WORKAROUND:
+      # Use a custom tauri-cli branch to enable the new "truly portable" AppImage format.
+      # This relies on TAURI_BUNDLER_NEW_APPIMAGE_FORMAT=true and can be removed once
+      # https://github.com/tauri-apps/tauri/pull/12491 is merged and released upstream.
+      - name: Override tauri-cli (ubuntu only)
+        if: matrix.platform == 'ubuntu-24.04' || matrix.platform == 'ubuntu-24.04-arm'
+        shell: bash
+        run: |
+          cargo install tauri-cli --git https://github.com/tauri-apps/tauri --branch feat/truly-portable-appimage --locked --force
+          echo "TAURI_BUNDLER_NEW_APPIMAGE_FORMAT=true" >> $GITHUB_ENV
+
+      # TEMPORARY WORKAROUND:
+      # Because we use "cargo tauri" in that tauri build step, we always have to install tauri cli here.
+      - name: Install tauri-cli
+        if: matrix.platform != 'ubuntu-24.04' && matrix.platform != 'ubuntu-24.04-arm'
+        shell: bash
+        run: |
+          cargo install tauri-cli
+
       - uses: tauri-apps/tauri-action@v0
         id: tauri
         env:
@@ -104,6 +134,9 @@ jobs:
           APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
           APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
           APPLE_API_KEY_PATH: ${{ secrets.APPLE_API_KEY_PATH }}
+          # TEMPORARY WORKAROUND:
+          # This environment variable is needed to enable the new appimage features.
+          TAURI_BUNDLER_NEW_APPIMAGE_FORMAT: "true"
         with:
           tagName: app-v__VERSION__
           releaseName: 'Open Video Downloader v__VERSION__'
@@ -112,6 +145,9 @@ jobs:
           prerelease: false
           includeUpdaterJson: true
           updaterJsonPreferNsis: true
+          # TEMPORARY WORKAROUND:
+          # This option is needed to use the possibly overriden branch of tauri-cli, to fix appimages.
+          tauriScript: 'cargo tauri'
           args: ${{ matrix.args }}
 
       - name: Upload debug symbols to Sentry
@@ -131,7 +167,7 @@ jobs:
           
           sentry-cli debug-files upload --include-sources target/release
           
-          if [ "${{ matrix.platform }}" = "ubuntu-22.04" ]; then
+          if [ "${{ matrix.platform }}" = "ubuntu-24.04" ]; then
             sentry-cli releases new "$SENTRY_RELEASE" || true
             sentry-cli releases set-commits "$SENTRY_RELEASE" --auto || true
             sentry-cli releases finalize "$SENTRY_RELEASE" || true
@@ -195,32 +231,3 @@ jobs:
         with:
           name: ovd-msix
           path: OpenVideoDownloader_x64.msix
-
-      - name: Update winget manifest (Windows only)
-        if: matrix.platform == 'windows-latest'
-        shell: pwsh
-        env:
-          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
-        run: |
-          set-strictmode -version latest
-          $ErrorActionPreference = "Stop"
-
-          $pkg = Get-Content -Raw "package.json" | ConvertFrom-Json
-          $version = $pkg.version
-
-          $tag = "app-v$version"
-          $installerUrl = "https://github.com/jely2002/youtube-dl-gui/releases/download/$tag/Open.Video.Downloader_$version_x64-setup.exe
-
-          Write-Host "Updating winget manifest for version $version"
-          Write-Host "Installer URL: $installerUrl"
-
-          Invoke-WebRequest `
-            -Uri https://aka.ms/wingetcreate/latest `
-            -OutFile wingetcreate.exe
-
-          ./wingetcreate.exe update `
-            jely2002.youtube-dl-gui `
-            --version $version `
-            --urls $installerUrl `
-            --submit `
-            --token $env:WINGET_TOKEN
