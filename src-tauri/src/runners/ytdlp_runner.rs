@@ -183,6 +183,11 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
+  pub fn with_url(mut self, url: &str) -> Self {
+    self.args.push(url.into());
+    self
+  }
+
   pub async fn shell(self) -> Result<Output, String> {
     tracing::info!("Running command: yt-dlp {}", self.args.join(" "));
     let separator = if cfg!(windows) { ';' } else { ':' };
