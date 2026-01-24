@@ -81,7 +81,7 @@ impl TemplateContext {
           let mut out = if let Some(repl) = replacement_part {
             repl.to_string()
           } else {
-            val.replace('|', "_").replace('\\', "_").replace('/', "_")
+            val.replace(['|', '\\', '/'], "_")
           };
 
           let ty = fmt.chars().last().unwrap_or('s');
