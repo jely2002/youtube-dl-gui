@@ -60,7 +60,7 @@
     "windows": {
       "nsis": {
         "displayLanguageSelector": true,
-        "languages": ["English", "Italian", "Dutch", "French", "German", "Russian", "PortugueseBR"]
+        "languages": ["English", "Spanish", "Italian", "Dutch", "French", "German", "Russian", "PortugueseBR"]
       }
     }
   },

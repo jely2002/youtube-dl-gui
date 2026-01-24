@@ -81,7 +81,7 @@ impl TemplateContext {
           let mut out = if let Some(repl) = replacement_part {
             repl.to_string()
           } else {
-            val
+            val.replace(['|', '\\', '/'], "_")
           };
 
           let ty = fmt.chars().last().unwrap_or('s');
@@ -298,5 +298,14 @@ mod tests {
     let ctx = create_context(&[]);
     let out = ctx.render_template("%(album,playlist_title)s-%(title)s");
     assert_eq!(out, "%(album,playlist_title)s-%(title)s");
+  }
+
+  #[test]
+  fn test_path_traversal_vulnerability() {
+    let ctx = create_context(&[("playlist_title", "../../malicious")]);
+    let tpl = "/downloads/%(playlist_title)s/video.mp4";
+    let out = ctx.render_template(tpl);
+
+    assert_eq!(out, "/downloads/.._.._malicious/video.mp4");
   }
 }
