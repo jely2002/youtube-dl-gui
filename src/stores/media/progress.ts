@@ -57,8 +57,8 @@ export const useMediaProgressStore = defineStore('media-progress', () => {
     const group = groupStore.findGroupById(payload.groupId);
     if (group.isCombined) {
       const items = Object.values(group.items);
-      const isDone = !items.some(p => stateStore.getState(p.id) !== MediaState.done && !p.isLeader);
-      if (isDone) {
+      const allItemsAreDone = !items.some(p => stateStore.getState(p.id) !== MediaState.done && !p.isLeader);
+      if (allItemsAreDone) {
         void notifyGroup(NotificationKind.PlaylistFinished, group, {}, items.length);
         stateStore.setGroupState(group.id, MediaState.done);
       }

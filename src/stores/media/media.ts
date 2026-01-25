@@ -161,7 +161,9 @@ export const useMediaStore = defineStore('media', () => {
     if (itemsWithoutLeader.length === 0) return;
 
     const newState = group.isCombined ? MediaState.pausedList : MediaState.paused;
-    items.forEach(item => stateStore.setState(item.id, newState));
+    items
+      .filter(item => stateStore.getState(item.id) !== MediaState.done)
+      .forEach(item => stateStore.setState(item.id, newState));
 
     groupStore.cancelGroup(groupId);
   }
