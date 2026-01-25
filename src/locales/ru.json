@@ -526,6 +526,9 @@
     "network": {
       "legend": "Сеть",
       "legendLabel": "Настройте, как приложение подключается к интернету.",
+      "enableProxy": {
+        "label": "Подключаться через прокси:"
+      },
       "proxy": {
         "label": "Настройка прокси:"
       },
@@ -800,6 +803,10 @@
       "networkNameResolutionFailed": {
         "shortMessage": "Сетевая ошибка",
         "message": "Не удалось определить имя хоста. Проверьте подключение к интернету."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Не удалось подключиться к прокси",
+        "message": "Не удалось подключиться к прокси. Проверьте настройки прокси."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Плейлист недоступен",

@@ -526,6 +526,9 @@
     "network": {
       "legend": "Nettverk",
       "legendLabel": "Konfigurer hvordan applikasjonen kobler til internett.",
+      "enableProxy": {
+        "label": "Koble til via proxy:"
+      },
       "proxy": {
         "label": "Proxy-konfigurasjon:"
       },
@@ -800,6 +803,10 @@
       "networkNameResolutionFailed": {
         "shortMessage": "Nettverksfeil",
         "message": "Kunne ikke løse vertsnavnet. Sjekk internettforbindelsen din."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Proxy-tilkobling mislyktes",
+        "message": "Kunne ikke koble til proxyen. Sjekk proxyinnstillingene."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Spilleliste utilgjengelig",
