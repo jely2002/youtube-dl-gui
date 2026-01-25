@@ -1,6 +1,6 @@
 <template>
-  <article class="card card-side p-4 w-[700px] max-h-44 bg-base-300 shadow-md">
-    <figure class="flex-shrink-0 w-64 aspect-video rounded-md overflow-hidden bg-base-100">
+  <article class="card card-side p-4 w-175 max-h-44 bg-base-300 shadow-md" :class="[statusOutline]">
+    <figure class="shrink-0 w-64 aspect-video rounded-md overflow-hidden bg-base-100">
       <img
           :src="group.thumbnail ?? placeholderUrl"
           :alt="t('media.view.thumbnailAlt', { title: group.title ?? '' })"
@@ -14,12 +14,19 @@
         v-bind="activeStepProps"
     />
     <div class="divider divider-horizontal"></div>
-    <media-card-actions @download="downloadGroup" @retry="retryGroup" @remove="removeGroup" :group="group"/>
+    <media-card-actions
+        @download="downloadGroup"
+        @retry="retryGroup"
+        @remove="removeGroup"
+        @pause="pauseGroup"
+        @resume="downloadGroup"
+        :group="group"
+    />
   </article>
 </template>
 
 <script setup lang="ts">
-import { computed, PropType } from 'vue';
+import { computed, ComputedRef, PropType } from 'vue';
 import placeholderUrl from '../../assets/placeholder.png';
 import { MediaState, useMediaStateStore } from '../../stores/media/state';
 import { useMediaStore } from '../../stores/media/media';
@@ -35,6 +42,8 @@ import MediaDownloadListStep from './steps/MediaDownloadListStep.vue';
 import { useToastStore } from '../../stores/toast';
 import { Group } from '../../tauri/types/group';
 import { useI18n } from 'vue-i18n';
+import MediaPausedStep from './steps/MediaPausedStep.vue';
+import MediaPausedListStep from './steps/MediaPausedListStep.vue';
 
 const stepMap = {
   [MediaState.fetching]: FetchStep,
@@ -42,6 +51,8 @@ const stepMap = {
   [MediaState.configure]: MediaConfigureStep,
   [MediaState.downloading]: MediaDownloadStep,
   [MediaState.downloadingList]: MediaDownloadListStep,
+  [MediaState.paused]: MediaPausedStep,
+  [MediaState.pausedList]: MediaPausedListStep,
   [MediaState.done]: MediaDoneStep,
   [MediaState.error]: MediaErrorStep,
 } as const;
@@ -60,7 +71,7 @@ const { group } = defineProps({
   },
 });
 
-const groupState = computed(() => stateStore.getGroupState(group.id));
+const groupState: ComputedRef<MediaState | undefined> = computed(() => stateStore.getGroupState(group.id));
 
 const activeStep = computed(() => stepMap[groupState.value ?? MediaState.fetching]);
 
@@ -69,10 +80,15 @@ const activeStepProps = computed(() => ({ group }));
 const downloadGroup = (): void => {
   const options = optionsStore.getOptions(group.id);
   if (!options) {
+    // TODO show a toast?
     console.warn(`No options found for group: ${group.id}, cannot download.`);
     return;
   }
   void mediaStore.downloadGroup(group.id, options);
+};
+
+const pauseGroup = (): void => {
+  void mediaStore.pauseGroup(group.id);
 };
 
 const retryGroup = (): void => {
@@ -98,5 +114,17 @@ const setPlaceholderImage = (event: Event): void => {
     event.target.src = placeholderUrl;
   }
 };
+
+const statusOutline = computed(() => {
+  switch (groupState.value) {
+    case MediaState.error:
+      return 'border border-error';
+    case MediaState.paused:
+    case MediaState.pausedList:
+      return 'border border-warning';
+    default:
+      return '';
+  }
+});
 
 </script>

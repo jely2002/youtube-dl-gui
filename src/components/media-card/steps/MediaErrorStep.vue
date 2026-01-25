@@ -5,7 +5,7 @@
         :id="`${group.id}-progress`"
         :max="100"
         :value="100"
-        error
+        :style="ProgressStyle.error"
     >
       {{ t('media.steps.error.errorPrefix', { message: diagnosticDisplay.shortMessage }) }}
     </base-progress>
@@ -32,6 +32,7 @@ import { Group } from '../../../tauri/types/group';
 import { useI18n } from 'vue-i18n';
 import { useMediaDiagnosticsStore } from '../../../stores/media/diagnostics.ts';
 import { useDiagnostic } from '../../../composables/useDiagnostic.ts';
+import { ProgressStyle } from '../../../tauri/types/progress.ts';
 
 const i18n = useI18n();
 const t = i18n.t;

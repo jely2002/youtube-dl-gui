@@ -1,6 +1,7 @@
 {
   "common": {
     "download": "Download",
+    "resume": "Resume",
     "save": "Save",
     "later": "Later",
     "load": "Load",
@@ -35,7 +36,7 @@
         "ready": "Ready to download! {n} item queued. | Ready to download! {n} items queued."
       },
       "nav": {
-        "downloadLocation": "Download location",
+        "downloadLocation": "Locations",
         "login": {
           "screenReader": {
             "on": "Edit login (currently logged in)",
@@ -65,7 +66,10 @@
         }
       },
       "queue": {
-        "empty": "Empty queue"
+        "empty": "Empty queue",
+        "resume": "Resume all",
+        "pause": "Pause all",
+        "more": "More queue actions"
       }
     }
   },
@@ -228,6 +232,15 @@
           "speed": "Speed: {speed}"
         }
       },
+      "paused": {
+        "progress": "Download paused — {percentage}%",
+        "progressList": "Download paused — {percentage}% — {done} of {total}",
+        "indeterminate": "Download paused",
+        "metadata": {
+          "eta": "Remaining: {eta}",
+          "etaItems": "Remaining: {n} item | Remaining: {n} items"
+        }
+      },
       "done": {
         "complete": "Download complete — 100%",
         "showFolder": "Show in folder",
@@ -247,6 +260,8 @@
         "externalUrl": "Visit on external URL",
         "retry": "Retry download",
         "download": "Download individually",
+        "pause": "Pause download",
+        "resume": "Resume download",
         "metadata": "Show metadata"
       },
       "toasts": {

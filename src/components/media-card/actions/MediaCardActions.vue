@@ -18,6 +18,18 @@
         :icon="ArrowPathIcon"
     />
     <media-card-action-item
+       v-else-if="canPause"
+       @click="pauseItem"
+       :label="t('media.card.actions.pause')"
+       :icon="PauseIcon"
+    />
+    <media-card-action-item
+        v-else-if="canResume"
+        @click="resumeItem"
+        :label="t('media.card.actions.resume')"
+        :icon="PlayIcon"
+    />
+    <media-card-action-item
         v-else
         @click="downloadItem"
         :disabled="!canDownload"
@@ -39,6 +51,8 @@ import {
   ArrowTopRightOnSquareIcon,
   InformationCircleIcon,
   XCircleIcon,
+  PauseIcon,
+  PlayIcon,
 } from '@heroicons/vue/24/solid';
 import MediaCardActionItem from './MediaCardActionItem.vue';
 import { computed, PropType } from 'vue';
@@ -52,6 +66,8 @@ const { openUrl } = useOpener();
 
 const emit = defineEmits<{
   (e: 'download'): void;
+  (e: 'pause'): void;
+  (e: 'resume'): void;
   (e: 'remove'): void;
   (e: 'retry'): void;
 }>();
@@ -67,9 +83,9 @@ const stateStore = useMediaStateStore();
 const groupState = computed(() => stateStore.getGroupState(group.id));
 
 const canDownload = computed(() => groupState.value === MediaState.configure);
-
+const canPause = computed(() => groupState.value === MediaState.downloading || groupState.value === MediaState.downloadingList);
+const canResume = computed(() => groupState.value === MediaState.paused || groupState.value === MediaState.pausedList);
 const canRetry = computed(() => groupState.value === MediaState.done || groupState.value === MediaState.error);
-
 const canViewInfo = computed(() => groupState.value !== MediaState.fetching);
 
 const isValidExternalUrl = computed(() => {
@@ -86,6 +102,14 @@ const isValidExternalUrl = computed(() => {
 
 const downloadItem = (): void => {
   emit('download');
+};
+
+const pauseItem = (): void => {
+  emit('pause');
+};
+
+const resumeItem = (): void => {
+  emit('resume');
 };
 
 const retryItem = (): void => {

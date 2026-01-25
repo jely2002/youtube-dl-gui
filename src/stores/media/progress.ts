@@ -82,7 +82,12 @@ export const useMediaProgressStore = defineStore('media-progress', () => {
 
     const speedBps = itemsProgress.reduce((sum, p) => sum + (p.speedBps ?? 0), 0);
     const done = itemIds.filter(id => stateStore.getState(id) === MediaState.done).length;
-    const downloading = itemIds.filter(id => stateStore.getState(id) === MediaState.downloading || stateStore.getState(id) === MediaState.downloadingList).length;
+    const downloading = itemIds.filter(id =>
+      stateStore.getState(id) === MediaState.downloading
+      || stateStore.getState(id) === MediaState.downloadingList
+      || stateStore.getState(id) === MediaState.paused
+      || stateStore.getState(id) === MediaState.pausedList,
+    ).length;
     let ready = itemIds.filter(id => stateStore.getState(id) === MediaState.configure).length;
     const total = downloading > 0 ? downloading + done : ready + done;
 

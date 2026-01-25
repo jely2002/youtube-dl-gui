@@ -116,12 +116,14 @@ export const useMediaStore = defineStore('media', () => {
     if (!group) return;
 
     const items: MediaItem[] = Object.values(group.items);
-    const itemsWithoutLeader: MediaItem[] = items.filter(item => !item.entries);
+    const itemsWithoutLeader: MediaItem[] = items.filter(item => !item.entries && stateStore.getState(item.id) !== MediaState.done);
 
     if (itemsWithoutLeader.length === 0) return;
 
     const newState = group.isCombined ? MediaState.downloadingList : MediaState.downloading;
-    items.forEach(item => stateStore.setState(item.id, newState));
+    items
+      .filter(item => stateStore.getState(item.id) !== MediaState.done)
+      .forEach(item => stateStore.setState(item.id, newState));
 
     try {
       await invoke<string>('media_download', {
@@ -147,6 +149,21 @@ export const useMediaStore = defineStore('media', () => {
       });
       console.error(e);
     }
+  }
+
+  async function pauseGroup(groupId: string) {
+    const group = groupStore.findGroupById(groupId);
+    if (!group) return;
+
+    const items: MediaItem[] = Object.values(group.items);
+    const itemsWithoutLeader: MediaItem[] = items.filter(item => !item.entries);
+
+    if (itemsWithoutLeader.length === 0) return;
+
+    const newState = group.isCombined ? MediaState.pausedList : MediaState.paused;
+    items.forEach(item => stateStore.setState(item.id, newState));
+
+    groupStore.cancelGroup(groupId);
   }
 
   function buildTemplateContext(item: MediaItem, group: Group): Record<string, string | undefined> {
@@ -200,6 +217,7 @@ export const useMediaStore = defineStore('media', () => {
     dispatchMediaInfoFetch,
     downloadGroup,
     downloadAllGroups,
+    pauseGroup,
     deleteGroup,
     deleteAllGroups,
   };

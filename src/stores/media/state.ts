@@ -8,6 +8,8 @@ export const enum MediaState {
   configure = 'configure',
   downloading = 'downloading',
   downloadingList = 'downloadingList',
+  paused = 'paused',
+  pausedList = 'pausedList',
   error = 'error',
   done = 'done',
 }

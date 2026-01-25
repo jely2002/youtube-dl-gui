@@ -1,7 +1,8 @@
 <template>
   <article>
     <base-sub-nav>
-      <button @click="downloadItem" class="btn btn-primary">{{ t('common.download') }}</button>
+      <button v-if="isPaused" @click="downloadItem" class="btn btn-warning">{{ t('common.resume') }}</button>
+      <button v-else @click="downloadItem" class="btn btn-primary">{{ t('common.download') }}</button>
       <template v-slot:title>
         <div role="tablist" class="tabs tabs-box flex gap-2">
           <router-link exactActiveClass="tab-active" role="tab" :to="{ name: 'group.metadata', params: { groupId } }" class="tab">{{ t('media.view.tabs.metadata') }}</router-link>
@@ -20,6 +21,8 @@ import { useRouter } from 'vue-router';
 import BaseSubNav from '../../components/base/BaseSubNav.vue';
 import { useI18n } from 'vue-i18n';
 import { useMediaOptionsStore } from '../../stores/media/options.ts';
+import { MediaState, useMediaStateStore } from '../../stores/media/state.ts';
+import { computed } from 'vue';
 
 const { groupId } = defineProps({
   groupId: {
@@ -31,7 +34,13 @@ const { groupId } = defineProps({
 const { t } = useI18n();
 const router = useRouter();
 const mediaStore = useMediaStore();
+const stateStore = useMediaStateStore();
 const optionsStore = useMediaOptionsStore();
+
+const isPaused = computed(() => {
+  const state = stateStore.getGroupState(groupId);
+  return state === MediaState.paused || state === MediaState.pausedList;
+});
 
 const downloadItem = (): void => {
   const options = optionsStore.getOptions(groupId);

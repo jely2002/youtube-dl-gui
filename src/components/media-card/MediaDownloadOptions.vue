@@ -2,44 +2,48 @@
   <label :for="trackSelectId" class="sr-only">
     {{ locale.trackSelect.screenReader }}
   </label>
-  <select
-      v-model="selectedTrackType"
-      :id="trackSelectId"
-      class="select select-primary"
-  >
-    <option
-        v-for="trackType in trackOptions"
-        :key="trackType.value"
-        :value="trackType.value"
+  <div :class="{ join }" v-bind="$attrs">
+    <select
+        v-model="selectedTrackType"
+        :id="trackSelectId"
+        class="select select-primary"
+        :class="{ 'join-item': join }"
     >
-      {{ trackType.label }}
-    </option>
-  </select>
+      <option
+          v-for="trackType in trackOptions"
+          :key="trackType.value"
+          :value="trackType.value"
+      >
+        {{ trackType.label }}
+      </option>
+    </select>
 
-  <label :for="formatSelectId" class="sr-only">
-    {{ locale.formatSelect.screenReader }}
-  </label>
-  <select
-      v-model="selectedFormatId"
-      :id="formatSelectId"
-      class="select select-primary"
-      :disabled="formatOptions.length === 0"
-      :key="selectedTrackType"
-  >
-    <option v-if="formatOptions.length === 0" value="">
-      {{ locale.formatSelect.noFormats }}
-    </option>
-    <option v-else-if="!autoSelect" value="">
-      {{ locale.formatSelect.placeholder }}
-    </option>
-  <option
-      v-for="format in formatOptions"
-      :key="format.value"
-      :value="format.value"
-  >
-    {{ format.label }}
-  </option>
-  </select>
+    <label :for="formatSelectId" class="sr-only">
+      {{ locale.formatSelect.screenReader }}
+    </label>
+    <select
+        v-model="selectedFormatId"
+        :id="formatSelectId"
+        class="select select-primary"
+        :class="{ 'join-item': join }"
+        :disabled="formatOptions.length === 0"
+        :key="selectedTrackType"
+    >
+      <option v-if="formatOptions.length === 0" value="">
+        {{ locale.formatSelect.noFormats }}
+      </option>
+      <option v-else-if="!autoSelect" value="">
+        {{ locale.formatSelect.placeholder }}
+      </option>
+      <option
+          v-for="format in formatOptions"
+          :key="format.value"
+          :value="format.value"
+      >
+        {{ format.label }}
+      </option>
+    </select>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -77,11 +81,19 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  join: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits<{
   'update:modelValue': [DownloadOptions | undefined];
 }>();
+
+defineOptions({
+  inheritAttrs: false,
+});
 
 const {
   formats,
