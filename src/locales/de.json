@@ -69,6 +69,10 @@
         "empty": "Leere Warteschlange",
         "resume": "Alle fortsetzen",
         "pause": "Alle pausieren",
+        "clearSuccessful": "Erfolgreiche löschen",
+        "clearErrored": "Fehlgeschlagene löschen",
+        "clearPending": "Ausstehende löschen",
+        "cancelDownloading": "Downloads abbrechen",
         "more": "Weitere Warteschlangenaktionen"
       }
     }

@@ -69,6 +69,10 @@
         "empty": "Lege wachtrij",
         "resume": "Alles hervatten",
         "pause": "Alles pauzeren",
+        "clearSuccessful": "Wis geslaagd",
+        "clearErrored": "Wis mislukt",
+        "clearPending": "Wis in wachtrij",
+        "cancelDownloading": "Annuleer downloads",
         "more": "Meer wachtrijacties"
       }
     }

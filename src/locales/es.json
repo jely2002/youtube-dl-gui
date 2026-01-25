@@ -69,6 +69,10 @@
         "empty": "Cola vacía",
         "resume": "Reanudar todo",
         "pause": "Pausar todo",
+        "clearSuccessful": "Borrar completados",
+        "clearErrored": "Borrar con errores",
+        "clearPending": "Borrar pendientes",
+        "cancelDownloading": "Cancelar descargas",
         "more": "Más acciones de la cola"
       }
     }

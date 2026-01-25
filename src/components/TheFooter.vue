@@ -63,7 +63,7 @@
           align="end"
           btnClass="btn-subtle"
           :disabled="!hasGroups"
-          :caret-disabled="!hasDownloadingGroups && !hasPausedGroups"
+          :caret-disabled="!hasQueueActions"
           :mainTooltip="t('layout.footer.queue.empty')"
           :caretAriaLabel="t('layout.footer.queue.more')"
           caretClass="px-2"
@@ -78,14 +78,38 @@
           <chevron-down-icon class="w-4 h-4" />
         </template>
 
-        <li v-if="hasDownloadingGroups">
-          <button class="gap-2" @click="pauseAllGroups">
+        <li>
+          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasSuccessfulGroups" @click="clearSuccessfulGroups">
+            <broom-icon class="w-4 h-4" />
+            {{ t('layout.footer.queue.clearSuccessful') }}
+          </button>
+        </li>
+        <li>
+          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasErroredGroups" @click="clearErroredGroups">
+            <broom-icon class="w-4 h-4" />
+            {{ t('layout.footer.queue.clearErrored') }}
+          </button>
+        </li>
+        <li>
+          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasPendingGroups" @click="clearPendingGroups">
+            <broom-icon class="w-4 h-4" />
+            {{ t('layout.footer.queue.clearPending') }}
+          </button>
+        </li>
+        <li>
+          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasDownloadingGroups" @click="cancelDownloadingGroups">
+            <x-mark-icon class="w-4 h-4" />
+            {{ t('layout.footer.queue.cancelDownloading') }}
+          </button>
+        </li>
+        <li>
+          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasDownloadingGroups" @click="pauseAllGroups">
             <pause-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.pause') }}
           </button>
         </li>
-        <li v-if="hasPausedGroups">
-          <button class="gap-2" @click="resumeAllGroups">
+        <li>
+          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasPausedGroups" @click="resumeAllGroups">
             <play-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.resume') }}
           </button>
@@ -99,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import { FolderIcon, KeyIcon as KeyIconSolid, PauseIcon, PlayIcon, TrashIcon } from '@heroicons/vue/24/solid';
+import { FolderIcon, KeyIcon as KeyIconSolid, PauseIcon, PlayIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 import {
   ChatBubbleBottomCenterIcon,
   ChatBubbleBottomCenterTextIcon,
@@ -121,6 +145,7 @@ import MediaDownloadOptions from './media-card/MediaDownloadOptions.vue';
 import { useMediaGroupStore } from '../stores/media/group.ts';
 import BaseButtonDropdown from './base/BaseButtonDropdown.vue';
 import { MediaState, useMediaStateStore } from '../stores/media/state.ts';
+import BroomIcon from './icons/BroomIcon.vue';
 
 const i18n = useI18n();
 const t = i18n.t;
@@ -137,6 +162,28 @@ const isStartingDownload = ref(false);
 
 const clearGroups = (): void => {
   mediaStore.deleteAllGroups();
+};
+
+const clearSuccessfulGroups = (): void => {
+  mediaStore.deleteGroupsByState([MediaState.done]);
+};
+
+const clearErroredGroups = (): void => {
+  mediaStore.deleteGroupsByState([MediaState.error]);
+};
+
+const clearPendingGroups = (): void => {
+  mediaStore.deleteGroupsByState([
+    MediaState.fetching,
+    MediaState.fetchingList,
+    MediaState.configure,
+    MediaState.paused,
+    MediaState.pausedList,
+  ]);
+};
+
+const cancelDownloadingGroups = (): void => {
+  mediaStore.deleteGroupsByState([MediaState.downloading, MediaState.downloadingList]);
 };
 
 const progress = computed(() => {
@@ -185,6 +232,22 @@ const hasAuthConfigured = computed(() => {
 });
 const hasSubtitlesEnabled = computed(() => settingsStore.settings.subtitles.enabled);
 const hasGroups = computed(() => Object.keys(groupStore.groups).length > 0);
+const hasSuccessfulGroups = computed(() => mediaStateStore.hasGroupWithState(MediaState.done));
+const hasErroredGroups = computed(() => mediaStateStore.hasGroupWithState(MediaState.error));
+const hasPendingGroups = computed(() => mediaStateStore.hasGroupWithState(
+  MediaState.fetching,
+  MediaState.fetchingList,
+  MediaState.configure,
+  MediaState.paused,
+  MediaState.pausedList,
+));
 const hasPausedGroups = computed(() => mediaStateStore.hasGroupWithState(MediaState.paused, MediaState.pausedList));
 const hasDownloadingGroups = computed(() => mediaStateStore.hasGroupWithState(MediaState.downloading, MediaState.downloadingList));
+const hasQueueActions = computed(() => (
+  hasSuccessfulGroups.value
+  || hasErroredGroups.value
+  || hasPendingGroups.value
+  || hasPausedGroups.value
+  || hasDownloadingGroups.value
+));
 </script>
