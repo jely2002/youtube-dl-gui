@@ -1,0 +1,99 @@
+name: open-video-downloader
+title: Open Video Downloader
+base: core24
+version: '3.1.1'
+license: 'AGPL-3.0-or-later'
+website: 'https://jely2002.github.io/youtube-dl-gui'
+issues: 'https://github.com/jely2002/youtube-dl-gui/issues'
+source-code: 'https://github.com/jely2002/youtube-dl-gui'
+contact: 'ytdlgui@jelleglebbeek.com'
+donation:
+  - 'https://github.com/sponsors/jely2002'
+  - 'https://ko-fi.com/jely2002'
+summary: A fast, modern video & audio downloader for YouTube and more
+description: |
+  Open Video Downloader is a cross-platform, open-source app that makes it easy to download videos, audio, subtitles, and metadata from YouTube and hundreds of other supported websites. It provides a clean desktop interface on top of the powerful yt-dlp engine, so you get advanced download features without needing the command line.
+
+  You can choose the quality and format, download individual items or entire playlists, and manage downloads with pause and resume support. Open Video Downloader is free, privacy-friendly, and fully open source, with no ads, no tracking, and no unnecessary complexity.
+
+grade: stable
+confinement: strict
+
+icon: src-tauri/icons/icon.png
+
+platforms:
+  amd64:
+    build-on: amd64
+    build-for: amd64
+  arm64:
+    build-on: arm64
+    build-for: arm64
+
+layout:
+  /usr/lib/webkit2gtk-4.1:
+    bind: $SNAP/usr/lib/webkit2gtk-4.1
+
+apps:
+  open-video-downloader:
+    command: usr/bin/open-video-downloader
+    desktop: usr/share/applications/Open Video Downloader.desktop
+    extensions: [gnome]
+    plugs:
+      - network
+      - home
+      - unity7
+      - password-manager-service
+    slots:
+      - single-instance
+
+slots:
+  single-instance:
+    interface: dbus
+    bus: session
+    name: com.jelleglebbeek.youtube-dl-gui.SingleInstance
+
+parts:
+  build-app:
+    plugin: dump
+    source: .
+    build-snaps:
+      - node/24/stable
+      - rustup/latest/stable
+    build-packages:
+      - libwebkit2gtk-4.1-dev
+      - build-essential
+      - curl
+      - wget
+      - file
+      - libssl-dev
+      - libayatana-appindicator3-dev
+      - librsvg2-dev
+      - dpkg
+    stage-packages:
+      - libwebkit2gtk-4.1-0
+      - libayatana-appindicator3-1
+    override-build: |
+      set -eu
+
+      npm ci
+      
+      rustup toolchain install stable
+      rustup default stable
+      cargo install --locked cargo-about
+
+      npm run tauri build -- --bundles deb --no-sign -c '{"plugins":{"updater":{"active":false}}}'
+      dpkg -x src-tauri/target/release/bundle/deb/*.deb "$SNAPCRAFT_PART_INSTALL/"
+      mkdir -p "$CRAFT_PART_INSTALL/usr/lib/webkit2gtk-4.1"
+
+      for TRIPLET in x86_64-linux-gnu aarch64-linux-gnu; do
+        SRC="$CRAFT_PART_INSTALL/usr/lib/$TRIPLET/webkit2gtk-4.1"
+        if [ -d "$SRC" ]; then
+          cp -a "$SRC/." "$CRAFT_PART_INSTALL/usr/lib/webkit2gtk-4.1/"
+          break
+        fi
+      done
+
+      DESKTOP_FILE="$SNAPCRAFT_PART_INSTALL/usr/share/applications/Open Video Downloader.desktop"
+      if [ -f "$DESKTOP_FILE" ]; then
+        sed -i -E 's/^Categories=.*/Categories=Network;AudioVideo;Utility;/' "$DESKTOP_FILE"
+      fi
