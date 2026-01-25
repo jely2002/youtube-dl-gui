@@ -190,6 +190,28 @@ export const useMediaStore = defineStore('media', () => {
     await notify(NotificationKind.QueueDownloading, { n: group_ids.length.toString() }, fromShortcut);
   }
 
+  function pauseAllGroups() {
+    for (const groupId of Object.keys(groupStore.groups)) {
+      const state = stateStore.getGroupState(groupId);
+      if (state === MediaState.downloading || state === MediaState.downloadingList) {
+        void pauseGroup(groupId);
+      }
+    }
+  }
+
+  function resumeAllGroups() {
+    for (const groupId of Object.keys(groupStore.groups)) {
+      const state = stateStore.getGroupState(groupId);
+      if (state !== MediaState.paused && state !== MediaState.pausedList) continue;
+      const options = optionsStore.getOptions(groupId);
+      if (!options) {
+        console.warn(`No options found for group: ${groupId}, cannot resume.`);
+        continue;
+      }
+      void downloadGroup(groupId, options);
+    }
+  }
+
   function deleteGroup(id: string) {
     const group = groupStore.findGroupById(id);
     for (const itemId of Object.keys(group.items)) {
@@ -217,7 +239,9 @@ export const useMediaStore = defineStore('media', () => {
     dispatchMediaInfoFetch,
     downloadGroup,
     downloadAllGroups,
+    pauseAllGroups,
     pauseGroup,
+    resumeAllGroups,
     deleteGroup,
     deleteAllGroups,
   };

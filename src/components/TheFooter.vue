@@ -79,13 +79,13 @@
         </template>
 
         <li v-if="hasDownloadingGroups">
-          <button class="gap-2">
+          <button class="gap-2" @click="pauseAllGroups">
             <pause-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.pause') }}
           </button>
         </li>
         <li v-if="hasPausedGroups">
-          <button class="gap-2">
+          <button class="gap-2" @click="resumeAllGroups">
             <play-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.resume') }}
           </button>
@@ -170,6 +170,14 @@ const downloadAll = async (): Promise<void> => {
   } finally {
     isStartingDownload.value = false;
   }
+};
+
+const pauseAllGroups = (): void => {
+  mediaStore.pauseAllGroups();
+};
+
+const resumeAllGroups = (): void => {
+  mediaStore.resumeAllGroups();
 };
 
 const hasAuthConfigured = computed(() => {
