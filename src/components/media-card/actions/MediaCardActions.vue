@@ -7,6 +7,7 @@
     />
     <media-card-action-item
         @click="openExternalUrl"
+        :disabled="!isValidExternalUrl"
         :label="t('media.card.actions.externalUrl')"
         :icon="ArrowTopRightOnSquareIcon"
     />
@@ -70,6 +71,18 @@ const canDownload = computed(() => groupState.value === MediaState.configure);
 const canRetry = computed(() => groupState.value === MediaState.done || groupState.value === MediaState.error);
 
 const canViewInfo = computed(() => groupState.value !== MediaState.fetching);
+
+const isValidExternalUrl = computed(() => {
+  // Matches the requirement in 'src-tauri/capabilities/default.json' at 'permissions[4].allow[0].url'.
+  const isAllowed = group.url.startsWith('https');
+  if (!isAllowed) return false;
+  try {
+    new URL(group.url);
+    return true;
+  } catch {
+    return false;
+  }
+});
 
 const downloadItem = (): void => {
   emit('download');
