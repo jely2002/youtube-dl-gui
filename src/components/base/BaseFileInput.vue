@@ -191,6 +191,13 @@ function basename(path: string) {
 
 function blurFromEvent(event: Event) {
   const target = event.target as HTMLElement | null;
-  target?.blur();
+  const clickable = target?.closest('button, a, [role="menuitem"]') as HTMLElement | null;
+  (clickable ?? target)?.blur();
+
+  const dropdown = target?.closest('.dropdown') as HTMLElement | null;
+  const menu = dropdown?.querySelector('.dropdown-content[tabindex="0"]') as HTMLElement | null;
+  const toggle = dropdown?.querySelector('button[tabindex="0"]') as HTMLElement | null;
+  menu?.blur();
+  toggle?.blur();
 }
 </script>

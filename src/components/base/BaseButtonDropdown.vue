@@ -95,12 +95,21 @@ function onMainClick() {
 
 function blurFromEvent(event: Event) {
   const target = event.target as HTMLElement | null;
-
   const clickable = target?.closest('button, a, [role="menuitem"]') as HTMLElement | null;
   (clickable ?? target)?.blur();
 
   const dropdown = target?.closest('.dropdown') as HTMLElement | null;
+  const menu = dropdown?.querySelector('.dropdown-content[tabindex="0"]') as HTMLElement | null;
   const toggle = dropdown?.querySelector('button[tabindex="0"]') as HTMLElement | null;
+  menu?.blur();
   toggle?.blur();
+
+  requestAnimationFrame(() => {
+    menu?.blur();
+    toggle?.blur();
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  });
 }
 </script>
