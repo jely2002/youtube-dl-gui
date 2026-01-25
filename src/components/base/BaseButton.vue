@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ tooltip, [tooltipLocationClass]: true }" :data-tip="tooltip">
+  <div :class="{ tooltip: !disabled && tooltip, [tooltipLocationClass]: true }" class="border-base-300" :data-tip="tooltip">
     <router-link
         v-if="to"
         :to="to"
