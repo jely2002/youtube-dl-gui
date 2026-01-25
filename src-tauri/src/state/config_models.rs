@@ -38,6 +38,7 @@ impl Default for AuthSettings {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct NetworkSettings {
+  pub enable_proxy: Option<bool>,
   pub proxy: Option<String>,
   pub impersonate: String,
 }
@@ -45,6 +46,7 @@ pub struct NetworkSettings {
 impl Default for NetworkSettings {
   fn default() -> Self {
     Self {
+      enable_proxy: None,
       proxy: None,
       impersonate: "none".into(),
     }

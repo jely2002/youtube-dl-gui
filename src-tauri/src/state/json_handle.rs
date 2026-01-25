@@ -41,17 +41,15 @@ impl<T: JsonBackedState> JsonStoreHandle<T> {
   }
 
   pub fn apply_patch(&self, patch: &Value, app: &AppHandle<Wry>) -> Result<T, Box<dyn Error>> {
-    let mut raw = self
-      .store
-      .get(T::ROOT_KEY)
-      .unwrap_or_else(|| Value::Object(Map::new()));
+    let mut raw = serde_json::to_value(self.swap.load_full().as_ref())?;
 
     json_merge(&mut raw, patch);
 
     let new_value = T::materialize(&raw)?;
     T::on_updated(app, &new_value);
 
-    self.store.set(T::ROOT_KEY, raw.clone());
+    let to_store = serde_json::to_value(&new_value)?;
+    self.store.set(T::ROOT_KEY, to_store);
     self.store.save()?;
     self.swap.store(Arc::new(new_value.clone()));
 

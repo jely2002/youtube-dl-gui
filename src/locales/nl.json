@@ -526,6 +526,9 @@
     "network": {
       "legend": "Netwerk",
       "legendLabel": "Instellen hoe de app verbinding maakt met internet.",
+      "enableProxy": {
+        "label": "Verbinden via proxy:"
+      },
       "proxy": {
         "label": "Proxyconfiguratie:"
       },
@@ -800,6 +803,10 @@
       "networkNameResolutionFailed": {
         "shortMessage": "Netwerkfout",
         "message": "De hostnaam kon niet worden opgelost. Controleer je internetverbinding."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Proxyverbinding mislukt",
+        "message": "Kan geen verbinding maken met de proxy. Controleer de proxy-instellingen."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist niet beschikbaar",

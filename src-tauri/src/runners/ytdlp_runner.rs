@@ -52,9 +52,12 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub fn with_network_args(mut self) -> Self {
-    if let Some(ref proxy) = self.cfg.network.proxy {
-      self.args.push("--proxy".to_string());
-      self.args.push(proxy.clone());
+    let proxy_enabled = self.cfg.network.enable_proxy.is_some_and(|enabled| enabled);
+    if proxy_enabled {
+      if let Some(proxy) = self.cfg.network.proxy.as_ref() {
+        self.args.push("--proxy".to_string());
+        self.args.push(proxy.clone());
+      }
     }
 
     match self.cfg.network.impersonate.as_str() {

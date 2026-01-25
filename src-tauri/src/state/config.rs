@@ -16,6 +16,10 @@ impl JsonBackedState for Config {
   }
 
   fn before_initialized(app: &AppHandle<Wry>, value: &mut Self) {
+    if value.network.enable_proxy.is_none() {
+      value.network.enable_proxy =
+        Some(value.network.proxy.as_ref().is_some_and(|v| !v.is_empty()));
+    }
     if value.output.download_dir.is_none() {
       let download_path = app
         .path()

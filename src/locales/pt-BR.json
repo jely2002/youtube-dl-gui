@@ -526,6 +526,9 @@
     "network": {
       "legend": "Rede",
       "legendLabel": "Configure como o aplicativo se conecta à Internet.",
+      "enableProxy": {
+        "label": "Conectar via proxy:"
+      },
       "proxy": {
         "label": "Configuração de proxy:"
       },
@@ -800,6 +803,10 @@
       "networkNameResolutionFailed": {
         "shortMessage": "Erro de rede",
         "message": "Não foi possível resolver o nome do host. Verifique sua conexão com a Internet."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Falha na conexão com o proxy",
+        "message": "Não foi possível conectar ao proxy. Verifique as configurações do proxy."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist indisponível",

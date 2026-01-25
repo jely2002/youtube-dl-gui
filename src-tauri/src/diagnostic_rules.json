@@ -244,6 +244,13 @@
       "patterns": [
         { "kind": "substr", "value": "Retrying fragment download" }
       ]
+    },
+    {
+      "code": "unableToConnectToProxy",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "substr", "value": "Unable to connect to proxy" }
+      ]
     }
   ],
   "fallbackCode": "unknown"

@@ -3,6 +3,15 @@
       :legend="t('settings.network.legend')"
       :label="t('settings.network.legendLabel')"
   >
+    <label class="font-semibold mt-2" for="enableProxy">
+      {{ t('settings.network.enableProxy.label') }}
+    </label>
+    <input
+        id="enableProxy"
+        type="checkbox"
+        v-model="settings.network.enableProxy"
+        class="toggle toggle-primary"
+    />
     <label class="font-semibold mt-2" for="proxyUrl">
       {{ t('settings.network.proxy.label') }}
     </label>
@@ -10,6 +19,7 @@
         type="text"
         id="proxyUrl"
         class="input mb-2"
+        :disabled="settings.network.enableProxy !== true"
         v-model="settings.network.proxy"
         placeholder="socks5://user:pass@127.0.0.1:1080/"
     />
