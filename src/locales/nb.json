@@ -19,7 +19,8 @@
     "video": "video",
     "unknown": "ukjent",
     "confirm": "Bekreft",
-    "best": "Best"
+    "best": "Best",
+    "resume": "Fortsett"
   },
   "layout": {
     "header": {
@@ -65,7 +66,10 @@
         }
       },
       "queue": {
-        "empty": "Tom kø"
+        "empty": "Tom kø",
+        "resume": "Fortsett alle",
+        "pause": "Sett alle på pause",
+        "more": "Flere køhandlinger"
       }
     }
   },
@@ -239,6 +243,15 @@
         "errorPrefix": "Feil - {message}",
         "report": "Rapporter",
         "showFull": "Vis full feil"
+      },
+      "paused": {
+        "progress": "Nedlasting pauset — {percentage}%",
+        "progressList": "Nedlasting pauset — {percentage}% — {done} av {total}",
+        "indeterminate": "Nedlasting pauset",
+        "metadata": {
+          "eta": "Gjenstår: {eta}",
+          "etaItems": "Gjenstår: {n} element | Gjenstår: {n} elementer"
+        }
       }
     },
     "card": {
@@ -247,7 +260,9 @@
         "externalUrl": "Besøk på ekstern URL",
         "retry": "Prøv nedlasting på nytt",
         "download": "Last ned individuelt",
-        "metadata": "Vis metadata"
+        "metadata": "Vis metadata",
+        "pause": "Sett nedlasting på pause",
+        "resume": "Fortsett nedlasting"
       },
       "toasts": {
         "retry": "Prøver nedlasting på nytt.",

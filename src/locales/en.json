@@ -1,7 +1,6 @@
 {
   "common": {
     "download": "Download",
-    "resume": "Resume",
     "save": "Save",
     "later": "Later",
     "load": "Load",
@@ -20,7 +19,8 @@
     "video": "video",
     "unknown": "unknown",
     "confirm": "Confirm",
-    "best": "Best"
+    "best": "Best",
+    "resume": "Resume"
   },
   "layout": {
     "header": {

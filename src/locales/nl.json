@@ -19,7 +19,8 @@
     "video": "video",
     "unknown": "onbekend",
     "confirm": "Bevestigen",
-    "best": "Beste"
+    "best": "Beste",
+    "resume": "Hervatten"
   },
   "layout": {
     "header": {
@@ -65,7 +66,10 @@
         }
       },
       "queue": {
-        "empty": "Lege wachtrij"
+        "empty": "Lege wachtrij",
+        "resume": "Alles hervatten",
+        "pause": "Alles pauzeren",
+        "more": "Meer wachtrijacties"
       }
     }
   },
@@ -239,6 +243,15 @@
         "errorPrefix": "Fout – {message}",
         "report": "Rapporteren",
         "showFull": "Volledige fout weergeven"
+      },
+      "paused": {
+        "progress": "Download gepauzeerd — {percentage}%",
+        "progressList": "Download gepauzeerd — {percentage}% — {done} van {total}",
+        "indeterminate": "Download gepauzeerd",
+        "metadata": {
+          "eta": "Resterend: {eta}",
+          "etaItems": "Resterend: {n} item | Resterend: {n} items"
+        }
       }
     },
     "card": {
@@ -247,7 +260,9 @@
         "externalUrl": "Bezoek website",
         "retry": "Probeer download opnieuw",
         "download": "Los downloaden",
-        "metadata": "Toon meer informatie"
+        "metadata": "Toon meer informatie",
+        "pause": "Download pauzeren",
+        "resume": "Download hervatten"
       },
       "toasts": {
         "retry": "De video wordt opnieuw gedownload.",

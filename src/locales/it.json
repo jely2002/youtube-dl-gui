@@ -19,7 +19,8 @@
     "video": "video",
     "unknown": "sconosciuto",
     "confirm": "Conferma",
-    "best": "Migliore"
+    "best": "Migliore",
+    "resume": "Riprendi"
   },
   "layout": {
     "header": {
@@ -65,7 +66,10 @@
         }
       },
       "queue": {
-        "empty": "Coda vuota"
+        "empty": "Coda vuota",
+        "resume": "Riprendi tutto",
+        "pause": "Metti tutto in pausa",
+        "more": "Altre azioni della coda"
       }
     }
   },
@@ -239,6 +243,15 @@
         "errorPrefix": "Errore - {message}",
         "report": "Rapporto",
         "showFull": "Visualizza errore completo"
+      },
+      "paused": {
+        "progress": "Download in pausa — {percentage}%",
+        "progressList": "Download in pausa — {percentage}% — {done} di {total}",
+        "indeterminate": "Download in pausa",
+        "metadata": {
+          "eta": "Rimanente: {eta}",
+          "etaItems": "Rimanente: {n} elemento | Rimanenti: {n} elementi"
+        }
       }
     },
     "card": {
@@ -247,7 +260,9 @@
         "externalUrl": "Visita URL esterna",
         "retry": "Riprova download",
         "download": "Download individuale",
-        "metadata": "Visualizza metadati"
+        "metadata": "Visualizza metadati",
+        "pause": "Metti in pausa il download",
+        "resume": "Riprendi il download"
       },
       "toasts": {
         "retry": "Nuovo tentativo download.",
