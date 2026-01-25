@@ -6,7 +6,9 @@
     "downloadQueue": "Descargar cola",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Shift + V",
-      "ctrlShiftEnter": "Ctrl + Shift + Enter"
+      "ctrlShiftEnter": "Ctrl + Shift + Enter",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftEnter": "Alt + Shift + Enter"
     }
   },
   "notifications": {

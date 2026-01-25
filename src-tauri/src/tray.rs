@@ -54,7 +54,11 @@ pub fn create_tray(app: &AppHandle) {
     "add_to_queue",
     i18n_handle.t("tray.addToQueue"),
     true,
-    Some(i18n_handle.t("tray.shortcuts.ctrlShiftV")),
+    Some(if cfg!(target_os = "macos") {
+      i18n_handle.t("tray.shortcuts.ctrlShiftV")
+    } else {
+      i18n_handle.t("tray.shortcuts.altShiftV")
+    }),
   ) {
     Ok(i) => i,
     Err(e) => {
@@ -68,7 +72,11 @@ pub fn create_tray(app: &AppHandle) {
     "download",
     i18n_handle.t("tray.downloadQueue"),
     true,
-    Some(i18n_handle.t("tray.shortcuts.ctrlShiftEnter")),
+    Some(if cfg!(target_os = "macos") {
+      i18n_handle.t("tray.shortcuts.ctrlShiftEnter")
+    } else {
+      i18n_handle.t("tray.shortcuts.altShiftEnter")
+    }),
   ) {
     Ok(i) => i,
     Err(e) => {

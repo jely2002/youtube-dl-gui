@@ -6,7 +6,9 @@
     "downloadQueue": "Warteschlange herunterladen",
     "shortcuts": {
       "ctrlShiftV": "Strg + Umschalt + V",
-      "ctrlShiftEnter": "Strg + Umschalt + Eingabe"
+      "ctrlShiftEnter": "Strg + Umschalt + Eingabe",
+      "altShiftV": "Alt + Umschalt + V",
+      "altShiftEnter": "Alt + Umschalt + Eingabe"
     }
   },
   "notifications": {
