@@ -182,7 +182,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   async function downloadAllGroups(fromShortcut: boolean = false) {
-    const group_ids = Object.keys(groupStore.groups)
+    const group_ids = groupStore.groupOrder
       .filter(gid => stateStore.getGroupState(gid) === MediaState.configure);
 
     await Promise.all(group_ids.map((gid) => {
@@ -193,7 +193,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   function pauseAllGroups() {
-    for (const groupId of Object.keys(groupStore.groups)) {
+    for (const groupId of groupStore.groupOrder) {
       const state = stateStore.getGroupState(groupId);
       if (state === MediaState.downloading || state === MediaState.downloadingList) {
         void pauseGroup(groupId);
@@ -202,7 +202,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   function resumeAllGroups() {
-    for (const groupId of Object.keys(groupStore.groups)) {
+    for (const groupId of groupStore.groupOrder) {
       const state = stateStore.getGroupState(groupId);
       if (state !== MediaState.paused && state !== MediaState.pausedList) continue;
       const options = optionsStore.getOptions(groupId);
@@ -230,14 +230,13 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   function deleteAllGroups() {
-    const groups = groupStore.groups;
-    for (const group of Object.values(groups)) {
-      deleteGroup(group.id);
+    for (const groupId of [...groupStore.groupOrder]) {
+      deleteGroup(groupId);
     }
   }
 
   function deleteGroupsByState(states: MediaState[]) {
-    for (const groupId of Object.keys(groupStore.groups)) {
+    for (const groupId of [...groupStore.groupOrder]) {
       const state = stateStore.getGroupState(groupId);
       if (state && states.includes(state)) {
         deleteGroup(groupId);

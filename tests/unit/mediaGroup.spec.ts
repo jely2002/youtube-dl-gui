@@ -178,4 +178,30 @@ describe('media group store', () => {
       expect(g.id).not.toBe(group.id);
     }
   });
+
+  it('prepends newly created groups to the display order', () => {
+    const store = useMediaGroupStore();
+
+    const makeGroup = (id: string): Group => ({
+      id,
+      url: id,
+      total: 1,
+      processed: 1,
+      errored: 0,
+      isCombined: false,
+      audioCodecs: [],
+      formats: [],
+      filesize: 0,
+      items: {
+        [id]: { ...createItem(id), isLeader: true },
+      },
+    });
+
+    store.createGroup(makeGroup('g1'));
+    store.createGroup(makeGroup('g2'));
+    store.createGroup(makeGroup('g3'));
+
+    const orderedIds = store.orderedGroups.map(group => group.id);
+    expect(orderedIds).toEqual(['g3', 'g2', 'g1']);
+  });
 });

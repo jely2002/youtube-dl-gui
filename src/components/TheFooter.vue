@@ -231,7 +231,7 @@ const hasAuthConfigured = computed(() => {
   return settingsStore.hasAuthConfigured() || strongholdStore.hasAvailableKeys();
 });
 const hasSubtitlesEnabled = computed(() => settingsStore.settings.subtitles.enabled);
-const hasGroups = computed(() => Object.keys(groupStore.groups).length > 0);
+const hasGroups = computed(() => groupStore.countGroups() > 0);
 const hasSuccessfulGroups = computed(() => mediaStateStore.hasGroupWithState(MediaState.done));
 const hasErroredGroups = computed(() => mediaStateStore.hasGroupWithState(MediaState.error));
 const hasPendingGroups = computed(() => mediaStateStore.hasGroupWithState(
