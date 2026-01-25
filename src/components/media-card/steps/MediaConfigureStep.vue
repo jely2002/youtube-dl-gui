@@ -5,6 +5,7 @@
         :formats="group.formats"
         :default-value="optionsStore.getGlobalOptions()"
         v-model="selectedOptions"
+        class="flex gap-4 w-full col-start-1 col-end-3"
         approximate
     />
     <p class="mt-2 flex items-center">

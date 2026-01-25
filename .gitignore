@@ -12,8 +12,7 @@ dist
 dist-isolation
 dist-ssr
 docs/manifest
-licenses/licenses-npm.json
-licenses/licenses-rust.txt
+licenses/*
 *.local
 
 # Editor directories and files

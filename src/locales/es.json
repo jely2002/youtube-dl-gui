@@ -19,7 +19,8 @@
     "video": "video",
     "unknown": "desconocido",
     "confirm": "Confirmar",
-    "best": "Mejor"
+    "best": "Mejor",
+    "resume": "Reanudar"
   },
   "layout": {
     "header": {
@@ -65,7 +66,10 @@
         }
       },
       "queue": {
-        "empty": "Cola vacía"
+        "empty": "Cola vacía",
+        "resume": "Reanudar todo",
+        "pause": "Pausar todo",
+        "more": "Más acciones de la cola"
       }
     }
   },
@@ -239,6 +243,15 @@
         "errorPrefix": "Error - {message}",
         "report": "Reportar",
         "showFull": "Mostrar error completo"
+      },
+      "paused": {
+        "progress": "Descarga en pausa — {percentage}%",
+        "progressList": "Descarga en pausa — {percentage}% — {done} de {total}",
+        "indeterminate": "Descarga en pausa",
+        "metadata": {
+          "eta": "Restante: {eta}",
+          "etaItems": "Restante: {n} elemento | Restantes: {n} elementos"
+        }
       }
     },
     "card": {
@@ -247,7 +260,9 @@
         "externalUrl": "Visitar URL externa",
         "retry": "Reintentar descarga",
         "download": "Descargar individualmente",
-        "metadata": "Mostrar metadatos"
+        "metadata": "Mostrar metadatos",
+        "pause": "Pausar descarga",
+        "resume": "Reanudar descarga"
       },
       "toasts": {
         "retry": "Reintentando descarga.",

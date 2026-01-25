@@ -98,7 +98,7 @@ pub fn build_output_args(
   format_options: &FormatOptions,
   output_settings: &OutputSettings,
 ) -> Vec<String> {
-  let mut args = Vec::new();
+  let mut args = vec!["--output-na-placeholder".into(), "None".into()];
 
   match format_options.track_type {
     TrackType::Audio => match output_settings.audio.policy {
@@ -365,10 +365,15 @@ mod tests {
 
     let args = build_output_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["--embed-thumbnail", "--add-metadata"]
-      .into_iter()
-      .map(String::from)
-      .collect();
+    let expected: Vec<String> = vec![
+      "--output-na-placeholder",
+      "None",
+      "--embed-thumbnail",
+      "--add-metadata",
+    ]
+    .into_iter()
+    .map(String::from)
+    .collect();
 
     assert_eq!(args, expected);
   }
@@ -384,6 +389,8 @@ mod tests {
     let args = build_output_args(&format_options, &settings);
 
     let expected: Vec<String> = vec![
+      "--output-na-placeholder",
+      "None",
       "--audio-format",
       "mp3",
       "--audio-quality",
@@ -409,6 +416,8 @@ mod tests {
     let args = build_output_args(&format_options, &settings);
 
     let expected: Vec<String> = vec![
+      "--output-na-placeholder",
+      "None",
       "--audio-format",
       "ogg",
       "--embed-thumbnail",
@@ -431,10 +440,15 @@ mod tests {
 
     let args = build_output_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["--embed-thumbnail", "--add-metadata"]
-      .into_iter()
-      .map(String::from)
-      .collect();
+    let expected: Vec<String> = vec![
+      "--output-na-placeholder",
+      "None",
+      "--embed-thumbnail",
+      "--add-metadata",
+    ]
+    .into_iter()
+    .map(String::from)
+    .collect();
 
     assert_eq!(args, expected);
   }
@@ -450,6 +464,8 @@ mod tests {
     let args = build_output_args(&format_options, &settings);
 
     let expected: Vec<String> = vec![
+      "--output-na-placeholder",
+      "None",
       "--remux-video",
       "mp4",
       "--embed-thumbnail",
@@ -473,6 +489,8 @@ mod tests {
     let args = build_output_args(&format_options, &settings);
 
     let expected: Vec<String> = vec![
+      "--output-na-placeholder",
+      "None",
       "--recode-video",
       "mkv",
       "--embed-thumbnail",
@@ -496,6 +514,8 @@ mod tests {
     let args = build_output_args(&format_options, &settings);
 
     let expected: Vec<String> = vec![
+      "--output-na-placeholder",
+      "None",
       "--remux-video",
       "mp4",
       "--embed-thumbnail",
