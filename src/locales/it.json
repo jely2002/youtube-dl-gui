@@ -69,6 +69,10 @@
         "empty": "Coda vuota",
         "resume": "Riprendi tutto",
         "pause": "Metti tutto in pausa",
+        "clearSuccessful": "Cancella riusciti",
+        "clearErrored": "Cancella errori",
+        "clearPending": "Cancella in attesa",
+        "cancelDownloading": "Annulla download",
         "more": "Altre azioni della coda"
       }
     }

@@ -69,6 +69,10 @@
         "empty": "Empty queue",
         "resume": "Resume all",
         "pause": "Pause all",
+        "clearSuccessful": "Clear successful",
+        "clearErrored": "Clear errored",
+        "clearPending": "Clear pending",
+        "cancelDownloading": "Cancel downloading",
         "more": "More queue actions"
       }
     }

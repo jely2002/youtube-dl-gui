@@ -69,6 +69,10 @@
         "empty": "Tom kø",
         "resume": "Fortsett alle",
         "pause": "Sett alle på pause",
+        "clearSuccessful": "Fjern vellykkede",
+        "clearErrored": "Fjern feil",
+        "clearPending": "Fjern ventende",
+        "cancelDownloading": "Avbryt nedlastinger",
         "more": "Flere køhandlinger"
       }
     }

@@ -69,6 +69,10 @@
         "empty": "Fila vazia",
         "resume": "Retomar tudo",
         "pause": "Pausar tudo",
+        "clearSuccessful": "Limpar concluídos",
+        "clearErrored": "Limpar com erro",
+        "clearPending": "Limpar pendentes",
+        "cancelDownloading": "Cancelar downloads",
         "more": "Mais ações da fila"
       }
     }

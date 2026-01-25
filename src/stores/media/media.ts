@@ -236,6 +236,15 @@ export const useMediaStore = defineStore('media', () => {
     }
   }
 
+  function deleteGroupsByState(states: MediaState[]) {
+    for (const groupId of Object.keys(groupStore.groups)) {
+      const state = stateStore.getGroupState(groupId);
+      if (state && states.includes(state)) {
+        deleteGroup(groupId);
+      }
+    }
+  }
+
   return {
     processMediaAddPayload,
     dispatchMediaInfoFetch,
@@ -246,5 +255,6 @@ export const useMediaStore = defineStore('media', () => {
     resumeAllGroups,
     deleteGroup,
     deleteAllGroups,
+    deleteGroupsByState,
   };
 });

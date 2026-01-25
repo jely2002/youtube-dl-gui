@@ -69,6 +69,10 @@
         "empty": "Vider la file d'attente",
         "resume": "Reprendre tout",
         "pause": "Tout mettre en pause",
+        "clearSuccessful": "Supprimer les téléchargements réussis",
+        "clearErrored": "Supprimer les échoués",
+        "clearPending": "Supprimer les en attente",
+        "cancelDownloading": "Annuler les téléchargements",
         "more": "Plus d’actions de file d’attente"
       }
     }
