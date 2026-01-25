@@ -37,3 +37,16 @@ jobs:
             --urls $installerUrl `
             --submit `
             --token $env:WINGET_TOKEN
+
+  distribute-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install snapcraft
+        run: sudo snap install snapcraft --classic
+      - name: Promote edge to stable
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        run: |
+          set -euo pipefail
+          snapcraft whoami
+          snapcraft promote open-video-downloader --from-channel=edge --to-channel=stable --yes
