@@ -18,8 +18,8 @@ pub async fn updater_check(
   paths: State<'_, PathsManager>,
 ) -> UpdaterResult<UpdateCheck> {
   let current = app.package_info().version.to_string();
-  // Portable app does not auto-update, nor does the microsoft store version.
-  if paths.is_microsoft_store_app() || paths.is_portable_app() {
+  // Portable app does not auto-update, nor does the microsoft/snap store version.
+  if paths.is_microsoft_store_app() || paths.is_portable_app() || paths.is_snap_app() {
     return Ok(UpdateCheck {
       available: false,
       current_version: current,
