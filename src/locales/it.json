@@ -69,11 +69,11 @@
         "empty": "Coda vuota",
         "resume": "Riprendi tutto",
         "pause": "Metti tutto in pausa",
-        "clearSuccessful": "Cancella riusciti",
-        "clearErrored": "Cancella errori",
-        "clearPending": "Cancella in attesa",
+        "clearSuccessful": "Rimuovi completati",
+        "clearErrored": "Rimuovi con errori",
+        "clearPending": "Rimuovi in attesa",
         "cancelDownloading": "Annulla download",
-        "more": "Altre azioni della coda"
+        "more": "Altre azioni coda"
       }
     }
   },
@@ -253,8 +253,8 @@
         "progressList": "Download in pausa — {percentage}% — {done} di {total}",
         "indeterminate": "Download in pausa",
         "metadata": {
-          "eta": "Rimanente: {eta}",
-          "etaItems": "Rimanente: {n} elemento | Rimanenti: {n} elementi"
+          "eta": "Rimangono: {eta}",
+          "etaItems": "Rimangono: {n} elemento | Rimangono: {n} elementi"
         }
       }
     },
@@ -265,8 +265,8 @@
         "retry": "Riprova download",
         "download": "Download individuale",
         "metadata": "Visualizza metadati",
-        "pause": "Metti in pausa il download",
-        "resume": "Riprendi il download"
+        "pause": "Metti in pausa download",
+        "resume": "Riprendi download"
       },
       "toasts": {
         "retry": "Nuovo tentativo download.",
@@ -458,7 +458,7 @@
       },
       "location": {
         "label": "Percorso download e nomi file:",
-        "link": "Configura percorsi download"
+        "link": "Imposta percorsi download"
       },
       "subtitles": {
         "label": "Aggiungi sottotitoli:",
@@ -624,7 +624,7 @@
         }
       },
       "minimiseToTray": {
-        "label": "Alla chiusura mninimizza nella barra di sistema",
+        "label": "Alla chiusura mninimizza nella barra sistema",
         "hint": "Chiudendo la finestra, l'app viene nascosta nella barra di sistema invece di essere chiusa."
       },
       "autoStart": {
@@ -691,7 +691,7 @@
       "installed": "Installazione strumenti richiesti completata."
     },
     "subtitle": {
-      "installing": "Prerparazione…",
+      "installing": "Preparazione…",
       "failed": "L'app potrebbe non funzionare come previsto, segnalalo.",
       "installed": "Pronto per il download!"
     }
@@ -806,7 +806,7 @@
       },
       "unableToConnectToProxy": {
         "shortMessage": "Connessione al proxy non riuscita",
-        "message": "Impossibile connettersi al proxy. Controlla le impostazioni del proxy."
+        "message": "Impossibile connettersi al proxy. Controlla le impostazioni proxy."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist non disponibile",
