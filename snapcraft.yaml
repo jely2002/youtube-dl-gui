@@ -40,9 +40,10 @@ apps:
     extensions: [gnome]
     plugs:
       - network
+      - network-status
       - home
       - unity7
-      - password-manager-service
+      - single-instance-plug
     slots:
       - single-instance
 
@@ -50,7 +51,13 @@ slots:
   single-instance:
     interface: dbus
     bus: session
-    name: com.jelleglebbeek.youtube-dl-gui.SingleInstance
+    name: org.com_jelleglebbeek_youtube_dl_gui.SingleInstance
+
+plugs:
+  single-instance-plug:
+    interface: dbus
+    bus: session
+    name: org.com_jelleglebbeek_youtube_dl_gui.SingleInstance
 
 parts:
   build-app:
@@ -66,6 +73,7 @@ parts:
       - wget
       - file
       - libssl-dev
+      - libgtk-3-dev
       - libayatana-appindicator3-dev
       - librsvg2-dev
       - dpkg
