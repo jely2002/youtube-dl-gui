@@ -1,4 +1,5 @@
 use crate::models::{ParsedMedia, ParsedPlaylist, PlaylistEntry, YtdlpInfo};
+use crate::parsers::ytdlp_single::i64_to_u64;
 
 pub fn parse_playlist(info: YtdlpInfo, id: String) -> ParsedMedia {
   let mut entries = Vec::new();
@@ -39,7 +40,7 @@ pub fn parse_playlist(info: YtdlpInfo, id: String) -> ParsedMedia {
     uploader: info.uploader,
     uploader_id: info.uploader_id,
     playlist_id: info.id,
-    playlist_count: info.playlist_count,
+    playlist_count: i64_to_u64(info.playlist_count),
     entries,
   })
 }

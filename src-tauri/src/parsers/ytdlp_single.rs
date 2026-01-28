@@ -32,14 +32,14 @@ pub fn parse_single(info: YtdlpInfo, id: String) -> ParsedMedia {
     uploader: info.uploader,
     uploader_id: info.uploader_id,
     duration: info.duration,
-    views: info.view_count,
-    likes: info.like_count,
-    dislikes: info.dislike_count,
+    views: i64_to_u64(info.view_count),
+    likes: i64_to_u64(info.like_count),
+    dislikes: i64_to_u64(info.dislike_count),
     rating: info.average_rating,
     description: info.description,
     extractor: info.extractor_key,
-    comments: info.comment_count,
-    filesize: info.filesize.or(info.filesize_approx),
+    comments: i64_to_u64(info.comment_count),
+    filesize: i64_to_u64(info.filesize.or(info.filesize_approx)),
     video_codecs: video_codecs.into_iter().collect(),
     audio_codecs: audio_codecs.into_iter().collect(),
     formats: media_formats,
@@ -112,7 +112,7 @@ fn process_formats(
     media_formats.push(MediaFormat {
       id: format_id.clone(),
       abr,
-      height,
+      height: i64_to_u64(height),
       fps,
       codecs: codecs.into_iter().collect(),
     });
@@ -126,7 +126,7 @@ fn process_formats(
 #[allow(clippy::cast_possible_truncation)]
 fn collect_codecs_for_group(
   formats: &[YtdlpFormat],
-  height: Option<u64>,
+  height: Option<i64>,
   fps: Option<u64>,
   abr: Option<u64>,
 ) -> HashSet<String> {
@@ -159,4 +159,8 @@ fn collect_codecs_for_group(
   }
 
   codecs
+}
+
+pub fn i64_to_u64(v: Option<i64>) -> Option<u64> {
+  v.and_then(|x| u64::try_from(x).ok())
 }
