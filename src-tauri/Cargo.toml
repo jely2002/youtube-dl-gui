@@ -55,6 +55,7 @@ indexmap = { version = "2.12.1", features = ["serde"] }
 include_dir = "0.7.4"
 sys-locale = "0.3.2"
 notify-rust = "4.11.7"
+tauri-plugin-deep-link = "2"
 
 [profile.dev]
 incremental = true

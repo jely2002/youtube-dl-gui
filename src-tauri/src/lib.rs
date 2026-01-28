@@ -13,6 +13,7 @@ mod stronghold;
 mod tray;
 mod window;
 
+use tauri::Emitter; // Imports the event emitter
 use crate::binaries::binaries_manager::BinariesManager;
 use crate::binaries::binaries_state::BinariesState;
 use crate::commands::*;
@@ -48,8 +49,19 @@ pub static RUNNING_GROUPS: LazyLock<StdMutex<HashMap<String, bool>>> =
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   let app = tauri::Builder::default()
+    // 1. Initialize Deep Link Plugin
+    .plugin(tauri_plugin_deep_link::init())
+    
+    // 2. Handle "Already Open" Scenario (Warm Start)
+    .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+      reopen_window(app);
+      let _ = app
+        .get_webview_window("main")
+        .expect("no main window")
+        .emit("deep-link", args);
+    }))
+
     .plugin(tauri_plugin_notification::init())
-    .plugin(tauri_plugin_autostart::Builder::new().build())
     .plugin(tauri_plugin_updater::Builder::new().build())
     .plugin(tauri_plugin_store::Builder::new().build())
     .plugin(tauri_plugin_dialog::init())
@@ -62,11 +74,26 @@ pub fn run() {
       MacosLauncher::LaunchAgent,
       Some(vec!["--auto-start"]),
     ))
-    .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-      reopen_window(app)
-    }))
     .setup(|app| {
       let handle = app.handle();
+
+      // --- NEW: COLD START LOGIC (Handle link when app is closed) ---
+      let args: Vec<String> = std::env::args().collect();
+      // Check if any argument starts with "ovd://"
+      if let Some(url) = args.iter().find(|a| a.starts_with("ovd://")) {
+          let app_handle = handle.clone();
+          let url = url.clone();
+          
+          // Wait 1.5s for the window to load, then send the link
+          tauri::async_runtime::spawn(async move {
+              tokio::time::sleep(std::time::Duration::from_millis(1500)).await;
+              if let Some(window) = app_handle.get_webview_window("main") {
+                  let _ = window.set_focus();
+                  let _ = window.emit("deep-link", vec![url]);
+              }
+          });
+      }
+      // -------------------------------------------------------------
 
       let sentry_client = sentry::init((
         "https://e5ff83f3c84f397db516955ec278c4c6@o762792.ingest.us.sentry.io/4510256640884736",
@@ -145,7 +172,11 @@ pub fn run() {
 
       // register shortcuts
       register_shortcuts(handle);
-
+      // --- FORCE WINDOW VISIBLE ---
+      let main_window = app.get_webview_window("main").unwrap();
+      let _ = main_window.show();
+      let _ = main_window.set_focus();
+      // ----------------------------
       Ok(())
     })
     .invoke_handler(tauri::generate_handler![
