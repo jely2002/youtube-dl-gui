@@ -231,9 +231,11 @@ pub fn init_autostart(app: &AppHandle) {
 }
 
 pub fn reopen_window(app: &AppHandle) {
-  let window = app.get_webview_window("main").expect("no main window");
+  let Some(window) = app.get_webview_window("main") else {
+    return;
+  };
   let _ = window.show();
-  window.set_focus().expect("Failure focusing window.");
+  let _ = window.set_focus();
 }
 
 #[cfg(debug_assertions)]
