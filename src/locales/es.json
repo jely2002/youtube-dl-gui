@@ -26,7 +26,7 @@
     "header": {
       "placeholder": "Introduce la URL de un video o lista para añadir a la cola",
       "nav": {
-        "settings": "Ajustes de la aplicación"
+        "settings": "Configuración de la aplicación"
       }
     },
     "footer": {
@@ -69,10 +69,10 @@
         "empty": "Cola vacía",
         "resume": "Reanudar todo",
         "pause": "Pausar todo",
-        "clearSuccessful": "Borrar completados",
-        "clearErrored": "Borrar con errores",
-        "clearPending": "Borrar pendientes",
-        "cancelDownloading": "Cancelar descargas",
+        "clearSuccessful": "Limpiar completados",
+        "clearErrored": "Limpiar errores",
+        "clearPending": "Limpiar pendientes",
+        "cancelDownloading": "Cancelar la descarga",
         "more": "Más acciones de la cola"
       }
     }
@@ -86,7 +86,7 @@
       "file": {
         "label": "Cargar cookies desde un archivo cookies.txt",
         "hint": "Para exportar tus cookies a un archivo {link}",
-        "hintLink": "mira la guía."
+        "hintLink": "consulta la guía."
       },
       "browser": {
         "label": "Cargar cookies automáticamente desde el navegador:",
