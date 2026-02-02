@@ -1,0 +1,893 @@
+{
+  "common": {
+    "download": "Download",
+    "save": "Save",
+    "later": "Later",
+    "load": "Load",
+    "install": "Install",
+    "percentage": "{percent}%",
+    "add": "Add",
+    "back": "Back",
+    "continue": "Continue",
+    "retry": "Retry",
+    "enable": "Enable",
+    "pleaseWait": "Please wait…",
+    "loading": "Loading",
+    "emptySearch": "No results found.",
+    "parenthesis": "({content})",
+    "divide": "{left} / {right}",
+    "video": "video",
+    "unknown": "unknown",
+    "confirm": "Confirm",
+    "best": "Best",
+    "resume": "Resume"
+  },
+  "layout": {
+    "header": {
+      "placeholder": "Enter a video/playlist URL to add to the queue",
+      "nav": {
+        "settings": "App Settings"
+      }
+    },
+    "footer": {
+      "progress": {
+        "downloading": "Downloading queue - {done} of {total} completed.",
+        "completed": "Download complete – {n} item downloaded. | Download complete – {n} items downloaded.",
+        "ready": "Ready to download! {n} item queued. | Ready to download! {n} items queued."
+      },
+      "nav": {
+        "downloadLocation": "Locations",
+        "login": {
+          "screenReader": {
+            "on": "Edit login (currently logged in)",
+            "off": "Edit login (currently not logged in)"
+          },
+          "tooltip": {
+            "on": "Edit log in",
+            "off": "Log in"
+          }
+        },
+        "subtitles": {
+          "screenReader": {
+            "on": "Edit subtitles (currently enabled)",
+            "off": "Edit subtitles (currently disabled)"
+          },
+          "tooltip": "Subtitles"
+        }
+      },
+      "format": {
+        "trackSelect": {
+          "screenReader": "Select track for all videos"
+        },
+        "formatSelect": {
+          "noFormats": "No formats",
+          "placeholder": "Select format",
+          "screenReader": "Select format for all videos"
+        }
+      },
+      "queue": {
+        "empty": "Empty queue",
+        "resume": "Resume all",
+        "pause": "Pause all",
+        "clearSuccessful": "Clear successful",
+        "clearErrored": "Clear errored",
+        "clearPending": "Clear pending",
+        "cancelDownloading": "Cancel downloading",
+        "more": "More queue actions"
+      }
+    }
+  },
+  "auth": {
+    "title": "Authentication",
+    "cookies": {
+      "legend": "Cookies",
+      "legendBadge": "Recommended",
+      "legendLabel": "Use logged in sessions from a cookies file or import from your browser.",
+      "file": {
+        "label": "Load cookies from a cookies.txt file",
+        "hint": "In order to export your cookies to a file {link}",
+        "hintLink": "see the guide."
+      },
+      "browser": {
+        "label": "Automatically load cookies from a browser:",
+        "placeholder": "Do not load cookies from a browser",
+        "hint": "Some browsers may not support loading cookies. See the {link}",
+        "hintLink": "list of compatible browsers."
+      }
+    },
+    "credentials": {
+      "title": "Advanced methods",
+      "description": "Use methods like basic auth, bearer tokens, headers, video password, etc.",
+      "labels": {
+        "username": "Username",
+        "password": "Password",
+        "token": "Token",
+        "headers": "Headers"
+      },
+      "basicAuth": {
+        "legend": "Basic auth",
+        "legendLabel": "Used for sites with simple authentication."
+      },
+      "videoPassword": {
+        "legend": "Video password",
+        "legendLabel": "Provide a password to access protected videos."
+      },
+      "bearerToken": {
+        "legend": "Bearer token",
+        "legendLabel": "Provide a bearer token to access private resources."
+      },
+      "customHeaders": {
+        "legend": "Custom headers",
+        "legendBadge": "Advanced",
+        "legendLabel": "One per line: FIELD:VALUE",
+        "placeholder": "X-Api-Key:…"
+      }
+    },
+    "init": {
+      "title": "Secrets store not enabled",
+      "description": "In order to use advanced authentication methods, the secrets store needs to be enabled.",
+      "hint": "The secrets store uses your system's keyring, this might require a password.",
+      "error": {
+        "title": "Unable to enable the secrets store",
+        "description": "An error occurred while enabling the secrets store, please try again.",
+        "hint": "Error: {error}",
+        "unknown": "Unknown error"
+      },
+      "toasts": {
+        "error": "Unable to initialize the secrets store: {error}"
+      }
+    },
+    "toasts": {
+      "error": "Unable to save authentication settings. {error}",
+      "saved": "Authentication settings saved!"
+    }
+  },
+  "media": {
+    "view": {
+      "tabs": {
+        "metadata": "Metadata",
+        "logs": "Logs"
+      },
+      "thumbnailAlt": "Thumbnail for {title}",
+      "metadata": {
+        "uploader": "Uploader:",
+        "extractor": "Extractor:",
+        "link": "Link:",
+        "description": "Description:"
+      },
+      "stats": {
+        "title": "Video Statistics",
+        "views": "Views",
+        "likes": "Likes",
+        "dislikes": "Dislikes",
+        "comments": "Comments",
+        "rating": "Rating",
+        "duration": "Duration"
+      },
+      "logs": {
+        "failure": "Failure",
+        "errors": {
+          "count": "Errors ({count})",
+          "empty": "No errors found."
+        },
+        "warnings": {
+          "count": "Warnings ({count})",
+          "empty": "No warnings found."
+        },
+        "all": {
+          "title": "All logs",
+          "empty": "No logs found."
+        },
+        "toasts": {
+          "reported": "Error has been reported.",
+          "error": "Unable to report error."
+        }
+      }
+    },
+    "steps": {
+      "fetch": {
+        "progress": "{percentage}% — {done} of {total}",
+        "progressLabel": "Fetching metadata…"
+      },
+      "configure": {
+        "format": {
+          "trackSelect": {
+            "screenReader": "Select track to download"
+          },
+          "formatSelect": {
+            "noFormats": "No formats",
+            "placeholder": "Select format",
+            "screenReader": "Select format of the track"
+          }
+        },
+        "metadata": {
+          "duration": "Duration: {duration}",
+          "size": "Size: ",
+          "sizeInfo": "The amount of data that will be downloaded.\nNot the final size of the file.",
+          "items": "Items: {amount} {failedCount}",
+          "failedCount": "({amount} failed)"
+        },
+        "trackTypes": {
+          "both": "Video + Audio",
+          "audio": "Audio",
+          "video": "Video"
+        }
+      },
+      "download": {
+        "progress": "Downloading {category}… — {percentage}%",
+        "progressList": "Downloading… {percentage}% — {done} of {total}",
+        "indeterminate": "{status}…",
+        "category": {
+          "video": "video",
+          "audio": "audio",
+          "subtitles": "subtitles",
+          "thumbnail": "thumbnail",
+          "metadata": "metadata",
+          "other": "other"
+        },
+        "status": {
+          "initializing": "Initializing",
+          "downloading": "Downloading",
+          "merging": "Merging",
+          "finalizing": "Cleaning up"
+        },
+        "metadata": {
+          "eta": "ETA: {eta}",
+          "speed": "Speed: {speed}"
+        }
+      },
+      "paused": {
+        "progress": "Download paused — {percentage}%",
+        "progressList": "Download paused — {percentage}% — {done} of {total}",
+        "indeterminate": "Download paused",
+        "metadata": {
+          "eta": "Remaining: {eta}",
+          "etaItems": "Remaining: {n} item | Remaining: {n} items"
+        }
+      },
+      "done": {
+        "complete": "Download complete — 100%",
+        "showFolder": "Show in folder",
+        "open": "Open file",
+        "openFirst": "Open first file",
+        "undeterminedLocation": "Download location could not be determined for this item."
+      },
+      "error": {
+        "errorPrefix": "Error - {message}",
+        "report": "Report",
+        "showFull": "Show full error"
+      }
+    },
+    "card": {
+      "actions": {
+        "remove": "Remove",
+        "externalUrl": "Visit on external URL",
+        "retry": "Retry download",
+        "download": "Download individually",
+        "pause": "Pause download",
+        "resume": "Resume download",
+        "metadata": "Show metadata"
+      },
+      "toasts": {
+        "retry": "Retrying download.",
+        "retryError": "Could not retry download."
+      }
+    }
+  },
+  "subtitles": {
+    "title": "Subtitles",
+    "options": {
+      "enable": {
+        "legend": "Subtitle downloads",
+        "legendLabel": "Choose how subtitles should be retrieved when downloading media.",
+        "label": "Enable subtitles",
+        "hint": "Download subtitle files alongside your media."
+      },
+      "autoGenerated": {
+        "label": "Include auto-generated subtitles",
+        "hint": "Download automatically generated subtitles in addition to creator provided ones."
+      },
+      "format": {
+        "legend": "Preferred format",
+        "legendLabel": "Select your preferred subtitle format. If the format is not available, the next best format will be used.",
+        "label": "Format"
+      },
+      "embed": {
+        "label": "Add subtitles track:",
+        "hint": "Add subtitles to the video file, this works for mp4, mkv and webm formats."
+      },
+      "languages": {
+        "legend": "Languages",
+        "legendLabel": "Pick the subtitle languages to download.",
+        "downloadAll": "Download all available subtitles.",
+        "search": "Search languages",
+        "searchPlaceholder": "Search by language name",
+        "suggested": "Suggested for you",
+        "all": "All languages",
+        "noResult": "No languages match \"{query}\".",
+        "selected": "Selected:",
+        "allSelected": "All available subtitles",
+        "searchHint": "Tip: Use the search box to quickly filter the list. Selected languages stay highlighted."
+      }
+    },
+    "toasts": {
+      "saved": "Subtitle settings saved!",
+      "error": "Unable to save subtitle settings. {error}"
+    },
+    "formats": {
+      "srt": "SubRip (.srt)",
+      "vtt": "WebVTT (.vtt)",
+      "ass": "Advanced SubStation Alpha (.ass)",
+      "ttml": "Timed Text Markup (.ttml)",
+      "json": "JSON (.json)"
+    }
+  },
+  "location": {
+    "title": "Download location",
+    "downloadDir": {
+      "label": "Download location",
+      "hint": "Click in the box to select where videos get downloaded to."
+    },
+    "directory": {
+      "legend": "Organise by",
+      "legendLabel": "Select how downloads get organised in folders.",
+      "videoDir": {
+        "label": "Download location:",
+        "hint": "Override the global download location when downloading videos."
+      },
+      "audioDir": {
+        "label": "Download location:",
+        "hint": "Override the global download location when downloading audio."
+      },
+      "directoryPreset": {
+        "label": "Organise downloads by:",
+        "exampleLabel": "Example output:",
+        "options": {
+          "none": "No subfolders",
+          "playlist": "Playlist",
+          "channel": "Channel",
+          "channelPlaylist": "Channel → playlist",
+          "yearMonth": "Year / month",
+          "artistAlbum": "Artist → album",
+          "custom": "Custom"
+        },
+        "examples": {
+          "playlist": "My Playlist/",
+          "channel": "MyChannel/",
+          "channelPlaylist": "MyChannel/My Playlist/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "Artist Name/Album Name/"
+        }
+      },
+      "outputFormat": {
+        "label": "Directory format:"
+      }
+    },
+    "filename": {
+      "legend": "Filename format",
+      "legendLabel": "Select the filename that downloads will have.",
+      "formatPreset": {
+        "label": "Filename preset:",
+        "exampleLabel": "Example output:",
+        "options": {
+          "titleQuality": "Title + quality",
+          "titleOnly": "Title only",
+          "titleQualityPlaylist": "Playlist + title + quality",
+          "custom": "Custom"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "My Video-(1080p30).mp4",
+            "titleOnly": "My Video.mp4",
+            "titleQualityPlaylist": "03-My Video-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "My Audio-(320k).mp3",
+            "titleOnly": "My Audio.mp3",
+            "titleQualityPlaylist": "03-My Audio-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "Restrict filenames:",
+          "hint": "Replaces spaces with underscores and removes special characters like \"&\" from filenames."
+        }
+      },
+      "outputFormat": {
+        "label": "Filename format:"
+      }
+    },
+    "toasts": {
+      "saved": "Locations saved!",
+      "error": "Unable to save locations."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "reset": {
+      "label": "Reset",
+      "confirm": "Click again to reset"
+    },
+    "performance": {
+      "legend": "Performance",
+      "legendLabel": "Configure how many system resources are used.",
+      "maxConcurrency": {
+        "label": "Max concurrent jobs:"
+      },
+      "splitPlaylistThreshold": {
+        "label": "Split playlists into separate videos when:",
+        "options": {
+          "never": "Never split",
+          "lessThan": "Less than {number} videos"
+        }
+      },
+      "autoLoadSize": {
+        "label": "Automatically load video size:"
+      }
+    },
+    "input": {
+      "legend": "Input",
+      "legendLabel": "Choose how you start downloading with OVD.",
+      "autoFillClipboard": {
+        "label": "Automatically fill in copied links:",
+        "hint": "Detect links you copied, so you can download them with one click."
+      },
+      "preferVideoInMixedLinks": {
+        "label": "Prefer single video for playlist links:",
+        "hint": "When a link contains both a video and a playlist, download only the video instead of the full playlist."
+      },
+      "globalShortcuts": {
+        "label": "Enable shortcuts:",
+        "add_hint": "Add videos to the queue with:",
+        "download_hint": "Download the queue with:"
+      },
+      "authentication": {
+        "label": "Log in to download private videos:",
+        "link": "Configure authentication"
+      }
+    },
+    "output": {
+      "legend": "Output",
+      "legendLabel": "Configure what kind of files get downloaded.",
+      "addThumbnail": {
+        "label": "Add cover image:",
+        "hint": "Embed the thumbnail inside the file so media players can display artwork."
+      },
+      "addMetadata": {
+        "label": "Add title & artist info:",
+        "hint": "Save metadata such as title, uploader/artist and description inside the file."
+      },
+      "location": {
+        "label": "Download location & filenames:",
+        "link": "Configure download locations"
+      },
+      "subtitles": {
+        "label": "Add subtitles:",
+        "link": "Configure subtitles"
+      },
+      "policy": {
+        "label": "Conversion mode:",
+        "hint": "If the downloaded file doesn't already match your selected format, it may need to be converted. Skip conversion: fastest, may ignore your chosen format. Convert if possible: tries to change the container without re-encoding. Convert if needed: always uses the selected format, but is slower and uses more CPU.",
+        "options": {
+          "never": "Skip conversion",
+          "remuxOnly": "Convert if possible (recommended)",
+          "allowReencode": "Convert if needed (slower)"
+        }
+      },
+      "tabs": {
+        "audio": {
+          "screenreader": "Audio settings",
+          "label": "Audio",
+          "format": {
+            "label": "Audio format:",
+            "hint": "Choose the preferred audio format. Conversion mode decides whether the file will actually be converted.",
+            "options": {
+              "mp3": "MP3 (recommended)",
+              "m4a": "M4A",
+              "ogg": "OGG",
+              "aac": "AAC",
+              "opus": "Opus",
+              "wav": "WAV",
+              "flac": "FLAC"
+            }
+          }
+        },
+        "video": {
+          "screenreader": "Video settings",
+          "label": "Video",
+          "container": {
+            "label": "Video format:",
+            "hint": "Choose the preferred video format. Conversion mode decides whether the file will actually be converted.",
+            "options": {
+              "mp4": "MP4",
+              "mkv": "MKV"
+            }
+          }
+        }
+      }
+    },
+    "appearance": {
+      "legend": "Appearance",
+      "legendLabel": "Configure how the application looks and feels.",
+      "theme": {
+        "label": "Theme:",
+        "options": {
+          "system": "System ({theme})",
+          "light": "Light",
+          "dark": "Dark"
+        }
+      },
+      "language": {
+        "label": "Language",
+        "options": {
+          "system": "System ({language})"
+        }
+      }
+    },
+    "network": {
+      "legend": "Network",
+      "legendLabel": "Configure how the application connects to the internet.",
+      "enableProxy": {
+        "label": "Connect via proxy:"
+      },
+      "proxy": {
+        "label": "Proxy configuration:"
+      },
+      "impersonate": {
+        "label": "Impersonation:",
+        "hint": "Impersonate a specific OS or browser, to prevent fingerprinting.",
+        "options": {
+          "none": "Do not impersonate",
+          "any": "Impersonate a random client"
+        }
+      }
+    },
+    "sponsorBlock": {
+      "legend": "SponsorBlock",
+      "legendLabel": "Remove or mark parts of a video.",
+      "removeParts": {
+        "label": "Parts to remove",
+        "placeholder": "Select 1 or more parts to remove from the video."
+      },
+      "markParts": {
+        "label": "Parts to mark",
+        "placeholder": "Select 1 or more parts to mark with a chapter."
+      },
+      "apiUrl": {
+        "label": "API URL"
+      },
+      "parts": {
+        "sponsor": {
+          "label": "Sponsor",
+          "description": "Paid product or service promotion by creator or third-party."
+        },
+        "selfpromo": {
+          "label": "Self-Promo / Unpaid",
+          "description": "Creator’s own promotion of merch, services or channels (unpaid)."
+        },
+        "interaction": {
+          "label": "Interaction Reminder",
+          "description": "Reminders to like/subscribe/follow or interact with the creator."
+        },
+        "intro": {
+          "label": "Intro / Intermission",
+          "description": "Intro animation, intermission or non-content pause at the start."
+        },
+        "outro": {
+          "label": "Outro / Endcards / Credits",
+          "description": "End cards, credits or closing segment near the end."
+        },
+        "hook": {
+          "label": "Hook / Greetings",
+          "description": "Narrated trailers for the upcoming video, greetings and goodbyes."
+        },
+        "music_offtopic": {
+          "label": "Non-Music Section",
+          "description": "Bits of talking or distractions in videos with music."
+        },
+        "preview": {
+          "label": "Preview / Recap",
+          "description": "Preview of upcoming content or recap of previous segments."
+        },
+        "filler": {
+          "label": "Filler / Tangents",
+          "description": "Tangents, jokes or filler scenes not required to understand the main content."
+        },
+        "chapter": {
+          "label": "Chapter",
+          "description": "Marks a chapter/section of the video (used with chapter action type)."
+        }
+      }
+    },
+    "update": {
+      "legend": "Updates",
+      "legendLabel": "Choose which parts of the app should update automatically.",
+      "updateBinaries": {
+        "label": "Automatically update tools:",
+        "hint": "OVD uses tools like yt-dlp and ffmpeg to download videos. Enable this to keep them up to date."
+      },
+      "updateApp": {
+        "label": "Automatically update the app:",
+        "hint": "Turn this on to receive new features and bug fixes as soon as a new version is released."
+      }
+    },
+    "system": {
+      "legend": "System",
+      "legendLabel": "Configure how this application integrates with the system.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Show menu bar icon",
+          "generic": "Show system tray icon"
+        },
+        "hint": {
+          "mac": "Shows a menu bar icon for quick access.",
+          "generic": "Shows an icon in the system tray for quick access."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Minimize to tray on close",
+        "hint": "Closing the window hides the app in the system tray instead of quitting."
+      },
+      "autoStart": {
+        "label": "Start at login",
+        "hint": "Launch Open Video Downloader automatically when you sign in."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Start hidden at login",
+          "windows": "Start minimized to tray at login",
+          "generic": "Start hidden at login (not recommended)"
+        },
+        "hint": {
+          "mac": "When the app starts at login, it won’t open a window. Use the menu bar or Dock icon to open it.",
+          "windows": "When the app starts at login, it will start in the system tray without opening a window.",
+          "generic": "When the app starts at login, it won’t open a window."
+        }
+      }
+    },
+    "notifications": {
+      "legend": "Notifications",
+      "legendLabel": "Configure when notifications are sent.",
+      "behavior": {
+        "label": "Show notifications:",
+        "options": {
+          "always": "Always",
+          "onBackground": "When in the background",
+          "never": "Never"
+        },
+        "hint": "Tip: notifications can be useful when using the app with shortcuts."
+      },
+      "disabled": {
+        "label": "Enable/disable specific notifications",
+        "disabledScreenReader": "This option is disabled.",
+        "kinds": {
+          "queueAdded": "Queue added",
+          "queueDownloading": "Queue downloading",
+          "queueFinished": "Queue finished",
+          "videoFinished": "Video finished",
+          "playlistFinished": "Playlist finished",
+          "downloadFailed": "Download failed",
+          "videoReady": "Video ready",
+          "playlistReady": "Playlist ready"
+        }
+      }
+    },
+    "toasts": {
+      "saved": "Settings saved!",
+      "reset": "Reset settings to defaults."
+    }
+  },
+  "updater": {
+    "available": "Update available!",
+    "install": {
+      "title": "Install update",
+      "subtitle": "This will restart the app."
+    },
+    "downloading": "Downloading update…"
+  },
+  "install": {
+    "title": {
+      "installing": "Installing required tools…",
+      "failed": "Failed to install some required tools.",
+      "installed": "Installed required tools."
+    },
+    "subtitle": {
+      "installing": "We're getting everything ready.",
+      "failed": "The app may not work as expected, please report this.",
+      "installed": "Ready to download!"
+    }
+  },
+  "components": {
+    "base": {
+      "emptyState": {
+        "title": "Your queue is empty",
+        "subtitle": "Add some videos to get started."
+      },
+      "dragState": {
+        "title": "Drop to add to queue",
+        "subtitle": "Add to the queue by dragging videos."
+      },
+      "fileInput": {
+        "select": "Select file",
+        "placeholder": "Select a file…",
+        "invalid": "Invalid file.",
+        "clear": "Clear file",
+        "recents": {
+          "clear": "Clear recent files",
+          "open": "Open recent selections",
+          "empty": "No recent selections"
+        }
+      },
+      "folderInput": {
+        "select": "Select folder",
+        "placeholder": "Select a folder…",
+        "invalid": "Invalid folder.",
+        "clear": "Clear folder",
+        "recents": {
+          "clear": "Clear recent folders",
+          "open": "Open recent selections",
+          "empty": "No recent selections"
+        }
+      },
+      "secretInput": {
+        "hide": "Hide",
+        "show": "Show",
+        "clear": "Clear {label}"
+      },
+      "toolCard": {
+        "failed": "Failed to install this tool. Expand for more information."
+      }
+    }
+  },
+  "errors": {
+    "runner": {
+      "internal": {
+        "shortMessage": "Internal error",
+        "message": "An internal error occurred while processing this item."
+      },
+      "signInRequired": {
+        "shortMessage": "Sign-in required",
+        "message": "You need to sign in to view this content."
+      },
+      "membersOnly": {
+        "shortMessage": "Members-only",
+        "message": "This video is only available to channel members."
+      },
+      "geoBlocked": {
+        "shortMessage": "Region blocked",
+        "message": "This content isn’t available in your region."
+      },
+      "accessForbidden403": {
+        "shortMessage": "Access forbidden",
+        "message": "You don’t have permission to access this resource (HTTP 403)."
+      },
+      "notFound404": {
+        "shortMessage": "Not found",
+        "message": "The requested video or playlist could not be found (HTTP 404)."
+      },
+      "server5xx": {
+        "shortMessage": "Server error",
+        "message": "A temporary server issue occurred. Try again later."
+      },
+      "rateLimited429": {
+        "shortMessage": "Rate limited",
+        "message": "Too many requests were sent. Please wait and retry."
+      },
+      "requestedFormatUnavailable": {
+        "shortMessage": "Format unavailable",
+        "message": "The selected format isn’t available for this video."
+      },
+      "unableToExtractInitialData": {
+        "shortMessage": "Data extraction failed",
+        "message": "Couldn’t extract the required initial video data."
+      },
+      "unableToExtractIdOrInfo": {
+        "shortMessage": "Metadata error",
+        "message": "Failed to extract video or uploader information."
+      },
+      "nsigExtractionFailed": {
+        "shortMessage": "Signature failed",
+        "message": "Failed to extract or decode the video signature."
+      },
+      "embedOnly": {
+        "shortMessage": "Embed-only video",
+        "message": "This video can only be accessed through an embedded player."
+      },
+      "urlUnsupported": {
+        "shortMessage": "Invalid URL",
+        "message": "The provided link isn’t supported or recognized."
+      },
+      "unknownUrlType": {
+        "shortMessage": "Unknown URL type",
+        "message": "The provided URL uses an unsupported protocol."
+      },
+      "networkNameResolutionFailed": {
+        "shortMessage": "Network error",
+        "message": "Couldn’t resolve the host name. Check your internet connection."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Proxy connection failed",
+        "message": "Unable to connect to the proxy. Check your proxy settings."
+      },
+      "playlistPrivateOrMissing": {
+        "shortMessage": "Playlist unavailable",
+        "message": "This playlist is private or no longer exists."
+      },
+      "videoNotFoundOrPrivate": {
+        "shortMessage": "Video unavailable",
+        "message": "This video was removed or set to private."
+      },
+      "channelUnavailable": {
+        "shortMessage": "Channel unavailable",
+        "message": "The channel hosting this content is no longer accessible."
+      },
+      "ffmpegNotFound": {
+        "shortMessage": "ffmpeg not found",
+        "message": "Transcoding to mp3 or mp4 requires ffmpeg."
+      },
+      "ffmpegFailed": {
+        "shortMessage": "ffmpeg failed",
+        "message": "FFmpeg encountered an error during processing."
+      },
+      "cannotAllocateMemory": {
+        "shortMessage": "Memory error",
+        "message": "FFmpeg ran out of memory while processing the video."
+      },
+      "permissionDenied": {
+        "shortMessage": "Permission denied",
+        "message": "The app doesn’t have permission to access this file or folder."
+      },
+      "noWritePermission": {
+        "shortMessage": "Cannot write",
+        "message": "The destination path isn’t writable."
+      },
+      "windowsFileMissing": {
+        "shortMessage": "File missing",
+        "message": "The referenced file could not be found (WinError 2)."
+      },
+      "blockedGeneric": {
+        "shortMessage": "Video blocked",
+        "message": "This video is blocked and cannot be downloaded."
+      },
+      "copyrightClaimed": {
+        "shortMessage": "Copyright block",
+        "message": "The video was blocked due to a copyright claim."
+      },
+      "notPremieredYet": {
+        "shortMessage": "Not premiered yet",
+        "message": "This video isn’t available until its premiere begins."
+      },
+      "livestreamNotStarted": {
+        "shortMessage": "Livestream pending",
+        "message": "The livestream hasn’t started yet. Please check back later."
+      },
+      "sslVerifyFailed": {
+        "shortMessage": "SSL failed",
+        "message": "The secure connection could not be verified. Check your certificates or date/time."
+      },
+      "sponsorBlockUnreachable": {
+        "shortMessage": "SponsorBlock offline",
+        "message": "Couldn’t connect to the SponsorBlock API for segment data."
+      },
+      "downloadRetryingFragment": {
+        "shortMessage": "Retrying fragment",
+        "message": "A fragment download failed and will be retried automatically."
+      },
+      "unknown": {
+        "shortMessage": "Unknown error",
+        "message": "An unknown error occurred while processing this item."
+      }
+    }
+  },
+  "about": {
+    "title": "About",
+    "credit": "Made with ❤ by jely2002 & contributors",
+    "poweredBy": "Powered by open source:",
+    "viewLicenses": "View licenses",
+    "version": "Version: {version}",
+    "links": {
+      "github": "GitHub",
+      "wiki": "Wiki",
+      "reportABug": "Report a bug"
+    }
+  }
+}
