@@ -1,318 +1,318 @@
 {
   "common": {
-    "download": "Download",
-    "save": "Save",
+    "download": "下載",
+    "save": "儲存",
     "later": "Later",
-    "load": "Load",
-    "install": "Install",
+    "load": "載入",
+    "install": "安裝",
     "percentage": "{percent}%",
-    "add": "Add",
-    "back": "Back",
-    "continue": "Continue",
-    "retry": "Retry",
-    "enable": "Enable",
-    "pleaseWait": "Please wait…",
-    "loading": "Loading",
-    "emptySearch": "No results found.",
+    "add": "新增",
+    "back": "返回",
+    "continue": "繼續",
+    "retry": "重試",
+    "enable": "啟用",
+    "pleaseWait": "請稍候…",
+    "loading": "正在載入",
+    "emptySearch": "找不到結果。",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
-    "video": "video",
-    "unknown": "unknown",
-    "confirm": "Confirm",
-    "best": "Best",
-    "resume": "Resume"
+    "video": "影片",
+    "unknown": "未知",
+    "confirm": "確認",
+    "best": "最佳",
+    "resume": "繼續"
   },
   "layout": {
     "header": {
-      "placeholder": "Enter a video/playlist URL to add to the queue",
+      "placeholder": "輸入影片/播放清單 URL 以加入佇列",
       "nav": {
-        "settings": "App Settings"
+        "settings": "應用程式設定"
       }
     },
     "footer": {
       "progress": {
-        "downloading": "Downloading queue - {done} of {total} completed.",
-        "completed": "Download complete – {n} item downloaded. | Download complete – {n} items downloaded.",
-        "ready": "Ready to download! {n} item queued. | Ready to download! {n} items queued."
+        "downloading": "正在下載佇列 - 已完成 {done} / {total}。",
+        "completed": "下載完成 – 已下載 {n} 個項目。 | 下載完成 – 已下載 {n} 個項目。",
+        "ready": "準備就緒！已加入 {n} 個項目至佇列。 | 準備就緒！已加入 {n} 個項目至佇列。"
       },
       "nav": {
-        "downloadLocation": "Locations",
+        "downloadLocation": "位置",
         "login": {
           "screenReader": {
-            "on": "Edit login (currently logged in)",
-            "off": "Edit login (currently not logged in)"
+            "on": "編輯登入 (目前已登入)",
+            "off": "編輯登入 (目前未登入)"
           },
           "tooltip": {
-            "on": "Edit log in",
-            "off": "Log in"
+            "on": "編輯登入",
+            "off": "登入"
           }
         },
         "subtitles": {
           "screenReader": {
-            "on": "Edit subtitles (currently enabled)",
-            "off": "Edit subtitles (currently disabled)"
+            "on": "編輯字幕 (目前已啟用)",
+            "off": "編輯字幕 (目前已停用)"
           },
-          "tooltip": "Subtitles"
+          "tooltip": "字幕"
         }
       },
       "format": {
         "trackSelect": {
-          "screenReader": "Select track for all videos"
+          "screenReader": "選取所有影片的音軌"
         },
         "formatSelect": {
-          "noFormats": "No formats",
-          "placeholder": "Select format",
-          "screenReader": "Select format for all videos"
+          "noFormats": "沒有格式",
+          "placeholder": "選取格式",
+          "screenReader": "選取所有影片的格式"
         }
       },
       "queue": {
-        "empty": "Empty queue",
-        "resume": "Resume all",
-        "pause": "Pause all",
-        "clearSuccessful": "Clear successful",
-        "clearErrored": "Clear errored",
-        "clearPending": "Clear pending",
-        "cancelDownloading": "Cancel downloading",
-        "more": "More queue actions"
+        "empty": "佇列為空",
+        "resume": "全部繼續",
+        "pause": "全部暫停",
+        "clearSuccessful": "清除成功項目",
+        "clearErrored": "清除失敗項目",
+        "clearPending": "清除等候項目",
+        "cancelDownloading": "取消下載",
+        "more": "更多佇列操作"
       }
     }
   },
   "auth": {
-    "title": "Authentication",
+    "title": "驗證",
     "cookies": {
-      "legend": "Cookies",
-      "legendBadge": "Recommended",
-      "legendLabel": "Use logged in sessions from a cookies file or import from your browser.",
+      "legend": "Cookie",
+      "legendBadge": "建議",
+      "legendLabel": "使用已登入工作階段的 cookies 檔案，或從瀏覽器匯入。",
       "file": {
-        "label": "Load cookies from a cookies.txt file",
-        "hint": "In order to export your cookies to a file {link}",
-        "hintLink": "see the guide."
+        "label": "從 cookies.txt 檔案載入 Cookie",
+        "hint": "如需將 Cookie 匯出為檔案 {link}，",
+        "hintLink": "請參閱指南。"
       },
       "browser": {
-        "label": "Automatically load cookies from a browser:",
-        "placeholder": "Do not load cookies from a browser",
-        "hint": "Some browsers may not support loading cookies. See the {link}",
-        "hintLink": "list of compatible browsers."
+        "label": "自動從瀏覽器載入 Cookie:",
+        "placeholder": "不要從瀏覽器載入 Cookie",
+        "hint": "部分瀏覽器可能不支援載入 Cookie。請參閱{link}",
+        "hintLink": "相容瀏覽器清單。"
       }
     },
     "credentials": {
-      "title": "Advanced methods",
-      "description": "Use methods like basic auth, bearer tokens, headers, video password, etc.",
+      "title": "進階方法",
+      "description": "使用基本驗證、Bearer 權杖、標頭、影片密碼等方法。",
       "labels": {
-        "username": "Username",
-        "password": "Password",
-        "token": "Token",
-        "headers": "Headers"
+        "username": "使用者名稱",
+        "password": "密碼",
+        "token": "權杖",
+        "headers": "標頭"
       },
       "basicAuth": {
-        "legend": "Basic auth",
-        "legendLabel": "Used for sites with simple authentication."
+        "legend": "基本驗證",
+        "legendLabel": "用於具備簡易驗證的網站。"
       },
       "videoPassword": {
-        "legend": "Video password",
-        "legendLabel": "Provide a password to access protected videos."
+        "legend": "影片密碼",
+        "legendLabel": "提供密碼以存取受保護的影片。"
       },
       "bearerToken": {
-        "legend": "Bearer token",
-        "legendLabel": "Provide a bearer token to access private resources."
+        "legend": "Bearer 權杖",
+        "legendLabel": "提供 Bearer 權杖以存取私人資源。"
       },
       "customHeaders": {
-        "legend": "Custom headers",
-        "legendBadge": "Advanced",
-        "legendLabel": "One per line: FIELD:VALUE",
+        "legend": "自訂標頭",
+        "legendBadge": "進階",
+        "legendLabel": "每行一項: FIELD:VALUE",
         "placeholder": "X-Api-Key:…"
       }
     },
     "init": {
-      "title": "Secrets store not enabled",
-      "description": "In order to use advanced authentication methods, the secrets store needs to be enabled.",
-      "hint": "The secrets store uses your system's keyring, this might require a password.",
+      "title": "未啟用祕密儲存區",
+      "description": "如需使用進階驗證方法，必須啟用祕密儲存區。",
+      "hint": "祕密儲存區會使用系統鑰匙圈，可能需要輸入密碼。",
       "error": {
-        "title": "Unable to enable the secrets store",
-        "description": "An error occurred while enabling the secrets store, please try again.",
-        "hint": "Error: {error}",
-        "unknown": "Unknown error"
+        "title": "無法啟用祕密儲存區",
+        "description": "啟用祕密儲存區時發生錯誤，請再試一次。",
+        "hint": "錯誤: {error}",
+        "unknown": "未知錯誤"
       },
       "toasts": {
-        "error": "Unable to initialize the secrets store: {error}"
+        "error": "無法初始化祕密儲存區: {error}"
       }
     },
     "toasts": {
-      "error": "Unable to save authentication settings. {error}",
-      "saved": "Authentication settings saved!"
+      "error": "無法儲存驗證設定。{error}",
+      "saved": "驗證設定已儲存！"
     }
   },
   "media": {
     "view": {
       "tabs": {
-        "metadata": "Metadata",
-        "logs": "Logs"
+        "metadata": "中繼資料",
+        "logs": "記錄"
       },
-      "thumbnailAlt": "Thumbnail for {title}",
+      "thumbnailAlt": "{title} 的縮圖",
       "metadata": {
-        "uploader": "Uploader:",
-        "extractor": "Extractor:",
-        "link": "Link:",
-        "description": "Description:"
+        "uploader": "上傳者::",
+        "extractor": "擷取器:",
+        "link": "連結:",
+        "description": "描述:"
       },
       "stats": {
-        "title": "Video Statistics",
-        "views": "Views",
-        "likes": "Likes",
-        "dislikes": "Dislikes",
-        "comments": "Comments",
-        "rating": "Rating",
-        "duration": "Duration"
+        "title": "影片統計資料",
+        "views": "觀看次數",
+        "likes": "喜歡",
+        "dislikes": "不喜歡",
+        "comments": "留言",
+        "rating": "評分",
+        "duration": "時長"
       },
       "logs": {
-        "failure": "Failure",
+        "failure": "失敗",
         "errors": {
-          "count": "Errors ({count})",
-          "empty": "No errors found."
+          "count": "錯誤 ({count})",
+          "empty": "找不到錯誤。"
         },
         "warnings": {
-          "count": "Warnings ({count})",
-          "empty": "No warnings found."
+          "count": "警告 ({count})",
+          "empty": "找不到警告。"
         },
         "all": {
-          "title": "All logs",
-          "empty": "No logs found."
+          "title": "所有記錄",
+          "empty": "找不到記錄。"
         },
         "toasts": {
-          "reported": "Error has been reported.",
-          "error": "Unable to report error."
+          "reported": "錯誤已回報。",
+          "error": "無法回報錯誤。"
         }
       }
     },
     "steps": {
       "fetch": {
-        "progress": "{percentage}% — {done} of {total}",
-        "progressLabel": "Fetching metadata…"
+        "progress": "{percentage}% — {done} / {total}",
+        "progressLabel": "正在擷取中繼資料…"
       },
       "configure": {
         "format": {
           "trackSelect": {
-            "screenReader": "Select track to download"
+            "screenReader": "選取要下載的音軌"
           },
           "formatSelect": {
-            "noFormats": "No formats",
-            "placeholder": "Select format",
-            "screenReader": "Select format of the track"
+            "noFormats": "沒有格式",
+            "placeholder": "選取格式",
+            "screenReader": "選取音軌的格式"
           }
         },
         "metadata": {
-          "duration": "Duration: {duration}",
-          "size": "Size: ",
-          "sizeInfo": "The amount of data that will be downloaded.\nNot the final size of the file.",
-          "items": "Items: {amount} {failedCount}",
-          "failedCount": "({amount} failed)"
+          "duration": "時長: {duration}",
+          "size": "大小: ",
+          "sizeInfo": "即將下載的資料大小。\n非檔案最終大小。",
+          "items": "項目: {amount} {failedCount}",
+          "failedCount": "({amount} 失敗)"
         },
         "trackTypes": {
-          "both": "Video + Audio",
-          "audio": "Audio",
-          "video": "Video"
+          "both": "影片 + 音訊",
+          "audio": "音訊",
+          "video": "影片"
         }
       },
       "download": {
-        "progress": "Downloading {category}… — {percentage}%",
-        "progressList": "Downloading… {percentage}% — {done} of {total}",
+        "progress": "正在下載 {category}… — {percentage}%",
+        "progressList": "正在下載… {percentage}% — {done} / {total}",
         "indeterminate": "{status}…",
         "category": {
-          "video": "video",
-          "audio": "audio",
-          "subtitles": "subtitles",
-          "thumbnail": "thumbnail",
-          "metadata": "metadata",
-          "other": "other"
+          "video": "影片",
+          "audio": "音訊",
+          "subtitles": "字幕",
+          "thumbnail": "縮圖",
+          "metadata": "中繼資料",
+          "other": "其他"
         },
         "status": {
-          "initializing": "Initializing",
-          "downloading": "Downloading",
-          "merging": "Merging",
-          "finalizing": "Cleaning up"
+          "initializing": "正在初始化",
+          "downloading": "正在下載",
+          "merging": "正在合併",
+          "finalizing": "正在清理"
         },
         "metadata": {
-          "eta": "ETA: {eta}",
-          "speed": "Speed: {speed}"
+          "eta": "預估剩餘時間: {eta}",
+          "speed": "速度: {speed}"
         }
       },
       "paused": {
-        "progress": "Download paused — {percentage}%",
-        "progressList": "Download paused — {percentage}% — {done} of {total}",
-        "indeterminate": "Download paused",
+        "progress": "下載已暫停 — {percentage}%",
+        "progressList": "下載已暫停 — {percentage}% — {done} / {total}",
+        "indeterminate": "下載已暫停",
         "metadata": {
-          "eta": "Remaining: {eta}",
-          "etaItems": "Remaining: {n} item | Remaining: {n} items"
+          "eta": "剩餘時間: {eta}",
+          "etaItems": "剩餘: {n} 個項目 | 剩餘: {n} 個項目"
         }
       },
       "done": {
-        "complete": "Download complete — 100%",
-        "showFolder": "Show in folder",
-        "open": "Open file",
-        "openFirst": "Open first file",
-        "undeterminedLocation": "Download location could not be determined for this item."
+        "complete": "下載完成 — 100%",
+        "showFolder": "在資料夾中顯示",
+        "open": "開啟檔案",
+        "openFirst": "開啟第一個檔案",
+        "undeterminedLocation": "無法判斷此項目的下載位置。"
       },
       "error": {
-        "errorPrefix": "Error - {message}",
-        "report": "Report",
-        "showFull": "Show full error"
+        "errorPrefix": "錯誤 - {message}",
+        "report": "回報",
+        "showFull": "顯示完整錯誤"
       }
     },
     "card": {
       "actions": {
-        "remove": "Remove",
-        "externalUrl": "Visit on external URL",
-        "retry": "Retry download",
-        "download": "Download individually",
-        "pause": "Pause download",
-        "resume": "Resume download",
-        "metadata": "Show metadata"
+        "remove": "移除",
+        "externalUrl": "在外部 URL 中開啟",
+        "retry": "重試下載",
+        "download": "個別下載",
+        "pause": "暫停下載",
+        "resume": "繼續下載",
+        "metadata": "顯示中繼資料"
       },
       "toasts": {
-        "retry": "Retrying download.",
-        "retryError": "Could not retry download."
+        "retry": "正在重試下載。",
+        "retryError": "無法重試下載。"
       }
     }
   },
   "subtitles": {
-    "title": "Subtitles",
+    "title": "字幕",
     "options": {
       "enable": {
-        "legend": "Subtitle downloads",
-        "legendLabel": "Choose how subtitles should be retrieved when downloading media.",
-        "label": "Enable subtitles",
-        "hint": "Download subtitle files alongside your media."
+        "legend": "字幕下載",
+        "legendLabel": "選擇下載媒體時擷取字幕的方式。",
+        "label": "啟用字幕",
+        "hint": "與媒體一起下載字幕檔案。"
       },
       "autoGenerated": {
-        "label": "Include auto-generated subtitles",
-        "hint": "Download automatically generated subtitles in addition to creator provided ones."
+        "label": "包含自動產生的字幕",
+        "hint": "除創作者提供的字幕外，也下載自動產生的字幕。"
       },
       "format": {
-        "legend": "Preferred format",
-        "legendLabel": "Select your preferred subtitle format. If the format is not available, the next best format will be used.",
-        "label": "Format"
+        "legend": "偏好格式"",
+        "legendLabel": "選取偏好的字幕格式。若無法使用，將使用次佳格式。",
+        "label": "格式"
       },
       "embed": {
-        "label": "Add subtitles track:",
-        "hint": "Add subtitles to the video file, this works for mp4, mkv and webm formats."
+        "label": "加入字幕軌:",
+        "hint": "將字幕加入影片檔案，適用於 mp4、mkv 與 webm 格式。"
       },
       "languages": {
-        "legend": "Languages",
-        "legendLabel": "Pick the subtitle languages to download.",
-        "downloadAll": "Download all available subtitles.",
-        "search": "Search languages",
-        "searchPlaceholder": "Search by language name",
-        "suggested": "Suggested for you",
-        "all": "All languages",
-        "noResult": "No languages match \"{query}\".",
-        "selected": "Selected:",
-        "allSelected": "All available subtitles",
-        "searchHint": "Tip: Use the search box to quickly filter the list. Selected languages stay highlighted."
+        "legend": "語言",
+        "legendLabel": "選取要下載的字幕語言。",
+        "downloadAll": "下載所有可用字幕。",
+        "search": "搜尋語言",
+        "searchPlaceholder": "依語言名稱搜尋",
+        "suggested": "為您推薦",
+        "all": "所有語言",
+        "noResult": "沒有語言符合「{query}」。",
+        "selected": "已選取:",
+        "allSelected": "所有可用字幕",
+        "searchHint": "提示：使用搜尋方塊可快速篩選清單。已選取的語言會保持反白。"
       }
     },
     "toasts": {
-      "saved": "Subtitle settings saved!",
-      "error": "Unable to save subtitle settings. {error}"
+      "saved": "字幕設定已儲存！",
+      "error": "無法儲存字幕設定。{error}"
     },
     "formats": {
       "srt": "SubRip (.srt)",
@@ -323,165 +323,165 @@
     }
   },
   "location": {
-    "title": "Download location",
+    "title": "下載位置",
     "downloadDir": {
-      "label": "Download location",
-      "hint": "Click in the box to select where videos get downloaded to."
+      "label": "下載位置",
+      "hint": "按一下方塊以選取影片下載位置。."
     },
     "directory": {
-      "legend": "Organise by",
-      "legendLabel": "Select how downloads get organised in folders.",
+      "legend": "歸納方式",
+      "legendLabel": "選取下載在資料夾中的歸納方式。",
       "videoDir": {
-        "label": "Download location:",
-        "hint": "Override the global download location when downloading videos."
+        "label": "下載位置:",
+        "hint": "下載影片時，取代全域下載位置設定。"
       },
       "audioDir": {
-        "label": "Download location:",
-        "hint": "Override the global download location when downloading audio."
+        "label": "下載位置:",
+        "hint": "下載音訊時，取代全域下載位置設定。"
       },
       "directoryPreset": {
-        "label": "Organise downloads by:",
-        "exampleLabel": "Example output:",
+        "label": "下載歸納依照:",
+        "exampleLabel": "範例輸出:",
         "options": {
-          "none": "No subfolders",
-          "playlist": "Playlist",
-          "channel": "Channel",
-          "channelPlaylist": "Channel → playlist",
-          "yearMonth": "Year / month",
-          "artistAlbum": "Artist → album",
-          "custom": "Custom"
+          "none": "無子資料夾",
+          "playlist": "播放清單",
+          "channel": "頻道",
+          "channelPlaylist": "頻道 → 播放清單",
+          "yearMonth": "年 / 月",
+          "artistAlbum": "演出者 → 專輯",
+          "custom": "自訂"
         },
         "examples": {
-          "playlist": "My Playlist/",
-          "channel": "MyChannel/",
-          "channelPlaylist": "MyChannel/My Playlist/",
+          "playlist": "我的播放清單/",
+          "channel": "我的頻道/",
+          "channelPlaylist": "我的頻道/我的播放清單/",
           "yearMonth": "2025/03/",
-          "artistAlbum": "Artist Name/Album Name/"
+          "artistAlbum": "演出者名稱/專輯名稱/"
         }
       },
       "outputFormat": {
-        "label": "Directory format:"
+        "label": "目錄格式:"
       }
     },
     "filename": {
-      "legend": "Filename format",
-      "legendLabel": "Select the filename that downloads will have.",
+      "legend": "檔名格式",
+      "legendLabel": "選取下載檔案的檔名格式。",
       "formatPreset": {
-        "label": "Filename preset:",
-        "exampleLabel": "Example output:",
+        "label": "檔名預設:",
+        "exampleLabel": "範例輸出:",
         "options": {
-          "titleQuality": "Title + quality",
-          "titleOnly": "Title only",
-          "titleQualityPlaylist": "Playlist + title + quality",
+          "titleQuality": "標題 + 畫質",
+          "titleOnly": "僅標題",
+          "titleQualityPlaylist": "播放清單 + 標題 + 畫質",
           "custom": "Custom"
         },
         "examples": {
           "video": {
-            "titleQuality": "My Video-(1080p30).mp4",
-            "titleOnly": "My Video.mp4",
-            "titleQualityPlaylist": "03-My Video-(1080p30).mkv"
+            "titleQuality": "我的影片-(1080p30).mp4",
+            "titleOnly": "我的影片.mp4",
+            "titleQualityPlaylist": "03-我的影片-(1080p30).mkv"
           },
           "audio": {
-            "titleQuality": "My Audio-(320k).mp3",
-            "titleOnly": "My Audio.mp3",
-            "titleQualityPlaylist": "03-My Audio-(320k).mp3"
+            "titleQuality": "我的音訊-(320k).mp3",
+            "titleOnly": "我的音訊.mp3",
+            "titleQualityPlaylist": "03-我的音訊-(320k).mp3"
           }
         },
         "restrictFilenames": {
-          "label": "Restrict filenames:",
-          "hint": "Replaces spaces with underscores and removes special characters like \"&\" from filenames."
+          "label": "限制檔名:",
+          "hint": "以底線取代空白，並移除檔名中的特殊字元 (例如「&」)。"
         }
       },
       "outputFormat": {
-        "label": "Filename format:"
+        "label": "檔名格式:"
       }
     },
     "toasts": {
-      "saved": "Locations saved!",
-      "error": "Unable to save locations."
+      "saved": "位置已儲存！",
+      "error": "無法儲存位置。"
     }
   },
   "settings": {
-    "title": "Settings",
+    "title": "設定",
     "reset": {
-      "label": "Reset",
-      "confirm": "Click again to reset"
+      "label": "重設",
+      "confirm": "再按一次以重設"
     },
     "performance": {
-      "legend": "Performance",
-      "legendLabel": "Configure how many system resources are used.",
+      "legend": "效能",
+      "legendLabel": "設定系統資源的使用量。",
       "maxConcurrency": {
-        "label": "Max concurrent jobs:"
+        "label": "最大同時工作數:"
       },
       "splitPlaylistThreshold": {
-        "label": "Split playlists into separate videos when:",
+        "label": "在以下情況將播放清單分割為個別影片:",
         "options": {
-          "never": "Never split",
-          "lessThan": "Less than {number} videos"
+          "never": "永不分割",
+          "lessThan": "少於 {number} 部影片"
         }
       },
       "autoLoadSize": {
-        "label": "Automatically load video size:"
+        "label": "自動載入影片大小:"
       }
     },
     "input": {
-      "legend": "Input",
-      "legendLabel": "Choose how you start downloading with OVD.",
+      "legend": "輸入",
+      "legendLabel": "選擇使用 OVD 開始下載的方式。",
       "autoFillClipboard": {
-        "label": "Automatically fill in copied links:",
-        "hint": "Detect links you copied, so you can download them with one click."
+        "label": "自動填入已複製的連結:",
+        "hint": "偵測您複製的連結，一鍵即可下載。"
       },
       "preferVideoInMixedLinks": {
-        "label": "Prefer single video for playlist links:",
-        "hint": "When a link contains both a video and a playlist, download only the video instead of the full playlist."
+        "label": "播放清單連結時偏好單一影片:",
+        "hint": "當連結同時包含影片與播放清單時，只下載影片而非整個播放清單。"
       },
       "globalShortcuts": {
-        "label": "Enable shortcuts:",
-        "add_hint": "Add videos to the queue with:",
-        "download_hint": "Download the queue with:"
+        "label": "啟用快速鍵:",
+        "add_hint": "使用以下方式將影片加入佇列:",
+        "download_hint": "使用以下方式下載佇列:"
       },
       "authentication": {
-        "label": "Log in to download private videos:",
-        "link": "Configure authentication"
+        "label": "登入以下載私人影片:",
+        "link": "設定驗證"
       }
     },
     "output": {
-      "legend": "Output",
-      "legendLabel": "Configure what kind of files get downloaded.",
+      "legend": "輸出",
+      "legendLabel": "設定下載的檔案類型。",
       "addThumbnail": {
-        "label": "Add cover image:",
-        "hint": "Embed the thumbnail inside the file so media players can display artwork."
+        "label": "加入封面圖片:",
+        "hint": "將縮圖嵌入檔案，讓媒體播放器顯示封面。"
       },
       "addMetadata": {
-        "label": "Add title & artist info:",
-        "hint": "Save metadata such as title, uploader/artist and description inside the file."
+        "label": "加入標題與演出者資訊:",
+        "hint": "將標題、上傳者/演出者與描述等中繼資料儲存至檔案中。"
       },
       "location": {
-        "label": "Download location & filenames:",
-        "link": "Configure download locations"
+        "label": "下載位置與檔名:",
+        "link": "設定下載位置"
       },
       "subtitles": {
-        "label": "Add subtitles:",
-        "link": "Configure subtitles"
+        "label": "加入字幕:",
+        "link": "設定字幕"
       },
       "policy": {
-        "label": "Conversion mode:",
-        "hint": "If the downloaded file doesn't already match your selected format, it may need to be converted. Skip conversion: fastest, may ignore your chosen format. Convert if possible: tries to change the container without re-encoding. Convert if needed: always uses the selected format, but is slower and uses more CPU.",
+        "label": "轉換模式:",
+        "hint": "若下載的檔案與選取的格式不相符，可能需要轉換。略過轉換: 最快，可能忽略所選格式。可轉換時轉換: 嘗試不重新編碼只更換容器 (建議)。需要時轉換: 一律使用所選格式，但較慢且使用更多 CPU。",
         "options": {
-          "never": "Skip conversion",
-          "remuxOnly": "Convert if possible (recommended)",
-          "allowReencode": "Convert if needed (slower)"
+          "never": "略過轉換",
+          "remuxOnly": "可轉換時轉換 (建議)",
+          "allowReencode": "需要時轉換 (較慢)"
         }
       },
       "tabs": {
         "audio": {
-          "screenreader": "Audio settings",
-          "label": "Audio",
+          "screenreader": "音訊設定",
+          "label": "音訊",
           "format": {
-            "label": "Audio format:",
-            "hint": "Choose the preferred audio format. Conversion mode decides whether the file will actually be converted.",
+            "label": "音訊格式:",
+            "hint": "選擇偏好的音訊格式。是否實際轉換取決於轉換模式。",
             "options": {
-              "mp3": "MP3 (recommended)",
+              "mp3": "MP3 (建議)",
               "m4a": "M4A",
               "ogg": "OGG",
               "aac": "AAC",
@@ -492,11 +492,11 @@
           }
         },
         "video": {
-          "screenreader": "Video settings",
-          "label": "Video",
+          "screenreader": "影片設定",
+          "label": "影片",
           "container": {
-            "label": "Video format:",
-            "hint": "Choose the preferred video format. Conversion mode decides whether the file will actually be converted.",
+            "label": "影片格式:",
+            "hint": "選擇偏好的影片格式。是否實際轉換取決於轉換模式。",
             "options": {
               "mp4": "MP4",
               "mkv": "MKV"
@@ -506,267 +506,267 @@
       }
     },
     "appearance": {
-      "legend": "Appearance",
-      "legendLabel": "Configure how the application looks and feels.",
+      "legend": "外觀",
+      "legendLabel": "設定應用程式的外觀與操作體驗。",
       "theme": {
-        "label": "Theme:",
+        "label": "佈景主題:",
         "options": {
-          "system": "System ({theme})",
-          "light": "Light",
-          "dark": "Dark"
+          "system": "系統預設 ({theme})",
+          "light": "亮色",
+          "dark": "深色"
         }
       },
       "language": {
-        "label": "Language",
+        "label": "語言",
         "options": {
-          "system": "System ({language})"
+          "system": "系統預設 ({language})"
         }
       }
     },
     "network": {
-      "legend": "Network",
-      "legendLabel": "Configure how the application connects to the internet.",
+      "legend": "網路",
+      "legendLabel": "設定應用程式的網路連線方式。",
       "enableProxy": {
-        "label": "Connect via proxy:"
+        "label": "透過 Proxy 連線:"
       },
       "proxy": {
-        "label": "Proxy configuration:"
+        "label": "Proxy 設定:"
       },
       "impersonate": {
-        "label": "Impersonation:",
-        "hint": "Impersonate a specific OS or browser, to prevent fingerprinting.",
+        "label": "模擬:",
+        "hint": "模擬特定 OS 或瀏覽器，以避免指紋辨識。",
         "options": {
-          "none": "Do not impersonate",
-          "any": "Impersonate a random client"
+          "none": "不模擬",
+          "any": "隨機模擬用戶端"
         }
       }
     },
     "sponsorBlock": {
       "legend": "SponsorBlock",
-      "legendLabel": "Remove or mark parts of a video.",
+      "legendLabel": "移除或標記影片中的部分片段。",
       "removeParts": {
-        "label": "Parts to remove",
-        "placeholder": "Select 1 or more parts to remove from the video."
+        "label": "要移除的片段",
+        "placeholder": "選取 1 個或多個要從影片中移除的片段。"
       },
       "markParts": {
-        "label": "Parts to mark",
-        "placeholder": "Select 1 or more parts to mark with a chapter."
+        "label": "要標記的片段",
+        "placeholder": "選取 1 個或多個要以章節標記的片段。"
       },
       "apiUrl": {
         "label": "API URL"
       },
       "parts": {
         "sponsor": {
-          "label": "Sponsor",
-          "description": "Paid product or service promotion by creator or third-party."
+          "label": "贊助",
+          "description": "由創作者或第三方進行的付費產品或服務宣傳。"
         },
         "selfpromo": {
-          "label": "Self-Promo / Unpaid",
-          "description": "Creator’s own promotion of merch, services or channels (unpaid)."
+          "label": "自我宣傳 / 非贊助",
+          "description": "創作者對商品、服務或頻道的自我宣傳 (非贊助)。"
         },
         "interaction": {
-          "label": "Interaction Reminder",
-          "description": "Reminders to like/subscribe/follow or interact with the creator."
+          "label": "互動提醒",
+          "description": "提醒按讚、訂閱、追蹤或與創作者互動。"
         },
         "intro": {
-          "label": "Intro / Intermission",
-          "description": "Intro animation, intermission or non-content pause at the start."
+          "label": "片頭 / 中場",
+          "description": "開頭的片頭動畫、中場或非內容暫停。"
         },
         "outro": {
-          "label": "Outro / Endcards / Credits",
-          "description": "End cards, credits or closing segment near the end."
+          "label": "片尾 / 結尾卡 / 銘謝",
+          "description": "接近結尾的結尾卡、銘謝或收尾片段。"
         },
         "hook": {
-          "label": "Hook / Greetings",
-          "description": "Narrated trailers for the upcoming video, greetings and goodbyes."
+          "label": "預告片 / 問候",
+          "description": "預告即將播放內容的旁白、問候與道別。"
         },
         "music_offtopic": {
-          "label": "Non-Music Section",
-          "description": "Bits of talking or distractions in videos with music."
+          "label": "非音樂片段",
+          "description": "音樂影片中與主題無關的談話或干擾內容。"
         },
         "preview": {
-          "label": "Preview / Recap",
-          "description": "Preview of upcoming content or recap of previous segments."
+          "label": "預覽 / 回顧",
+          "description": "即將推出內容的預覽或先前片段的回顧。"
         },
         "filler": {
-          "label": "Filler / Tangents",
-          "description": "Tangents, jokes or filler scenes not required to understand the main content."
+          "label": "填充 / 離題",
+          "description": "理解主要內容不需要的離題、笑話或填充片段。"
         },
         "chapter": {
-          "label": "Chapter",
-          "description": "Marks a chapter/section of the video (used with chapter action type)."
+          "label": "章節",
+          "description": "標記影片的章節/區段 (搭配章節動作類型)。"
         }
       }
     },
     "update": {
-      "legend": "Updates",
-      "legendLabel": "Choose which parts of the app should update automatically.",
+      "legend": "更新",
+      "legendLabel": "選擇應用程式哪些部分要自動更新。",
       "updateBinaries": {
-        "label": "Automatically update tools:",
-        "hint": "OVD uses tools like yt-dlp and ffmpeg to download videos. Enable this to keep them up to date."
+        "label": "自動更新工具:",
+        "hint": "OVD 會使用 yt-dlp 與 ffmpeg 等工具下載影片。啟用此選項可維持於最新狀態。"
       },
       "updateApp": {
-        "label": "Automatically update the app:",
-        "hint": "Turn this on to receive new features and bug fixes as soon as a new version is released."
+        "label": "自動更新應用程式:",
+        "hint": "開啟此選項後，新版本發佈時會立即取得新功能與錯誤修正。"
       }
     },
     "system": {
-      "legend": "System",
-      "legendLabel": "Configure how this application integrates with the system.",
+      "legend": "系統",
+      "legendLabel": "設定此應用程式與系統的整合方式。",
       "trayEnabled": {
         "label": {
-          "mac": "Show menu bar icon",
-          "generic": "Show system tray icon"
+          "mac": "顯示選單列圖示",
+          "generic": "顯示系統匣圖示"
         },
         "hint": {
-          "mac": "Shows a menu bar icon for quick access.",
-          "generic": "Shows an icon in the system tray for quick access."
+          "mac": "顯示選單列圖示以便快速存取。",
+          "generic": "在系統匣中顯示圖示以便快速存取。"
         }
       },
       "minimiseToTray": {
-        "label": "Minimize to tray on close",
-        "hint": "Closing the window hides the app in the system tray instead of quitting."
+        "label": "關閉時最小化至系統匣",
+        "hint": "關閉視窗時，將應用程式隱藏在系統匣而非結束工作。"
       },
       "autoStart": {
-        "label": "Start at login",
-        "hint": "Launch Open Video Downloader automatically when you sign in."
+        "label": "登入時啟動",
+        "hint": "登入時自動啟動 Open Video Downloader。"
       },
       "autoStartMinimised": {
         "label": {
-          "mac": "Start hidden at login",
-          "windows": "Start minimized to tray at login",
-          "generic": "Start hidden at login (not recommended)"
+          "mac": "登入時隱藏啟動",
+          "windows": "登入時最小化至系統匣啟動",
+          "generic": "登入時隱藏啟動 (不建議)"
         },
         "hint": {
-          "mac": "When the app starts at login, it won’t open a window. Use the menu bar or Dock icon to open it.",
-          "windows": "When the app starts at login, it will start in the system tray without opening a window.",
-          "generic": "When the app starts at login, it won’t open a window."
+          "mac": "登入時啟動應用程式但不開啟視窗。使用選單列或 Dock 圖示開啟。",
+          "windows": "登入時啟動後會在系統匣中執行，不會開啟視窗。",
+          "generic": "登入時啟動應用程式但不開啟視窗。"
         }
       }
     },
     "notifications": {
-      "legend": "Notifications",
-      "legendLabel": "Configure when notifications are sent.",
+      "legend": "通知",
+      "legendLabel": "設定通知推播時機。",
       "behavior": {
-        "label": "Show notifications:",
+        "label": "顯示通知:",
         "options": {
-          "always": "Always",
-          "onBackground": "When in the background",
-          "never": "Never"
+          "always": "一律",
+          "onBackground": "在背景執行時",
+          "never": "永不"
         },
-        "hint": "Tip: notifications can be useful when using the app with shortcuts."
+        "hint": "提示：搭配快速鍵使用時，通知會很實用。"
       },
       "disabled": {
-        "label": "Enable/disable specific notifications",
-        "disabledScreenReader": "This option is disabled.",
+        "label": "啟用/停用特定通知",
+        "disabledScreenReader": "此選項已停用。",
         "kinds": {
-          "queueAdded": "Queue added",
-          "queueDownloading": "Queue downloading",
-          "queueFinished": "Queue finished",
-          "videoFinished": "Video finished",
-          "playlistFinished": "Playlist finished",
-          "downloadFailed": "Download failed",
-          "videoReady": "Video ready",
-          "playlistReady": "Playlist ready"
+          "queueAdded": "已加入佇列",
+          "queueDownloading": "佇列下載中",
+          "queueFinished": "佇列完成",
+          "videoFinished": "影片完成",
+          "playlistFinished": "播放清單完成",
+          "downloadFailed": "下載失敗",
+          "videoReady": "影片已就緒",
+          "playlistReady": "播放清單已就緒"
         }
       }
     },
     "toasts": {
-      "saved": "Settings saved!",
-      "reset": "Reset settings to defaults."
+      "saved": "設定已儲存！",
+      "reset": "設定已重設為預設值。"
     }
   },
   "updater": {
-    "available": "Update available!",
+    "available": "有可用更新！",
     "install": {
-      "title": "Install update",
-      "subtitle": "This will restart the app."
+      "title": "安裝更新",
+      "subtitle": "這將重新啟動應用程式。"
     },
-    "downloading": "Downloading update…"
+    "downloading": "正在下載更新…"
   },
   "install": {
     "title": {
-      "installing": "Installing required tools…",
-      "failed": "Failed to install some required tools.",
-      "installed": "Installed required tools."
+      "installing": "正在安裝必要工具…",
+      "failed": "部分必要工具安裝失敗。",
+      "installed": "必要工具已安裝。"
     },
     "subtitle": {
-      "installing": "We're getting everything ready.",
-      "failed": "The app may not work as expected, please report this.",
-      "installed": "Ready to download!"
+      "installing": "即將準備就緒。",
+      "failed": "應用程式可能無法正常運作，請回報此問題。",
+      "installed": "準備就緒！"
     }
   },
   "components": {
     "base": {
       "emptyState": {
-        "title": "Your queue is empty",
-        "subtitle": "Add some videos to get started."
+        "title": "佇列為空",
+        "subtitle": "新增影片即可開始。"
       },
       "dragState": {
-        "title": "Drop to add to queue",
-        "subtitle": "Add to the queue by dragging videos."
+        "title": "拖拽以新增影片",
+        "subtitle": "拖拽影片以加入佇列。"
       },
       "fileInput": {
-        "select": "Select file",
-        "placeholder": "Select a file…",
-        "invalid": "Invalid file.",
-        "clear": "Clear file",
+        "select": "選取檔案",
+        "placeholder": "選取檔案…",
+        "invalid": "檔案無效。",
+        "clear": "清除檔案",
         "recents": {
-          "clear": "Clear recent files",
-          "open": "Open recent selections",
-          "empty": "No recent selections"
+          "clear": "清除最近的檔案",
+          "open": "開啟最近的選取項目",
+          "empty": "沒有最近的選取項目"
         }
       },
       "folderInput": {
-        "select": "Select folder",
-        "placeholder": "Select a folder…",
-        "invalid": "Invalid folder.",
-        "clear": "Clear folder",
+        "select": "選取資料夾",
+        "placeholder": "選取資料夾…",
+        "invalid": "資料夾無效。",
+        "clear": "清除資料夾",
         "recents": {
-          "clear": "Clear recent folders",
-          "open": "Open recent selections",
-          "empty": "No recent selections"
+          "clear": "清除最近的資料夾",
+          "open": "開啟最近的選取項目",
+          "empty": "沒有最近的選取項目"
         }
       },
       "secretInput": {
-        "hide": "Hide",
-        "show": "Show",
-        "clear": "Clear {label}"
+        "hide": "隱藏",
+        "show": "顯示",
+        "clear": "清除 {label}"
       },
       "toolCard": {
-        "failed": "Failed to install this tool. Expand for more information."
+        "failed": "安裝此工具失敗。展開以取得更多資訊。"
       }
     }
   },
   "errors": {
     "runner": {
       "internal": {
-        "shortMessage": "Internal error",
-        "message": "An internal error occurred while processing this item."
+        "shortMessage": "內部錯誤",
+        "message": "處理此項目時發生內部錯誤。"
       },
       "signInRequired": {
-        "shortMessage": "Sign-in required",
-        "message": "You need to sign in to view this content."
+        "shortMessage": "需要登入",
+        "message": "您需要登入才能檢視此內容。"
       },
       "membersOnly": {
-        "shortMessage": "Members-only",
-        "message": "This video is only available to channel members."
+        "shortMessage": "僅限會員",
+        "message": "此影片僅限頻道會員觀看。"
       },
       "geoBlocked": {
-        "shortMessage": "Region blocked",
-        "message": "This content isn’t available in your region."
+        "shortMessage": "地區封鎖",
+        "message": "此內容在您的地區無法使用。"
       },
       "accessForbidden403": {
-        "shortMessage": "Access forbidden",
-        "message": "You don’t have permission to access this resource (HTTP 403)."
+        "shortMessage": "存取被拒",
+        "message": "您沒有權限存取此資源 (HTTP 403)。"
       },
       "notFound404": {
-        "shortMessage": "Not found",
-        "message": "The requested video or playlist could not be found (HTTP 404)."
+        "shortMessage": "找不到",
+        "message": "找不到要求的影片或播放清單 (HTTP 404)。"
       },
       "server5xx": {
-        "shortMessage": "Server error",
-        "message": "A temporary server issue occurred. Try again later."
+        "shortMessage": "伺服器錯誤",
+        "message": "發生暫時性的伺服器問題，請稍後再試。"
       },
       "rateLimited429": {
         "shortMessage": "Rate limited",
