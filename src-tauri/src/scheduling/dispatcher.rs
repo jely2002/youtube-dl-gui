@@ -411,10 +411,11 @@ mod tests {
             guard.push(format!("{}:{}", entry.group_id, entry.index));
           }
 
-          if entry.group_id == group_a && entry.index == 0 {
-            if gate_open_job.fetch_add(1, Ordering::SeqCst) == 0 {
-              gate_job.notified().await;
-            }
+          if entry.group_id == group_a
+            && entry.index == 0
+            && gate_open_job.fetch_add(1, Ordering::SeqCst) == 0
+          {
+            gate_job.notified().await;
           }
 
           sleep(Duration::from_millis(10)).await;
