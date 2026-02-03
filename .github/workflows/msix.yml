@@ -13,10 +13,8 @@ jobs:
       WINDOWS_PFX_PASSWORD: ${{ secrets.WINDOWS_PFX_PASSWORD }}
 
     steps:
-      - name: Checkout main
+      - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Setup Node
         uses: actions/setup-node@v4
