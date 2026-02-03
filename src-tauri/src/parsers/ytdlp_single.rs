@@ -102,7 +102,7 @@ fn process_formats(
       abr.map_or_else(|| "none".into(), |a| a.to_string())
     };
 
-    tracing::debug!("Detected format: {:?}", (format_id.clone(), key.clone()));
+    tracing::trace!("Detected format: {:?}", (format_id.clone(), key.clone()));
     if detected.contains(&key) {
       continue;
     }
