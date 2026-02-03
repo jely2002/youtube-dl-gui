@@ -4,6 +4,7 @@ use crate::state::config_models::Config;
 use crate::state::json_handle::JsonStoreHandle;
 use crate::state::json_state::JsonBackedState;
 use crate::tray::{create_tray, destroy_tray};
+use crate::{DownloadLimiter, FetchLimiter};
 use tauri::{AppHandle, Manager, Wry};
 use tauri_plugin_autostart::ManagerExt;
 
@@ -30,6 +31,21 @@ impl JsonBackedState for Config {
   }
 
   fn on_updated(app: &AppHandle<Wry>, new_value: &Self) {
+    if let Some(limiter) = app.try_state::<DownloadLimiter>() {
+      let limiter = limiter.0.clone();
+      let max = new_value.performance.max_concurrency;
+      tauri::async_runtime::spawn(async move {
+        limiter.resize(max).await;
+      });
+    }
+    if let Some(limiter) = app.try_state::<FetchLimiter>() {
+      let limiter = limiter.0.clone();
+      let max = new_value.performance.max_concurrency;
+      tauri::async_runtime::spawn(async move {
+        limiter.resize(max).await;
+      });
+    }
+
     if new_value.input.global_shortcuts {
       register_shortcuts(app);
     } else {
