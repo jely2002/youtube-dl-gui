@@ -9,6 +9,7 @@ export interface SubtitleLanguageOption {
 const codes = ISO6391.getAllCodes();
 const expanded_codes: Record<string, SubtitleLanguageOption> = {
   'pt-BR': { code: 'pt-BR', englishName: 'Portuguese (Brazil)', nativeName: 'Português (Brasil)' },
+  'zh-TW': { code: 'zh-TW', englishName: 'Traditional Chinese (Taiwan)', nativeName: '繁體中文（台灣）' },
 };
 
 export const languageOptions: SubtitleLanguageOption[] = [...codes, ...Object.keys(expanded_codes)]
