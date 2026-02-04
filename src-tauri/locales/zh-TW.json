@@ -1,0 +1,48 @@
+{
+  "tray": {
+    "quit": "Quit",
+    "showOrHide": "Show/Hide Window",
+    "addToQueue": "Add from clipboard",
+    "downloadQueue": "Download queue",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftEnter": "Alt + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Added to queue",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Downloading queue",
+      "body": "Downloading {n} item | Downloading {n} items"
+    },
+    "queueFinished": {
+      "title": "Queue finished",
+      "body": "Finished downloading {n} item | Finished downloading {n} items"
+    },
+    "videoFinished": {
+      "title": "Download finished",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Playlist finished",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Ready to download",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Playlist ready to download",
+      "body": "{title} | {title} ({n} item) | {title} ({n} items)"
+    },
+    "downloadFailed": {
+      "title": "Download failed",
+      "body": "{title}\n{message}"
+    }
+  }
+}
