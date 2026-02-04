@@ -1,9 +1,9 @@
 {
   "tray": {
-    "quit": "Quit",
-    "showOrHide": "Show/Hide Window",
-    "addToQueue": "Add from clipboard",
-    "downloadQueue": "Download queue",
+    "quit": "結束",
+    "showOrHide": "顯示/隱藏視窗",
+    "addToQueue": "從剪貼簿加入",
+    "downloadQueue": "下載佇列中的項目",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Shift + V",
       "ctrlShiftEnter": "Ctrl + Shift + Enter",
@@ -13,35 +13,35 @@
   },
   "notifications": {
     "queueAdded": {
-      "title": "Added to queue",
+      "title": "已加入佇列",
       "body": "{title}"
     },
     "queueDownloading": {
-      "title": "Downloading queue",
-      "body": "Downloading {n} item | Downloading {n} items"
+      "title": "正在下載佇列中的項目",
+      "body": "正在下載 {n} 個項目 | 正在下載 {n} 個項目"
     },
     "queueFinished": {
-      "title": "Queue finished",
-      "body": "Finished downloading {n} item | Finished downloading {n} items"
+      "title": "所有佇列中的項目皆已完成下載",
+      "body": "已完成下載 {n} 個項目 | 已完成下載 {n} 個項目"
     },
     "videoFinished": {
-      "title": "Download finished",
+      "title": "下載完成",
       "body": "{title}"
     },
     "playlistFinished": {
-      "title": "Playlist finished",
+      "title": "播放清單完成",
       "body": "{title}"
     },
     "videoReady": {
-      "title": "Ready to download",
+      "title": "下載已準備就緒",
       "body": "{title}"
     },
     "playlistReady": {
-      "title": "Playlist ready to download",
-      "body": "{title} | {title} ({n} item) | {title} ({n} items)"
+      "title": "播放清單下載已準備就緒",
+      "body": "{title} | {title} ({n} 個項目) | {title} ({n} 個項目)"
     },
     "downloadFailed": {
-      "title": "Download failed",
+      "title": "下載失敗",
       "body": "{title}\n{message}"
     }
   }
