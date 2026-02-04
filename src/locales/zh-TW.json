@@ -150,7 +150,7 @@
       },
       "thumbnailAlt": "{title} 的縮圖",
       "metadata": {
-        "uploader": "上傳者::",
+        "uploader": "上傳者:",
         "extractor": "擷取器:",
         "link": "連結:",
         "description": "描述:"
@@ -326,7 +326,7 @@
     "title": "下載位置",
     "downloadDir": {
       "label": "下載位置",
-      "hint": "按一下方塊以選取影片下載位置。."
+      "hint": "按一下方塊以選取影片下載位置。"
     },
     "directory": {
       "legend": "歸納方式",
