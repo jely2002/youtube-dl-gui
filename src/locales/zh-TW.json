@@ -534,7 +534,7 @@
       },
       "impersonate": {
         "label": "模擬:",
-        "hint": "模擬特定 OS 或瀏覽器，以避免指紋辨識。",
+        "hint": "模擬特定 OS 或瀏覽器，以避免裝置指紋辨識。",
         "options": {
           "none": "不模擬",
           "any": "隨機模擬用戶端"
@@ -562,23 +562,23 @@
         },
         "selfpromo": {
           "label": "自我宣傳 / 非贊助",
-          "description": "創作者對商品、服務或頻道的自我宣傳 (非贊助)。"
+          "description": "創作者對商品、服務或頻道的自我宣傳 (非第三方付費)。"
         },
         "interaction": {
           "label": "互動提醒",
           "description": "提醒按讚、訂閱、追蹤或與創作者互動。"
         },
         "intro": {
-          "label": "片頭 / 中場",
-          "description": "開頭的片頭動畫、中場或非內容暫停。"
+          "label": "片頭 / 中場插播",
+          "description": "影片開頭的片頭動畫、中場插播或非內容暫停。"
         },
         "outro": {
           "label": "片尾 / 結尾卡 / 銘謝",
-          "description": "接近結尾的結尾卡、銘謝或收尾片段。"
+          "description": "接近影片結尾的結尾卡、致謝或收尾片段。"
         },
         "hook": {
-          "label": "預告片 / 問候",
-          "description": "預告即將播放內容的旁白、問候與道別。"
+          "label": "搶先一睹 / 問候",
+          "description": "用來吸引觀眾的開場段落、問候語或預告即將播放的內容。"
         },
         "music_offtopic": {
           "label": "非音樂片段",
@@ -589,8 +589,8 @@
           "description": "即將推出內容的預覽或先前片段的回顧。"
         },
         "filler": {
-          "label": "填充 / 離題",
-          "description": "理解主要內容不需要的離題、笑話或填充片段。"
+          "label": "閒聊 / 離題",
+          "description": "與主要內容無關、對理解影片沒有幫助的閒聊或插入片段。"
         },
         "chapter": {
           "label": "章節",
@@ -691,7 +691,7 @@
       "installed": "必要工具已安裝。"
     },
     "subtitle": {
-      "installing": "即將準備就緒。",
+      "installing": "請稍候片刻。",
       "failed": "應用程式可能無法正常運作，請回報此問題。",
       "installed": "準備就緒！"
     }
