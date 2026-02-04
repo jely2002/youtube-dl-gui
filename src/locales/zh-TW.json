@@ -2,7 +2,7 @@
   "common": {
     "download": "下載",
     "save": "儲存",
-    "later": "Later",
+    "later": "之後再說",
     "load": "載入",
     "install": "安裝",
     "percentage": "{percent}%",
@@ -769,125 +769,125 @@
         "message": "發生暫時性的伺服器問題，請稍後再試。"
       },
       "rateLimited429": {
-        "shortMessage": "Rate limited",
-        "message": "Too many requests were sent. Please wait and retry."
+        "shortMessage": "已達請求上限",
+        "message": "已送出過多請求。請稍候再試。"
       },
       "requestedFormatUnavailable": {
-        "shortMessage": "Format unavailable",
-        "message": "The selected format isn’t available for this video."
+        "shortMessage": "格式不可用",
+        "message": "所選格式不適用於此影片。"
       },
       "unableToExtractInitialData": {
-        "shortMessage": "Data extraction failed",
-        "message": "Couldn’t extract the required initial video data."
+        "shortMessage": "資料擷取失敗",
+        "message": "無法擷取必要的初始影片資料。"
       },
       "unableToExtractIdOrInfo": {
-        "shortMessage": "Metadata error",
-        "message": "Failed to extract video or uploader information."
+        "shortMessage": "中繼資料錯誤",
+        "message": "無法擷取影片或上傳者資訊。"
       },
       "nsigExtractionFailed": {
-        "shortMessage": "Signature failed",
-        "message": "Failed to extract or decode the video signature."
+        "shortMessage": "簽章失敗",
+        "message": "無法擷取或解碼影片簽章。"
       },
       "embedOnly": {
-        "shortMessage": "Embed-only video",
-        "message": "This video can only be accessed through an embedded player."
+        "shortMessage": "影片僅限嵌入",
+        "message": "此影片只能透過嵌入式播放器存取。"
       },
       "urlUnsupported": {
-        "shortMessage": "Invalid URL",
-        "message": "The provided link isn’t supported or recognized."
+        "shortMessage": "URL 無效",
+        "message": "提供的連結不受支援或無法辨識。"
       },
       "unknownUrlType": {
-        "shortMessage": "Unknown URL type",
-        "message": "The provided URL uses an unsupported protocol."
+        "shortMessage": "未知 URL 類型",
+        "message": "提供的 URL 使用不支援的通訊協定。"
       },
       "networkNameResolutionFailed": {
-        "shortMessage": "Network error",
-        "message": "Couldn’t resolve the host name. Check your internet connection."
+        "shortMessage": "網路錯誤",
+        "message": "無法解析主機名稱。請檢查網際網路連線。"
       },
       "unableToConnectToProxy": {
-        "shortMessage": "Proxy connection failed",
-        "message": "Unable to connect to the proxy. Check your proxy settings."
+        "shortMessage": "Proxy 連線失敗",
+        "message": "無法連線至 Proxy。請檢查 Proxy 設定。"
       },
       "playlistPrivateOrMissing": {
-        "shortMessage": "Playlist unavailable",
-        "message": "This playlist is private or no longer exists."
+        "shortMessage": "播放清單不可用",
+        "message": "此播放清單為私人或已不存在。"
       },
       "videoNotFoundOrPrivate": {
-        "shortMessage": "Video unavailable",
-        "message": "This video was removed or set to private."
+        "shortMessage": "影片不可用",
+        "message": "此影片已移除或設為私人。"
       },
       "channelUnavailable": {
-        "shortMessage": "Channel unavailable",
-        "message": "The channel hosting this content is no longer accessible."
+        "shortMessage": "頻道不可用",
+        "message": "提供此內容的頻道已無法存取。"
       },
       "ffmpegNotFound": {
-        "shortMessage": "ffmpeg not found",
-        "message": "Transcoding to mp3 or mp4 requires ffmpeg."
+        "shortMessage": "找不到 ffmpeg",
+        "message": "需要 ffmpeg 始得轉碼為 mp3 或 mp4。"
       },
       "ffmpegFailed": {
-        "shortMessage": "ffmpeg failed",
-        "message": "FFmpeg encountered an error during processing."
+        "shortMessage": "ffmpeg 失敗",
+        "message": "FFmpeg 處理時發生錯誤。"
       },
       "cannotAllocateMemory": {
-        "shortMessage": "Memory error",
-        "message": "FFmpeg ran out of memory while processing the video."
+        "shortMessage": "記憶體錯誤",
+        "message": "FFmpeg 處理影片時記憶體不足。"
       },
       "permissionDenied": {
-        "shortMessage": "Permission denied",
-        "message": "The app doesn’t have permission to access this file or folder."
+        "shortMessage": "權限不足",
+        "message": "應用程式沒有存取此檔案或資料夾的權限。"
       },
       "noWritePermission": {
-        "shortMessage": "Cannot write",
-        "message": "The destination path isn’t writable."
+        "shortMessage": "無法寫入",
+        "message": "目的地路徑無法寫入。"
       },
       "windowsFileMissing": {
-        "shortMessage": "File missing",
-        "message": "The referenced file could not be found (WinError 2)."
+        "shortMessage": "找不到檔案",
+        "message": "找不到參照的檔案 (WinError 2)。"
       },
       "blockedGeneric": {
-        "shortMessage": "Video blocked",
-        "message": "This video is blocked and cannot be downloaded."
+        "shortMessage": "影片已封鎖",
+        "message": "此影片已被封鎖，無法下載。"
       },
       "copyrightClaimed": {
-        "shortMessage": "Copyright block",
-        "message": "The video was blocked due to a copyright claim."
+        "shortMessage": "著作權封鎖",
+        "message": "影片因著作權聲明而遭封鎖。"
       },
       "notPremieredYet": {
-        "shortMessage": "Not premiered yet",
-        "message": "This video isn’t available until its premiere begins."
+        "shortMessage": "尚未首播",
+        "message": "此影片將在首播開始後才可使用。"
       },
       "livestreamNotStarted": {
-        "shortMessage": "Livestream pending",
-        "message": "The livestream hasn’t started yet. Please check back later."
+        "shortMessage": "直播尚未開始",
+        "message": "直播尚未開始，請稍後再查看。"
       },
       "sslVerifyFailed": {
-        "shortMessage": "SSL failed",
-        "message": "The secure connection could not be verified. Check your certificates or date/time."
+        "shortMessage": "SSL 驗證失敗",
+        "message": "無法驗證安全連線。請檢查憑證或日期/時間。"
       },
       "sponsorBlockUnreachable": {
-        "shortMessage": "SponsorBlock offline",
-        "message": "Couldn’t connect to the SponsorBlock API for segment data."
+        "shortMessage": "SponsorBlock 無法連線",
+        "message": "無法連線至 SponsorBlock API 以取得片段資料。"
       },
       "downloadRetryingFragment": {
-        "shortMessage": "Retrying fragment",
-        "message": "A fragment download failed and will be retried automatically."
+        "shortMessage": "正在重試片段",
+        "message": "片段下載失敗，將自動重試。"
       },
       "unknown": {
-        "shortMessage": "Unknown error",
-        "message": "An unknown error occurred while processing this item."
+        "shortMessage": "未知錯誤",
+        "message": "處理此項目時發生未知錯誤。"
       }
     }
   },
   "about": {
-    "title": "About",
-    "credit": "Made with ❤ by jely2002 & contributors",
-    "poweredBy": "Powered by open source:",
-    "viewLicenses": "View licenses",
-    "version": "Version: {version}",
+    "title": "關於",
+    "credit": "由 jely2002 與貢獻者用 ❤ 製作",
+    "poweredBy": "採用開放原始碼:",
+    "viewLicenses": "檢視授權",
+    "version": "版本: {version}",
     "links": {
       "github": "GitHub",
       "wiki": "Wiki",
-      "reportABug": "Report a bug"
+      "reportABug": "回報錯誤"
     }
   }
 }
