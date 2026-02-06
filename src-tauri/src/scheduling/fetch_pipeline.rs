@@ -4,16 +4,16 @@ use crate::models::{MediaAddPayload, MediaFatalPayload};
 use crate::runners::ytdlp_info::{run_ytdlp_info_fetch, YtdlpInfoFetchError};
 use crate::{
   models::{ParsedMedia, ParsedPlaylist},
+  scheduling::concurrency::DynamicSemaphore,
   scheduling::dispatcher::{DispatchEntry, DispatchRequest, GenericDispatcher},
-  SharedConfig,
 };
 use std::sync::LazyLock;
 use std::{
   collections::HashMap,
   sync::{Arc, Mutex},
 };
-use tauri::{AppHandle, Emitter, Manager};
-use tokio::sync::{mpsc::UnboundedSender, Semaphore};
+use tauri::{AppHandle, Emitter};
+use tokio::sync::mpsc::UnboundedSender;
 use uuid::Uuid;
 
 #[derive(Clone)]
@@ -65,10 +65,10 @@ impl DispatchEntry for FetchEntry {
 static GROUP_COUNTERS: LazyLock<Mutex<HashMap<String, usize>>> =
   LazyLock::new(|| Mutex::new(HashMap::new()));
 
-pub fn setup_fetch_dispatcher(app: &AppHandle) -> GenericDispatcher<FetchRequest> {
-  let cfg = app.state::<SharedConfig>().load();
-  let sem = Arc::new(Semaphore::new(cfg.performance.max_concurrency));
-
+pub fn setup_fetch_dispatcher(
+  app: &AppHandle,
+  sem: Arc<DynamicSemaphore>,
+) -> GenericDispatcher<FetchRequest> {
   GenericDispatcher::start(
     app.clone(),
     sem,

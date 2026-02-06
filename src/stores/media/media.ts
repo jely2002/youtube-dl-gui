@@ -116,12 +116,14 @@ export const useMediaStore = defineStore('media', () => {
     if (!group) return;
 
     const items: MediaItem[] = Object.values(group.items);
-    const itemsWithoutLeader: MediaItem[] = items.filter(item => !item.entries);
+    const itemsWithoutLeader: MediaItem[] = items.filter(item => !item.entries && stateStore.getState(item.id) !== MediaState.done);
 
     if (itemsWithoutLeader.length === 0) return;
 
     const newState = group.isCombined ? MediaState.downloadingList : MediaState.downloading;
-    items.forEach(item => stateStore.setState(item.id, newState));
+    items
+      .filter(item => stateStore.getState(item.id) !== MediaState.done)
+      .forEach(item => stateStore.setState(item.id, newState));
 
     try {
       await invoke<string>('media_download', {
@@ -149,6 +151,23 @@ export const useMediaStore = defineStore('media', () => {
     }
   }
 
+  async function pauseGroup(groupId: string) {
+    const group = groupStore.findGroupById(groupId);
+    if (!group) return;
+
+    const items: MediaItem[] = Object.values(group.items);
+    const itemsWithoutLeader: MediaItem[] = items.filter(item => !item.entries);
+
+    if (itemsWithoutLeader.length === 0) return;
+
+    const newState = group.isCombined ? MediaState.pausedList : MediaState.paused;
+    items
+      .filter(item => stateStore.getState(item.id) !== MediaState.done)
+      .forEach(item => stateStore.setState(item.id, newState));
+
+    groupStore.cancelGroup(groupId);
+  }
+
   function buildTemplateContext(item: MediaItem, group: Group): Record<string, string | undefined> {
     return {
       playlist_index: item.playlistIndex?.toString(),
@@ -163,7 +182,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   async function downloadAllGroups(fromShortcut: boolean = false) {
-    const group_ids = Object.keys(groupStore.groups)
+    const group_ids = groupStore.groupOrder
       .filter(gid => stateStore.getGroupState(gid) === MediaState.configure);
 
     await Promise.all(group_ids.map((gid) => {
@@ -171,6 +190,28 @@ export const useMediaStore = defineStore('media', () => {
       return downloadGroup(gid, opts);
     }));
     await notify(NotificationKind.QueueDownloading, { n: group_ids.length.toString() }, fromShortcut);
+  }
+
+  function pauseAllGroups() {
+    for (const groupId of groupStore.groupOrder) {
+      const state = stateStore.getGroupState(groupId);
+      if (state === MediaState.downloading || state === MediaState.downloadingList) {
+        void pauseGroup(groupId);
+      }
+    }
+  }
+
+  function resumeAllGroups() {
+    for (const groupId of groupStore.groupOrder) {
+      const state = stateStore.getGroupState(groupId);
+      if (state !== MediaState.paused && state !== MediaState.pausedList) continue;
+      const options = optionsStore.getOptions(groupId);
+      if (!options) {
+        console.warn(`No options found for group: ${groupId}, cannot resume.`);
+        continue;
+      }
+      void downloadGroup(groupId, options);
+    }
   }
 
   function deleteGroup(id: string) {
@@ -189,9 +230,17 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   function deleteAllGroups() {
-    const groups = groupStore.groups;
-    for (const group of Object.values(groups)) {
-      deleteGroup(group.id);
+    for (const groupId of [...groupStore.groupOrder]) {
+      deleteGroup(groupId);
+    }
+  }
+
+  function deleteGroupsByState(states: MediaState[]) {
+    for (const groupId of [...groupStore.groupOrder]) {
+      const state = stateStore.getGroupState(groupId);
+      if (state && states.includes(state)) {
+        deleteGroup(groupId);
+      }
     }
   }
 
@@ -200,7 +249,11 @@ export const useMediaStore = defineStore('media', () => {
     dispatchMediaInfoFetch,
     downloadGroup,
     downloadAllGroups,
+    pauseAllGroups,
+    pauseGroup,
+    resumeAllGroups,
     deleteGroup,
     deleteAllGroups,
+    deleteGroupsByState,
   };
 });

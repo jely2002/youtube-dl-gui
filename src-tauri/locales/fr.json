@@ -6,7 +6,9 @@
     "downloadQueue": "Télécharger la file",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Maj + V",
-      "ctrlShiftEnter": "Ctrl + Maj + Entrée"
+      "ctrlShiftEnter": "Ctrl + Maj + Entrée",
+      "altShiftV": "Alt + Maj + V",
+      "altShiftEnter": "Alt + Maj + Entrée"
     }
   },
   "notifications": {

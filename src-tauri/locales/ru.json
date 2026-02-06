@@ -1,0 +1,48 @@
+{
+  "tray": {
+    "quit": "Выйти",
+    "showOrHide": "Показать / скрыть окно",
+    "addToQueue": "Добавить из буфера обмена",
+    "downloadQueue": "Скачать очередь",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftEnter": "Alt + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Добавлено в очередь",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Скачивание очереди",
+      "body": "Скачивается {n} элемент | Скачиваются {n} элемента | Скачивается {n} элементов"
+    },
+    "queueFinished": {
+      "title": "Очередь завершена",
+      "body": "Скачан {n} элемент | Скачано {n} элемента | Скачано {n} элементов"
+    },
+    "videoFinished": {
+      "title": "Скачивание завершено",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Плейлист завершён",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Готово к скачиванию",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Плейлист готов к скачиванию",
+      "body": "{title} | {title} ({n} элемент) | {title} ({n} элементов)"
+    },
+    "downloadFailed": {
+      "title": "Ошибка скачивания",
+      "body": "{title}\n{message}"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 <template>
   <header class="p-4 bg-base-300 flex gap-4 justify-center w-full shadow-lg">
-    <form @submit.prevent="submitUrl" class="join w-full max-w-[622px] flex-grow">
+    <form @submit.prevent="submitUrl" class="join w-full max-w-155 grow">
       <input
           v-model="url"
           id="url-input"
@@ -20,14 +20,14 @@
     </form>
     <router-link class="btn btn-subtle" :title="t('layout.header.nav.settings')" :to="{ name: 'settings' }">
       <span class="sr-only">{{ t('layout.header.nav.settings') }}</span>
-      <cog-icon class="w-7 h-7"/>
+      <cog8-tooth-icon class="w-6 h-6"/>
     </router-link>
   </header>
 </template>
 
 <script setup lang="ts">
 
-import { CogIcon } from '@heroicons/vue/24/outline';
+import { Cog8ToothIcon } from '@heroicons/vue/24/outline';
 import { useMediaStore } from '../stores/media/media';
 import { ref, computed, onMounted } from 'vue';
 import { useClipboard } from '../composables/useClipboard';

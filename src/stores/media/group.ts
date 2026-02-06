@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import { v4 as uuidv4 } from 'uuid';
 import { Group } from '../../tauri/types/group';
@@ -8,6 +8,13 @@ import { firstKey, omit } from '../../helpers/groups';
 
 export const useMediaGroupStore = defineStore('media-group', () => {
   const groups = ref<Record<string, Group>>({});
+  const groupOrder = ref<string[]>([]);
+
+  const orderedGroups = computed(() =>
+    groupOrder.value
+      .map(id => groups.value[id])
+      .filter((group): group is Group => !!group),
+  );
 
   const findGroupById = (id: string) => groups.value[id];
 
@@ -23,12 +30,29 @@ export const useMediaGroupStore = defineStore('media-group', () => {
     return Object.values(group.items).find(item => item.isLeader);
   };
 
+  const prependGroups = (newGroups: Group[]) => {
+    if (newGroups.length === 0) return;
+    const ids = newGroups.map(group => group.id);
+    const idSet = new Set(ids);
+
+    for (const group of newGroups) {
+      groups.value[group.id] = group;
+    }
+
+    groupOrder.value = [
+      ...ids,
+      ...groupOrder.value.filter(id => !idSet.has(id)),
+    ];
+  };
+
   const createGroup = (group: Group) => {
-    groups.value[group.id] = group;
+    prependGroups([group]);
   };
 
   const deleteGroup = (id: string) => {
     delete groups.value[id];
+    const index = groupOrder.value.indexOf(id);
+    if (index !== -1) groupOrder.value.splice(index, 1);
   };
 
   const cancelGroup = (id: string) => {
@@ -86,9 +110,7 @@ export const useMediaGroupStore = defineStore('media-group', () => {
       (g): g is Group => g !== undefined,
     ).concat(extras);
 
-    for (const groupItem of finalGroups) {
-      createGroup(groupItem);
-    }
+    prependGroups(finalGroups);
 
     deleteGroup(group.id);
 
@@ -133,7 +155,7 @@ export const useMediaGroupStore = defineStore('media-group', () => {
     Object.assign(group, leaderMeta);
   }
 
-  const countGroups = () => Object.keys(groups.value).length;
+  const countGroups = () => groupOrder.value.length;
 
   function getAllFormats() {
     const formatMap = new Map<string, MediaFormat>();
@@ -150,12 +172,15 @@ export const useMediaGroupStore = defineStore('media-group', () => {
 
   return {
     groups,
+    groupOrder,
+    orderedGroups,
     countGroups,
     findGroupById,
     findItemInGroup,
     findGroupByItemId,
     findGroupLeader,
     createGroup,
+    prependGroups,
     cancelGroup,
     deleteGroup,
     splitGroup,

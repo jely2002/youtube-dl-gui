@@ -19,7 +19,8 @@
     "video": "video",
     "unknown": "onbekend",
     "confirm": "Bevestigen",
-    "best": "Beste"
+    "best": "Beste",
+    "resume": "Hervatten"
   },
   "layout": {
     "header": {
@@ -65,7 +66,14 @@
         }
       },
       "queue": {
-        "empty": "Lege wachtrij"
+        "empty": "Lege wachtrij",
+        "resume": "Alles hervatten",
+        "pause": "Alles pauzeren",
+        "clearSuccessful": "Wis geslaagd",
+        "clearErrored": "Wis mislukt",
+        "clearPending": "Wis in wachtrij",
+        "cancelDownloading": "Annuleer downloads",
+        "more": "Meer wachtrijacties"
       }
     }
   },
@@ -239,6 +247,15 @@
         "errorPrefix": "Fout – {message}",
         "report": "Rapporteren",
         "showFull": "Volledige fout weergeven"
+      },
+      "paused": {
+        "progress": "Download gepauzeerd — {percentage}%",
+        "progressList": "Download gepauzeerd — {percentage}% — {done} van {total}",
+        "indeterminate": "Download gepauzeerd",
+        "metadata": {
+          "eta": "Resterend: {eta}",
+          "etaItems": "Resterend: {n} item | Resterend: {n} items"
+        }
       }
     },
     "card": {
@@ -247,7 +264,9 @@
         "externalUrl": "Bezoek website",
         "retry": "Probeer download opnieuw",
         "download": "Los downloaden",
-        "metadata": "Toon meer informatie"
+        "metadata": "Toon meer informatie",
+        "pause": "Download pauzeren",
+        "resume": "Download hervatten"
       },
       "toasts": {
         "retry": "De video wordt opnieuw gedownload.",
@@ -507,6 +526,9 @@
     "network": {
       "legend": "Netwerk",
       "legendLabel": "Instellen hoe de app verbinding maakt met internet.",
+      "enableProxy": {
+        "label": "Verbinden via proxy:"
+      },
       "proxy": {
         "label": "Proxyconfiguratie:"
       },
@@ -781,6 +803,10 @@
       "networkNameResolutionFailed": {
         "shortMessage": "Netwerkfout",
         "message": "De hostnaam kon niet worden opgelost. Controleer je internetverbinding."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Proxyverbinding mislukt",
+        "message": "Kan geen verbinding maken met de proxy. Controleer de proxy-instellingen."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist niet beschikbaar",

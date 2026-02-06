@@ -1,15 +1,18 @@
 import { createI18n, I18n } from 'vue-i18n';
 import en from './locales/en.json';
+import es from './locales/es.json';
 import nl from './locales/nl.json';
 import it from './locales/it.json';
 import fr from './locales/fr.json';
 import de from './locales/de.json';
 import nb from './locales/nb.json';
+import ru from './locales/ru.json';
 import ptBR from './locales/pt-BR.json';
+import zhTW from './locales/zh-TW.json';
 import { detectBrowserLanguageCodes } from './helpers/subtitles/languages.ts';
 
 export const availableLocales: Record<string, boolean> = {
-  'en': true, 'nl': true, 'it': true, 'fr': true, 'de': true, 'nb': true, 'pt-BR': true,
+  'en': true, 'es': true, 'nl': true, 'it': true, 'fr': true, 'de': true, 'nb': true, 'ru': true, 'pt-BR': true, 'zh-TW': true,
 } as const;
 
 type MessageSchema = typeof en;
@@ -30,11 +33,14 @@ export const i18n: I18n = createI18n<[MessageSchema], Locale>({
   fallbackLocale: 'en',
   messages: {
     en,
+    es,
     nl,
     it,
     fr,
     de,
     nb,
+    ru,
     'pt-BR': ptBR,
+    'zh-TW': zhTW,
   },
 });

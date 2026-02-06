@@ -19,7 +19,8 @@
     "video": "Video",
     "unknown": "Unbekannt",
     "confirm": "Bestätigen",
-    "best": "Beste"
+    "best": "Beste",
+    "resume": "Fortsetzen"
   },
   "layout": {
     "header": {
@@ -65,7 +66,14 @@
         }
       },
       "queue": {
-        "empty": "Leere Warteschlange"
+        "empty": "Leere Warteschlange",
+        "resume": "Alle fortsetzen",
+        "pause": "Alle pausieren",
+        "clearSuccessful": "Erfolgreiche löschen",
+        "clearErrored": "Fehlgeschlagene löschen",
+        "clearPending": "Ausstehende löschen",
+        "cancelDownloading": "Downloads abbrechen",
+        "more": "Weitere Warteschlangenaktionen"
       }
     }
   },
@@ -239,6 +247,15 @@
         "errorPrefix": "Fehler – {message}",
         "report": "Melden",
         "showFull": "Vollständigen Fehler anzeigen"
+      },
+      "paused": {
+        "progress": "Download pausiert — {percentage}%",
+        "progressList": "Download pausiert — {percentage}% — {done} von {total}",
+        "indeterminate": "Download pausiert",
+        "metadata": {
+          "eta": "Verbleibend: {eta}",
+          "etaItems": "Verbleibend: {n} Element | Verbleibend: {n} Elemente"
+        }
       }
     },
     "card": {
@@ -247,7 +264,9 @@
         "externalUrl": "Auf externer URL öffnen",
         "retry": "Download erneut versuchen",
         "download": "Einzeln herunterladen",
-        "metadata": "Metadaten anzeigen"
+        "metadata": "Metadaten anzeigen",
+        "pause": "Download pausieren",
+        "resume": "Download fortsetzen"
       },
       "toasts": {
         "retry": "Download wird erneut versucht.",
@@ -507,6 +526,9 @@
     "network": {
       "legend": "Netzwerk",
       "legendLabel": "Lege fest, wie die Anwendung eine Verbindung zum Internet herstellt.",
+      "enableProxy": {
+        "label": "Über Proxy verbinden:"
+      },
       "proxy": {
         "label": "Proxy-Konfiguration:"
       },
@@ -781,6 +803,10 @@
       "networkNameResolutionFailed": {
         "shortMessage": "Netzwerkfehler",
         "message": "Der Hostname konnte nicht aufgelöst werden. Prüfe deine Internetverbindung."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Proxy-Verbindung fehlgeschlagen",
+        "message": "Verbindung zum Proxy nicht möglich. Prüfe die Proxy-Einstellungen."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist nicht verfügbar",

@@ -6,7 +6,9 @@
     "downloadQueue": "Scarica coda",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Shift + V",
-      "ctrlShiftEnter": "Ctrl + Shift + Invio"
+      "ctrlShiftEnter": "Ctrl + Shift + Invio",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftEnter": "Alt + Shift + Invio"
     }
   },
   "notifications": {

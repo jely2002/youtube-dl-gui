@@ -56,3 +56,9 @@ export enum ProgressStage {
   merging = 'merging',
   finalizing = 'finalizing',
 }
+
+export enum ProgressStyle {
+  primary = 'progress-primary',
+  warning = 'progress-warning',
+  error = 'progress-error',
+}

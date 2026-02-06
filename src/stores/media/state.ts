@@ -8,6 +8,8 @@ export const enum MediaState {
   configure = 'configure',
   downloading = 'downloading',
   downloadingList = 'downloadingList',
+  paused = 'paused',
+  pausedList = 'pausedList',
   error = 'error',
   done = 'done',
 }
@@ -44,5 +46,10 @@ export const useMediaStateStore = defineStore('media-state', () => {
     delete itemStates.value[id];
   };
 
-  return { itemStates, setState, getState, setGroupState, getGroupState, removeState };
+  const hasGroupWithState = (...states: MediaState[]): boolean => {
+    const availableStates = Object.values(itemStates.value);
+    return states.some(state => availableStates.includes(state));
+  };
+
+  return { itemStates, setState, getState, setGroupState, getGroupState, removeState, hasGroupWithState };
 });

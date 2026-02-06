@@ -2,16 +2,15 @@ use crate::models::download::FormatOptions;
 use crate::models::DownloadItem;
 use crate::runners::template_context::TemplateContext;
 use crate::runners::ytdlp_download::{run_ytdlp_download, YtdlpDownloadError};
+use crate::scheduling::concurrency::DynamicSemaphore;
 use crate::scheduling::dispatcher::{DispatchEntry, DispatchRequest, GenericDispatcher};
-use crate::SharedConfig;
 use std::sync::LazyLock;
 use std::{
   collections::HashMap,
   sync::{Arc, Mutex},
 };
-use tauri::{AppHandle, Manager};
+use tauri::AppHandle;
 use tokio::sync::mpsc::UnboundedSender;
-use tokio::sync::Semaphore;
 
 #[derive(Clone)]
 pub struct DownloadSender(pub UnboundedSender<DispatchRequest<DownloadRequest>>);
@@ -69,10 +68,10 @@ impl DispatchEntry for DownloadEntry {
 static DOWNLOAD_COUNTERS: LazyLock<Mutex<HashMap<String, usize>>> =
   LazyLock::new(|| Mutex::new(HashMap::new()));
 
-pub fn setup_download_dispatcher(app: &AppHandle) -> GenericDispatcher<DownloadRequest> {
-  let cfg = app.state::<SharedConfig>().load();
-  let sem = Arc::new(Semaphore::new(cfg.performance.max_concurrency));
-
+pub fn setup_download_dispatcher(
+  app: &AppHandle,
+  sem: Arc<DynamicSemaphore>,
+) -> GenericDispatcher<DownloadRequest> {
   GenericDispatcher::start(
     app.clone(),
     sem,

@@ -19,7 +19,8 @@
     "video": "video",
     "unknown": "sconosciuto",
     "confirm": "Conferma",
-    "best": "Migliore"
+    "best": "Migliore",
+    "resume": "Riprendi"
   },
   "layout": {
     "header": {
@@ -65,7 +66,14 @@
         }
       },
       "queue": {
-        "empty": "Coda vuota"
+        "empty": "Coda vuota",
+        "resume": "Riprendi tutto",
+        "pause": "Metti tutto in pausa",
+        "clearSuccessful": "Rimuovi completati",
+        "clearErrored": "Rimuovi con errori",
+        "clearPending": "Rimuovi in attesa",
+        "cancelDownloading": "Annulla download",
+        "more": "Altre azioni coda"
       }
     }
   },
@@ -239,6 +247,15 @@
         "errorPrefix": "Errore - {message}",
         "report": "Rapporto",
         "showFull": "Visualizza errore completo"
+      },
+      "paused": {
+        "progress": "Download in pausa — {percentage}%",
+        "progressList": "Download in pausa — {percentage}% — {done} di {total}",
+        "indeterminate": "Download in pausa",
+        "metadata": {
+          "eta": "Rimangono: {eta}",
+          "etaItems": "Rimangono: {n} elemento | Rimangono: {n} elementi"
+        }
       }
     },
     "card": {
@@ -247,7 +264,9 @@
         "externalUrl": "Visita URL esterna",
         "retry": "Riprova download",
         "download": "Download individuale",
-        "metadata": "Visualizza metadati"
+        "metadata": "Visualizza metadati",
+        "pause": "Metti in pausa download",
+        "resume": "Riprendi download"
       },
       "toasts": {
         "retry": "Nuovo tentativo download.",
@@ -439,7 +458,7 @@
       },
       "location": {
         "label": "Percorso download e nomi file:",
-        "link": "Configura percorsi download"
+        "link": "Imposta percorsi download"
       },
       "subtitles": {
         "label": "Aggiungi sottotitoli:",
@@ -507,6 +526,9 @@
     "network": {
       "legend": "Rete",
       "legendLabel": "Configura la modalità di connessione dell'applicazione ad internet.",
+      "enableProxy": {
+        "label": "Connetti tramite proxy:"
+      },
       "proxy": {
         "label": "Configurazione proxy:"
       },
@@ -602,7 +624,7 @@
         }
       },
       "minimiseToTray": {
-        "label": "Alla chiusura mninimizza nella barra di sistema",
+        "label": "Alla chiusura mninimizza nella barra sistema",
         "hint": "Chiudendo la finestra, l'app viene nascosta nella barra di sistema invece di essere chiusa."
       },
       "autoStart": {
@@ -669,7 +691,7 @@
       "installed": "Installazione strumenti richiesti completata."
     },
     "subtitle": {
-      "installing": "Prerparazione…",
+      "installing": "Preparazione…",
       "failed": "L'app potrebbe non funzionare come previsto, segnalalo.",
       "installed": "Pronto per il download!"
     }
@@ -781,6 +803,10 @@
       "networkNameResolutionFailed": {
         "shortMessage": "errore di rete",
         "message": "Impossibile risolvere il nome host. Controlla la connessione internet."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Connessione al proxy non riuscita",
+        "message": "Impossibile connettersi al proxy. Controlla le impostazioni proxy."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist non disponibile",

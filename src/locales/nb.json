@@ -19,7 +19,8 @@
     "video": "video",
     "unknown": "ukjent",
     "confirm": "Bekreft",
-    "best": "Best"
+    "best": "Best",
+    "resume": "Fortsett"
   },
   "layout": {
     "header": {
@@ -65,7 +66,14 @@
         }
       },
       "queue": {
-        "empty": "Tom kø"
+        "empty": "Tom kø",
+        "resume": "Fortsett alle",
+        "pause": "Sett alle på pause",
+        "clearSuccessful": "Fjern vellykkede",
+        "clearErrored": "Fjern feil",
+        "clearPending": "Fjern ventende",
+        "cancelDownloading": "Avbryt nedlastinger",
+        "more": "Flere køhandlinger"
       }
     }
   },
@@ -239,6 +247,15 @@
         "errorPrefix": "Feil - {message}",
         "report": "Rapporter",
         "showFull": "Vis full feil"
+      },
+      "paused": {
+        "progress": "Nedlasting pauset — {percentage}%",
+        "progressList": "Nedlasting pauset — {percentage}% — {done} av {total}",
+        "indeterminate": "Nedlasting pauset",
+        "metadata": {
+          "eta": "Gjenstår: {eta}",
+          "etaItems": "Gjenstår: {n} element | Gjenstår: {n} elementer"
+        }
       }
     },
     "card": {
@@ -247,7 +264,9 @@
         "externalUrl": "Besøk på ekstern URL",
         "retry": "Prøv nedlasting på nytt",
         "download": "Last ned individuelt",
-        "metadata": "Vis metadata"
+        "metadata": "Vis metadata",
+        "pause": "Sett nedlasting på pause",
+        "resume": "Fortsett nedlasting"
       },
       "toasts": {
         "retry": "Prøver nedlasting på nytt.",
@@ -507,6 +526,9 @@
     "network": {
       "legend": "Nettverk",
       "legendLabel": "Konfigurer hvordan applikasjonen kobler til internett.",
+      "enableProxy": {
+        "label": "Koble til via proxy:"
+      },
       "proxy": {
         "label": "Proxy-konfigurasjon:"
       },
@@ -781,6 +803,10 @@
       "networkNameResolutionFailed": {
         "shortMessage": "Nettverksfeil",
         "message": "Kunne ikke løse vertsnavnet. Sjekk internettforbindelsen din."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Proxy-tilkobling mislyktes",
+        "message": "Kunne ikke koble til proxyen. Sjekk proxyinnstillingene."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Spilleliste utilgjengelig",

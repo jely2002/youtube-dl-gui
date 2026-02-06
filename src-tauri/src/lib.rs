@@ -20,6 +20,7 @@ use crate::i18n::I18nManager;
 use crate::logging::LogStoreState;
 use crate::menu::setup_menu;
 use crate::paths::PathsManager;
+use crate::scheduling::concurrency::DynamicSemaphore;
 use crate::scheduling::download_pipeline::{setup_download_dispatcher, DownloadSender};
 use crate::scheduling::fetch_pipeline::{setup_fetch_dispatcher, FetchSender};
 use crate::state::config::ConfigHandle;
@@ -38,6 +39,12 @@ use tracing_subscriber::{fmt, prelude::*};
 
 type SharedConfig = Arc<ConfigHandle>;
 type SharedPreferences = Arc<PreferencesHandle>;
+
+#[derive(Clone)]
+pub struct DownloadLimiter(pub Arc<DynamicSemaphore>);
+
+#[derive(Clone)]
+pub struct FetchLimiter(pub Arc<DynamicSemaphore>);
 
 pub static RUNNING_GROUPS: LazyLock<StdMutex<HashMap<String, bool>>> =
   LazyLock::new(|| StdMutex::new(HashMap::new()));
@@ -118,9 +125,16 @@ pub fn run() {
       handle.manage(LogStoreState::new());
 
       // setup dispatchers
-      let fetch_dispatcher = setup_fetch_dispatcher(handle);
+      let cfg_snapshot = handle.state::<SharedConfig>().load();
+      let max_concurrency = cfg_snapshot.performance.max_concurrency;
+      let download_limiter = Arc::new(DynamicSemaphore::new(max_concurrency));
+      let fetch_limiter = Arc::new(DynamicSemaphore::new(max_concurrency));
+      handle.manage(DownloadLimiter(download_limiter.clone()));
+      handle.manage(FetchLimiter(fetch_limiter.clone()));
+
+      let fetch_dispatcher = setup_fetch_dispatcher(handle, fetch_limiter);
       handle.manage(FetchSender(fetch_dispatcher.sender()));
-      let download_dispatcher = setup_download_dispatcher(handle);
+      let download_dispatcher = setup_download_dispatcher(handle, download_limiter);
       handle.manage(DownloadSender(download_dispatcher.sender()));
 
       // setup binaries
@@ -231,9 +245,11 @@ pub fn init_autostart(app: &AppHandle) {
 }
 
 pub fn reopen_window(app: &AppHandle) {
-  let window = app.get_webview_window("main").expect("no main window");
+  let Some(window) = app.get_webview_window("main") else {
+    return;
+  };
   let _ = window.show();
-  window.set_focus().expect("Failure focusing window.");
+  let _ = window.set_focus();
 }
 
 #[cfg(debug_assertions)]

@@ -48,7 +48,8 @@ pub async fn run_ytdlp_info_fetch(
     .with_input_args()
     .with_auth_args()
     .with_network_args()
-    .with_args(["-J", "--flat-playlist", url]);
+    .with_args(["-J", "--flat-playlist"])
+    .with_url(url);
 
   let matcher = match DiagnosticMatcher::from_json(RULES_JSON) {
     Ok(m) => m,
