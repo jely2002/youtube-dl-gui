@@ -19,8 +19,8 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = ["isolation"] }
 
 [dependencies]
-tauri = { version = "2.9.5", features = ["isolation", "image-png", "tray-icon", "unstable"] }
-tauri-plugin-opener = "2.5.2"
+tauri = { version = "2.10.2", features = ["isolation", "image-png", "tray-icon", "unstable"] }
+tauri-plugin-opener = "2.5.3"
 tauri-plugin-global-shortcut = "2.3.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -31,33 +31,36 @@ tauri-plugin-clipboard-manager = "2"
 tauri-plugin-dialog = "2"
 tauri-plugin-store = "2"
 tauri-plugin-notification = "2"
-arc-swap = "1.7.1"
-tokio = { version = "1.48.0", features = ["full"] }
-reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+tauri-plugin-autostart = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-updater = "2"
+arc-swap = "1.8.1"
+tokio = { version = "1.49.0", features = ["full"] }
+reqwest = { version = "0.13", default-features = false, features = ["json", "rustls"] }
 sha2 = "0.10"
 ed25519-dalek = { version = "2", features = ["std"] }
 base64 = "0.22.1"
 hex = "0.4"
-zip = "7.0.0"
+zip = "7.4.0"
 tar = "0.4"
 bzip2 = "0.6.1"
 tauri-plugin-keyring = "0.1.0"
 rand = "0.9.2"
 tauri-plugin-stronghold = "2.3.1"
 tracing = "0.1.44"
-tracing-subscriber = "0.3.20"
-sentry = { version = "0.46.0", features = [
+tracing-subscriber = "0.3.22"
+sentry = { version = "0.46.2", features = [
     "tracing",
 ] }
-regex = "1.12.2"
+regex = "1.12.3"
 fs_extra = "1.3.0"
-indexmap = { version = "2.12.1", features = ["serde"] }
+indexmap = { version = "2.13.0", features = ["serde"] }
 include_dir = "0.7.4"
 sys-locale = "0.3.2"
-notify-rust = "4.11.7"
+notify-rust = "4.12.0"
 
 [dev-dependencies]
-tauri = { version = "2.9.5", features = ["test"] }
+tauri = { version = "2.10.2", features = ["test"] }
 
 [profile.dev]
 incremental = true
@@ -73,8 +76,3 @@ panic = "abort"
 strip = false
 debug = 1
 split-debuginfo = "packed"
-
-[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri-plugin-autostart = "2"
-tauri-plugin-single-instance = "2"
-tauri-plugin-updater = "2"

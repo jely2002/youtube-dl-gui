@@ -51,13 +51,13 @@ slots:
   single-instance:
     interface: dbus
     bus: session
-    name: org.com_jelleglebbeek_youtube_dl_gui.SingleInstance
+    name: com-jelleglebbeek-youtube-dl-gui.SingleInstance
 
 plugs:
   single-instance-plug:
     interface: dbus
     bus: session
-    name: org.com_jelleglebbeek_youtube_dl_gui.SingleInstance
+    name: com-jelleglebbeek-youtube-dl-gui.SingleInstance
 
 parts:
   build-app:
