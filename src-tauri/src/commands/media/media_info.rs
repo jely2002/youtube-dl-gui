@@ -1,6 +1,7 @@
 use crate::scheduling::dispatcher::DispatchRequest;
 use crate::scheduling::fetch_pipeline::FetchRequest;
-use crate::{FetchSender, RUNNING_GROUPS};
+use crate::scheduling::group_state::ensure_group_running;
+use crate::FetchSender;
 use tauri::State;
 
 #[tauri::command]
@@ -10,10 +11,7 @@ pub fn media_info(
   group_id: String,
   pipeline: State<'_, FetchSender>,
 ) -> Result<String, String> {
-  RUNNING_GROUPS
-    .lock()
-    .unwrap()
-    .insert(group_id.clone(), true);
+  ensure_group_running(&group_id);
 
   pipeline
     .0
