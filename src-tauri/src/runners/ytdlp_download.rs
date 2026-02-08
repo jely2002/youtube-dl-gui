@@ -60,12 +60,6 @@ pub async fn run_ytdlp_download(
   let (mut rx, child) = runner.spawn().map_err(YtdlpDownloadError::SpawnFailed)?;
   let mut cancel_rx = subscribe_group(&entry.group_id);
 
-  if is_cancelled_now(&cancel_rx) {
-    tracing::info!("Cancelled processing for group_id {}", entry.group_id);
-    let _ = child.kill_tree();
-    return Ok(());
-  }
-
   loop {
     tokio::select! {
       event = rx.recv() => {
@@ -132,13 +126,8 @@ pub async fn run_ytdlp_download(
           }
         }
       }
-      result = cancel_rx.changed() => {
-        if result.is_ok() && is_cancelled_now(&cancel_rx) {
-          tracing::info!("Cancelled processing for group_id {}", entry.group_id);
-          let _ = child.kill_tree();
-          return Ok(());
-        }
-        if result.is_err() && is_cancelled_now(&cancel_rx) {
+      _ = cancel_rx.changed() => {
+        if is_cancelled_now(&cancel_rx) {
           tracing::info!("Cancelled processing for group_id {}", entry.group_id);
           let _ = child.kill_tree();
           return Ok(());

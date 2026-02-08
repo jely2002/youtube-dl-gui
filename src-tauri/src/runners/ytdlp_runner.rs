@@ -225,6 +225,9 @@ impl<'a> YtdlpRunner<'a> {
   pub async fn output(self) -> Result<YtdlpOutput, String> {
     tracing::info!("Running command: yt-dlp {}", self.args.join(" "));
     let mut command = self.build_command();
+
+    configure_command(&mut command).map_err(|e| format!("yt-dlp spawn setup failed: {e}"))?;
+
     tauri::async_runtime::spawn_blocking(move || {
       let output = command
         .output()

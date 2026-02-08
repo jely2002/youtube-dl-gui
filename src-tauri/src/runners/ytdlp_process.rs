@@ -5,17 +5,24 @@ use std::process::Command;
 use std::os::unix::process::CommandExt;
 
 #[cfg(windows)]
-use std::os::windows::process::ChildExt;
+use core::ffi::c_void;
+
+#[cfg(windows)]
+use std::os::windows::io::AsRawHandle;
+
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
+
 #[cfg(windows)]
 use windows_sys::Win32::Foundation::{CloseHandle, HANDLE};
+
 #[cfg(windows)]
 use windows_sys::Win32::System::JobObjects::{
   AssignProcessToJobObject, CreateJobObjectW, JobObjectExtendedLimitInformation,
   SetInformationJobObject, TerminateJobObject, JOBOBJECT_EXTENDED_LIMIT_INFORMATION,
   JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE,
 };
+
 #[cfg(windows)]
 use windows_sys::Win32::System::Threading::CREATE_NO_WINDOW;
 
@@ -30,14 +37,22 @@ pub struct PlatformProcess {
 #[cfg(windows)]
 #[derive(Debug)]
 pub struct JobHandle {
-  handle: HANDLE,
+  handle: isize,
+}
+
+#[cfg(windows)]
+impl JobHandle {
+  #[inline]
+  fn as_handle(&self) -> HANDLE {
+    self.handle as HANDLE
+  }
 }
 
 #[cfg(windows)]
 impl Drop for JobHandle {
   fn drop(&mut self) {
     if self.handle != 0 {
-      unsafe { CloseHandle(self.handle) };
+      unsafe { CloseHandle(self.as_handle()) };
     }
   }
 }
@@ -101,24 +116,24 @@ pub fn kill_platform_process(platform: &PlatformProcess) {
   #[cfg(windows)]
   {
     if let Some(job) = &platform.job {
-      unsafe {
-        TerminateJobObject(job.handle, 1);
-      }
+      unsafe { TerminateJobObject(job.as_handle(), 1) };
     }
   }
 }
 
 #[cfg(windows)]
 fn create_job_for_child(child: &std::process::Child) -> io::Result<JobHandle> {
-  let handle = unsafe { CreateJobObjectW(std::ptr::null(), std::ptr::null()) };
-  if handle == 0 {
+  let handle = unsafe { CreateJobObjectW(std::ptr::null(), std::ptr::null::<u16>()) };
+  if handle.is_null() {
     return Err(io::Error::last_os_error());
   }
 
   let mut info: JOBOBJECT_EXTENDED_LIMIT_INFORMATION = unsafe { std::mem::zeroed() };
   info.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-  let info_ptr = &mut info as *mut _ as *mut _;
+
+  let info_ptr = (&info as *const JOBOBJECT_EXTENDED_LIMIT_INFORMATION) as *const c_void;
   let info_size = std::mem::size_of::<JOBOBJECT_EXTENDED_LIMIT_INFORMATION>() as u32;
+
   let set_ok = unsafe {
     SetInformationJobObject(
       handle,
@@ -139,5 +154,7 @@ fn create_job_for_child(child: &std::process::Child) -> io::Result<JobHandle> {
     return Err(io::Error::last_os_error());
   }
 
-  Ok(JobHandle { handle })
+  Ok(JobHandle {
+    handle: handle as isize,
+  })
 }
