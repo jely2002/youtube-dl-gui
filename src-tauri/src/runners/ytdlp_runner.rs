@@ -3,17 +3,48 @@ use crate::models::TrackType;
 use crate::paths::PathsManager;
 use crate::runners::template_context::TemplateContext;
 use crate::runners::ytdlp_args::{build_format_args, build_location_args, build_output_args};
+use crate::runners::ytdlp_process::{
+  configure_command, kill_platform_process, platform_process_from_child, PlatformProcess,
+};
 use crate::state::config_models::{Config, SubtitleSettings};
 use crate::state::preferences_models::Preferences;
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
 use std::collections::HashSet;
+use std::io;
+use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
+use std::process::{Command, ExitStatus, Stdio};
 use std::sync::Arc;
-use tauri::async_runtime::Receiver;
+use std::thread;
 use tauri::{AppHandle, Manager};
-use tauri_plugin_shell::process::{CommandChild, Output};
-use tauri_plugin_shell::{process::CommandEvent, ShellExt};
+use tokio::sync::mpsc::{unbounded_channel, UnboundedReceiver, UnboundedSender};
+
+#[derive(Debug, Clone)]
+pub struct TerminatedPayload {
+  pub code: Option<i32>,
+}
+
+#[derive(Debug, Clone)]
+#[non_exhaustive]
+pub enum YtdlpCommandEvent {
+  Stderr(Vec<u8>),
+  Stdout(Vec<u8>),
+  Error(String),
+  Terminated(TerminatedPayload),
+}
+
+#[derive(Debug)]
+pub struct YtdlpOutput {
+  pub status: ExitStatus,
+  pub stdout: Vec<u8>,
+  pub stderr: Vec<u8>,
+}
+
+#[derive(Debug)]
+pub struct YtdlpChild {
+  platform: PlatformProcess,
+}
 
 pub struct YtdlpRunner<'a> {
   app: &'a AppHandle,
@@ -191,35 +222,87 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
-  pub async fn shell(self) -> Result<Output, String> {
+  pub async fn output(self) -> Result<YtdlpOutput, String> {
     tracing::info!("Running command: yt-dlp {}", self.args.join(" "));
-    let separator = if cfg!(windows) { ';' } else { ':' };
-    let path_env = std::env::var("PATH").unwrap_or_default();
-    let new_path = format!("{}{}{}", self.bin_dir.display(), separator, path_env);
-    self
-      .app
-      .shell()
-      .command("yt-dlp")
-      .args(self.args)
-      .env("PATH", new_path)
-      .output()
-      .await
-      .map_err(|e| format!("yt-dlp failed to run: {e}"))
+    let mut command = self.build_command();
+
+    configure_command(&mut command).map_err(|e| format!("yt-dlp spawn setup failed: {e}"))?;
+
+    tauri::async_runtime::spawn_blocking(move || {
+      let output = command
+        .output()
+        .map_err(|e| format!("yt-dlp failed to run: {e}"))?;
+      Ok(YtdlpOutput {
+        status: output.status,
+        stdout: output.stdout,
+        stderr: output.stderr,
+      })
+    })
+    .await
+    .map_err(|e| format!("yt-dlp task failed: {e}"))?
   }
 
-  pub fn spawn(self) -> Result<(Receiver<CommandEvent>, CommandChild), String> {
+  pub fn spawn(self) -> Result<(UnboundedReceiver<YtdlpCommandEvent>, YtdlpChild), String> {
     tracing::info!("Running command: yt-dlp {}", self.args.join(" "));
+    let mut command = self.build_command();
+    command
+      .stdin(Stdio::piped())
+      .stdout(Stdio::piped())
+      .stderr(Stdio::piped());
+
+    configure_command(&mut command).map_err(|e| format!("yt-dlp spawn setup failed: {e}"))?;
+
+    let mut raw_child = command
+      .spawn()
+      .map_err(|e| format!("yt-dlp failed to spawn: {e}"))?;
+    let stdout = raw_child.stdout.take();
+    let stderr = raw_child.stderr.take();
+
+    let platform = match platform_process_from_child(&raw_child) {
+      Ok(platform) => platform,
+      Err(err) => {
+        let _ = raw_child.kill();
+        return Err(err);
+      }
+    };
+
+    let (tx, rx) = unbounded_channel();
+
+    if let Some(stdout) = stdout {
+      spawn_reader(stdout, tx.clone(), true);
+    }
+    if let Some(stderr) = stderr {
+      spawn_reader(stderr, tx.clone(), false);
+    }
+
+    let wait_tx = tx.clone();
+    thread::spawn(move || {
+      let status = raw_child.wait();
+      match status {
+        Ok(status) => {
+          let payload = TerminatedPayload {
+            code: status.code(),
+          };
+          let _ = wait_tx.send(YtdlpCommandEvent::Terminated(payload));
+        }
+        Err(err) => {
+          let _ = wait_tx.send(YtdlpCommandEvent::Error(err.to_string()));
+        }
+      }
+    });
+
+    let child = YtdlpChild { platform };
+
+    Ok((rx, child))
+  }
+
+  fn build_command(&self) -> Command {
     let separator = if cfg!(windows) { ';' } else { ':' };
     let path_env = std::env::var("PATH").unwrap_or_default();
     let new_path = format!("{}{}{}", self.bin_dir.display(), separator, path_env);
-    self
-      .app
-      .shell()
-      .command("yt-dlp")
-      .args(self.args)
-      .env("PATH", new_path)
-      .spawn()
-      .map_err(|e| format!("yt-dlp failed to spawn: {e}"))
+    let mut command = Command::new("yt-dlp");
+    command.args(&self.args).env("PATH", new_path);
+    command
   }
 
   fn apply_auth_secrets(&mut self, s: AuthSecrets) {
@@ -244,6 +327,43 @@ impl<'a> YtdlpRunner<'a> {
       self.args.push(h);
     }
   }
+}
+
+impl YtdlpChild {
+  pub fn kill_tree(&self) -> Result<(), String> {
+    kill_platform_process(&self.platform);
+    Ok(())
+  }
+}
+
+fn spawn_reader<R: io::Read + Send + 'static>(
+  reader: R,
+  tx: UnboundedSender<YtdlpCommandEvent>,
+  is_stdout: bool,
+) {
+  thread::spawn(move || {
+    let mut reader = BufReader::new(reader);
+    let mut buf = Vec::new();
+    loop {
+      buf.clear();
+      match reader.read_until(b'\n', &mut buf) {
+        Ok(0) => break,
+        Ok(_) => {
+          let out = std::mem::take(&mut buf);
+          let event = if is_stdout {
+            YtdlpCommandEvent::Stdout(out)
+          } else {
+            YtdlpCommandEvent::Stderr(out)
+          };
+          let _ = tx.send(event);
+        }
+        Err(err) => {
+          let _ = tx.send(YtdlpCommandEvent::Error(err.to_string()));
+          break;
+        }
+      }
+    }
+  });
 }
 
 fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {

@@ -62,6 +62,12 @@ notify-rust = "4.12.0"
 [dev-dependencies]
 tauri = { version = "2.10.2", features = ["test"] }
 
+[target.'cfg(unix)'.dependencies]
+libc = "0.2.176"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_System_JobObjects", "Win32_System_Threading"] }
+
 [profile.dev]
 incremental = true
 

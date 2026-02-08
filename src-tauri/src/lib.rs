@@ -28,8 +28,7 @@ use crate::state::preferences::PreferencesHandle;
 use crate::tray::{create_tray, TrayState};
 use crate::window::{restore_main_window, setup_close_behaviour, track_main_window};
 use sentry::ClientInitGuard;
-use std::collections::HashMap;
-use std::sync::{Arc, LazyLock, Mutex as StdMutex};
+use std::sync::{Arc, Mutex as StdMutex};
 use stronghold::stronghold_state;
 use tauri::{AppHandle, Manager};
 use tauri_plugin_autostart::{MacosLauncher, ManagerExt};
@@ -45,9 +44,6 @@ pub struct DownloadLimiter(pub Arc<DynamicSemaphore>);
 
 #[derive(Clone)]
 pub struct FetchLimiter(pub Arc<DynamicSemaphore>);
-
-pub static RUNNING_GROUPS: LazyLock<StdMutex<HashMap<String, bool>>> =
-  LazyLock::new(|| StdMutex::new(HashMap::new()));
 
 /// # Panics
 ///

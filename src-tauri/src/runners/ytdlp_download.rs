@@ -4,12 +4,12 @@ use crate::models::{
 };
 use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_progress::YtdlpProgressParser;
-use crate::runners::ytdlp_runner::YtdlpRunner;
+use crate::runners::ytdlp_runner::{YtdlpCommandEvent, YtdlpRunner};
 use crate::scheduling::download_pipeline::DownloadEntry;
-use crate::RUNNING_GROUPS;
+use crate::scheduling::group_state::subscribe_group;
 use std::fmt;
 use tauri::{AppHandle, Emitter, Manager, State};
-use tauri_plugin_shell::process::CommandEvent;
+use tokio::sync::watch;
 
 #[derive(Debug)]
 pub enum YtdlpDownloadError {
@@ -58,77 +58,89 @@ pub async fn run_ytdlp_download(
   let mut progress_parser = YtdlpProgressParser::new(&entry.id, &entry.group_id);
 
   let (mut rx, child) = runner.spawn().map_err(YtdlpDownloadError::SpawnFailed)?;
+  let mut cancel_rx = subscribe_group(&entry.group_id);
 
-  while let Some(event) = rx.recv().await {
-    let cancelled = {
-      let map = RUNNING_GROUPS
-        .lock()
-        .unwrap_or_else(|poisoned| poisoned.into_inner());
-      !map.get(&entry.group_id).copied().unwrap_or(true)
-    };
+  loop {
+    tokio::select! {
+      event = rx.recv() => {
+        let Some(event) = event else {
+          break;
+        };
 
-    if cancelled {
-      tracing::info!("Cancelled processing for group_id {}", entry.group_id);
-      let _ = child.kill();
-      return Ok(());
-    }
-
-    let log_state = app.state::<LogStoreState>();
-
-    match event {
-      CommandEvent::Stdout(line) => {
-        let line_str = String::from_utf8_lossy(&line);
-        store_log_line(&line_str, &entry, log_state, &app);
-        parse_progress_line(&line_str, &mut progress_parser, &app);
-      }
-      CommandEvent::Stderr(line) => {
-        let line_str = String::from_utf8_lossy(&line);
-        store_log_line(&line_str, &entry, log_state, &app);
-        parse_error_line(&line_str, &error_parser, &app);
-      }
-      CommandEvent::Terminated(term) => {
-        if term.code == Some(0) {
-          let _ = app.emit(
-            "media_complete",
-            MediaProgressComplete {
-              id: entry.id.clone(),
-              group_id: entry.group_id.clone(),
-            },
-          );
+        if is_cancelled_now(&cancel_rx) {
+          tracing::info!("Cancelled processing for group_id {}", entry.group_id);
+          let _ = child.kill_tree();
           return Ok(());
         }
 
-        let exit = term.code.unwrap_or(1);
-        let _ = app.emit(
-          "media_fatal",
-          MediaFatalPayload::with_exit(
-            entry.group_id.clone(),
-            entry.id.clone(),
-            exit,
-            format!("Download failed for group {}", entry.group_id),
-          ),
-        );
-        return Err(YtdlpDownloadError::NonZeroExit(exit));
-      }
-      CommandEvent::Error(err) => {
-        let msg = format!("Download failed for group {}: {}", entry.group_id, err);
-        let _ = app.emit(
-          "media_fatal",
-          MediaFatalPayload::internal(
-            entry.id.clone(),
-            entry.group_id.clone(),
-            msg.clone(),
-            Some(err.clone()),
-          ),
-        );
+        let log_state = app.state::<LogStoreState>();
 
-        return Err(YtdlpDownloadError::RunnerError(err));
+        match event {
+          YtdlpCommandEvent::Stdout(line) => {
+            let line_str = String::from_utf8_lossy(&line);
+            store_log_line(&line_str, &entry, log_state, &app);
+            parse_progress_line(&line_str, &mut progress_parser, &app);
+          }
+          YtdlpCommandEvent::Stderr(line) => {
+            let line_str = String::from_utf8_lossy(&line);
+            store_log_line(&line_str, &entry, log_state, &app);
+            parse_error_line(&line_str, &error_parser, &app);
+          }
+          YtdlpCommandEvent::Terminated(term) => {
+            if term.code == Some(0) {
+              let _ = app.emit(
+                "media_complete",
+                MediaProgressComplete {
+                  id: entry.id.clone(),
+                  group_id: entry.group_id.clone(),
+                },
+              );
+              return Ok(());
+            }
+
+            let exit = term.code.unwrap_or(1);
+            let _ = app.emit(
+              "media_fatal",
+              MediaFatalPayload::with_exit(
+                entry.group_id.clone(),
+                entry.id.clone(),
+                exit,
+                format!("Download failed for group {}", entry.group_id),
+              ),
+            );
+            return Err(YtdlpDownloadError::NonZeroExit(exit));
+          }
+          YtdlpCommandEvent::Error(err) => {
+            let msg = format!("Download failed for group {}: {}", entry.group_id, err);
+            let _ = app.emit(
+              "media_fatal",
+              MediaFatalPayload::internal(
+                entry.id.clone(),
+                entry.group_id.clone(),
+                msg.clone(),
+                Some(err.clone()),
+              ),
+            );
+
+            return Err(YtdlpDownloadError::RunnerError(err));
+          }
+        }
       }
-      _ => {}
+      _ = cancel_rx.changed() => {
+        if is_cancelled_now(&cancel_rx) {
+          tracing::info!("Cancelled processing for group_id {}", entry.group_id);
+          let _ = child.kill_tree();
+          return Ok(());
+        }
+      }
     }
   }
 
   Err(YtdlpDownloadError::EventStreamEnded)
+}
+
+fn is_cancelled_now(cancel_rx: &watch::Receiver<bool>) -> bool {
+  !*cancel_rx.borrow()
 }
 
 fn store_log_line(

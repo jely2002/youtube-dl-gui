@@ -69,7 +69,7 @@ pub async fn run_ytdlp_info_fetch(
 
   let error_parser = YtdlpErrorParser::new(&id, &group_id, matcher);
 
-  let output = match runner.shell().await {
+  let output = match runner.output().await {
     Ok(o) => o,
     Err(e) => {
       let _ = app.emit(

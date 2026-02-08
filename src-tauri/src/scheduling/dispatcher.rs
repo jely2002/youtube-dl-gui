@@ -1,6 +1,6 @@
 use crate::scheduling::concurrency::DynamicSemaphore;
+use crate::scheduling::group_state::{is_group_running, remove_group};
 use crate::scheduling::numbering::NumberingManager;
-use crate::RUNNING_GROUPS;
 use futures::Future;
 use std::{collections::VecDeque, sync::Arc};
 use tauri::{AppHandle, Runtime};
@@ -58,19 +58,13 @@ where
           match req {
             DispatchRequest::Cleanup { group_id } => {
               queues.retain(|(gid, _)| gid != &group_id);
-              RUNNING_GROUPS.lock().unwrap().remove(&group_id);
+              remove_group(&group_id);
             }
             DispatchRequest::Pipeline(inner) => {
               let mut entries = make_entries(inner.clone());
               if !entries.is_empty() {
                 let gid = entries[0].group_id().clone();
-                if RUNNING_GROUPS
-                  .lock()
-                  .unwrap()
-                  .get(&gid)
-                  .copied()
-                  .unwrap_or(false)
-                {
+                if is_group_running(&gid) {
                   for entry in entries.iter_mut() {
                     let group_key = entry.group_key();
                     let (autonumber, group_autonumber) = numbering.assign_for(group_key);
@@ -85,14 +79,7 @@ where
           }
         }
 
-        queues.retain(|(gid, _)| {
-          RUNNING_GROUPS
-            .lock()
-            .unwrap()
-            .get(gid)
-            .copied()
-            .unwrap_or(false)
-        });
+        queues.retain(|(gid, _)| is_group_running(gid));
 
         if !pending_requeue.is_empty() {
           queues.append(&mut pending_requeue);
@@ -120,12 +107,7 @@ where
           let (group_id, mut q) = queues.pop_front().unwrap();
 
           // Skip cancelled groups.
-          let still_running = RUNNING_GROUPS
-            .lock()
-            .unwrap()
-            .get(&group_id)
-            .copied()
-            .unwrap_or(false);
+          let still_running = is_group_running(&group_id);
           if !still_running {
             drop(permit);
             continue;
@@ -181,7 +163,7 @@ where
 mod tests {
   use super::*;
   use crate::scheduling::concurrency::DynamicSemaphore;
-  use crate::RUNNING_GROUPS;
+  use crate::scheduling::group_state::ensure_group_running;
   use std::sync::atomic::{AtomicUsize, Ordering};
   use std::sync::Arc;
   use tauri::test::mock_app;
@@ -207,10 +189,7 @@ mod tests {
   async fn run_concurrency_test(max_concurrency: usize, total: usize) -> usize {
     let app = mock_app();
     let group_id = "test-group".to_string();
-    RUNNING_GROUPS
-      .lock()
-      .unwrap()
-      .insert(group_id.clone(), true);
+    ensure_group_running(&group_id);
 
     let sem = Arc::new(DynamicSemaphore::new(max_concurrency));
     let current = Arc::new(AtomicUsize::new(0));
@@ -298,8 +277,8 @@ mod tests {
     let app = mock_app();
     let group_a = "group-a".to_string();
     let group_b = "group-b".to_string();
-    RUNNING_GROUPS.lock().unwrap().insert(group_a.clone(), true);
-    RUNNING_GROUPS.lock().unwrap().insert(group_b.clone(), true);
+    ensure_group_running(&group_a);
+    ensure_group_running(&group_b);
 
     let sem = Arc::new(DynamicSemaphore::new(1));
     let started: Arc<Mutex<Vec<String>>> = Arc::new(Mutex::new(Vec::new()));
@@ -366,8 +345,8 @@ mod tests {
     let app = mock_app();
     let group_a = "group-a".to_string();
     let group_b = "group-b".to_string();
-    RUNNING_GROUPS.lock().unwrap().insert(group_a.clone(), true);
-    RUNNING_GROUPS.lock().unwrap().insert(group_b.clone(), true);
+    ensure_group_running(&group_a);
+    ensure_group_running(&group_b);
 
     let sem = Arc::new(DynamicSemaphore::new(1));
     let started: Arc<Mutex<Vec<String>>> = Arc::new(Mutex::new(Vec::new()));
