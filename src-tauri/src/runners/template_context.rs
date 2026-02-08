@@ -81,7 +81,7 @@ impl TemplateContext {
           let mut out = if let Some(repl) = replacement_part {
             repl.to_string()
           } else {
-            val.replace(['|', '\\', '/'], "_")
+            Self::sanitize_template_value(val)
           };
 
           let ty = fmt.chars().last().unwrap_or('s');
@@ -104,10 +104,7 @@ impl TemplateContext {
           return out;
         }
 
-        let mut fallback = val;
-        fallback = fallback.replace('|', "_");
-        fallback = fallback.replace('\\', "_");
-        fallback = fallback.replace('/', "_");
+        let fallback = Self::sanitize_template_value(val);
 
         return format!("%({primary_key}|{fallback}){fmt}");
       }
@@ -116,6 +113,21 @@ impl TemplateContext {
     });
 
     replaced.replace("%%", "%")
+  }
+
+  fn sanitize_template_value(input: String) -> String {
+    input
+      .chars()
+      .map(|c| {
+        match c {
+          // Separators
+          '/' | '\\' | '|' => '_',
+          // Control characters
+          c if c.is_control() => '_',
+          _ => c,
+        }
+      })
+      .collect()
   }
 }
 
