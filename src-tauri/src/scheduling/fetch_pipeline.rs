@@ -231,7 +231,16 @@ async fn handle_fetch_entry(
       let payload =
         MediaFatalPayload::internal(group_id.clone(), id, "Livestreams unsupported".into(), None);
       let _ = app.emit("media_fatal", payload);
-      let _ = tx.send(DispatchRequest::Cleanup { group_id });
+      let mut counters = GROUP_COUNTERS.lock().unwrap();
+      if let Some(cnt) = counters.get_mut(&group_id) {
+        *cnt -= 1;
+        if *cnt == 0 {
+          counters.remove(&group_id);
+          let _ = tx.send(DispatchRequest::Cleanup {
+            group_id: group_id.clone(),
+          });
+        }
+      }
     }
     None => {
       // Do nothing if no parsed result is returned. The events have already been sent.
