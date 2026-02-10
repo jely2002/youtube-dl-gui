@@ -5,8 +5,8 @@ use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_info::parse_ytdlp_info;
 use crate::runners::ytdlp_runner::YtdlpRunner;
 use std::borrow::Cow;
-use std::fmt;
 use std::collections::HashMap;
+use std::fmt;
 use tauri::{AppHandle, Emitter, Manager};
 
 #[derive(Debug)]

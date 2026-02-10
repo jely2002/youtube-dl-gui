@@ -10,7 +10,7 @@ use crate::state::config_models::{Config, SubtitleSettings};
 use crate::state::preferences_models::Preferences;
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 use std::io;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;

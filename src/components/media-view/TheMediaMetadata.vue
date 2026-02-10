@@ -83,7 +83,7 @@ function formatUrlHeaders(headers: Record<string, string>): string {
 function parseUrlHeaders(): void {
   const headers: Record<string, string> = {};
   const lines = urlHeadersText.value.split('\n').filter(line => line.trim());
-  
+
   for (const line of lines) {
     const colonIndex = line.indexOf(':');
     if (colonIndex > 0) {
@@ -94,7 +94,7 @@ function parseUrlHeaders(): void {
       }
     }
   }
-  
+
   if (group) {
     group.urlHeaders = Object.keys(headers).length > 0 ? headers : undefined;
   }

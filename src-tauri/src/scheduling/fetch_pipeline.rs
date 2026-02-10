@@ -86,7 +86,12 @@ pub fn setup_fetch_dispatcher(
 
 fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
   match req {
-    FetchRequest::Initial { group_id, id, url, headers } => {
+    FetchRequest::Initial {
+      group_id,
+      id,
+      url,
+      headers
+    } => {
       vec![FetchEntry {
         group_id,
         id,
@@ -96,7 +101,11 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
         headers,
       }]
     }
-    FetchRequest::Playlist { group_id, playlist, headers } => {
+    FetchRequest::Playlist {
+      group_id,
+      playlist,
+      headers
+    } => {
       let total = playlist.entries.len();
       playlist
         .entries
@@ -164,7 +173,14 @@ async fn handle_fetch_entry(
     headers,
   } = entry.clone();
 
-  let result = run_ytdlp_info_fetch(&app, id.clone(), group_id.clone(), &url, headers.clone(), format.clone()).await;
+  let result = run_ytdlp_info_fetch(
+    &app,
+    id.clone(),
+    group_id.clone(),
+    &url,
+    headers.clone(),
+    format.clone()
+  ).await;
 
   let result = match result {
     Ok(v) => v,
