@@ -6,6 +6,7 @@ use crate::parsers::ytdlp_info::parse_ytdlp_info;
 use crate::runners::ytdlp_runner::YtdlpRunner;
 use std::borrow::Cow;
 use std::fmt;
+use std::collections::HashMap;
 use tauri::{AppHandle, Emitter, Manager};
 
 #[derive(Debug)]
@@ -34,6 +35,7 @@ pub async fn run_ytdlp_info_fetch(
   id: String,
   group_id: String,
   url: &str,
+  headers: Option<HashMap<String, String>>,
   format: Option<FormatOptions>,
 ) -> Result<Option<ParsedMedia>, YtdlpInfoFetchError> {
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
@@ -49,7 +51,7 @@ pub async fn run_ytdlp_info_fetch(
     .with_auth_args()
     .with_network_args()
     .with_args(["-J", "--flat-playlist"])
-    .with_url(url);
+    .with_url(url, &headers);
 
   let matcher = match DiagnosticMatcher::from_json(RULES_JSON) {
     Ok(m) => m,

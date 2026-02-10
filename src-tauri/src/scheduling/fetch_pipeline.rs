@@ -25,21 +25,25 @@ pub enum FetchRequest {
     group_id: String,
     id: String,
     url: String,
+    headers: Option<HashMap<String, String>>,
   },
   Playlist {
     group_id: String,
     playlist: ParsedPlaylist,
+    headers: Option<HashMap<String, String>>,
   },
   Size {
     group_id: String,
     id: String,
     url: String,
     format: FormatOptions,
+    headers: Option<HashMap<String, String>>,
   },
   SizePlaylist {
     group_id: String,
     playlist: ParsedPlaylist,
     format: FormatOptions,
+    headers: Option<HashMap<String, String>>,
   },
 }
 
@@ -50,6 +54,7 @@ pub struct FetchEntry {
   pub url: String,
   pub total: usize,
   pub format: Option<FormatOptions>,
+  pub headers: Option<HashMap<String, String>>,
 }
 
 impl DispatchEntry for FetchEntry {
@@ -81,16 +86,17 @@ pub fn setup_fetch_dispatcher(
 
 fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
   match req {
-    FetchRequest::Initial { group_id, id, url } => {
+    FetchRequest::Initial { group_id, id, url, headers } => {
       vec![FetchEntry {
         group_id,
         id,
         url,
         total: 1,
         format: None,
+        headers,
       }]
     }
-    FetchRequest::Playlist { group_id, playlist } => {
+    FetchRequest::Playlist { group_id, playlist, headers } => {
       let total = playlist.entries.len();
       playlist
         .entries
@@ -101,6 +107,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
           url: e.video_url,
           total,
           format: None,
+          headers: headers.clone(),
         })
         .collect()
     }
@@ -109,6 +116,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
       id,
       url,
       format,
+      headers,
     } => {
       vec![FetchEntry {
         group_id,
@@ -116,12 +124,14 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
         url,
         total: 1,
         format: Some(format),
+        headers,
       }]
     }
     FetchRequest::SizePlaylist {
       group_id,
       playlist,
       format,
+      headers,
     } => {
       let total = playlist.entries.len();
       playlist
@@ -133,6 +143,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
           url: e.video_url,
           total,
           format: Some(format.clone()),
+          headers: headers.clone(),
         })
         .collect()
     }
@@ -150,9 +161,10 @@ async fn handle_fetch_entry(
     url,
     total,
     format,
+    headers,
   } = entry.clone();
 
-  let result = run_ytdlp_info_fetch(&app, id.clone(), group_id.clone(), &url, format.clone()).await;
+  let result = run_ytdlp_info_fetch(&app, id.clone(), group_id.clone(), &url, headers.clone(), format.clone()).await;
 
   let result = match result {
     Ok(v) => v,
@@ -213,11 +225,13 @@ async fn handle_fetch_entry(
           group_id: group_id.clone(),
           playlist: pl,
           format,
+          headers: headers.clone(),
         }));
       } else {
         let _ = tx.send(DispatchRequest::Pipeline(FetchRequest::Playlist {
           group_id: group_id.clone(),
           playlist: pl.clone(),
+          headers: headers.clone(),
         }));
         let payload = MediaAddPayload {
           group_id,

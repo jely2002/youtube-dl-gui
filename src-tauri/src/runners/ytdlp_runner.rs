@@ -10,7 +10,7 @@ use crate::state::config_models::{Config, SubtitleSettings};
 use crate::state::preferences_models::Preferences;
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 use std::io;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
@@ -217,8 +217,14 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
-  pub fn with_url(mut self, url: &str) -> Self {
+  pub fn with_url(mut self, url: &str, headers: &Option<HashMap<String, String>>) -> Self {
     self.args.push(url.into());
+    if let Some(hdrs) = headers {
+      for (key, value) in hdrs.iter() {
+        self.args.push("--add-header".into());
+        self.args.push(format!("{}:{}", key, value));
+      }
+    }
     self
   }
 

@@ -88,6 +88,7 @@ export const useMediaGroupStore = defineStore('media-group', () => {
         errored: 0,
         isCombined: false,
         ...meta,
+        urlHeaders: group.urlHeaders,
         items: {
           [itemKey]: { ...item, isLeader: true },
         },

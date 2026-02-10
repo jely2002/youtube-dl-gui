@@ -87,11 +87,14 @@ export const useMediaSizeStore = defineStore('media-size', () => {
     id: string,
     format: DownloadOptions,
   ): Promise<void> {
+    const group = groupStore.findGroupById(groupId);
+    const headers = group?.urlHeaders ?? undefined;
     await invoke('media_size', {
       url,
       id,
       groupId,
       format,
+      headers,
     });
   }
 

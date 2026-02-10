@@ -30,6 +30,7 @@ pub struct DownloadEntry {
   pub url: String,
   pub format: FormatOptions,
   pub template_context: TemplateContext,
+  pub headers: Option<HashMap<String, String>>,
 }
 
 impl From<(DownloadItem, String)> for DownloadEntry {
@@ -40,6 +41,7 @@ impl From<(DownloadItem, String)> for DownloadEntry {
       url: item.0.url,
       format: item.0.format,
       template_context: item.0.template_context,
+      headers: item.0.headers.clone(),
     }
   }
 }

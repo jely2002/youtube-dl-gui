@@ -75,7 +75,7 @@ export const useMediaStore = defineStore('media', () => {
     stateStore.setState(item.id, next);
   }
 
-  async function dispatchMediaInfoFetch(url: string, fromShortcut: boolean = false) {
+  async function dispatchMediaInfoFetch(url: string, fromShortcut: boolean = false, urlHeaders?: Record<string, string>) {
     const id = uuidv4();
     const groupId = uuidv4();
 
@@ -91,6 +91,7 @@ export const useMediaStore = defineStore('media', () => {
       formats: [],
       filesize: 0,
       fromShortcut,
+      urlHeaders,
       items: {
         [id]: {
           id,
@@ -104,7 +105,7 @@ export const useMediaStore = defineStore('media', () => {
     };
     groupStore.createGroup(newGroup);
 
-    await invoke('media_info', { url, id, groupId });
+    await invoke('media_info', { url, id, groupId, headers: urlHeaders });
     await notifyGroup(NotificationKind.QueueAdded, newGroup);
   }
 
@@ -135,6 +136,7 @@ export const useMediaStore = defineStore('media', () => {
           templateContext: {
             values: buildTemplateContext(item, group),
           },
+          headers: group.urlHeaders,
         })),
       });
     } catch (e) {

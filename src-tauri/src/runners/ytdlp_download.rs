@@ -48,7 +48,7 @@ pub async fn run_ytdlp_download(
     .with_input_args()
     .with_output_args(&entry.format)
     .with_location_args(&entry.format.track_type, &entry.template_context)
-    .with_url(&entry.url);
+    .with_url(&entry.url, &entry.headers);
 
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
   let matcher = DiagnosticMatcher::from_json(RULES_JSON)

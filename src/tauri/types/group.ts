@@ -30,4 +30,5 @@ export type Group = {
   playlistUploader?: string;
   playlistUploaderId?: string;
   fromShortcut?: boolean;
+  urlHeaders?: Record<string, string>;
 };

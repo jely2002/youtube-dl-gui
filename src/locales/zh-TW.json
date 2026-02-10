@@ -153,7 +153,8 @@
         "uploader": "上傳者:",
         "extractor": "擷取器:",
         "link": "連結:",
-        "description": "描述:"
+        "description": "描述:",
+        "urlHeaders": "URL 標頭:"
       },
       "stats": {
         "title": "影片統計資料",
