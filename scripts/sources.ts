@@ -148,10 +148,7 @@ export async function fetchSources(): Promise<ToolSource[]> {
         'windows-x86_64': { url: assetUrl(ffRel, 'ffmpeg-win32-x64') },
         'windows-aarch64': {
           url: assetUrl(ffBuildsRel, 'ffmpeg-master-latest-winarm64-gpl.zip'),
-          bundle: {
-            keep_folder: false,
-            entry: 'ffmpeg-master-latest-winarm64-gpl/bin/ffmpeg.exe',
-          },
+          entry: 'ffmpeg-master-latest-winarm64-gpl/bin/ffmpeg.exe',
         },
         'darwin-x86_64': { url: assetUrl(ffRel, 'ffmpeg-darwin-x64') },
         'darwin-aarch64': { url: assetUrl(ffRel, 'ffmpeg-darwin-arm64') },
@@ -166,10 +163,7 @@ export async function fetchSources(): Promise<ToolSource[]> {
         'windows-x86_64': { url: assetUrl(ffRel, 'ffprobe-win32-x64') },
         'windows-aarch64': {
           url: assetUrl(ffBuildsRel, 'ffmpeg-master-latest-winarm64-gpl.zip'),
-          bundle: {
-            keep_folder: false,
-            entry: 'ffmpeg-master-latest-winarm64-gpl/bin/ffprobe.exe',
-          },
+          entry: 'ffmpeg-master-latest-winarm64-gpl/bin/ffprobe.exe',
         },
         'darwin-x86_64': { url: assetUrl(ffRel, 'ffprobe-darwin-x64') },
         'darwin-aarch64': { url: assetUrl(ffRel, 'ffprobe-darwin-arm64') },
