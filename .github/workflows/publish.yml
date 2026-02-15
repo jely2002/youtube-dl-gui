@@ -27,6 +27,8 @@ jobs:
             args: ''
           - platform: 'windows-latest'
             args: ''
+          - platform: 'windows-11-arm64'
+            args: ''
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -58,7 +60,7 @@ jobs:
       - name: install Rust nightly
         uses: dtolnay/rust-toolchain@nightly
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || matrix.platform == 'windows-11-arm64' && 'aarch64-pc-windows-msvc' || '' }}
 
       - name: Install cargo-about
         uses: taiki-e/install-action@v2
@@ -174,13 +176,13 @@ jobs:
           fi
 
       - name: Fetch tool binaries for MSIX (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run manifest:fetch
 
       - name: Bundle Portable Version (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
         shell: pwsh
         run: |
           $releaseDir = "src-tauri/target/release"
@@ -189,12 +191,16 @@ jobs:
 
           $pkg = Get-Content -Raw "package.json" | ConvertFrom-Json
           $version = $pkg.version
-          $zipName = "Open.Video.Downloader_$($version)_x64-portable.zip"
-          $exeName = "Open.Video.Downloader_$($version)_x64.exe"
+          
+          # Detect architecture
+          $arch = if ($env:RUNNER_ARCH -eq 'ARM64') { 'arm64' } else { 'x64' }
+          
+          $zipName = "Open.Video.Downloader_$($version)_$($arch)-portable.zip"
+          $exeName = "Open.Video.Downloader_$($version)_$($arch).exe"
           $keepFileName = ".keep"
           
           $tagName = "app-v$version"
-          Write-Host "Building portable bundle: $zipName"
+          Write-Host "Building portable bundle for $arch architecture: $zipName"
           Write-Host "Using release tag: $tagName"
           
           $exe = Get-ChildItem -Path $releaseDir -Filter "*.exe" | Where-Object { $_.Name -notmatch "setup" } | Select-Object -First 1
@@ -210,7 +216,7 @@ jobs:
           echo "RELEASE_TAG=$tagName" >> $env:GITHUB_ENV
 
       - name: Upload Portable (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -219,15 +225,16 @@ jobs:
           gh release upload "${RELEASE_TAG}" "${PORTABLE_ASSET}" --clobber
 
       - name: Build and sign MSIX (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
         uses: ./.github/actions/msix-build-sign
         with:
           pfx-b64: ${{ secrets.WINDOWS_PFX_B64 }}
           pfx-password: ${{ secrets.WINDOWS_PFX_PASSWORD }}
+          architecture: ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
 
       - name: Upload MSIX artifact (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
         uses: actions/upload-artifact@v4
         with:
-          name: ovd-msix
-          path: OpenVideoDownloader_x64.msix
+          name: ovd-msix-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
+          path: OpenVideoDownloader_${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}.msix

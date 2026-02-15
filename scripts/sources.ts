@@ -72,6 +72,7 @@ export async function fetchSources(): Promise<ToolSource[]> {
   console.log('[sources] Resolving tool sources');
   const ytRel = await latestRelease('yt-dlp', 'yt-dlp');
   const ffRel = await latestRelease('eugeneware', 'ffmpeg-static');
+  const ffBuildsRel = await latestRelease('yt-dlp', 'FFmpeg-Builds');
   const denoRel = await latestRelease('denoland', 'deno');
   const apRel = await latestRelease('wez', 'atomicparsley');
 
@@ -109,6 +110,15 @@ export async function fetchSources(): Promise<ToolSource[]> {
             rename_entry_to: 'yt-dlp.exe',
           },
         },
+        'windows-aarch64': {
+          url: assetUrl(ytRel, 'yt-dlp_win_arm64.zip'),
+          bundle: {
+            keep_folder: true,
+            folder_name: 'yt-dlp',
+            entry: 'yt-dlp_arm64.exe',
+            rename_entry_to: 'yt-dlp.exe',
+          },
+        },
         'darwin-x86_64': {
           url: assetUrl(ytRel, 'yt-dlp_macos.zip'),
           bundle: {
@@ -136,6 +146,13 @@ export async function fetchSources(): Promise<ToolSource[]> {
         'linux-x86_64': { url: assetUrl(ffRel, 'ffmpeg-linux-x64') },
         'linux-aarch64': { url: assetUrl(ffRel, 'ffmpeg-linux-arm64') },
         'windows-x86_64': { url: assetUrl(ffRel, 'ffmpeg-win32-x64') },
+        'windows-aarch64': {
+          url: assetUrl(ffBuildsRel, 'ffmpeg-master-latest-winarm64-gpl.zip'),
+          bundle: {
+            keep_folder: false,
+            entry: 'ffmpeg-master-latest-winarm64-gpl/bin/ffmpeg.exe',
+          },
+        },
         'darwin-x86_64': { url: assetUrl(ffRel, 'ffmpeg-darwin-x64') },
         'darwin-aarch64': { url: assetUrl(ffRel, 'ffmpeg-darwin-arm64') },
       },
@@ -147,6 +164,13 @@ export async function fetchSources(): Promise<ToolSource[]> {
         'linux-x86_64': { url: assetUrl(ffRel, 'ffprobe-linux-x64') },
         'linux-aarch64': { url: assetUrl(ffRel, 'ffprobe-linux-arm64') },
         'windows-x86_64': { url: assetUrl(ffRel, 'ffprobe-win32-x64') },
+        'windows-aarch64': {
+          url: assetUrl(ffBuildsRel, 'ffmpeg-master-latest-winarm64-gpl.zip'),
+          bundle: {
+            keep_folder: false,
+            entry: 'ffmpeg-master-latest-winarm64-gpl/bin/ffprobe.exe',
+          },
+        },
         'darwin-x86_64': { url: assetUrl(ffRel, 'ffprobe-darwin-x64') },
         'darwin-aarch64': { url: assetUrl(ffRel, 'ffprobe-darwin-arm64') },
       },
@@ -158,6 +182,7 @@ export async function fetchSources(): Promise<ToolSource[]> {
         'linux-x86_64': { entry: 'deno', url: assetUrl(denoRel, 'deno-x86_64-unknown-linux-gnu.zip') },
         'linux-aarch64': { entry: 'deno', url: assetUrl(denoRel, 'deno-aarch64-unknown-linux-gnu.zip') },
         'windows-x86_64': { entry: 'deno.exe', url: assetUrl(denoRel, 'deno-x86_64-pc-windows-msvc.zip') },
+        'windows-aarch64': { entry: 'deno.exe', url: assetUrl(denoRel, 'deno-aarch64-pc-windows-msvc.zip') },
         'darwin-x86_64': { entry: 'deno', url: assetUrl(denoRel, 'deno-x86_64-apple-darwin.zip') },
         'darwin-aarch64': { entry: 'deno', url: assetUrl(denoRel, 'deno-aarch64-apple-darwin.zip') },
       },
@@ -168,6 +193,7 @@ export async function fetchSources(): Promise<ToolSource[]> {
       files: {
         'linux-x86_64': { entry: 'AtomicParsley', url: assetUrl(apRel, 'AtomicParsleyLinux.zip') },
         'windows-x86_64': { entry: 'AtomicParsley.exe', url: assetUrl(apRel, 'AtomicParsleyWindows.zip') },
+        'windows-aarch64': { entry: 'AtomicParsley.exe', url: assetUrl(apRel, 'AtomicParsleyWindows.zip') },
         'darwin-x86_64': { entry: 'AtomicParsley', url: assetUrl(apRel, 'AtomicParsleyMacOS.zip') },
       },
     },

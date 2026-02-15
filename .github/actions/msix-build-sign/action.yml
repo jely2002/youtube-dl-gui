@@ -37,6 +37,11 @@ inputs:
     required: false
     default: 'OpenVideoDownloader_x64.msix'
 
+  architecture:
+    description: 'Target architecture (x64 or arm64)'
+    required: false
+    default: 'x64'
+
   pfx-b64:
     description: 'Base64-encoded PFX certificate'
     required: true
@@ -62,8 +67,10 @@ runs:
           Write-Error "Windows 10 Kits bin folder not found at $kitsRoot"
         }
 
+        $arch = '${{ inputs.architecture }}'
+
         $makeAppx = Get-ChildItem -Path $kitsRoot -Recurse -Filter "makeappx.exe" -ErrorAction SilentlyContinue |
-          Where-Object { $_.FullName -match "\\x64\\makeappx\.exe$" } |
+          Where-Object { $_.FullName -match "\\$arch\\makeappx\.exe$" } |
           Select-Object -First 1
 
         if (-not $makeAppx) {
@@ -71,7 +78,7 @@ runs:
         }
 
         $signtool = Get-ChildItem -Path $kitsRoot -Recurse -Filter "signtool.exe" -ErrorAction SilentlyContinue |
-          Where-Object { $_.FullName -match "\\x64\\signtool\.exe$" } |
+          Where-Object { $_.FullName -match "\\$arch\\signtool\.exe$" } |
           Select-Object -First 1
 
         if (-not $signtool) {
@@ -87,7 +94,8 @@ runs:
         $exeSrc = '${{ inputs.exe-path }}'
         $licenseSrc = '${{ inputs.license-path }}'
         $iconsGlob = '${{ inputs.icons-glob }}'
-        $msixPath = '${{ inputs.msix-path }}'
+        $arch = '${{ inputs.architecture }}'
+        $msixPath = "OpenVideoDownloader_$arch.msix"
 
         $appFolder = Join-Path $layoutRoot $appFolderName
         $assetsFolder = Join-Path $layoutRoot "Assets"
