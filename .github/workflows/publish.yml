@@ -27,7 +27,7 @@ jobs:
             args: ''
           - platform: 'windows-latest'
             args: ''
-          - platform: 'windows-11-arm64'
+          - platform: 'windows-11-arm'
             args: ''
 
     runs-on: ${{ matrix.platform }}
@@ -60,7 +60,7 @@ jobs:
       - name: install Rust nightly
         uses: dtolnay/rust-toolchain@nightly
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || matrix.platform == 'windows-11-arm64' && 'aarch64-pc-windows-msvc' || '' }}
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || matrix.platform == 'windows-11-arm' && 'aarch64-pc-windows-msvc' || '' }}
 
       - name: Install cargo-about
         uses: taiki-e/install-action@v2
@@ -176,13 +176,13 @@ jobs:
           fi
 
       - name: Fetch tool binaries for MSIX (Windows only)
-        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run manifest:fetch
 
       - name: Bundle Portable Version (Windows only)
-        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         shell: pwsh
         run: |
           $releaseDir = "src-tauri/target/release"
@@ -216,7 +216,7 @@ jobs:
           echo "RELEASE_TAG=$tagName" >> $env:GITHUB_ENV
 
       - name: Upload Portable (Windows only)
-        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -225,7 +225,7 @@ jobs:
           gh release upload "${RELEASE_TAG}" "${PORTABLE_ASSET}" --clobber
 
       - name: Build and sign MSIX (Windows only)
-        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         uses: ./.github/actions/msix-build-sign
         with:
           pfx-b64: ${{ secrets.WINDOWS_PFX_B64 }}
@@ -233,7 +233,7 @@ jobs:
           architecture: ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
 
       - name: Upload MSIX artifact (Windows only)
-        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm64'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         uses: actions/upload-artifact@v4
         with:
           name: ovd-msix-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
