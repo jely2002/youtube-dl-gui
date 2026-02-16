@@ -32,11 +32,6 @@ inputs:
     required: false
     default: 'src-tauri\icons\*.png'
 
-  msix-path:
-    description: 'Output MSIX file path'
-    required: false
-    default: 'OpenVideoDownloader_x64.msix'
-
   architecture:
     description: 'Target architecture (x64 or arm64)'
     required: false
