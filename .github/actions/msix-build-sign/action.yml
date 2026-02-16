@@ -103,6 +103,14 @@ runs:
         Copy-Item $iconsGlob -Destination $assetsFolder -Recurse -Force
         Copy-Item $licenseSrc -Destination (Join-Path $licenseFolder "3rdpartylicenses.txt") -Force
 
+        $manifestPath = Join-Path $layoutRoot "AppxManifest.xml"
+        $manifestText = Get-Content -Raw $manifestPath
+        if ($manifestText -notmatch 'ProcessorArchitecture="[^"]+"') {
+          Write-Error "ProcessorArchitecture attribute not found in AppxManifest.xml"
+        }
+        $manifestText = $manifestText -replace 'ProcessorArchitecture="[^"]+"', "ProcessorArchitecture=`"$arch`""
+        Set-Content -Path $manifestPath -Value $manifestText
+
         $binSrc = Join-Path $appFolder "bin"
         if (-not (Test-Path $binSrc)) {
           Write-Error "Bin folder not found at '$binSrc'. Did 'npm run manifest:fetch' run?"
