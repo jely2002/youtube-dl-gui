@@ -42,7 +42,7 @@
       <h2 class="font-semibold">{{ t('media.view.metadata.urlHeaders') }}</h2>
       <textarea
           v-model="urlHeadersText"
-          class="textarea textarea-bordered bg-base-100 p-4 rounded-box h-32"
+          class="textarea-bordered bg-base-100 p-4 rounded-box h-32"
           placeholder="key: value&#10;authorization: Bearer token&#10;user-agent: Mozilla/5.0"
           @input="parseUrlHeaders"
       />
