@@ -37,6 +37,9 @@ function detectPlatformKey(): string {
   const platform = process.platform;
 
   if (platform === 'win32' && arch === 'x64') return 'windows-x86_64';
+  if (platform === 'win32' && (arch === 'arm64' || arch === 'arm')) {
+    return 'windows-aarch64';
+  }
   if (platform === 'linux' && arch === 'x64') return 'linux-x86_64';
   if (platform === 'linux' && (arch === 'arm64' || arch === 'arm')) {
     return 'linux-aarch64';
@@ -224,7 +227,7 @@ async function processTool(
     }
   } else {
     console.log(`[fetch-sources] Saved plain binary as ${downloadPath}`);
-    const extension = platformKey === 'windows-x86_64' ? '.exe' : '';
+    const extension = platformKey.startsWith('windows-') ? '.exe' : '';
     const destPath = path.join(BIN_ROOT, toolName + extension);
     console.log(`[fetch-sources] Moving ${downloadPath} -> ${destPath}`);
     await fsp.rename(downloadPath, destPath);
