@@ -101,6 +101,7 @@ jobs:
           printf '%s' "$APPLE_API_KEY_P8" > "$APPLE_API_KEY_PATH"
 
       - name: Setup Sentry CLI
+        if: matrix.platform != 'windows-11-arm'
         uses: matbour/setup-sentry-cli@v2
         with:
           version: latest
@@ -184,6 +185,7 @@ jobs:
           }
 
       - name: Upload debug symbols to Sentry
+        if: matrix.platform != 'windows-11-arm'
         shell: bash
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
