@@ -32,10 +32,10 @@ inputs:
     required: false
     default: 'src-tauri\icons\*.png'
 
-  architecture:
-    description: 'Target architecture (x64 or arm64)'
+  msix-path:
+    description: 'Output MSIX file path'
     required: false
-    default: 'x64'
+    default: 'OpenVideoDownloader_x64.msix'
 
   pfx-b64:
     description: 'Base64-encoded PFX certificate'
@@ -62,10 +62,8 @@ runs:
           Write-Error "Windows 10 Kits bin folder not found at $kitsRoot"
         }
 
-        $arch = '${{ inputs.architecture }}'
-
         $makeAppx = Get-ChildItem -Path $kitsRoot -Recurse -Filter "makeappx.exe" -ErrorAction SilentlyContinue |
-          Where-Object { $_.FullName -match "\\$arch\\makeappx\.exe$" } |
+          Where-Object { $_.FullName -match "\\x64\\makeappx\.exe$" } |
           Select-Object -First 1
 
         if (-not $makeAppx) {
@@ -73,7 +71,7 @@ runs:
         }
 
         $signtool = Get-ChildItem -Path $kitsRoot -Recurse -Filter "signtool.exe" -ErrorAction SilentlyContinue |
-          Where-Object { $_.FullName -match "\\$arch\\signtool\.exe$" } |
+          Where-Object { $_.FullName -match "\\x64\\signtool\.exe$" } |
           Select-Object -First 1
 
         if (-not $signtool) {
@@ -89,8 +87,7 @@ runs:
         $exeSrc = '${{ inputs.exe-path }}'
         $licenseSrc = '${{ inputs.license-path }}'
         $iconsGlob = '${{ inputs.icons-glob }}'
-        $arch = '${{ inputs.architecture }}'
-        $msixPath = "OpenVideoDownloader_$arch.msix"
+        $msixPath = '${{ inputs.msix-path }}'
 
         $appFolder = Join-Path $layoutRoot $appFolderName
         $assetsFolder = Join-Path $layoutRoot "Assets"
@@ -102,14 +99,6 @@ runs:
         Copy-Item $manifestSrc -Destination (Join-Path $layoutRoot "AppxManifest.xml") -Force
         Copy-Item $iconsGlob -Destination $assetsFolder -Recurse -Force
         Copy-Item $licenseSrc -Destination (Join-Path $licenseFolder "3rdpartylicenses.txt") -Force
-
-        $manifestPath = Join-Path $layoutRoot "AppxManifest.xml"
-        $manifestText = Get-Content -Raw $manifestPath
-        if ($manifestText -notmatch 'ProcessorArchitecture="[^"]+"') {
-          Write-Error "ProcessorArchitecture attribute not found in AppxManifest.xml"
-        }
-        $manifestText = $manifestText -replace 'ProcessorArchitecture="[^"]+"', "ProcessorArchitecture=`"$arch`""
-        Set-Content -Path $manifestPath -Value $manifestText
 
         $binSrc = Join-Path $appFolder "bin"
         if (-not (Test-Path $binSrc)) {
