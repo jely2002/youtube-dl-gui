@@ -19,6 +19,7 @@ import { createSentryPiniaPlugin } from '@sentry/vue';
 import { createSentry } from './sentry.ts';
 import { startWindowWatcher } from './tauri/window.ts';
 import { usePreferencesStore } from './stores/preferences.ts';
+import { useMediaStore } from './stores/media/media.ts';
 
 const pinia = createPinia();
 pinia.use(createSentryPiniaPlugin());
@@ -41,6 +42,13 @@ app.use(i18n);
 app.use(router);
 app.use(pinia);
 app.use(tauriListeners);
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    const mediaStore = useMediaStore();
+    mediaStore.deleteAllGroups();
+  });
+}
 
 const settingsStore = useSettingsStore();
 const preferencesStore = usePreferencesStore();

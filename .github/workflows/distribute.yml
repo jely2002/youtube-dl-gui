@@ -23,9 +23,11 @@ jobs:
           $version = $pkg.version
 
           $tag = "app-v$version"
-          $installerUrl = "https://github.com/jely2002/youtube-dl-gui/releases/download/$tag/Open.Video.Downloader_${version}_x64-setup.exe"
+          $installerUrlX64 = "https://github.com/jely2002/youtube-dl-gui/releases/download/$tag/Open.Video.Downloader_${version}_x64-setup.exe"
+          $installerUrlArm64 = "https://github.com/jely2002/youtube-dl-gui/releases/download/$tag/Open.Video.Downloader_${version}_arm64-setup.exe"
           Write-Host "Updating winget manifest for version $version"
-          Write-Host "Installer URL: $installerUrl"
+          Write-Host "Installer URL (x64): $installerUrlX64"
+          Write-Host "Installer URL (ARM64): $installerUrlArm64"
 
           Invoke-WebRequest `
             -Uri https://aka.ms/wingetcreate/latest `
@@ -34,7 +36,7 @@ jobs:
           ./wingetcreate.exe update `
             jely2002.youtube-dl-gui `
             --version $version `
-            --urls $installerUrl `
+            --urls $installerUrlX64 $installerUrlArm64 `
             --submit `
             --token $env:WINGET_TOKEN
 

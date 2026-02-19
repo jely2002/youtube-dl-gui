@@ -55,6 +55,6 @@ const percent = computed(() => {
 });
 
 const remainingItems = computed(() => {
-  return Math.min(1, (progress.value?.total ?? 0) - (progress.value?.done ?? 0));
+  return Math.max(0, (progress.value?.total ?? 0) - (progress.value?.done ?? 0));
 });
 </script>

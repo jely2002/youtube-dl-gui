@@ -24,6 +24,25 @@ export const useMediaStore = defineStore('media', () => {
   const diagnosticsStore = useMediaDiagnosticsStore();
   const settingsStore = useSettingsStore();
 
+  function finalizePlaylistGroup(group: Group) {
+    const splitThreshold = settingsStore.settings.performance.splitPlaylistThreshold;
+    if (group.total < splitThreshold) {
+      const newGroups = groupStore.splitGroup(group);
+      void notifyGroup(NotificationKind.PlaylistReady, group, {}, newGroups.length);
+      if (newGroups.length === 0) {
+        stateStore.setGroupState(group.id, MediaState.configure);
+        return;
+      }
+      for (const newGroup of newGroups) {
+        stateStore.setGroupState(newGroup.id, MediaState.configure);
+      }
+    } else {
+      groupStore.consolidateGroup(group);
+      void notifyGroup(NotificationKind.PlaylistReady, group, {}, group.entries?.length ?? 1);
+      stateStore.setGroupState(group.id, MediaState.configure);
+    }
+  }
+
   function processMediaAddPayload(payload: MediaAddPayload) {
     const { item, groupId, total } = payload;
     item.groupId = groupId;
@@ -51,20 +70,7 @@ export const useMediaStore = defineStore('media', () => {
     if (!isFirst) group.processed++;
 
     if (group.processed === total) {
-      const splitThreshold = settingsStore.settings.performance.splitPlaylistThreshold;
-      if (group.total < splitThreshold) {
-        // Too few to combine, split up into separate groups.
-        const newGroups = groupStore.splitGroup(group);
-        void notifyGroup(NotificationKind.PlaylistReady, group, {}, newGroups.length);
-        for (const newGroup of newGroups) {
-          stateStore.setGroupState(newGroup.id, MediaState.configure);
-        }
-      } else {
-        // Combine into a group with one leader.
-        groupStore.consolidateGroup(group);
-        void notifyGroup(NotificationKind.PlaylistReady, group, {}, group.entries?.length ?? 1);
-        stateStore.setGroupState(group.id, MediaState.configure);
-      }
+      finalizePlaylistGroup(group);
     } else if (group.total === 1) {
       void notifyGroup(NotificationKind.VideoReady, group);
     }
@@ -246,6 +252,7 @@ export const useMediaStore = defineStore('media', () => {
 
   return {
     processMediaAddPayload,
+    finalizePlaylistGroup,
     dispatchMediaInfoFetch,
     downloadGroup,
     downloadAllGroups,

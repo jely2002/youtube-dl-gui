@@ -27,6 +27,8 @@ jobs:
             args: ''
           - platform: 'windows-latest'
             args: ''
+          - platform: 'windows-11-arm'
+            args: ''
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -58,7 +60,7 @@ jobs:
       - name: install Rust nightly
         uses: dtolnay/rust-toolchain@nightly
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || matrix.platform == 'windows-11-arm' && 'aarch64-pc-windows-msvc' || '' }}
 
       - name: Install cargo-about
         uses: taiki-e/install-action@v2
@@ -151,6 +153,37 @@ jobs:
           tauriScript: 'cargo tauri'
           args: ${{ matrix.args }}
 
+      - name: Create public PDBs (Windows only)
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
+        shell: pwsh
+        run: |
+          $kitsRoot = "${Env:ProgramFiles(x86)}\Windows Kits\10"
+          if (-not (Test-Path $kitsRoot)) {
+            Write-Error "Windows 10 Kits folder not found at $kitsRoot"
+          }
+
+          $arch = if ($env:RUNNER_ARCH -eq 'ARM64') { 'arm64' } else { 'x64' }
+          $pdbcopy = Get-ChildItem -Path $kitsRoot -Recurse -Filter "pdbcopy.exe" -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -match "\\$arch\\pdbcopy\.exe$" } |
+            Select-Object -First 1
+
+          if (-not $pdbcopy) {
+            Write-Error "pdbcopy.exe not found under $kitsRoot"
+          }
+
+          $pdbs = Get-ChildItem -Path "src-tauri/target/release" -Filter "*.pdb"
+          if (-not $pdbs) {
+            Write-Error "No PDB files found under src-tauri/target/release"
+          }
+
+          $publicDir = "src-tauri/target/release/public-pdb"
+          New-Item -ItemType Directory -Path $publicDir -Force | Out-Null
+
+          foreach ($pdb in $pdbs) {
+            $outPath = Join-Path $publicDir $pdb.Name
+            & "$($pdbcopy.FullName)" "$($pdb.FullName)" "$outPath" -p
+          }
+
       - name: Upload debug symbols to Sentry
         if: matrix.platform != 'windows-11-arm'
         shell: bash
@@ -167,7 +200,11 @@ jobs:
           
           cd src-tauri
           
-          sentry-cli debug-files upload --include-sources target/release
+          if [ -d "target/release/public-pdb" ]; then
+            sentry-cli debug-files upload --include-sources target/release/public-pdb
+          else
+            sentry-cli debug-files upload --include-sources target/release
+          fi
           
           if [ "${{ matrix.platform }}" = "ubuntu-24.04" ]; then
             sentry-cli releases new "$SENTRY_RELEASE" || true
@@ -176,13 +213,13 @@ jobs:
           fi
 
       - name: Fetch tool binaries for MSIX (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run manifest:fetch
 
       - name: Bundle Portable Version (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         shell: pwsh
         run: |
           $releaseDir = "src-tauri/target/release"
@@ -191,12 +228,16 @@ jobs:
 
           $pkg = Get-Content -Raw "package.json" | ConvertFrom-Json
           $version = $pkg.version
-          $zipName = "Open.Video.Downloader_$($version)_x64-portable.zip"
-          $exeName = "Open.Video.Downloader_$($version)_x64.exe"
+          
+          # Detect architecture
+          $arch = if ($env:RUNNER_ARCH -eq 'ARM64') { 'arm64' } else { 'x64' }
+          
+          $zipName = "Open.Video.Downloader_$($version)_$($arch)-portable.zip"
+          $exeName = "Open.Video.Downloader_$($version)_$($arch).exe"
           $keepFileName = ".keep"
           
           $tagName = "app-v$version"
-          Write-Host "Building portable bundle: $zipName"
+          Write-Host "Building portable bundle for $arch architecture: $zipName"
           Write-Host "Using release tag: $tagName"
           
           $exe = Get-ChildItem -Path $releaseDir -Filter "*.exe" | Where-Object { $_.Name -notmatch "setup" } | Select-Object -First 1
@@ -212,7 +253,7 @@ jobs:
           echo "RELEASE_TAG=$tagName" >> $env:GITHUB_ENV
 
       - name: Upload Portable (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -221,15 +262,85 @@ jobs:
           gh release upload "${RELEASE_TAG}" "${PORTABLE_ASSET}" --clobber
 
       - name: Build and sign MSIX (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         uses: ./.github/actions/msix-build-sign
         with:
           pfx-b64: ${{ secrets.WINDOWS_PFX_B64 }}
           pfx-password: ${{ secrets.WINDOWS_PFX_PASSWORD }}
+          architecture: ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
 
       - name: Upload MSIX artifact (Windows only)
-        if: matrix.platform == 'windows-latest'
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         uses: actions/upload-artifact@v4
         with:
-          name: ovd-msix
-          path: OpenVideoDownloader_x64.msix
+          name: ovd-msix-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
+          path: OpenVideoDownloader_${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}.msix
+
+      - name: Upload PDB symbols (Windows only)
+        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovd-pdb-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
+          path: src-tauri/target/release/public-pdb/*.pdb
+
+  package-appxupload:
+    runs-on: windows-latest
+    needs: publish-tauri
+    steps:
+      - name: Download x64 MSIX
+        uses: actions/download-artifact@v4
+        with:
+          name: ovd-msix-x64
+          path: dist/msix/x64
+
+      - name: Download arm64 MSIX
+        uses: actions/download-artifact@v4
+        with:
+          name: ovd-msix-arm64
+          path: dist/msix/arm64
+
+      - name: Download x64 PDB symbols
+        uses: actions/download-artifact@v4
+        with:
+          name: ovd-pdb-x64
+          path: dist/symbols/x64
+
+      - name: Download arm64 PDB symbols
+        uses: actions/download-artifact@v4
+        with:
+          name: ovd-pdb-arm64
+          path: dist/symbols/arm64
+
+      - name: Create appxsym
+        shell: pwsh
+        run: |
+          $pdbs = Get-ChildItem -Path "dist/symbols" -Filter "*.pdb" -Recurse
+          if (-not $pdbs) {
+            Write-Error "No PDB files found under dist/symbols"
+          }
+
+          $appxsym = "OpenVideoDownloader.appxsym"
+          Compress-Archive -Path $pdbs.FullName -DestinationPath $appxsym -Force
+
+      - name: Create appxupload
+        shell: pwsh
+        run: |
+          $packages = Get-ChildItem -Path "dist/msix" -Filter "*.msix" -Recurse
+          if (-not $packages -or $packages.Count -lt 2) {
+            Write-Error "Expected both x64 and arm64 MSIX packages under dist/msix"
+          }
+
+          $appxsym = Get-ChildItem -Path "." -Filter "*.appxsym" | Select-Object -First 1
+          $items = @($packages.FullName)
+          if ($appxsym) {
+            $items += $appxsym.FullName
+          }
+
+          $appxupload = "OpenVideoDownloader.appxupload"
+          Compress-Archive -Path $items -DestinationPath $appxupload -Force
+
+      - name: Upload appxupload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ovd-appxupload
+          path: OpenVideoDownloader.appxupload
