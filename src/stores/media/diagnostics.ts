@@ -4,7 +4,6 @@ import { MediaState, useMediaStateStore } from './state.ts';
 import { useMediaGroupStore } from './group.ts';
 import { notifyGroup } from '../../tauri/notifications';
 import { NotificationKind } from '../../tauri/types/app';
-import { useMediaStore } from './media.ts';
 
 export const useMediaDiagnosticsStore = defineStore('media-diagnostics', () => {
   const diagnostics = ref<Record<string, MediaDiagnostic[]>>({});
@@ -12,7 +11,6 @@ export const useMediaDiagnosticsStore = defineStore('media-diagnostics', () => {
 
   const stateStore = useMediaStateStore();
   const groupStore = useMediaGroupStore();
-  const mediaStore = useMediaStore();
 
   function processMediaDiagnosticPayload(payload: MediaDiagnostic) {
     diagnostics.value[payload.id] = diagnostics.value[payload.id] ?? [];
@@ -26,9 +24,6 @@ export const useMediaDiagnosticsStore = defineStore('media-diagnostics', () => {
     if (!group) throw new Error('Orphaned media item found during error handling.');
     group.processed++;
     group.errored++;
-    if (group.processed === group.total && group.total > 1) {
-      mediaStore.finalizePlaylistGroup(group);
-    }
     const leader = groupStore.findGroupLeader(groupId);
     if (leader && leader.entries) {
       // We are combined, so we only set one item to error.

@@ -21,8 +21,6 @@ export const useMediaProgressStore = defineStore('media-progress', () => {
   const progress = ref<Record<string, MediaProgress>>({});
   const groupStore = useMediaGroupStore();
   const stateStore = useMediaStateStore();
-  const recentGroupSpeedBps = new Map<string, { speedBps: number; expiresAt: number }>();
-  const speedHoldMs = 1500;
 
   function processMediaProgressPayload(payload: MediaProgressPayload) {
     const existing = progress.value[payload.id];
@@ -78,45 +76,26 @@ export const useMediaProgressStore = defineStore('media-progress', () => {
       .map(i => i.id);
     if (itemIds.length === 0) return;
 
-    const speedBpsRaw = itemIds.reduce((sum, id) => {
-      const state = stateStore.getState(id);
-      if (state !== MediaState.downloading && state !== MediaState.downloadingList) {
-        return sum;
-      }
-      const itemProgress = progress.value[id];
-      return sum + (itemProgress?.speedBps ?? 0);
-    }, 0);
+    const itemsProgress = itemIds
+      .map(id => progress.value[id])
+      .filter((p): p is MediaProgress => !!p);
+
+    const speedBps = itemsProgress.reduce((sum, p) => sum + (p.speedBps ?? 0), 0);
     const done = itemIds.filter(id => stateStore.getState(id) === MediaState.done).length;
-    let downloading = itemIds.filter(id =>
+    const downloading = itemIds.filter(id =>
       stateStore.getState(id) === MediaState.downloading
       || stateStore.getState(id) === MediaState.downloadingList
       || stateStore.getState(id) === MediaState.paused
       || stateStore.getState(id) === MediaState.pausedList,
     ).length;
     let ready = itemIds.filter(id => stateStore.getState(id) === MediaState.configure).length;
+    const total = downloading > 0 ? downloading + done : ready + done;
 
     // If we are fetching metadata for a group of multiple items (playlist).
     // Ensure we only show the amount of ready items once we are done fetching the entire playlist.
     if (Object.keys(group.items).length > 1 && downloading === 0 && !group.isCombined) {
       ready = 0;
     }
-
-    const now = Date.now();
-    let speedBps = speedBpsRaw;
-    if (downloading > 0) {
-      const cached = recentGroupSpeedBps.get(groupId);
-      if (speedBpsRaw > 0) {
-        recentGroupSpeedBps.set(groupId, { speedBps: speedBpsRaw, expiresAt: now + speedHoldMs });
-      } else if (cached && cached.expiresAt > now) {
-        speedBps = cached.speedBps;
-      } else if (cached && cached.expiresAt <= now) {
-        recentGroupSpeedBps.delete(groupId);
-      }
-    } else if (recentGroupSpeedBps.has(groupId)) {
-      recentGroupSpeedBps.delete(groupId);
-    }
-
-    const total = downloading > 0 ? downloading + done : ready + done;
 
     return {
       id: groupId,

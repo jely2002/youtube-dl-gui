@@ -5,13 +5,9 @@ on:
 
 jobs:
   build-msix:
-    runs-on: ${{ matrix.platform }}
+    runs-on: windows-latest
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: ['windows-latest', 'windows-11-arm64']
     env:
       WINDOWS_PFX_B64: ${{ secrets.WINDOWS_PFX_B64 }}
       WINDOWS_PFX_PASSWORD: ${{ secrets.WINDOWS_PFX_PASSWORD }}
@@ -28,8 +24,6 @@ jobs:
 
       - name: Install Rust nightly
         uses: dtolnay/rust-toolchain@nightly
-        with:
-          targets: ${{ matrix.platform == 'windows-11-arm64' && 'aarch64-pc-windows-msvc' || '' }}
 
       - name: Install cargo-about
         uses: taiki-e/install-action@v2
@@ -63,10 +57,9 @@ jobs:
         with:
           pfx-b64: ${{ secrets.WINDOWS_PFX_B64 }}
           pfx-password: ${{ secrets.WINDOWS_PFX_PASSWORD }}
-          architecture: ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
 
       - name: Upload MSIX artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ovd-msix-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
-          path: OpenVideoDownloader_${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}.msix
+          name: ovd-msix
+          path: OpenVideoDownloader_x64.msix

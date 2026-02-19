@@ -75,30 +75,6 @@ impl YtdlpProgressParser {
   }
 
   fn try_destination(&self, line: &str) -> Option<ProgressEvent> {
-    if let Some(path) = Self::extract_already_downloaded_path(line) {
-      return Some(ProgressEvent::Destination(MediaDestination {
-        id: self.id.clone(),
-        group_id: self.group_id.clone(),
-        destination: MediaDestinationPath {
-          confidence: 65,
-          path,
-        },
-        is_merged: false,
-      }));
-    }
-
-    if let Some(path) = Self::extract_remuxer_already_path(line) {
-      return Some(ProgressEvent::Destination(MediaDestination {
-        id: self.id.clone(),
-        group_id: self.group_id.clone(),
-        destination: MediaDestinationPath {
-          confidence: 90,
-          path,
-        },
-        is_merged: false,
-      }));
-    }
-
     let (_, rest) = line.split_once("Destination:")?;
     let full_path = rest.trim().to_string();
 
@@ -125,30 +101,6 @@ impl YtdlpProgressParser {
       },
       is_merged: false,
     }))
-  }
-
-  fn extract_already_downloaded_path(line: &str) -> Option<String> {
-    let rest = line.strip_prefix("[download] ")?;
-    let (path, _) = rest.split_once(" has already been downloaded")?;
-    let trimmed = path.trim();
-    if trimmed.is_empty() {
-      None
-    } else {
-      Some(trimmed.to_string())
-    }
-  }
-
-  fn extract_remuxer_already_path(line: &str) -> Option<String> {
-    let rest = line.strip_prefix("[VideoRemuxer] Not remuxing media file ")?;
-    let start = rest.find('"')?;
-    let after_start = &rest[start + 1..];
-    let end = after_start.find('"')?;
-    let trimmed = after_start[..end].trim();
-    if trimmed.is_empty() {
-      None
-    } else {
-      Some(trimmed.to_string())
-    }
   }
 
   fn try_download_stage(&mut self, line: &str) -> Option<ProgressEvent> {
