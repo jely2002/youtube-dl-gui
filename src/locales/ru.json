@@ -151,9 +151,10 @@
       "thumbnailAlt": "Миниатюра для {title}",
       "metadata": {
         "uploader": "Автор:",
-        "extractor": "Экстрактор:",
+        "extractor": "Источник:",
         "link": "Ссылка:",
-        "description": "Описание:"
+        "description": "Описание:",
+        "urlHeaders": "Заголовки URL:"
       },
       "stats": {
         "title": "Статистика видео",

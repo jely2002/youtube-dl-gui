@@ -153,7 +153,8 @@
         "uploader": "Uploader:",
         "extractor": "Extractor:",
         "link": "Link:",
-        "description": "Beschrijving:"
+        "description": "Beschrijving:",
+        "urlHeaders": "URL-headers:"
       },
       "stats": {
         "title": "Videostatistieken",
