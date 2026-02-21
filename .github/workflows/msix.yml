@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: ['windows-latest', 'windows-11-arm64']
+        platform: ['windows-latest', 'windows-11-arm']
     env:
       WINDOWS_PFX_B64: ${{ secrets.WINDOWS_PFX_B64 }}
       WINDOWS_PFX_PASSWORD: ${{ secrets.WINDOWS_PFX_PASSWORD }}
@@ -29,7 +29,7 @@ jobs:
       - name: Install Rust nightly
         uses: dtolnay/rust-toolchain@nightly
         with:
-          targets: ${{ matrix.platform == 'windows-11-arm64' && 'aarch64-pc-windows-msvc' || '' }}
+          targets: ${{ matrix.platform == 'windows-11-arm' && 'aarch64-pc-windows-msvc' || '' }}
 
       - name: Install cargo-about
         uses: taiki-e/install-action@v2
@@ -58,12 +58,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run manifest:fetch
 
+      - name: Resolve MSIX version
+        shell: bash
+        run: |
+          VERSION="$(node -p 'require("./package.json").version')"
+          echo "MSIX_VERSION=${VERSION}.0" >> "$GITHUB_ENV"
+
       - name: Build and sign MSIX
         uses: ./.github/actions/msix-build-sign
         with:
           pfx-b64: ${{ secrets.WINDOWS_PFX_B64 }}
           pfx-password: ${{ secrets.WINDOWS_PFX_PASSWORD }}
           architecture: ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
+          version: ${{ env.MSIX_VERSION }}
 
       - name: Upload MSIX artifact
         uses: actions/upload-artifact@v4

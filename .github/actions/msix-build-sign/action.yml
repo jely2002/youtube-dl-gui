@@ -37,6 +37,11 @@ inputs:
     required: false
     default: 'x64'
 
+  version:
+    description: 'MSIX Identity.Version (e.g. 3.1.3.0). If empty, keep manifest version.'
+    required: false
+    default: ''
+
   pfx-b64:
     description: 'Base64-encoded PFX certificate'
     required: true
@@ -93,6 +98,7 @@ runs:
         $licenseSrc = '${{ inputs.license-path }}'
         $iconsGlob = '${{ inputs.icons-glob }}'
         $arch = '${{ inputs.architecture }}'
+        $msixVersion = '${{ inputs.version }}'
         $msixPath = "OpenVideoDownloader_$arch.msix"
 
         $appFolder = Join-Path $layoutRoot $appFolderName
@@ -112,6 +118,12 @@ runs:
           Write-Error "ProcessorArchitecture attribute not found in AppxManifest.xml"
         }
         $manifestText = $manifestText -replace 'ProcessorArchitecture="[^"]+"', "ProcessorArchitecture=`"$arch`""
+        if ($msixVersion) {
+          if ($manifestText -notmatch 'Version="[^"]+"') {
+            Write-Error "Version attribute not found in AppxManifest.xml"
+          }
+          $manifestText = $manifestText -replace 'Version="[^"]+"', "Version=`"$msixVersion`""
+        }
         Set-Content -Path $manifestPath -Value $manifestText
 
         $binSrc = Join-Path $appFolder "bin"
