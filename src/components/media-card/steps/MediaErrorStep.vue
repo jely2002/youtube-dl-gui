@@ -21,6 +21,7 @@
         </template>
       </button>
       <router-link :to="{ name: 'group.logs', params: { groupId: group.id } }" class="btn btn-subtle">{{ t('media.steps.error.showFull') }}</router-link>
+      <router-link v-if="signInRequired" :to="{ name: 'authentication' }" class="btn btn-subtle">{{ t('media.steps.error.signIn') }}</router-link>
     </div>
   </div>
 </template>
@@ -81,5 +82,6 @@ const error = computed(() => {
 });
 
 const { diagnosticDisplay, report, isReportable, isReporting, hasReported } = useDiagnostic(error, true);
+const signInRequired = computed(() => error.value.code.includes('signIn'));
 
 </script>

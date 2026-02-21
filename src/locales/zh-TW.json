@@ -255,7 +255,8 @@
       "error": {
         "errorPrefix": "錯誤 - {message}",
         "report": "回報",
-        "showFull": "顯示完整錯誤"
+        "showFull": "查看記錄",
+        "signIn": "登入"
       }
     },
     "card": {
@@ -747,6 +748,10 @@
       "signInRequired": {
         "shortMessage": "需要登入",
         "message": "您需要登入才能檢視此內容。"
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "需要登入",
+        "message": "登入以確認您不是機器人。"
       },
       "membersOnly": {
         "shortMessage": "僅限會員",

@@ -255,7 +255,8 @@
       "error": {
         "errorPrefix": "Error - {message}",
         "report": "Report",
-        "showFull": "Show full error"
+        "showFull": "View logs",
+        "signIn": "Sign in"
       }
     },
     "card": {
@@ -807,6 +808,10 @@
       "unableToConnectToProxy": {
         "shortMessage": "Proxy connection failed",
         "message": "Unable to connect to the proxy. Check your proxy settings."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "Sign in required",
+        "message": "Sign in to confirm you're not a bot."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist unavailable",

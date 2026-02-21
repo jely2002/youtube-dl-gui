@@ -246,7 +246,8 @@
       "error": {
         "errorPrefix": "Feil - {message}",
         "report": "Rapporter",
-        "showFull": "Vis full feil"
+        "showFull": "Se logger",
+        "signIn": "Logg inn"
       },
       "paused": {
         "progress": "Nedlasting pauset — {percentage}%",
@@ -747,6 +748,10 @@
       "signInRequired": {
         "shortMessage": "Innlogging kreves",
         "message": "Du må logge inn for å se dette innholdet."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "Innlogging kreves",
+        "message": "Logg inn for å bekrefte at du ikke er en bot."
       },
       "membersOnly": {
         "shortMessage": "Kun tilgjengelig for medlemmer",

@@ -11,6 +11,13 @@
       ]
     },
     {
+      "code": "signInRequiredForBotDetection",
+      "appliesTo": "error",
+      "patterns": [
+        { "kind": "regex", "value": "not a bot" }
+      ]
+    },
+    {
       "code": "membersOnly",
       "appliesTo": "error",
       "patterns": [

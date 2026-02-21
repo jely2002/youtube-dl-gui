@@ -246,7 +246,8 @@
       "error": {
         "errorPrefix": "Erro - {message}",
         "report": "Relatar",
-        "showFull": "Mostrar erro completo"
+        "showFull": "Ver logs",
+        "signIn": "Entrar"
       },
       "paused": {
         "progress": "Download pausado — {percentage}%",
@@ -747,6 +748,10 @@
       "signInRequired": {
         "shortMessage": "É necessário efetuar login",
         "message": "Você precisa iniciar sessão para visualizar este conteúdo."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "É necessário efetuar login",
+        "message": "Faça login para confirmar que você não é um bot."
       },
       "membersOnly": {
         "shortMessage": "Apenas para membros",
