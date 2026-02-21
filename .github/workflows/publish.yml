@@ -261,6 +261,14 @@ jobs:
           echo "Uploading ${PORTABLE_ASSET} to release ${RELEASE_TAG}"
           gh release upload "${RELEASE_TAG}" "${PORTABLE_ASSET}" --clobber
 
+      - name: Install VC++ runtime (Windows ARM64 only)
+        if: matrix.platform == 'windows-11-arm'
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:RUNNER_TEMP "vc_redist.arm64.exe"
+          Invoke-WebRequest -Uri "https://aka.ms/vc14/vc_redist.arm64.exe" -OutFile $installer
+          Start-Process -FilePath $installer -ArgumentList "/install","/quiet","/norestart" -Wait
+
       - name: Build and sign MSIX (Windows only)
         if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         uses: ./.github/actions/msix-build-sign
