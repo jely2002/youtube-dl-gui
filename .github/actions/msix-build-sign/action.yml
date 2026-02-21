@@ -63,9 +63,12 @@ runs:
         }
 
         $arch = '${{ inputs.architecture }}'
+        # Use native makeappx when available, but prefer x64 signtool on ARM64 runners.
+        $toolArch = $arch
+        $signToolArch = if ($env:RUNNER_ARCH -eq 'ARM64') { 'x64' } else { $arch }
 
         $makeAppx = Get-ChildItem -Path $kitsRoot -Recurse -Filter "makeappx.exe" -ErrorAction SilentlyContinue |
-          Where-Object { $_.FullName -match "\\$arch\\makeappx\.exe$" } |
+          Where-Object { $_.FullName -match "\\$toolArch\\makeappx\.exe$" } |
           Select-Object -First 1
 
         if (-not $makeAppx) {
@@ -73,7 +76,7 @@ runs:
         }
 
         $signtool = Get-ChildItem -Path $kitsRoot -Recurse -Filter "signtool.exe" -ErrorAction SilentlyContinue |
-          Where-Object { $_.FullName -match "\\$arch\\signtool\.exe$" } |
+          Where-Object { $_.FullName -match "\\$signToolArch\\signtool\.exe$" } |
           Select-Object -First 1
 
         if (-not $signtool) {
