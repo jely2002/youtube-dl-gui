@@ -319,36 +319,47 @@ jobs:
           name: ovd-pdb-arm64
           path: dist/symbols/arm64
 
-      - name: Create appxsym
+      - name: Create msixupload
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+  
+          $makeappx = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter "MakeAppx.exe" |
+            Sort-Object FullName -Descending | Select-Object -First 1 | ForEach-Object FullName
+          if (-not $makeappx) { throw "MakeAppx.exe not found (Windows SDK missing?)" }
+  
+          $x64 = Get-ChildItem "dist/msix/x64"   -Filter "*.msix" | Select-Object -First 1
+          $arm64 = Get-ChildItem "dist/msix/arm64" -Filter "*.msix" | Select-Object -First 1
+          if (-not $x64)   { throw "Missing x64 .msix under dist/msix/x64" }
+          if (-not $arm64) { throw "Missing arm64 .msix under dist/msix/arm64" }
+  
+          if (Test-Path "unpack_tmp") { Remove-Item "unpack_tmp" -Recurse -Force }
+          New-Item -ItemType Directory -Force -Path "unpack_tmp" | Out-Null
+          & $makeappx unpack /p $x64.FullName /d "unpack_tmp" | Out-Null
+          [xml]$xml = Get-Content "unpack_tmp\AppxManifest.xml"
+          $version = $xml.Package.Identity.Version
+          if (-not $version) { throw "Failed to read Identity.Version from x64 manifest" }
+  
           $pdbs = Get-ChildItem -Path "dist/symbols" -Filter "*.pdb" -Recurse
-          if (-not $pdbs) {
-            Write-Error "No PDB files found under dist/symbols"
-          }
+          if (-not $pdbs) { throw "No PDB files found under dist/symbols" }
+          Compress-Archive -Path $pdbs.FullName -DestinationPath "OpenVideoDownloader.appxsym" -Force
+  
+          if (Test-Path "bundle_in") { Remove-Item "bundle_in" -Recurse -Force }
+          New-Item -ItemType Directory -Force -Path "bundle_in" | Out-Null
+          Copy-Item $x64.FullName "bundle_in\OpenVideoDownloader_x64.msix" -Force
+          Copy-Item $arm64.FullName "bundle_in\OpenVideoDownloader_arm64.msix" -Force
+  
+          & $makeappx bundle /d "bundle_in" /p "OpenVideoDownloader.msixbundle" /bv $version | Out-Null
+  
+          if (Test-Path "upload") { Remove-Item "upload" -Recurse -Force }
+          New-Item -ItemType Directory -Force -Path "upload" | Out-Null
+          Copy-Item "OpenVideoDownloader.msixbundle" "upload\" -Force
+          Copy-Item "OpenVideoDownloader.appxsym" "upload\" -Force
+  
+          Compress-Archive -Path "upload\*" -DestinationPath "OpenVideoDownloader.msixupload" -Force
 
-          $appxsym = "OpenVideoDownloader.appxsym"
-          Compress-Archive -Path $pdbs.FullName -DestinationPath $appxsym -Force
-
-      - name: Create appxupload
-        shell: pwsh
-        run: |
-          $packages = Get-ChildItem -Path "dist/msix" -Filter "*.msix" -Recurse
-          if (-not $packages -or $packages.Count -lt 2) {
-            Write-Error "Expected both x64 and arm64 MSIX packages under dist/msix"
-          }
-
-          $appxsym = Get-ChildItem -Path "." -Filter "*.appxsym" | Select-Object -First 1
-          $items = @($packages.FullName)
-          if ($appxsym) {
-            $items += $appxsym.FullName
-          }
-
-          $appxupload = "OpenVideoDownloader.appxupload"
-          Compress-Archive -Path $items -DestinationPath $appxupload -Force
-
-      - name: Upload appxupload artifact
+      - name: Upload msixupload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ovd-appxupload
-          path: OpenVideoDownloader.appxupload
+          name: ovd-msixupload
+          path: OpenVideoDownloader.msixupload
