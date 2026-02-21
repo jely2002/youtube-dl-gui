@@ -58,19 +58,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run manifest:fetch
 
-      - name: Resolve MSIX version
-        shell: bash
-        run: |
-          VERSION="$(node -p 'require("./package.json").version')"
-          echo "MSIX_VERSION=${VERSION}.0" >> "$GITHUB_ENV"
-
       - name: Build and sign MSIX
         uses: ./.github/actions/msix-build-sign
         with:
           pfx-b64: ${{ secrets.WINDOWS_PFX_B64 }}
           pfx-password: ${{ secrets.WINDOWS_PFX_PASSWORD }}
           architecture: ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
-          version: ${{ env.MSIX_VERSION }}
 
       - name: Upload MSIX artifact
         uses: actions/upload-artifact@v4

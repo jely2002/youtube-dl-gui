@@ -275,13 +275,6 @@ jobs:
           Invoke-WebRequest -Uri "https://aka.ms/vc14/vc_redist.arm64.exe" -OutFile $installer
           Start-Process -FilePath $installer -ArgumentList "/install","/quiet","/norestart" -Wait
 
-      - name: Resolve MSIX version (Windows only)
-        if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
-        shell: bash
-        run: |
-          VERSION="$(node -p 'require("./package.json").version')"
-          echo "MSIX_VERSION=${VERSION}.0" >> "$GITHUB_ENV"
-
       - name: Build and sign MSIX (Windows only)
         if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
         uses: ./.github/actions/msix-build-sign
@@ -289,7 +282,6 @@ jobs:
           pfx-b64: ${{ secrets.WINDOWS_PFX_B64 }}
           pfx-password: ${{ secrets.WINDOWS_PFX_PASSWORD }}
           architecture: ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
-          version: ${{ env.MSIX_VERSION }}
 
       - name: Upload MSIX artifact (Windows only)
         if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
