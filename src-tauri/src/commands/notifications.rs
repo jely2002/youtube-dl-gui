@@ -63,7 +63,7 @@ pub fn notify(
     NotificationBehavior::Always => {}
     NotificationBehavior::Never => return Ok(()),
     NotificationBehavior::OnBackground => {
-      if let Some(window) = app.get_window("main") {
+      if let Some(window) = app.get_webview_window("main") {
         if (window.is_visible().unwrap_or(false) || window.is_focused().unwrap_or(false)) && !force
         {
           return Ok(());
