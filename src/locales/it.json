@@ -246,7 +246,7 @@
       "error": {
         "errorPrefix": "Errore - {message}",
         "report": "Rapporto",
-        "showFull": "Vedi log",
+        "showFull": "Visualizza registro",
         "signIn": "Accedi"
       },
       "paused": {
