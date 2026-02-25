@@ -38,6 +38,18 @@
     </div>
     <h2 v-if="group?.description" class="font-semibold">{{ t('media.view.metadata.description') }}</h2>
     <p class="whitespace-pre max-h-44 overflow-y-scroll bg-base-100 p-4 rounded-box" v-if="group?.description">{{ group.description }}</p>
+    <div class="flex flex-col gap-2">
+      <h2 class="font-semibold">{{ t('media.view.metadata.urlHeaders') }}</h2>
+      <textarea
+          v-model="urlHeadersText"
+          class="textarea-bordered bg-base-100 p-4 rounded-box h-32"
+          placeholder="key: value&#10;authorization: Bearer token&#10;user-agent: Mozilla/5.0"
+          @input="parseUrlHeaders"
+      />
+      <div v-if="Object.keys(group?.urlHeaders ?? {}).length > 0" class="text-sm text-base-content/70">
+        {{ Object.keys(group?.urlHeaders ?? {}).length }} header(s) parsed
+      </div>
+    </div>
   </section>
 </template>
 
@@ -47,6 +59,7 @@ import BaseMediaStats from '../base/BaseMediaStats.vue';
 import { useI18n } from 'vue-i18n';
 import { useMediaGroupStore } from '../../stores/media/group.ts';
 import { Group } from '../../tauri/types/group.ts';
+import { ref } from 'vue';
 
 const { t } = useI18n();
 const groupStore = useMediaGroupStore();
@@ -59,6 +72,33 @@ const { groupId } = defineProps({
 });
 
 const group: Group = groupStore.findGroupById(groupId);
+const urlHeadersText = ref(formatUrlHeaders(group?.urlHeaders ?? {}));
+
+function formatUrlHeaders(headers: Record<string, string>): string {
+  return Object.entries(headers)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('\n');
+}
+
+function parseUrlHeaders(): void {
+  const headers: Record<string, string> = {};
+  const lines = urlHeadersText.value.split('\n').filter(line => line.trim());
+
+  for (const line of lines) {
+    const colonIndex = line.indexOf(':');
+    if (colonIndex > 0) {
+      const key = line.substring(0, colonIndex).trim();
+      const value = line.substring(colonIndex + 1).trim();
+      if (key && value) {
+        headers[key] = value;
+      }
+    }
+  }
+
+  if (group) {
+    group.urlHeaders = Object.keys(headers).length > 0 ? headers : undefined;
+  }
+}
 
 const setPlaceholderImage = (event: Event): void => {
   if (event.target instanceof HTMLImageElement) {

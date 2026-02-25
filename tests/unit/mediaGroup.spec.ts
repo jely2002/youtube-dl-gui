@@ -27,6 +27,7 @@ describe('media group store', () => {
       audioCodecs: [],
       formats: [],
       filesize: 0,
+      urlHeaders: undefined,
       items: {
         a: { ...createItem('a'), isLeader: true, audioCodecs: ['a1'], formats: [{ id: 'f1', height: 720, videoCodecs: [], fps: 30 }] },
         b: { ...createItem('b'), audioCodecs: ['a2'], formats: [{ id: 'f2', height: 1080, videoCodecs: [], fps: 60 }] },
@@ -55,6 +56,7 @@ describe('media group store', () => {
       audioCodecs: [],
       formats: [],
       filesize: 0,
+      urlHeaders: undefined,
       items: {
         a: { ...createItem('a'), entries: [{ videoUrl: 'b', index: 0 }, { videoUrl: 'c', index: 1 }] },
         b: createItem('b'),
@@ -85,6 +87,7 @@ describe('media group store', () => {
       audioCodecs: [],
       formats: [],
       filesize: 0,
+      urlHeaders: undefined,
       items: {
         a: createItem('a'),
         b: createItem('b'),

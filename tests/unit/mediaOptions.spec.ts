@@ -28,6 +28,7 @@ describe('media options store', () => {
       audioCodecs: [],
       formats: [fmt720, fmt480],
       filesize: 0,
+      urlHeaders: undefined,
       items: { a: { id: 'a', url: 'a', audioCodecs: [], formats: [fmt720, fmt480], filesize: 0, isLeader: true } },
     });
     groupStore.createGroup({
@@ -40,6 +41,7 @@ describe('media options store', () => {
       audioCodecs: [],
       formats: [fmt720, fmt480],
       filesize: 0,
+      urlHeaders: undefined,
       items: { b: { id: 'b', url: 'b', audioCodecs: [], formats: [fmt480], filesize: 0, isLeader: true } },
     });
 

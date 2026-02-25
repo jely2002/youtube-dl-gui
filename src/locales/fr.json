@@ -150,10 +150,11 @@
       },
       "thumbnailAlt": "Miniature pour {title}",
       "metadata": {
-        "uploader": "Uploader :",
+        "uploader": "Téléchargeur :",
         "extractor": "Extracteur :",
         "link": "Lien :",
-        "description": "Description :"
+        "description": "Description :",
+        "urlHeaders": "En-têtes URL :"
       },
       "stats": {
         "title": "Statistiques de la vidéo",

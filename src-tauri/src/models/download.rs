@@ -1,5 +1,6 @@
 use crate::runners::template_context::TemplateContext;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
@@ -55,6 +56,7 @@ pub struct DownloadItem {
   pub url: String,
   pub format: FormatOptions,
   pub template_context: TemplateContext,
+  pub headers: Option<HashMap<String, String>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
