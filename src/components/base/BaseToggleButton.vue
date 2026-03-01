@@ -1,10 +1,10 @@
 <template>
   <base-button :loading="loading"  :tooltip="tooltip" :tooltip-location="tooltipLocation">
     <div class="swap" :class="{ 'swap-active': model }">
-      <div class="swap-on">
+      <div class="swap-on" :aria-hidden="!model">
         <slot name="on"/>
       </div>
-      <div class="swap-off" :class="{ 'swap-active': !model }">
+      <div class="swap-off" :class="{ 'swap-active': !model }" :aria-hidden="model">
         <slot name="off"/>
       </div>
     </div>
