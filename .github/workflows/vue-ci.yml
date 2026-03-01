@@ -67,6 +67,7 @@ jobs:
           npm run test:unit
 
       - name: Upload unit coverage to Codecov
+        if: ${{ secrets.CODECOV_TOKEN }}
         uses: codecov/codecov-action@v5
         with:
           files: coverage/units/lcov.info
@@ -99,6 +100,7 @@ jobs:
         run: npm run test:e2e
 
       - name: Upload e2e coverage to Codecov
+        if: ${{ secrets.CODECOV_TOKEN }}
         uses: codecov/codecov-action@v5
         with:
           files: coverage/e2e/lcov.info

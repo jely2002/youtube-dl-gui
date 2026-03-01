@@ -122,6 +122,7 @@ jobs:
           cargo llvm-cov --manifest-path=src-tauri/Cargo.toml --lcov --output-path=coverage/rust/lcov.info --remap-path-prefix --all-features --all-targets
 
       - name: Upload Rust coverage to Codecov
+        if: ${{ secrets.CODECOV_TOKEN }}
         uses: codecov/codecov-action@v5
         with:
           files: coverage/rust/lcov.info
