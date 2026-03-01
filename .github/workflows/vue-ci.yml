@@ -51,6 +51,8 @@ jobs:
   unit-tests:
     name: 'Unit Tests'
     runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -67,12 +69,12 @@ jobs:
           npm run test:unit
 
       - name: Upload unit coverage to Codecov
-        if: ${{ secrets.CODECOV_TOKEN }}
+        if: ${{ env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v5
         with:
           files: coverage/units/lcov.info
           flags: unit
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
   e2e-tests:
@@ -81,6 +83,8 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.57.0-noble
       options: --ipc=host --shm-size=1g
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -100,12 +104,12 @@ jobs:
         run: npm run test:e2e
 
       - name: Upload e2e coverage to Codecov
-        if: ${{ secrets.CODECOV_TOKEN }}
+        if: ${{ env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v5
         with:
           files: coverage/e2e/lcov.info
           flags: e2e
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
   build:

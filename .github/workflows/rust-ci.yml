@@ -74,6 +74,7 @@ jobs:
       CARGO_TERM_COLOR: always
       TAURI_SKIP_UPDATE_CHECK: 1
       CARGO_TARGET_DIR: src-tauri/target
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -122,10 +123,10 @@ jobs:
           cargo llvm-cov --manifest-path=src-tauri/Cargo.toml --lcov --output-path=coverage/rust/lcov.info --remap-path-prefix --all-features --all-targets
 
       - name: Upload Rust coverage to Codecov
-        if: ${{ secrets.CODECOV_TOKEN }}
+        if: ${{ env.CODECOV_TOKEN != '' }}
         uses: codecov/codecov-action@v5
         with:
           files: coverage/rust/lcov.info
           flags: rust-units
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           fail_ci_if_error: true
