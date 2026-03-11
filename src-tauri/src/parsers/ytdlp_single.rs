@@ -14,7 +14,7 @@ pub fn parse_single(info: YtdlpInfo, id: String) -> ParsedMedia {
   let loss_pct = if provided == 0 {
     0.0
   } else {
-    100.0 * (provided - detected).max(0) as f64 / provided as f64
+    100.0 * (provided - detected) as f64 / provided as f64
   };
 
   tracing::debug!(
