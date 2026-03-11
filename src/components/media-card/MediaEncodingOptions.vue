@@ -75,6 +75,36 @@ const videoOptions = computed<SelectOption[]>(() =>
   toSelectOptions(videoCodecs.value),
 );
 
+watch(() => modelValue?.value, (val) => {
+  syncFromModel(val);
+}, { immediate: true });
+
+watch(
+  [audioOptions, videoOptions, isAudioDisabled, isVideoDisabled],
+  () => {
+    if (!autoSelect.value) return;
+    ensureValidSelections();
+  },
+  { immediate: true },
+);
+
+watch(
+  [selectedAudio, selectedVideo, isAudioDisabled, isVideoDisabled],
+  () => {
+    const payload: EncodingOptions = {};
+
+    if (!isAudioDisabled.value && selectedAudio.value) {
+      payload.audio = selectedAudio.value;
+    }
+    if (!isVideoDisabled.value && selectedVideo.value) {
+      payload.video = selectedVideo.value;
+    }
+
+    emit('update:modelValue', Object.keys(payload).length ? payload : undefined);
+  },
+  { immediate: true, flush: 'post' },
+);
+
 function toSelectOptions(list: string[] | undefined): SelectOption[] {
   const deduped = [...new Set((list ?? []).filter(Boolean))];
   deduped.sort((a, b) => a.localeCompare(b));
@@ -82,5 +112,39 @@ function toSelectOptions(list: string[] | undefined): SelectOption[] {
     value,
     label: value,
   }));
+}
+
+function ensureValidSelections() {
+  if (!isAudioDisabled.value) {
+    const audioValid = audioOptions.value.some(option => option.value === selectedAudio.value);
+    if (!audioValid) selectedAudio.value = audioOptions.value[0]?.value ?? '';
+  }
+  if (!isVideoDisabled.value) {
+    const videoValid = videoOptions.value.some(option => option.value === selectedVideo.value);
+    if (!videoValid) selectedVideo.value = videoOptions.value[0]?.value ?? '';
+  }
+}
+
+function syncFromModel(model: EncodingOptions | undefined) {
+  if (model) {
+    hasDefaulted.value = true;
+    selectedAudio.value = model.audio ?? '';
+    selectedVideo.value = model.video ?? '';
+    return;
+  }
+
+  if (hasDefaulted.value) return;
+  hasDefaulted.value = true;
+
+  const fromDefault = defaultValue?.value;
+  if (fromDefault) {
+    selectedAudio.value = fromDefault.audio ?? '';
+    selectedVideo.value = fromDefault.video ?? '';
+    return;
+  }
+
+  if (autoSelect.value) {
+    ensureValidSelections();
+  }
 }
 </script>

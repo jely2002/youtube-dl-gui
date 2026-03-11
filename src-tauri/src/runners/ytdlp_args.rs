@@ -52,6 +52,14 @@ pub fn build_format_args(
         sort_fields.push(format!("acodec:{audio_encoding}"));
       }
 
+      if let Some(audio_encoding) = format_options
+        .audio_encoding
+        .as_ref()
+        .filter(|value| !value.trim().is_empty())
+      {
+        sort_fields.push(format!("acodec:{audio_encoding}"));
+      }
+
       match output_settings.audio.format {
         AudioFormat::M4a | AudioFormat::Aac => {
           sort_fields.push("aext:m4a".into());
@@ -155,6 +163,22 @@ pub fn build_format_args(
       }
       if let Some(f) = format_options.fps {
         sort_fields.push(format!("fps:{f}"));
+      }
+      if let Some(video_encoding) = format_options
+        .video_encoding
+        .as_ref()
+        .filter(|value| !value.trim().is_empty())
+      {
+        sort_fields.push(format!("vcodec:{video_encoding}"));
+      }
+      if matches!(format_options.track_type, TrackType::Both) {
+        if let Some(audio_encoding) = format_options
+          .audio_encoding
+          .as_ref()
+          .filter(|value| !value.trim().is_empty())
+        {
+          sort_fields.push(format!("acodec:{audio_encoding}"));
+        }
       }
       if let Some(video_encoding) = format_options
         .video_encoding
@@ -424,6 +448,75 @@ mod tests {
       audio_track: None,
       video_track: None,
     }
+  }
+
+  #[test]
+  fn audio_format_args_include_track_and_encoding_preferences() {
+    let mut format_options = make_audio_format_options(Some(128));
+    format_options.audio_track = Some("lang:en|channels:2".into());
+    format_options.audio_encoding = Some("aac".into());
+    let settings = OutputSettings::default();
+
+    let args = build_format_args(&format_options, &settings);
+    assert_eq!(
+      args,
+      vec![
+        "-x",
+        "-f",
+        "ba[language=en]/ba/best",
+        "-S",
+        "lang:en,channels:2,abr~128,acodec:aac,aext:mp3",
+      ]
+      .into_iter()
+      .map(String::from)
+      .collect::<Vec<_>>()
+    );
+  }
+
+  #[test]
+  fn video_format_args_include_track_and_encoding_preferences() {
+    let mut format_options = make_video_format_options(Some(1080), Some(60));
+    format_options.video_track = Some("lang:ja".into());
+    format_options.video_encoding = Some("avc1".into());
+    let settings = OutputSettings::default();
+
+    let args = build_format_args(&format_options, &settings);
+    assert_eq!(
+      args,
+      vec![
+        "-f",
+        "bv*[language=ja]/b[language=ja]/bv/b",
+        "-S",
+        "lang:ja,res:1080,fps:60,vcodec:avc1,vext:mp4,vext:m4a",
+      ]
+      .into_iter()
+      .map(String::from)
+      .collect::<Vec<_>>()
+    );
+  }
+
+  #[test]
+  fn both_format_args_include_audio_and_video_encoding_preferences() {
+    let mut format_options = make_both_format_options(Some(720), Some(30));
+    format_options.audio_track = Some("lang:fr-FR".into());
+    format_options.video_track = Some("lang:fr-FR".into());
+    format_options.video_encoding = Some("vp9".into());
+    format_options.audio_encoding = Some("opus".into());
+    let settings = OutputSettings::default();
+
+    let args = build_format_args(&format_options, &settings);
+    assert_eq!(
+      args,
+      vec![
+        "-f",
+        "b[language=fr-FR]/bv*+ba[language=fr-FR]/bv+ba[language=fr-FR]/b[language=fr]/bv*+ba[language=fr]/bv+ba[language=fr]/bv*+ba/bv+ba/best",
+        "-S",
+        "lang:fr-FR,res:720,fps:30,vcodec:vp9,acodec:opus,vext:mp4,vext:m4a",
+      ]
+      .into_iter()
+      .map(String::from)
+      .collect::<Vec<_>>()
+    );
   }
 
   #[test]
