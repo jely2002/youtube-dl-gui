@@ -46,6 +46,10 @@ pub async fn run_ytdlp_info_fetch(
       abr: None,
       height: None,
       fps: None,
+      audio_encoding: None,
+      video_encoding: None,
+      audio_track: None,
+      video_track: None,
     }))
     .with_input_args()
     .with_auth_args()

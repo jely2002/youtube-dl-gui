@@ -10,6 +10,8 @@ import TheMediaLogs from './components/media-view/TheMediaLogs.vue';
 import LocationView from './views/app/LocationView.vue';
 import SettingsView from './views/app/SettingsView.vue';
 import AuthenticationView from './views/app/AuthenticationView.vue';
+import MediaPreferencesView from './views/app/MediaPreferencesView.vue';
+import TheDownloadPreferences from './components/media-view/TheDownloadPreferences.vue';
 
 const routes = [
   {
@@ -80,6 +82,22 @@ const routes = [
             component: TheMediaLogs,
             props: true,
             meta: { index: 1 },
+          },
+        ],
+      },
+      {
+        path: 'preferences/:groupId',
+        name: 'preferences',
+        component: MediaPreferencesView,
+        props: true,
+        meta: { index: 1 },
+        children: [
+          {
+            path: '',
+            name: 'preferences.download',
+            component: TheDownloadPreferences,
+            props: true,
+            meta: { index: 0 },
           },
         ],
       },

@@ -10,16 +10,46 @@ pub fn build_format_args(
   output_settings: &OutputSettings,
 ) -> Vec<String> {
   let mut args = Vec::new();
+  let audio_track_pref = parse_track_preference(format_options.audio_track.as_ref());
+  let video_track_pref = parse_track_preference(format_options.video_track.as_ref());
 
   match format_options.track_type {
     TrackType::Audio => {
       args.push("-x".into());
 
+      args.push("-f".into());
+      if let Some(language) = audio_track_pref.language.as_ref() {
+        let candidates = language_candidates(language);
+        let mut selectors: Vec<String> = candidates
+          .iter()
+          .map(|lang| format!("ba[language={lang}]"))
+          .collect();
+        selectors.extend(["ba".into(), "best".into()]);
+        args.push(selectors.join("/"));
+      } else {
+        args.push("ba/best".into());
+      }
+
       let mut sort_fields = Vec::new();
-      sort_fields.push("lang".into());
+      if let Some(language) = audio_track_pref.language {
+        sort_fields.push(format!("lang:{language}"));
+      } else {
+        sort_fields.push("lang".into());
+      }
+      if let Some(channels) = audio_track_pref.channels {
+        sort_fields.push(format!("channels:{channels}"));
+      }
 
       if let Some(abr) = format_options.abr {
         sort_fields.push(format!("abr~{abr}"));
+      }
+
+      if let Some(audio_encoding) = format_options
+        .audio_encoding
+        .as_ref()
+        .filter(|value| !value.trim().is_empty())
+      {
+        sort_fields.push(format!("acodec:{audio_encoding}"));
       }
 
       match output_settings.audio.format {
@@ -52,22 +82,104 @@ pub fn build_format_args(
     }
 
     TrackType::Video | TrackType::Both => {
-      let selector = match format_options.track_type {
-        TrackType::Video => "bv/b".to_string(),
-        TrackType::Both => "bv*+ba/b".to_string(),
+      let preferred_language = video_track_pref
+        .language
+        .as_ref()
+        .or(audio_track_pref.language.as_ref());
+      let selector = match &format_options.track_type {
+        TrackType::Video => {
+          if let Some(language) = video_track_pref.language.as_ref() {
+            let candidates = language_candidates(language);
+            let mut selectors: Vec<String> = candidates
+              .iter()
+              .flat_map(|lang| {
+                [
+                  format!("bv*[language={lang}]"),
+                  format!("b[language={lang}]"),
+                ]
+              })
+              .collect();
+            selectors.extend(["bv".into(), "b".into()]);
+            selectors.join("/")
+          } else {
+            "bv".to_string()
+          }
+        }
+        TrackType::Both => {
+          if let Some(language) = audio_track_pref.language.as_ref() {
+            let candidates = language_candidates(language);
+            // For combined downloads, multilingual audio is often only available on
+            // progressive/HLS combined streams, so prioritize b[language=..] first.
+            let mut selectors: Vec<String> = candidates
+              .iter()
+              .flat_map(|lang| {
+                [
+                  format!("b[language={lang}]"),
+                  format!("bv*+ba[language={lang}]"),
+                  format!("bv+ba[language={lang}]"),
+                ]
+              })
+              .collect();
+            selectors.extend(["bv*+ba".into(), "bv+ba".into(), "best".into()]);
+            selectors.join("/")
+          } else if let Some(language) = preferred_language {
+            // Fallback if only video language is present.
+            let candidates = language_candidates(language);
+            let mut selectors: Vec<String> = candidates
+              .iter()
+              .flat_map(|lang| {
+                [
+                  format!("bv*[language={lang}]+ba"),
+                  format!("b[language={lang}]"),
+                ]
+              })
+              .collect();
+            selectors.extend(["bv*+ba".into(), "bv+ba".into(), "best".into()]);
+            selectors.join("/")
+          } else {
+            "bv*+ba/bv+ba/best".to_string()
+          }
+        }
         TrackType::Audio => unreachable!(),
       };
       args.push("-f".into());
       args.push(selector);
 
       let mut sort_fields = Vec::new();
-      sort_fields.push("lang".into());
+      if let Some(language) = video_track_pref.language.or(audio_track_pref.language) {
+        sort_fields.push(format!("lang:{language}"));
+      } else {
+        sort_fields.push("lang".into());
+      }
 
       if let Some(h) = format_options.height {
         sort_fields.push(format!("res:{h}"));
       }
       if let Some(f) = format_options.fps {
         sort_fields.push(format!("fps:{f}"));
+      }
+      if let Some(video_encoding) = format_options
+        .video_encoding
+        .as_ref()
+        .filter(|value| !value.trim().is_empty())
+      {
+        sort_fields.push(format!("vcodec:{video_encoding}"));
+      }
+      if matches!(format_options.track_type, TrackType::Both) {
+        if let Some(audio_encoding) = format_options
+          .audio_encoding
+          .as_ref()
+          .filter(|value| !value.trim().is_empty())
+        {
+          sort_fields.push(format!("acodec:{audio_encoding}"));
+        }
+      }
+
+      if matches!(output_settings.video.container, VideoContainer::Mp4) {
+        sort_fields.push("vext:mp4".into());
+        sort_fields.push("vext:m4a".into());
+      } else {
+        sort_fields.push("vext".into());
       }
 
       let sort_arg = sort_fields.join(",");
@@ -78,6 +190,50 @@ pub fn build_format_args(
   }
 
   args
+}
+
+#[derive(Debug, Default)]
+struct TrackPreference {
+  language: Option<String>,
+  channels: Option<u32>,
+}
+
+fn parse_track_preference(track: Option<&String>) -> TrackPreference {
+  let Some(raw) = track else {
+    return TrackPreference::default();
+  };
+
+  if raw.trim().is_empty() || raw == "auto" {
+    return TrackPreference::default();
+  }
+
+  let mut pref = TrackPreference::default();
+  for part in raw.split('|') {
+    if let Some(lang) = part.strip_prefix("lang:") {
+      if !lang.trim().is_empty() {
+        pref.language = Some(lang.trim().to_string());
+      }
+    } else if let Some(ch) = part.strip_prefix("channels:") {
+      if let Ok(value) = ch.trim().parse::<u32>() {
+        pref.channels = Some(value);
+      }
+    }
+  }
+  pref
+}
+
+fn language_candidates(language: &str) -> Vec<String> {
+  let lang = language.trim();
+  if lang.is_empty() {
+    return Vec::new();
+  }
+
+  let mut out = vec![lang.to_string()];
+  let base = lang.split(['-', '_']).next().unwrap_or_default().trim();
+  if !base.is_empty() && !base.eq_ignore_ascii_case(lang) {
+    out.push(base.to_string());
+  }
+  out
 }
 
 pub fn build_output_args(
@@ -239,6 +395,10 @@ mod tests {
       abr,
       height: None,
       fps: None,
+      audio_encoding: None,
+      video_encoding: None,
+      audio_track: None,
+      video_track: None,
     }
   }
 
@@ -248,6 +408,10 @@ mod tests {
       abr: None,
       height,
       fps,
+      audio_encoding: None,
+      video_encoding: None,
+      audio_track: None,
+      video_track: None,
     }
   }
 
@@ -257,7 +421,80 @@ mod tests {
       abr: None,
       height,
       fps,
+      audio_encoding: None,
+      video_encoding: None,
+      audio_track: None,
+      video_track: None,
     }
+  }
+
+  #[test]
+  fn audio_format_args_include_track_and_encoding_preferences() {
+    let mut format_options = make_audio_format_options(Some(128));
+    format_options.audio_track = Some("lang:en|channels:2".into());
+    format_options.audio_encoding = Some("aac".into());
+    let settings = OutputSettings::default();
+
+    let args = build_format_args(&format_options, &settings);
+    assert_eq!(
+      args,
+      vec![
+        "-x",
+        "-f",
+        "ba[language=en]/ba/best",
+        "-S",
+        "lang:en,channels:2,abr~128,acodec:aac,aext:mp3",
+      ]
+      .into_iter()
+      .map(String::from)
+      .collect::<Vec<_>>()
+    );
+  }
+
+  #[test]
+  fn video_format_args_include_track_and_encoding_preferences() {
+    let mut format_options = make_video_format_options(Some(1080), Some(60));
+    format_options.video_track = Some("lang:ja".into());
+    format_options.video_encoding = Some("avc1".into());
+    let settings = OutputSettings::default();
+
+    let args = build_format_args(&format_options, &settings);
+    assert_eq!(
+      args,
+      vec![
+        "-f",
+        "bv*[language=ja]/b[language=ja]/bv/b",
+        "-S",
+        "lang:ja,res:1080,fps:60,vcodec:avc1,vext:mp4,vext:m4a",
+      ]
+      .into_iter()
+      .map(String::from)
+      .collect::<Vec<_>>()
+    );
+  }
+
+  #[test]
+  fn both_format_args_include_audio_and_video_encoding_preferences() {
+    let mut format_options = make_both_format_options(Some(720), Some(30));
+    format_options.audio_track = Some("lang:fr-FR".into());
+    format_options.video_track = Some("lang:fr-FR".into());
+    format_options.video_encoding = Some("vp9".into());
+    format_options.audio_encoding = Some("opus".into());
+    let settings = OutputSettings::default();
+
+    let args = build_format_args(&format_options, &settings);
+    assert_eq!(
+      args,
+      vec![
+        "-f",
+        "b[language=fr-FR]/bv*+ba[language=fr-FR]/bv+ba[language=fr-FR]/b[language=fr]/bv*+ba[language=fr]/bv+ba[language=fr]/bv*+ba/bv+ba/best",
+        "-S",
+        "lang:fr-FR,res:720,fps:30,vcodec:vp9,acodec:opus,vext:mp4,vext:m4a",
+      ]
+      .into_iter()
+      .map(String::from)
+      .collect::<Vec<_>>()
+    );
   }
 
   #[test]

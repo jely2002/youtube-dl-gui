@@ -185,6 +185,11 @@
         }
       }
     },
+    "preferences": {
+      "tabs": {
+        "download": "Preferences"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} of {total}",
@@ -199,6 +204,30 @@
             "noFormats": "No formats",
             "placeholder": "Select format",
             "screenReader": "Select format of the track"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "No audio encodings",
+            "placeholder": "Audio codec",
+            "screenReader": "Select audio encoding"
+          },
+          "videoSelect": {
+            "noFormats": "No video encodings",
+            "placeholder": "Video codec",
+            "screenReader": "Select video encoding"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "No audio tracks",
+            "placeholder": "Audio track",
+            "screenReader": "Select audio track"
+          },
+          "videoSelect": {
+            "noFormats": "No video tracks",
+            "placeholder": "Video track",
+            "screenReader": "Select video track"
           }
         },
         "metadata": {
@@ -266,6 +295,7 @@
         "externalUrl": "Visit on external URL",
         "retry": "Retry download",
         "download": "Download individually",
+        "preferences": "Download preferences",
         "pause": "Pause download",
         "resume": "Resume download",
         "metadata": "Show metadata"
@@ -519,9 +549,18 @@
         }
       },
       "language": {
-        "label": "Language",
+        "label": "Language:",
         "options": {
           "system": "System ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Advanced selector on media cards:",
+        "hint": "Choose which optional selector is shown on media cards.",
+        "options": {
+          "none": "None",
+          "encodings": "Encodings",
+          "tracks": "Tracks"
         }
       }
     },

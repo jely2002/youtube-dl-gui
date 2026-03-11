@@ -201,6 +201,30 @@
             "screenReader": "Seleziona il formato della traccia"
           }
         },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "No audio encodings",
+            "placeholder": "Audio codec",
+            "screenReader": "Select audio encoding"
+          },
+          "videoSelect": {
+            "noFormats": "No video encodings",
+            "placeholder": "Video codec",
+            "screenReader": "Select video encoding"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "No audio tracks",
+            "placeholder": "Audio track",
+            "screenReader": "Select audio track"
+          },
+          "videoSelect": {
+            "noFormats": "No video tracks",
+            "placeholder": "Video track",
+            "screenReader": "Select video track"
+          }
+        },
         "metadata": {
           "duration": "Durata: {duration}",
           "size": "Dimensione: ",

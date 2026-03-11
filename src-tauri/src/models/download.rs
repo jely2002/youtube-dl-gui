@@ -73,4 +73,8 @@ pub struct FormatOptions {
   pub abr: Option<u32>,
   pub height: Option<u32>,
   pub fps: Option<u32>,
+  pub audio_encoding: Option<String>,
+  pub video_encoding: Option<String>,
+  pub audio_track: Option<String>,
+  pub video_track: Option<String>,
 }

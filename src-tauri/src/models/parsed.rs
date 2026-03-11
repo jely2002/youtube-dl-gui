@@ -20,6 +20,18 @@ pub struct MediaFormat {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct MediaTrack {
+  pub id: String,
+  pub label: String,
+  pub language: Option<String>,
+  pub language_preference: Option<i64>,
+  pub format_note: Option<String>,
+  pub format: Option<String>,
+  pub audio_channels: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ParsedSingleVideo {
   pub id: String,
   pub url: Option<String>,
@@ -37,6 +49,8 @@ pub struct ParsedSingleVideo {
   pub extractor: Option<String>,
   pub video_codecs: Vec<String>,
   pub audio_codecs: Vec<String>,
+  pub video_tracks: Vec<MediaTrack>,
+  pub audio_tracks: Vec<MediaTrack>,
   pub formats: Vec<MediaFormat>,
   pub filesize: Option<u64>,
 }

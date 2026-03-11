@@ -1,5 +1,5 @@
 <template>
-  <article class="card card-side p-4 w-175 max-h-44 bg-base-300 shadow-md" :class="[statusOutline]">
+  <article class="card card-side p-4 w-175 h-48 bg-base-300 shadow-md" :class="[statusOutline]">
     <figure class="shrink-0 w-64 aspect-video rounded-md overflow-hidden bg-base-100">
       <img
           :src="group.thumbnail ?? placeholderUrl"

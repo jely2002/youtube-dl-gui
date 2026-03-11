@@ -30,6 +30,20 @@ export type DownloadOptions = {
   abr?: number;
   height?: number;
   fps?: number;
+  audioEncoding?: string;
+  videoEncoding?: string;
+  audioTrack?: string;
+  videoTrack?: string;
+};
+
+export type EncodingOptions = {
+  audio?: string;
+  video?: string;
+};
+
+export type TrackOptions = {
+  audio?: string;
+  video?: string;
 };
 
 export interface MediaAddPayload {
@@ -58,6 +72,9 @@ export interface MediaItem {
   rating?: number;
   extractor?: string;
   audioCodecs: string[];
+  videoCodecs?: string[];
+  audioTracks?: MediaTrack[];
+  videoTracks?: MediaTrack[];
   formats: MediaFormat[];
   isLeader?: boolean;
   groupId?: string;
@@ -79,4 +96,14 @@ export interface MediaFormat {
   abr?: number;
   fps?: number;
   videoCodecs: string[];
+}
+
+export interface MediaTrack {
+  id: string;
+  label: string;
+  language?: string;
+  languagePreference?: number;
+  formatNote?: string;
+  format?: string;
+  audioChannels?: number;
 }

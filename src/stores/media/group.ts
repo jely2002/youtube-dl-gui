@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import { v4 as uuidv4 } from 'uuid';
 import { Group } from '../../tauri/types/group';
-import { MediaFormat } from '../../tauri/types/media';
+import { MediaFormat, MediaTrack } from '../../tauri/types/media';
 import { firstKey, omit } from '../../helpers/groups';
 
 export const useMediaGroupStore = defineStore('media-group', () => {
@@ -120,7 +120,7 @@ export const useMediaGroupStore = defineStore('media-group', () => {
 
   /**
    * Finds the first-added item in a group, merges
-   * all audioCodecs + formats into it, dedupes by id,
+   * all audioCodecs + tracks + formats into it, dedupes by id,
    * and copies merged meta back onto the group.
    */
   function consolidateGroup(group: Group) {
@@ -134,13 +134,29 @@ export const useMediaGroupStore = defineStore('media-group', () => {
 
     leader.duration = items.reduce((sum, { duration }) => sum + (duration ?? 0), 0);
 
-    const codecSet = new Set<string>();
+    const audioCodecSet = new Set<string>();
+    const videoCodecSet = new Set<string>();
     for (const it of items) {
       const entry = leader.entries?.find(entry => entry.videoUrl === it.url);
       if (entry) it.playlistIndex = entry.index;
-      for (const codec of it.audioCodecs ?? []) codecSet.add(codec);
+      for (const codec of it.audioCodecs ?? []) audioCodecSet.add(codec);
+      for (const codec of it.videoCodecs ?? []) videoCodecSet.add(codec);
     }
-    leader.audioCodecs = [...codecSet];
+    leader.audioCodecs = [...audioCodecSet];
+    leader.videoCodecs = [...videoCodecSet];
+
+    const audioTrackMap = new Map<string, MediaTrack>();
+    const videoTrackMap = new Map<string, MediaTrack>();
+    for (const it of items) {
+      for (const track of it.audioTracks ?? []) {
+        if (!audioTrackMap.has(track.id)) audioTrackMap.set(track.id, track);
+      }
+      for (const track of it.videoTracks ?? []) {
+        if (!videoTrackMap.has(track.id)) videoTrackMap.set(track.id, track);
+      }
+    }
+    leader.audioTracks = [...audioTrackMap.values()];
+    leader.videoTracks = [...videoTrackMap.values()];
 
     const formatMap = new Map<string, MediaFormat>();
     for (const it of items) {

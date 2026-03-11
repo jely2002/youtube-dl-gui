@@ -1,5 +1,5 @@
 <template>
-  <aside class="flex flex-col h-full justify-between gap-2">
+  <aside class="flex flex-col justify-between gap-2 h-full">
     <media-card-action-item
         @click="removeItem"
         :label="t('media.card.actions.remove')"
@@ -37,6 +37,12 @@
         :icon="ArrowDownTrayIcon"
     />
     <media-card-action-item
+        :disabled="!canSetPreferences"
+        :to="{ name: 'preferences.download', params: { groupId: group.id } }"
+        :label="t('media.card.actions.preferences')"
+        :icon="WrenchScrewdriverIcon"
+    />
+    <media-card-action-item
         :disabled="!canViewInfo"
         :to="{ name: 'group.metadata', params: { groupId: group.id } }"
         :label="t('media.card.actions.metadata')"
@@ -50,6 +56,7 @@ import {
   ArrowPathIcon,
   ArrowTopRightOnSquareIcon,
   InformationCircleIcon,
+  WrenchScrewdriverIcon,
   XCircleIcon,
   PauseIcon,
   PlayIcon,
@@ -87,6 +94,7 @@ const canPause = computed(() => groupState.value === MediaState.downloading || g
 const canResume = computed(() => groupState.value === MediaState.paused || groupState.value === MediaState.pausedList);
 const canRetry = computed(() => groupState.value === MediaState.done || groupState.value === MediaState.error);
 const canViewInfo = computed(() => groupState.value !== MediaState.fetching);
+const canSetPreferences = computed(() => groupState.value === MediaState.configure);
 
 const isValidExternalUrl = computed(() => {
   // Matches the requirement in 'src-tauri/capabilities/default.json' at 'permissions[4].allow[0].url'.
