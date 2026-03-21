@@ -185,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Sovrascrivi"
+      },
+      "labels": {
+        "quality": "Scegli le preferenze per formato, codec e tracce.",
+        "network": "Configura proxy, impersonazione e intestazioni della richiesta. Sovrascrive le impostazioni predefinite dell'app per questo download.",
+        "output": "Configura contenitore, conversione e modelli per il nome file. Sovrascrive le impostazioni predefinite dell'app per questo download.",
+        "headersOverride": "Una voce per riga: CAMPO:VALORE. Sostituisce le intestazioni globali per questo download."
+      },
+      "hints": {
+        "format": "Scegli la qualità video o audio. Una qualità più alta significa di solito file più grandi e download più lunghi.",
+        "encodings": "Scegli i codec preferiti. Utile per la compatibilità di riproduzione o per mantenere la qualità originale.",
+        "tracks": "Scegli varianti di lingua o di canale quando disponibili, ad esempio l'audio doppiato."
+      },
+      "tabs": {
+        "quality": "Qualità",
+        "network": "Rete"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} di {total}",
@@ -290,6 +310,7 @@
         "externalUrl": "Visita URL esterna",
         "retry": "Riprova download",
         "download": "Download individuale",
+        "preferences": "Preferenze di download",
         "metadata": "Visualizza metadati",
         "pause": "Metti in pausa download",
         "resume": "Riprendi download"
@@ -546,6 +567,15 @@
         "label": "Lingua UI",
         "options": {
           "system": "Sistema ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Selettore aggiuntivo:",
+        "hint": "Scegli quale selettore aggiuntivo mostrare prima del download.",
+        "options": {
+          "none": "Nessuno",
+          "encodings": "Codifiche",
+          "tracks": "Tracce"
         }
       }
     },

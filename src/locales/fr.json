@@ -185,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Remplacement"
+      },
+      "labels": {
+        "quality": "Choisissez les préférences de format, de codec et de piste.",
+        "network": "Configurez le proxy, l’usurpation et les en-têtes de requête. Remplace les paramètres par défaut de l’application pour ce téléchargement.",
+        "output": "Configurez le conteneur, la conversion et les modèles de nom de fichier. Remplace les paramètres par défaut de l’application pour ce téléchargement.",
+        "headersOverride": "Une entrée par ligne : CHAMP:VALEUR. Remplace les en-têtes globaux pour ce téléchargement."
+      },
+      "hints": {
+        "format": "Choisissez la qualité vidéo ou audio. Une qualité plus élevée signifie généralement des fichiers plus volumineux et des téléchargements plus longs.",
+        "encodings": "Choisissez les codecs préférés. Utile pour la compatibilité de lecture ou pour conserver la qualité d’origine.",
+        "tracks": "Choisissez des variantes de langue ou de canaux lorsqu’elles sont disponibles, par exemple un doublage."
+      },
+      "tabs": {
+        "quality": "Qualité",
+        "network": "Réseau"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} sur {total}",
@@ -290,6 +310,7 @@
         "externalUrl": "Voir sur l'URL externe",
         "retry": "Réessayer le téléchargement",
         "download": "Télécharger individuellement",
+        "preferences": "Préférences de téléchargement",
         "metadata": "Afficher les métadonnées",
         "pause": "Mettre en pause le téléchargement",
         "resume": "Reprendre le téléchargement"
@@ -546,6 +567,15 @@
         "label": "Langue",
         "options": {
           "system": "Système ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Sélecteur supplémentaire :",
+        "hint": "Choisissez quel sélecteur supplémentaire est affiché avant le téléchargement.",
+        "options": {
+          "none": "Aucun",
+          "encodings": "Encodages",
+          "tracks": "Pistes"
         }
       }
     },

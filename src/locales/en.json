@@ -186,8 +186,23 @@
       }
     },
     "preferences": {
+      "badges": {
+        "override": "Override"
+      },
+      "labels": {
+        "quality": "Choose format, codec, and track preferences.",
+        "network": "Configure proxy, impersonation, and request headers. Overrides app defaults for this download.",
+        "output": "Configure container, conversion, and filename templates. Overrides app defaults for this download.",
+        "headersOverride": "One per line: FIELD:VALUE. Replaces global headers for this download."
+      },
+      "hints": {
+        "format": "Pick video or audio quality. Higher quality usually means larger files and longer downloads.",
+        "encodings": "Choose preferred codecs. Useful for playback compatibility or keeping original quality.",
+        "tracks": "Pick language or channel variants when available, for example dubbed audio."
+      },
       "tabs": {
-        "download": "Preferences"
+        "quality": "Quality",
+        "network": "Network"
       }
     },
     "steps": {
@@ -555,8 +570,8 @@
         }
       },
       "expandedOptions": {
-        "label": "Advanced selector on media cards:",
-        "hint": "Choose which optional selector is shown on media cards.",
+        "label": "Additional selector:",
+        "hint": "Choose which extra selector is shown before downloading.",
         "options": {
           "none": "None",
           "encodings": "Encodings",

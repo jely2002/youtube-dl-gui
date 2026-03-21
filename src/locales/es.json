@@ -185,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Sobrescrito"
+      },
+      "labels": {
+        "quality": "Elige las preferencias de formato, códec y pistas.",
+        "network": "Configura el proxy, la suplantación y los encabezados de la solicitud. Sobrescribe los ajustes predeterminados de la app para esta descarga.",
+        "output": "Configura el contenedor, la conversión y las plantillas de nombre de archivo. Sobrescribe los ajustes predeterminados de la app para esta descarga.",
+        "headersOverride": "Una por línea: CAMPO:VALOR. Sustituye los encabezados globales para esta descarga."
+      },
+      "hints": {
+        "format": "Elige la calidad de video o audio. Una mayor calidad suele significar archivos más grandes y descargas más largas.",
+        "encodings": "Elige los códecs preferidos. Útil para mejorar la compatibilidad de reproducción o conservar la calidad original.",
+        "tracks": "Elige variantes de idioma o canales cuando estén disponibles, por ejemplo, audio doblado."
+      },
+      "tabs": {
+        "quality": "Calidad",
+        "network": "Red"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} de {total}",
@@ -290,6 +310,7 @@
         "externalUrl": "Visitar URL externa",
         "retry": "Reintentar descarga",
         "download": "Descargar individualmente",
+        "preferences": "Preferencias de descarga",
         "metadata": "Mostrar metadatos",
         "pause": "Pausar descarga",
         "resume": "Reanudar descarga"
@@ -546,6 +567,15 @@
         "label": "Idioma",
         "options": {
           "system": "Sistema ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Selector adicional:",
+        "hint": "Elige qué selector adicional se muestra antes de descargar.",
+        "options": {
+          "none": "Ninguno",
+          "encodings": "Codificaciones",
+          "tracks": "Pistas"
         }
       }
     },

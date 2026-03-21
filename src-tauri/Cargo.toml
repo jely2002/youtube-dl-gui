@@ -36,7 +36,7 @@ tauri-plugin-single-instance = "2"
 tauri-plugin-updater = "2"
 arc-swap = "1.8.1"
 tokio = { version = "1.49.0", features = ["full"] }
-reqwest = { version = "0.13", default-features = false, features = ["json", "rustls"] }
+reqwest = { version = "0.13", features = ["json"] }
 sha2 = "0.10"
 ed25519-dalek = { version = "2", features = ["std"] }
 base64 = "0.22.1"

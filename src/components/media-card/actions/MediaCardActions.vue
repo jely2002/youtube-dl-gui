@@ -38,7 +38,7 @@
     />
     <media-card-action-item
         :disabled="!canSetPreferences"
-        :to="{ name: 'preferences.download', params: { groupId: group.id } }"
+        :to="{ name: 'preferences.quality', params: { groupId: group.id } }"
         :label="t('media.card.actions.preferences')"
         :icon="WrenchScrewdriverIcon"
     />

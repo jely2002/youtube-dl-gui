@@ -185,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Overstyring"
+      },
+      "labels": {
+        "quality": "Velg innstillinger for format, kodek og spor.",
+        "network": "Konfigurer proxy, identitetsforfalskning og forespørselshoder. Overstyrer appens standardinnstillinger for denne nedlastingen.",
+        "output": "Konfigurer beholderformat, konvertering og filnavnsmaler. Overstyrer appens standardinnstillinger for denne nedlastingen.",
+        "headersOverride": "En per linje: FELT:VERDI. Erstatter globale forespørselshoder for denne nedlastingen."
+      },
+      "hints": {
+        "format": "Velg video- eller lydkvalitet. Høyere kvalitet betyr vanligvis større filer og lengre nedlastinger.",
+        "encodings": "Velg foretrukne kodeker. Nyttig for avspillingskompatibilitet eller for å beholde original kvalitet.",
+        "tracks": "Velg språk- eller kanalvarianter når de er tilgjengelige, for eksempel dubbet lyd."
+      },
+      "tabs": {
+        "quality": "Kvalitet",
+        "network": "Nettverk"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} av {total}",
@@ -290,6 +310,7 @@
         "externalUrl": "Besøk på ekstern URL",
         "retry": "Prøv nedlasting på nytt",
         "download": "Last ned individuelt",
+        "preferences": "Nedlastingsinnstillinger",
         "metadata": "Vis metadata",
         "pause": "Sett nedlasting på pause",
         "resume": "Fortsett nedlasting"
@@ -546,6 +567,15 @@
         "label": "Språk",
         "options": {
           "system": "System ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Ekstra velger:",
+        "hint": "Velg hvilken ekstra velger som vises før nedlasting.",
+        "options": {
+          "none": "Ingen",
+          "encodings": "Kodinger",
+          "tracks": "Spor"
         }
       }
     },

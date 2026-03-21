@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { DownloadOptions, EncodingOptions, TrackOptions } from '../../tauri/types/media';
+import { DownloadOptions, DownloadOverrides, EncodingOptions, TrackOptions } from '../../tauri/types/media';
 import { useMediaGroupStore } from './group';
 import { Group } from '../../tauri/types/group';
 
@@ -8,6 +8,7 @@ export const useMediaOptionsStore = defineStore('media-options', () => {
   const groupOptions = ref<Record<string, DownloadOptions>>({});
   const groupEncodings = ref<Record<string, EncodingOptions>>({});
   const groupTracks = ref<Record<string, TrackOptions>>({});
+  const groupOverrides = ref<Record<string, DownloadOverrides>>({});
   const globalOptions = ref<DownloadOptions>();
   const globalEncodings = ref<EncodingOptions>();
   const globalTracks = ref<TrackOptions>();
@@ -49,14 +50,19 @@ export const useMediaOptionsStore = defineStore('media-options', () => {
   const getTracks = (groupId: string): TrackOptions | undefined => getGroupValue(groupTracks, groupId);
   const getGlobalTracks = (): TrackOptions | undefined => globalTracks.value;
 
+  const setOverrides = (groupId: string, overrides: DownloadOverrides) => setGroupValue(groupOverrides, groupId, overrides);
+  const getOverrides = (groupId: string): DownloadOverrides | undefined => getGroupValue(groupOverrides, groupId);
+
   const removeOptions = (groupId: string) => {
     removeGroupValue(groupOptions, groupId);
     removeGroupValue(groupEncodings, groupId);
     removeGroupValue(groupTracks, groupId);
+    removeGroupValue(groupOverrides, groupId);
   };
 
   const removeEncodings = (groupId: string) => removeGroupValue(groupEncodings, groupId);
   const removeTracks = (groupId: string) => removeGroupValue(groupTracks, groupId);
+  const removeOverrides = (groupId: string) => removeGroupValue(groupOverrides, groupId);
 
   function applyOptionsToGroup(
     group: Group,
@@ -101,6 +107,7 @@ export const useMediaOptionsStore = defineStore('media-options', () => {
     groupOptions,
     groupEncodings,
     groupTracks,
+    groupOverrides,
     globalOptions,
     globalEncodings,
     globalTracks,
@@ -113,9 +120,12 @@ export const useMediaOptionsStore = defineStore('media-options', () => {
     setTracks,
     getTracks,
     getGlobalTracks,
+    setOverrides,
+    getOverrides,
     removeOptions,
     removeEncodings,
     removeTracks,
+    removeOverrides,
     applyGlobalOptions,
     applyGlobalEncodings,
     applyGlobalTracks,

@@ -185,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Überschrieben"
+      },
+      "labels": {
+        "quality": "Format-, Codec- und Spur-Einstellungen auswählen.",
+        "network": "Proxy, Identitätsvortäuschung und Request-Header konfigurieren. Überschreibt die App-Standards für diesen Download.",
+        "output": "Container, Konvertierung und Dateinamen-Vorlagen konfigurieren. Überschreibt die App-Standards für diesen Download.",
+        "headersOverride": "Eine Angabe pro Zeile: FELD:WERT. Ersetzt die globalen Header für diesen Download."
+      },
+      "hints": {
+        "format": "Video- oder Audioqualität auswählen. Höhere Qualität bedeutet meist größere Dateien und längere Downloads.",
+        "encodings": "Bevorzugte Codecs auswählen. Nützlich für bessere Kompatibilität oder zum Erhalt der Originalqualität.",
+        "tracks": "Sprach- oder Kanalvarianten auswählen, wenn verfügbar, zum Beispiel eine synchronisierte Tonspur."
+      },
+      "tabs": {
+        "quality": "Qualität",
+        "network": "Netzwerk"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} von {total}",
@@ -290,6 +310,7 @@
         "externalUrl": "Auf externer URL öffnen",
         "retry": "Download erneut versuchen",
         "download": "Einzeln herunterladen",
+        "preferences": "Download-Einstellungen",
         "metadata": "Metadaten anzeigen",
         "pause": "Download pausieren",
         "resume": "Download fortsetzen"
@@ -546,6 +567,15 @@
         "label": "Sprache",
         "options": {
           "system": "System ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Zusätzlicher Selektor:",
+        "hint": "Wähle aus, welcher zusätzliche Selektor vor dem Download angezeigt wird.",
+        "options": {
+          "none": "Keine",
+          "encodings": "Kodierungen",
+          "tracks": "Spuren"
         }
       }
     },

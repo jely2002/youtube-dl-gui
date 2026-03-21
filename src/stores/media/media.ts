@@ -132,6 +132,7 @@ export const useMediaStore = defineStore('media', () => {
     const itemsWithoutLeader: MediaItem[] = items.filter(item => !item.entries && stateStore.getState(item.id) !== MediaState.done);
     const encodings = optionsStore.getEncodings(groupId);
     const tracks = optionsStore.getTracks(groupId);
+    const overrides = optionsStore.getOverrides(groupId);
     const resolvedOptions: DownloadOptions = {
       ...options,
       audioEncoding: encodings?.audio,
@@ -154,6 +155,7 @@ export const useMediaStore = defineStore('media', () => {
           id: item.id,
           url: item.url,
           format: resolvedOptions,
+          overrides,
           templateContext: {
             values: buildTemplateContext(item, group),
           },

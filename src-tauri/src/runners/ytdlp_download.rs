@@ -40,15 +40,19 @@ pub async fn run_ytdlp_download(
 ) -> Result<(), YtdlpDownloadError> {
   let runner = YtdlpRunner::new(&app)
     .with_progress_args()
-    .with_network_args()
-    .with_auth_args()
-    .with_subtitle_args()
-    .with_sponsorblock_args()
-    .with_format_args(&entry.format)
-    .with_input_args()
-    .with_output_args(&entry.format)
-    .with_location_args(&entry.format.track_type, &entry.template_context)
-    .with_url(&entry.url, &entry.headers);
+    .with_network_args(entry.overrides.as_ref())
+    .with_auth_args(entry.overrides.as_ref())
+    .with_subtitle_args(entry.overrides.as_ref())
+    .with_sponsorblock_args(entry.overrides.as_ref())
+    .with_format_args(&entry.format, entry.overrides.as_ref())
+    .with_input_args(entry.overrides.as_ref())
+    .with_output_args(&entry.format, entry.overrides.as_ref())
+    .with_location_args(
+      &entry.format.track_type,
+      &entry.template_context,
+      entry.overrides.as_ref(),
+    )
+    .with_url(&entry.url);
 
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
   let matcher = DiagnosticMatcher::from_json(RULES_JSON)

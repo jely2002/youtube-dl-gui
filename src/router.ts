@@ -12,6 +12,8 @@ import SettingsView from './views/app/SettingsView.vue';
 import AuthenticationView from './views/app/AuthenticationView.vue';
 import MediaPreferencesView from './views/app/MediaPreferencesView.vue';
 import TheDownloadPreferences from './components/media-view/TheDownloadPreferences.vue';
+import TheNetworkPreferences from './components/media-view/TheNetworkPreferences.vue';
+import TheOutputPreferences from './components/media-view/TheOutputPreferences.vue';
 
 const routes = [
   {
@@ -67,7 +69,7 @@ const routes = [
         name: 'group',
         component: MediaView,
         props: true,
-        meta: { index: 1 },
+        meta: { index: 1, requiresGroup: true },
         children: [
           {
             path: '',
@@ -90,14 +92,28 @@ const routes = [
         name: 'preferences',
         component: MediaPreferencesView,
         props: true,
-        meta: { index: 1 },
+        meta: { index: 1, requiresGroup: true },
         children: [
           {
             path: '',
-            name: 'preferences.download',
+            name: 'preferences.quality',
             component: TheDownloadPreferences,
             props: true,
             meta: { index: 0 },
+          },
+          {
+            path: 'network',
+            name: 'preferences.network',
+            component: TheNetworkPreferences,
+            props: true,
+            meta: { index: 1 },
+          },
+          {
+            path: 'output',
+            name: 'preferences.output',
+            component: TheOutputPreferences,
+            props: true,
+            meta: { index: 2 },
           },
         ],
       },

@@ -185,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "覆寫"
+      },
+      "labels": {
+        "quality": "選擇格式、編碼與軌道偏好。",
+        "network": "設定 Proxy、模擬身分與請求標頭。這會覆寫此下載的應用程式預設值。",
+        "output": "設定容器格式、轉換方式與檔名範本。這會覆寫此下載的應用程式預設值。",
+        "headersOverride": "每行一項：欄位:值。這會取代此下載使用的全域標頭。"
+      },
+      "hints": {
+        "format": "選擇影片或音訊品質。品質越高，通常代表檔案越大、下載時間越長。",
+        "encodings": "選擇偏好的編碼。適合用來提升播放相容性，或保留原始品質。",
+        "tracks": "可用時可選擇語言或聲道版本，例如配音音軌。"
+      },
+      "tabs": {
+        "quality": "畫質",
+        "network": "網路"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} / {total}",
@@ -290,6 +310,7 @@
         "externalUrl": "在外部 URL 中開啟",
         "retry": "重試下載",
         "download": "個別下載",
+        "preferences": "下載偏好設定",
         "pause": "暫停下載",
         "resume": "繼續下載",
         "metadata": "顯示中繼資料"
@@ -546,6 +567,15 @@
         "label": "語言",
         "options": {
           "system": "系統預設 ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "附加選擇器：",
+        "hint": "選擇下載前要顯示哪一個額外選擇器。",
+        "options": {
+          "none": "無",
+          "encodings": "編碼",
+          "tracks": "軌道"
         }
       }
     },
