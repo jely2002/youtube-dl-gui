@@ -22,6 +22,9 @@ export default defineConfig((): UserConfig => ({
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
   },
   clearScreen: false,
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
   server: {
     port: 1420,
     strictPort: true,

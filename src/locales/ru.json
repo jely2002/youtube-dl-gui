@@ -153,8 +153,8 @@
         "uploader": "Автор:",
         "extractor": "Источник:",
         "link": "Ссылка:",
-        "description": "Описание:",
-        "urlHeaders": "Заголовки URL:"
+        "chapters": "Главы",
+        "description": "Описание"
       },
       "stats": {
         "title": "Статистика видео",
@@ -223,26 +223,26 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "No audio encodings",
-            "placeholder": "Audio codec",
-            "screenReader": "Select audio encoding"
+            "noFormats": "Нет аудиокодеков",
+            "placeholder": "Аудиокодек",
+            "screenReader": "Выбрать аудиокодек"
           },
           "videoSelect": {
-            "noFormats": "No video encodings",
-            "placeholder": "Video codec",
-            "screenReader": "Select video encoding"
+            "noFormats": "Нет видеокодеков",
+            "placeholder": "Видеокодек",
+            "screenReader": "Выбрать видеокодек"
           }
         },
         "tracks": {
           "audioSelect": {
-            "noFormats": "No audio tracks",
-            "placeholder": "Audio track",
-            "screenReader": "Select audio track"
+            "noFormats": "Нет аудиодорожек",
+            "placeholder": "Аудиодорожка",
+            "screenReader": "Выбрать аудиодорожку"
           },
           "videoSelect": {
-            "noFormats": "No video tracks",
-            "placeholder": "Video track",
-            "screenReader": "Select video track"
+            "noFormats": "Нет видеодорожек",
+            "placeholder": "Видеодорожка",
+            "screenReader": "Выбрать видеодорожку"
           }
         },
         "metadata": {
@@ -424,14 +424,14 @@
         },
         "examples": {
           "video": {
-            "titleQuality": "My Video-(1080p30).mp4",
-            "titleOnly": "My Video.mp4",
-            "titleQualityPlaylist": "03-My Video-(1080p30).mkv"
+            "titleQuality": "Моё видео-(1080p30).mp4",
+            "titleOnly": "Моё видео.mp4",
+            "titleQualityPlaylist": "03-Моё видео-(1080p30).mkv"
           },
           "audio": {
-            "titleQuality": "My Audio-(320k).mp3",
-            "titleOnly": "My Audio.mp3",
-            "titleQualityPlaylist": "03-My Audio-(320k).mp3"
+            "titleQuality": "Моё аудио-(320k).mp3",
+            "titleOnly": "Моё аудио.mp3",
+            "titleQualityPlaylist": "03-Моё аудио-(320k).mp3"
           }
         },
         "restrictFilenames": {
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "Добавить название и автора:",
         "hint": "Сохранить метаданные (название, автор/исполнитель и описание) внутри файла."
+      },
+      "partialDownload": {
+        "legend": "Частичная загрузка",
+        "hint": "Укажите таймкоды или главы, чтобы скачать только часть видео.",
+        "use": "Использовать",
+        "useTimes": "Таймкоды",
+        "useChapter": "Главы",
+        "chapter": "Глава",
+        "startAt": "Начало",
+        "stopAt": "Конец",
+        "allChapters": "Все главы",
+        "invalidHint": "Неверные таймкоды будут пропущены.",
+        "errors": {
+          "invalid": "Введите корректное время.",
+          "beforeStart": "Время окончания должно быть позже начала.",
+          "exceedsDuration": "Таймкод не может превышать длительность видео."
+        }
       },
       "location": {
         "label": "Папка загрузок и имена файлов:",

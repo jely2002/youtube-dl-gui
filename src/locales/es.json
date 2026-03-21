@@ -153,8 +153,8 @@
         "uploader": "Cargador:",
         "extractor": "Extractor:",
         "link": "Enlace:",
-        "description": "Descripción:",
-        "urlHeaders": "Encabezados URL:"
+        "chapters": "Capítulos",
+        "description": "Descripción:"
       },
       "stats": {
         "title": "Estadísticas del video",
@@ -223,26 +223,26 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "No audio encodings",
-            "placeholder": "Audio codec",
-            "screenReader": "Select audio encoding"
+            "noFormats": "Sin códecs de audio",
+            "placeholder": "Códec de audio",
+            "screenReader": "Seleccionar códec de audio"
           },
           "videoSelect": {
-            "noFormats": "No video encodings",
-            "placeholder": "Video codec",
-            "screenReader": "Select video encoding"
+            "noFormats": "Sin códecs de video",
+            "placeholder": "Códec de video",
+            "screenReader": "Seleccionar códec de video"
           }
         },
         "tracks": {
           "audioSelect": {
-            "noFormats": "No audio tracks",
-            "placeholder": "Audio track",
-            "screenReader": "Select audio track"
+            "noFormats": "Sin pistas de audio",
+            "placeholder": "Pista de audio",
+            "screenReader": "Seleccionar pista de audio"
           },
           "videoSelect": {
-            "noFormats": "No video tracks",
-            "placeholder": "Video track",
-            "screenReader": "Select video track"
+            "noFormats": "Sin pistas de video",
+            "placeholder": "Pista de video",
+            "screenReader": "Seleccionar pista de video"
           }
         },
         "metadata": {
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "Añadir info de título y artista:",
         "hint": "Guardar metadatos como título, uploader/artista y descripción dentro del archivo."
+      },
+      "partialDownload": {
+        "legend": "Descarga parcial",
+        "hint": "Usa marcas de tiempo o capítulos para bajar solo partes.",
+        "use": "Usar",
+        "useTimes": "Marcas de tiempo",
+        "useChapter": "Capítulos",
+        "chapter": "Capítulo",
+        "startAt": "Desde",
+        "stopAt": "Hasta",
+        "allChapters": "Todos los capítulos",
+        "invalidHint": "Las marcas no válidas se ignorarán.",
+        "errors": {
+          "invalid": "Introduce una hora válida.",
+          "beforeStart": "La hora final debe ir después de la inicial.",
+          "exceedsDuration": "La marca no puede superar la duración del video."
+        }
       },
       "location": {
         "label": "Ubicación y nombres de archivo:",

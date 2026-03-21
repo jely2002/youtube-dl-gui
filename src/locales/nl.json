@@ -13,7 +13,7 @@
     "enable": "Inschakelen",
     "pleaseWait": "Even geduld…",
     "loading": "Laden",
-    "emptySearch": "No results found.",
+    "emptySearch": "Geen resultaten gevonden.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
     "video": "video",
@@ -153,8 +153,8 @@
         "uploader": "Uploader:",
         "extractor": "Extractor:",
         "link": "Link:",
-        "description": "Beschrijving:",
-        "urlHeaders": "URL-headers:"
+        "chapters": "Hoofdstukken",
+        "description": "Beschrijving"
       },
       "stats": {
         "title": "Videostatistieken",
@@ -223,26 +223,26 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "No audio encodings",
-            "placeholder": "Audio codec",
-            "screenReader": "Select audio encoding"
+            "noFormats": "Geen audiocodecs",
+            "placeholder": "Audiocodec",
+            "screenReader": "Audiocodec kiezen"
           },
           "videoSelect": {
-            "noFormats": "No video encodings",
-            "placeholder": "Video codec",
-            "screenReader": "Select video encoding"
+            "noFormats": "Geen videocodecs",
+            "placeholder": "Videocodec",
+            "screenReader": "Videocodec kiezen"
           }
         },
         "tracks": {
           "audioSelect": {
-            "noFormats": "No audio tracks",
-            "placeholder": "Audio track",
-            "screenReader": "Select audio track"
+            "noFormats": "Geen audiosporen",
+            "placeholder": "Audiospoor",
+            "screenReader": "Audiospoor kiezen"
           },
           "videoSelect": {
-            "noFormats": "No video tracks",
-            "placeholder": "Video track",
-            "screenReader": "Select video track"
+            "noFormats": "Geen videosporen",
+            "placeholder": "Videospoor",
+            "screenReader": "Videospoor kiezen"
           }
         },
         "metadata": {
@@ -451,7 +451,7 @@
   "settings": {
     "title": "Instellingen",
     "reset": {
-      "label": "Reset",
+      "label": "Resetten",
       "confirm": "Klik nogmaals"
     },
     "performance": {
@@ -493,7 +493,7 @@
       }
     },
     "output": {
-      "legend": "Output",
+      "legend": "Uitvoer",
       "legendLabel": "Stel in welke bestanden je wilt downloaden.",
       "addThumbnail": {
         "label": "Thumbnail insluiten:",
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "Titel & artiest opslaan:",
         "hint": "Slaat info zoals titel, uploader/artist en beschrijving op in het bestand."
+      },
+      "partialDownload": {
+        "legend": "Gedeeltelijke download",
+        "hint": "Gebruik timestamps of hoofdstukken om alleen delen te downloaden.",
+        "use": "Gebruik",
+        "useTimes": "Timestamps",
+        "useChapter": "Hoofdstukken",
+        "chapter": "Hoofdstuk",
+        "startAt": "Vanaf",
+        "stopAt": "Tot",
+        "allChapters": "Alle hoofdstukken",
+        "invalidHint": "Ongeldige timestamps worden genegeerd.",
+        "errors": {
+          "invalid": "Voer een geldige tijd in.",
+          "beforeStart": "De eindtijd moet na de starttijd liggen.",
+          "exceedsDuration": "De timestamp mag niet langer dan de totale duur zijn."
+        }
       },
       "location": {
         "label": "Downloadlocatie en bestandsnamen:",
@@ -925,7 +942,7 @@
         "message": "De beveiligde verbinding kon niet worden geverifieerd. Controleer je certificaten of datum/tijd."
       },
       "sponsorBlockUnreachable": {
-        "shortMessage": "SponsorBlock offline",
+        "shortMessage": "SponsorBlock niet bereikbaar",
         "message": "Kon geen verbinding maken met de SponsorBlock-API voor segmentgegevens."
       },
       "downloadRetryingFragment": {

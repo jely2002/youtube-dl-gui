@@ -153,8 +153,8 @@
         "uploader": "Autore:",
         "extractor": "Estrattore:",
         "link": "Collegamento:",
-        "description": "Descrizione:",
-        "urlHeaders": "Intestazioni URL:"
+        "chapters": "Capitoli",
+        "description": "Descrizione:"
       },
       "stats": {
         "title": "Statistiche video",
@@ -223,26 +223,26 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "No audio encodings",
-            "placeholder": "Audio codec",
-            "screenReader": "Select audio encoding"
+            "noFormats": "Nessun codec audio",
+            "placeholder": "Codec audio",
+            "screenReader": "Seleziona codec audio"
           },
           "videoSelect": {
-            "noFormats": "No video encodings",
-            "placeholder": "Video codec",
-            "screenReader": "Select video encoding"
+            "noFormats": "Nessun codec video",
+            "placeholder": "Codec video",
+            "screenReader": "Seleziona codec video"
           }
         },
         "tracks": {
           "audioSelect": {
-            "noFormats": "No audio tracks",
-            "placeholder": "Audio track",
-            "screenReader": "Select audio track"
+            "noFormats": "Nessuna traccia audio",
+            "placeholder": "Traccia audio",
+            "screenReader": "Seleziona traccia audio"
           },
           "videoSelect": {
-            "noFormats": "No video tracks",
-            "placeholder": "Video track",
-            "screenReader": "Select video track"
+            "noFormats": "Nessuna traccia video",
+            "placeholder": "Traccia video",
+            "screenReader": "Seleziona traccia video"
           }
         },
         "metadata": {
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "Aggiungi info su titolo e artista:",
         "hint": "Salva metadati all'interno del file (titolo, utente che ha caricato/artista e descrizione)."
+      },
+      "partialDownload": {
+        "legend": "Download parziale",
+        "hint": "Usa timestamp o capitoli per scaricare solo alcune parti.",
+        "use": "Usa",
+        "useTimes": "Timestamp",
+        "useChapter": "Capitoli",
+        "chapter": "Capitolo",
+        "startAt": "Inizio",
+        "stopAt": "Fine",
+        "allChapters": "Tutti i capitoli",
+        "invalidHint": "I timestamp non validi saranno ignorati.",
+        "errors": {
+          "invalid": "Inserisci un orario valido.",
+          "beforeStart": "L'ora di fine deve essere dopo quella di inizio.",
+          "exceedsDuration": "Il timestamp non può superare la durata del video."
+        }
       },
       "location": {
         "label": "Percorso download e nomi file:",

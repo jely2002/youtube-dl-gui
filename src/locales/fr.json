@@ -153,8 +153,8 @@
         "uploader": "Téléchargeur :",
         "extractor": "Extracteur :",
         "link": "Lien :",
-        "description": "Description :",
-        "urlHeaders": "En-têtes URL :"
+        "chapters": "Chapitres",
+        "description": "Description :"
       },
       "stats": {
         "title": "Statistiques de la vidéo",
@@ -223,26 +223,26 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "No audio encodings",
-            "placeholder": "Audio codec",
-            "screenReader": "Select audio encoding"
+            "noFormats": "Aucun codec audio",
+            "placeholder": "Codec audio",
+            "screenReader": "Sélectionner le codec audio"
           },
           "videoSelect": {
-            "noFormats": "No video encodings",
-            "placeholder": "Video codec",
-            "screenReader": "Select video encoding"
+            "noFormats": "Aucun codec vidéo",
+            "placeholder": "Codec vidéo",
+            "screenReader": "Sélectionner le codec vidéo"
           }
         },
         "tracks": {
           "audioSelect": {
-            "noFormats": "No audio tracks",
-            "placeholder": "Audio track",
-            "screenReader": "Select audio track"
+            "noFormats": "Aucune piste audio",
+            "placeholder": "Piste audio",
+            "screenReader": "Sélectionner la piste audio"
           },
           "videoSelect": {
-            "noFormats": "No video tracks",
-            "placeholder": "Video track",
-            "screenReader": "Select video track"
+            "noFormats": "Aucune piste vidéo",
+            "placeholder": "Piste vidéo",
+            "screenReader": "Sélectionner la piste vidéo"
           }
         },
         "metadata": {
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "Ajouter titre & artiste :",
         "hint": "Enregistre les métadonnées comme le titre, l’uploader/artiste et la description."
+      },
+      "partialDownload": {
+        "legend": "Téléchargement partiel",
+        "hint": "Utilisez des horodatages ou des chapitres pour ne télécharger que des extraits.",
+        "use": "Utiliser",
+        "useTimes": "Horodatages",
+        "useChapter": "Chapitres",
+        "chapter": "Chapitre",
+        "startAt": "Début",
+        "stopAt": "Fin",
+        "allChapters": "Tous les chapitres",
+        "invalidHint": "Les horodatages invalides seront ignorés.",
+        "errors": {
+          "invalid": "Saisissez une heure valide.",
+          "beforeStart": "L'heure de fin doit être après l'heure de début.",
+          "exceedsDuration": "L'horodatage ne peut pas dépasser la durée de la vidéo."
+        }
       },
       "location": {
         "label": "Emplacement de téléchargement et noms de fichiers:",

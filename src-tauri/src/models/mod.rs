@@ -7,7 +7,7 @@ pub mod ytdlp;
 
 pub use download::{DownloadItem, TrackType};
 pub use parsed::{
-  MediaFormat, MediaTrack, ParsedMedia, ParsedPlaylist, ParsedSingleVideo, PlaylistEntry,
+  Chapter, MediaFormat, MediaTrack, ParsedMedia, ParsedPlaylist, ParsedSingleVideo, PlaylistEntry,
 };
 pub use payloads::{MediaAddPayload, MediaDiagnosticPayload, MediaFatalPayload};
 pub use progress::{

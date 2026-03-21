@@ -1,9 +1,10 @@
 use crate::logging::LogStoreState;
+use crate::models::download::DownloadSection;
 use crate::models::{
   MediaDiagnosticPayload, MediaFatalPayload, MediaProgressComplete, ProgressEvent,
 };
 use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
-use crate::parsers::ytdlp_progress::YtdlpProgressParser;
+use crate::parsers::ytdlp_progress::{progress_category_for_track_type, YtdlpProgressParser};
 use crate::runners::ytdlp_runner::{YtdlpCommandEvent, YtdlpRunner};
 use crate::scheduling::download_pipeline::DownloadEntry;
 use crate::scheduling::group_state::subscribe_group;
@@ -59,7 +60,27 @@ pub async fn run_ytdlp_download(
     .map_err(|e| YtdlpDownloadError::InvalidDiagnosticRules(e.to_string()))?;
 
   let error_parser = YtdlpErrorParser::new(&entry.id, &entry.group_id, matcher);
-  let mut progress_parser = YtdlpProgressParser::new(&entry.id, &entry.group_id);
+  let partial_download_duration_secs = entry
+    .overrides
+    .as_ref()
+    .and_then(|overrides| overrides.output.as_ref())
+    .and_then(|output| output.partial_download.as_ref())
+    .and_then(|partial| partial.section.as_ref())
+    .and_then(download_section_duration_secs)
+    .filter(|value| *value > 0.0);
+  let mut progress_parser = YtdlpProgressParser::new(
+    &entry.id,
+    &entry.group_id,
+    progress_category_for_track_type(&entry.format.track_type),
+    partial_download_duration_secs,
+  );
+  tracing::debug!(
+    id = %entry.id,
+    group_id = %entry.group_id,
+    track_type = ?entry.format.track_type,
+    partial_download_duration_secs,
+    "Initialized yt-dlp progress parser"
+  );
 
   let (mut rx, child) = runner.spawn().map_err(YtdlpDownloadError::SpawnFailed)?;
   let mut cancel_rx = subscribe_group(&entry.group_id);
@@ -88,6 +109,7 @@ pub async fn run_ytdlp_download(
           YtdlpCommandEvent::Stderr(line) => {
             let line_str = String::from_utf8_lossy(&line);
             store_log_line(&line_str, &entry, log_state, &app);
+            parse_progress_line(&line_str, &mut progress_parser, &app);
             parse_error_line(&line_str, &error_parser, &app);
           }
           YtdlpCommandEvent::Terminated(term) => {
@@ -166,12 +188,35 @@ fn parse_progress_line(line: &str, progress_parser: &mut YtdlpProgressParser, ap
   for progress_event in progress_events {
     match progress_event {
       ProgressEvent::Destination(destination) => {
+        tracing::debug!(
+          id = %destination.id,
+          group_id = %destination.group_id,
+          confidence = destination.destination.confidence,
+          path = %destination.destination.path,
+          is_merged = destination.is_merged,
+          "Emitting media destination"
+        );
         app.emit("media_destination", destination).ok();
       }
       ProgressEvent::Progress(progress) => {
+        tracing::debug!(
+          id = %progress.id,
+          group_id = %progress.group_id,
+          category = ?progress.category,
+          percentage = progress.percentage,
+          speed_bps = progress.speed_bps,
+          eta_secs = progress.eta_secs,
+          "Emitting media progress"
+        );
         app.emit("media_progress", progress).ok();
       }
       ProgressEvent::StageChange(progress) => {
+        tracing::debug!(
+          id = %progress.id,
+          group_id = %progress.group_id,
+          stage = ?progress.stage,
+          "Emitting media progress stage"
+        );
         app.emit("media_progress_stage", progress).ok();
       }
     }
@@ -187,4 +232,31 @@ fn parse_error_line(line: &str, error_parser: &YtdlpErrorParser, app: &AppHandle
       )
       .ok();
   }
+}
+
+fn download_section_duration_secs(section: &DownloadSection) -> Option<f64> {
+  let start = parse_clock_secs(&section.start)?;
+  let end = parse_clock_secs(&section.end)?;
+  (end > start).then_some(end - start)
+}
+
+fn parse_clock_secs(value: &str) -> Option<f64> {
+  let mut total = 0.0;
+  let parts = value.trim().split(':').collect::<Vec<_>>();
+  if parts.len() != 3 {
+    return None;
+  }
+
+  for (index, part) in parts.iter().enumerate() {
+    let component = part.trim().parse::<f64>().ok()?;
+    total += component
+      * match index {
+        0 => 3600.0,
+        1 => 60.0,
+        2 => 1.0,
+        _ => unreachable!(),
+      };
+  }
+
+  Some(total)
 }

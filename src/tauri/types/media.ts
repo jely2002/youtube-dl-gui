@@ -59,6 +59,23 @@ export type OutputOverrides = {
   fileNameTemplate?: string;
   audioFileNameTemplate?: string;
   restrictFilenames?: boolean;
+  partialDownload?: PartialDownload;
+};
+
+export type Section = {
+  id: string;
+  start: string;
+  end: string;
+};
+
+export type Chapter = {
+  title: string;
+  startTime: number;
+  endTime: number;
+};
+
+export type PartialDownload = {
+  section?: Section;
 };
 
 export type AuthOverrides = {
@@ -139,6 +156,7 @@ export interface MediaItem {
   isLeader?: boolean;
   groupId?: string;
   filesize: number;
+  chapters?: Chapter[];
   entries?: EntryItem[];
   playlistId?: string;
   playlistCount?: number;
