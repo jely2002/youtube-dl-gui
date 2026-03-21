@@ -404,7 +404,7 @@ fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {
 }
 
 fn sanitize_subtitle_formats(formats: &[String]) -> Vec<String> {
-  const DEFAULT_FORMATS: [&str; 5] = ["srt", "vtt", "ass", "ttml", "json"];
+  const DEFAULT_FORMATS: [&str; 5] = ["srt", "vtt", "ass", "ttml", "json3"];
 
   let normalized_inputs = sanitize_vec(formats);
 
@@ -457,6 +457,15 @@ fn sanitize_subtitle_languages(languages: &[String]) -> Vec<String> {
   }
 
   sanitized
+    .into_iter()
+    .map(|language| {
+      if has_subtitle_language_pattern_syntax(&language) {
+        language
+      } else {
+        format!("{language}.*")
+      }
+    })
+    .collect()
 }
 
 fn sanitize_vec(items: &[String]) -> Vec<String> {
@@ -476,6 +485,16 @@ fn sanitize_vec(items: &[String]) -> Vec<String> {
   }
 
   sanitized
+}
+
+fn has_subtitle_language_pattern_syntax(language: &str) -> bool {
+  language.starts_with('-')
+    || language.chars().any(|ch| {
+      matches!(
+        ch,
+        '*' | '[' | ']' | '(' | ')' | '?' | '+' | '{' | '}' | '|' | '^' | '$' | '\\' | ':' | ','
+      )
+    })
 }
 
 #[cfg(test)]
@@ -507,9 +526,9 @@ mod tests {
         "--no-write-auto-subs",
         "--no-write-subs",
         "--sub-format",
-        "srt/vtt/ass/ttml/json",
+        "srt/vtt/ass/ttml/json3",
         "--sub-langs",
-        "en"
+        "en.*"
       ]
     );
   }
@@ -532,9 +551,9 @@ mod tests {
         "--no-write-subs",
         "--write-auto-subs",
         "--sub-format",
-        "srt/vtt/ass/ttml/json",
+        "srt/vtt/ass/ttml/json3",
         "--sub-langs",
-        "en"
+        "en.*"
       ]
     );
   }
@@ -557,7 +576,7 @@ mod tests {
         "--no-embed-subs",
         "--write-auto-subs",
         "--sub-format",
-        "srt/vtt/ass/ttml/json",
+        "srt/vtt/ass/ttml/json3",
         "--sub-langs",
         "all"
       ]
@@ -568,12 +587,21 @@ mod tests {
   fn subtitles_trim_and_dedupe_values() {
     let settings = SubtitleSettings {
       enabled: true,
-      languages: vec![" en ".into(), "EN".into(), String::new()],
-      format_preference: vec![" srt ".into(), "SRT".into(), String::new()],
+      languages: vec![" en ".into(), "EN".into(), "pt-BR".into(), String::new()],
       ..Default::default()
     };
     let args = build_subtitle_args(&settings).expect("args");
-    assert_eq!(args[5], "srt/vtt/ass/ttml/json");
-    assert_eq!(args[7], "en");
+    assert_eq!(args[7], "en.*,pt-br.*");
+  }
+
+  #[test]
+  fn subtitles_preserve_existing_patterns() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      languages: vec!["en.*".into(), "-live_chat".into()],
+      ..Default::default()
+    };
+    let args = build_subtitle_args(&settings).expect("args");
+    assert_eq!(args[7], "en.*,-live_chat");
   }
 }

@@ -90,7 +90,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
       group_id,
       id,
       url,
-      headers
+      headers,
     } => {
       vec![FetchEntry {
         group_id,
@@ -104,7 +104,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
     FetchRequest::Playlist {
       group_id,
       playlist,
-      headers
+      headers,
     } => {
       let total = playlist.entries.len();
       playlist
@@ -179,8 +179,9 @@ async fn handle_fetch_entry(
     group_id.clone(),
     &url,
     headers.clone(),
-    format.clone()
-  ).await;
+    format.clone(),
+  )
+  .await;
 
   let result = match result {
     Ok(v) => v,

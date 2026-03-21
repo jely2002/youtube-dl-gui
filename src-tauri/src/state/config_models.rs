@@ -169,7 +169,7 @@ impl Default for SubtitleSettings {
         "vtt".into(),
         "ass".into(),
         "ttml".into(),
-        "json".into(),
+        "json3".into(),
       ],
     }
   }
