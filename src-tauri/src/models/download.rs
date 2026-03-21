@@ -31,7 +31,14 @@ pub enum AudioFormat {
 
 impl AudioFormat {
   pub fn supports_embedded_thumbnail(&self) -> bool {
-    !matches!(self, AudioFormat::Wav)
+    matches!(
+      self,
+      AudioFormat::Mp3
+        | AudioFormat::M4a
+        | AudioFormat::Opus
+        | AudioFormat::Ogg
+        | AudioFormat::Flac
+    )
   }
   pub fn supports_audio_quality_selection(&self) -> bool {
     matches!(
