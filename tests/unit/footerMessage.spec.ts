@@ -20,6 +20,7 @@ describe('TheFooter progress message', () => {
       audioCodecs: [],
       formats: [],
       filesize: 0,
+      urlHeaders: undefined,
       items: {
         a: { id: 'a', url: 'a', title: 'A', audioCodecs: [], formats: [], filesize: 0, isLeader: true },
         b: { id: 'b', url: 'b', title: 'B', audioCodecs: [], formats: [], filesize: 0 },

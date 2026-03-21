@@ -19,6 +19,7 @@ describe('media progress store', () => {
       audioCodecs: [],
       formats: [],
       filesize: 0,
+      urlHeaders: undefined,
       items: {
         a: { id: 'a', url: 'a', title: 'A', audioCodecs: [], formats: [], filesize: 0, isLeader: true },
         b: { id: 'b', url: 'b', title: 'B', audioCodecs: [], formats: [], filesize: 0 },
@@ -58,6 +59,7 @@ describe('media progress store', () => {
       audioCodecs: [],
       formats: [],
       filesize: 0,
+      urlHeaders: undefined,
       items: { a: { id: 'a', url: 'a', audioCodecs: [], formats: [], filesize: 0 } },
     });
     groupStore.createGroup({
@@ -70,6 +72,7 @@ describe('media progress store', () => {
       audioCodecs: [],
       formats: [],
       filesize: 0,
+      urlHeaders: undefined,
       items: { b: { id: 'b', url: 'b', audioCodecs: [], formats: [], filesize: 0 } },
     });
 
