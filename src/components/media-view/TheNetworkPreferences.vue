@@ -136,10 +136,10 @@ watch([enableProxy, proxy, impersonate, headersText], () => {
     proxy: trimmedProxy || undefined,
     impersonate: impersonate.value !== 'none' ? impersonate.value : undefined,
   };
-  const hasNetwork =
-    (globalNetwork.enableProxy ?? false) !== enableProxy.value
-    || (globalNetwork.proxy ?? '') !== trimmedProxy
-    || (globalNetwork.impersonate ?? 'none') !== impersonate.value;
+  const hasNetwork
+    = (globalNetwork.enableProxy ?? false) !== enableProxy.value
+      || (globalNetwork.proxy ?? '') !== trimmedProxy
+      || (globalNetwork.impersonate ?? 'none') !== impersonate.value;
   const hasAuth = headers.length > 0;
 
   const existing = optionsStore.getOverrides(props.groupId);
