@@ -164,7 +164,7 @@ mod tests {
     let resolved = resolve_with_patch(&base, Some(&patch));
     assert!(matches!(resolved.video.container, VideoContainer::Mkv));
     assert!(matches!(resolved.video.policy, TranscodePolicy::Never));
-    assert_eq!(resolved.add_thumbnail, false);
+    assert!(!resolved.add_thumbnail);
     assert_eq!(resolved.add_metadata, base.add_metadata);
   }
 

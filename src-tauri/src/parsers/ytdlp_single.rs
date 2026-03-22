@@ -2,19 +2,32 @@ use crate::models::ytdlp::YtdlpFormat;
 use crate::models::{MediaFormat, MediaTrack, ParsedMedia, ParsedSingleVideo, YtdlpInfo};
 use std::collections::HashSet;
 
+struct ProcessedFormats {
+  video_codecs: HashSet<String>,
+  audio_codecs: HashSet<String>,
+  media_formats: Vec<MediaFormat>,
+  audio_tracks: Vec<MediaTrack>,
+  video_tracks: Vec<MediaTrack>,
+}
+
 pub fn parse_single(info: YtdlpInfo, id: String) -> ParsedMedia {
-  let (video_codecs, audio_codecs, media_formats, audio_tracks, video_tracks) =
-    if let Some(formats) = &info.formats {
-      process_formats(formats)
-    } else {
-      (
-        HashSet::new(),
-        HashSet::new(),
-        Vec::new(),
-        vec![auto_track()],
-        vec![auto_track()],
-      )
-    };
+  let ProcessedFormats {
+    video_codecs,
+    audio_codecs,
+    media_formats,
+    audio_tracks,
+    video_tracks,
+  } = if let Some(formats) = &info.formats {
+    process_formats(formats)
+  } else {
+    ProcessedFormats {
+      video_codecs: HashSet::new(),
+      audio_codecs: HashSet::new(),
+      media_formats: Vec::new(),
+      audio_tracks: vec![auto_track()],
+      video_tracks: vec![auto_track()],
+    }
+  };
 
   let detected = media_formats.len();
   let provided = info.formats.as_ref().map_or(0, Vec::len);
@@ -55,15 +68,7 @@ pub fn parse_single(info: YtdlpInfo, id: String) -> ParsedMedia {
   })
 }
 
-fn process_formats(
-  formats: &[YtdlpFormat],
-) -> (
-  HashSet<String>,
-  HashSet<String>,
-  Vec<MediaFormat>,
-  Vec<MediaTrack>,
-  Vec<MediaTrack>,
-) {
+fn process_formats(formats: &[YtdlpFormat]) -> ProcessedFormats {
   let mut video_codecs = HashSet::new();
   let mut audio_codecs = HashSet::new();
   let mut media_formats = Vec::new();
@@ -162,13 +167,13 @@ fn process_formats(
   sort_tracks(&mut audio_tracks);
   sort_tracks(&mut video_tracks);
 
-  (
+  ProcessedFormats {
     video_codecs,
     audio_codecs,
     media_formats,
     audio_tracks,
     video_tracks,
-  )
+  }
 }
 
 #[allow(clippy::cast_possible_truncation)]
