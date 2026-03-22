@@ -54,24 +54,22 @@ pub fn build_format_args(
 
       match output_settings.audio.format {
         AudioFormat::M4a | AudioFormat::Aac => {
-          args.push("-f".into());
-          args.push("ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b".into());
+          sort_fields.push("aext:m4a".into());
+          sort_fields.push("acodec:aac".into());
         }
         AudioFormat::Opus => {
-          args.push("-f".into());
-          args.push("ba[acodec^=opus]/ba/b".into());
+          sort_fields.push("acodec:opus".into());
+          sort_fields.push("aext:webm".into());
         }
         AudioFormat::Ogg => {
-          args.push("-f".into());
-          args.push("ba[acodec^=ogg]/ba[acodec^=vorbis]/ba/b".into());
+          sort_fields.push("aext:ogg".into());
+          sort_fields.push("acodec:vorbis".into());
         }
         AudioFormat::Flac | AudioFormat::Wav => {
-          args.push("-f".into());
-          args.push("ba[acodec^=flac]/ba[acodec^=wav]/ba/b".into());
+          sort_fields.push("acodec:opus".into());
         }
         AudioFormat::Mp3 => {
-          args.push("-f".into());
-          args.push("ba[acodec^=mp3]/ba/b".into());
+          sort_fields.push("aext:mp3".into());
         }
       }
 
@@ -120,7 +118,7 @@ pub fn build_format_args(
                 ]
               })
               .collect();
-            selectors.extend(["bv*+ba".into(), "bv+ba".into(), "best".into()]);
+            selectors.extend(["bv*+ba".into(), "b".into()]);
             selectors.join("/")
           } else if let Some(language) = preferred_language {
             // Fallback if only video language is present.
@@ -134,10 +132,10 @@ pub fn build_format_args(
                 ]
               })
               .collect();
-            selectors.extend(["bv*+ba".into(), "bv+ba".into(), "best".into()]);
+            selectors.extend(["bv*+ba".into(), "b".into()]);
             selectors.join("/")
           } else {
-            "bv*+ba/bv+ba/best".to_string()
+            "bv*+ba/b".to_string()
           }
         }
         TrackType::Audio => unreachable!(),
@@ -487,7 +485,7 @@ mod tests {
       args,
       vec![
         "-f",
-        "b[language=fr-FR]/bv*+ba[language=fr-FR]/bv+ba[language=fr-FR]/b[language=fr]/bv*+ba[language=fr]/bv+ba[language=fr]/bv*+ba/bv+ba/best",
+        "b[language=fr-FR]/bv*+ba[language=fr-FR]/bv+ba[language=fr-FR]/b[language=fr]/bv*+ba[language=fr]/bv+ba[language=fr]/bv*+ba/b",
         "-S",
         "lang:fr-FR,res:720,fps:30,vcodec:vp9,acodec:opus,vext:mp4,vext:m4a",
       ]
@@ -504,7 +502,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba[acodec^=mp3]/ba/b", "-S", "lang"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,aext:mp3"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -519,7 +517,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba[acodec^=mp3]/ba/b", "-S", "lang,abr~44"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr~44,aext:mp3"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -534,7 +532,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv/b", "-S", "lang,res:720,fps:60"]
+    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext:mp4,vext:m4a"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -551,7 +549,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv/b", "-S", "lang,res:720,fps:60"]
+    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -566,7 +564,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv*+ba/b", "-S", "lang,res:1080,fps:30"]
+    let expected: Vec<String> = vec!["-f", "bv*+ba/b", "-S", "lang,res:1080,fps:30,vext:mp4,vext:m4a"]
       .into_iter()
       .map(String::from)
       .collect();
