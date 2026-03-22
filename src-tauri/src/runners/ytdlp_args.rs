@@ -16,7 +16,7 @@ pub fn build_format_args(
       args.push("-x".into());
 
       let mut sort_fields = Vec::new();
-      // sort_fields.push("lang".into());
+      sort_fields.push("lang".into());
 
       if let Some(abr) = format_options.abr {
         sort_fields.push(format!("abr~{abr}"));
@@ -53,8 +53,8 @@ pub fn build_format_args(
 
     TrackType::Video | TrackType::Both => {
       let selector = match format_options.track_type {
-        TrackType::Video => "bv".to_string(),
-        TrackType::Both => "bv*+ba/bv+ba/best".to_string(),
+        TrackType::Video => "bv/b".to_string(),
+        TrackType::Both => "bv*+ba/b".to_string(),
         TrackType::Audio => unreachable!(),
       };
       args.push("-f".into());
@@ -88,14 +88,14 @@ pub fn build_output_args(
 
   match format_options.track_type {
     TrackType::Audio => match output_settings.audio.policy {
-      TranscodePolicy::Never | TranscodePolicy::RemuxOnly => {
+      TranscodePolicy::Never => {
         if output_settings.add_thumbnail
           && output_settings.audio.format.supports_embedded_thumbnail()
         {
           args.push("--embed-thumbnail".into());
         }
       }
-      TranscodePolicy::AllowReencode => {
+      TranscodePolicy::RemuxOnly | TranscodePolicy::AllowReencode => {
         args.push("--audio-format".into());
         let fmt = match output_settings.audio.format {
           AudioFormat::Mp3 => "mp3",
@@ -267,7 +267,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr,aext:mp3"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba[acodec^=mp3]/ba/b", "-S", "lang"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -282,7 +282,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr~44,aext:mp3"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba[acodec^=mp3]/ba/b", "-S", "lang,abr~44"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -297,7 +297,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext:mp4,vext:m4a"]
+    let expected: Vec<String> = vec!["-f", "bv/b", "-S", "lang,res:720,fps:60"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -314,7 +314,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext"]
+    let expected: Vec<String> = vec!["-f", "bv/b", "-S", "lang,res:720,fps:60"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -329,15 +329,10 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec![
-      "-f",
-      "bv*+ba/bv+ba/best",
-      "-S",
-      "lang,res:1080,fps:30,vext:mp4,vext:m4a",
-    ]
-    .into_iter()
-    .map(String::from)
-    .collect();
+    let expected: Vec<String> = vec!["-f", "bv*+ba/b", "-S", "lang,res:1080,fps:30"]
+      .into_iter()
+      .map(String::from)
+      .collect();
 
     assert_eq!(args, expected);
   }
@@ -407,6 +402,8 @@ mod tests {
       "None",
       "--audio-format",
       "ogg",
+      "--audio-quality",
+      "160k",
       "--embed-thumbnail",
       "--add-metadata",
     ]
@@ -453,6 +450,8 @@ mod tests {
     let expected: Vec<String> = vec![
       "--output-na-placeholder",
       "None",
+      "--merge-output-format",
+      "mp4",
       "--remux-video",
       "mp4",
       "--embed-thumbnail",
@@ -503,6 +502,8 @@ mod tests {
     let expected: Vec<String> = vec![
       "--output-na-placeholder",
       "None",
+      "--merge-output-format",
+      "mp4",
       "--remux-video",
       "mp4",
       "--embed-thumbnail",
