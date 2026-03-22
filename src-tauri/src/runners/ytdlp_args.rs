@@ -15,36 +15,33 @@ pub fn build_format_args(
     TrackType::Audio => {
       args.push("-x".into());
 
-      args.push("-f".into());
-      args.push("ba/best".into());
-
       let mut sort_fields = Vec::new();
       sort_fields.push("lang".into());
 
       if let Some(abr) = format_options.abr {
         sort_fields.push(format!("abr~{abr}"));
-      } else {
-        sort_fields.push("abr".into());
       }
 
       match output_settings.audio.format {
         AudioFormat::M4a | AudioFormat::Aac => {
-          sort_fields.push("aext:m4a".into());
-          sort_fields.push("acodec:aac".into());
+          args.push("-f".into());
+          args.push("ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b".into());
         }
         AudioFormat::Opus => {
-          sort_fields.push("acodec:opus".into());
-          sort_fields.push("aext:webm".into());
+          args.push("-f".into());
+          args.push("ba[acodec^=opus]/ba/b".into());
         }
         AudioFormat::Ogg => {
-          sort_fields.push("aext:ogg".into());
-          sort_fields.push("acodec:vorbis".into());
+          args.push("-f".into());
+          args.push("ba[acodec^=ogg]/ba[acodec^=vorbis]/ba/b".into());
         }
         AudioFormat::Flac | AudioFormat::Wav => {
-          sort_fields.push("acodec:opus".into());
+          args.push("-f".into());
+          args.push("ba[acodec^=flac]/ba[acodec^=wav]/ba/b".into());
         }
         AudioFormat::Mp3 => {
-          sort_fields.push("aext:mp3".into());
+          args.push("-f".into());
+          args.push("ba[acodec^=mp3]/ba/b".into());
         }
       }
 
@@ -56,8 +53,8 @@ pub fn build_format_args(
 
     TrackType::Video | TrackType::Both => {
       let selector = match format_options.track_type {
-        TrackType::Video => "bv".to_string(),
-        TrackType::Both => "bv*+ba/bv+ba/best".to_string(),
+        TrackType::Video => "bv/b".to_string(),
+        TrackType::Both => "bv*+ba/b".to_string(),
         TrackType::Audio => unreachable!(),
       };
       args.push("-f".into());
@@ -68,20 +65,9 @@ pub fn build_format_args(
 
       if let Some(h) = format_options.height {
         sort_fields.push(format!("res:{h}"));
-      } else {
-        sort_fields.push("res".into());
       }
       if let Some(f) = format_options.fps {
         sort_fields.push(format!("fps:{f}"));
-      } else {
-        sort_fields.push("fps".into());
-      }
-
-      if matches!(output_settings.video.container, VideoContainer::Mp4) {
-        sort_fields.push("vext:mp4".into());
-        sort_fields.push("vext:m4a".into());
-      } else {
-        sort_fields.push("vext".into());
       }
 
       let sort_arg = sort_fields.join(",");
@@ -104,10 +90,7 @@ pub fn build_output_args(
     TrackType::Audio => match output_settings.audio.policy {
       TranscodePolicy::Never => {
         if output_settings.add_thumbnail
-          && matches!(
-            output_settings.audio.format,
-            AudioFormat::Mp3 | AudioFormat::M4a
-          )
+          && output_settings.audio.format.supports_embedded_thumbnail()
         {
           args.push("--embed-thumbnail".into());
         }
@@ -129,15 +112,17 @@ pub fn build_output_args(
         // 1. We are re-encoding audio.
         // 2. The audio format supports audio quality selection, it is lossy.
         // 3. No ABR is selected, which means we want the best.
-        if output_settings.audio.policy == TranscodePolicy::AllowReencode
-          && output_settings
-            .audio
-            .format
-            .supports_audio_quality_selection()
-          && format_options.abr.is_none()
+        if output_settings
+          .audio
+          .format
+          .supports_audio_quality_selection()
         {
           args.push("--audio-quality".into());
-          args.push("0".into());
+          if let Some(abr) = format_options.abr {
+            args.push(format!("{abr}k"));
+          } else {
+            args.push("0".into());
+          }
         }
 
         if output_settings.add_thumbnail
@@ -155,11 +140,13 @@ pub fn build_output_args(
         }
       }
       TranscodePolicy::RemuxOnly => {
-        args.push("--remux-video".into());
         let container = match output_settings.video.container {
           VideoContainer::Mp4 => "mp4",
           VideoContainer::Mkv => "mkv",
         };
+        args.push("--merge-output-format".into());
+        args.push(container.into());
+        args.push("--remux-video".into());
         args.push(container.into());
 
         if output_settings.add_thumbnail {
@@ -280,7 +267,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr,aext:mp3"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba[acodec^=mp3]/ba/b", "-S", "lang"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -295,7 +282,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr~44,aext:mp3"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba[acodec^=mp3]/ba/b", "-S", "lang,abr~44"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -310,7 +297,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext:mp4,vext:m4a"]
+    let expected: Vec<String> = vec!["-f", "bv/b", "-S", "lang,res:720,fps:60"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -327,7 +314,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext"]
+    let expected: Vec<String> = vec!["-f", "bv/b", "-S", "lang,res:720,fps:60"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -342,15 +329,10 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec![
-      "-f",
-      "bv*+ba/bv+ba/best",
-      "-S",
-      "lang,res:1080,fps:30,vext:mp4,vext:m4a",
-    ]
-    .into_iter()
-    .map(String::from)
-    .collect();
+    let expected: Vec<String> = vec!["-f", "bv*+ba/b", "-S", "lang,res:1080,fps:30"]
+      .into_iter()
+      .map(String::from)
+      .collect();
 
     assert_eq!(args, expected);
   }
@@ -420,6 +402,8 @@ mod tests {
       "None",
       "--audio-format",
       "ogg",
+      "--audio-quality",
+      "160k",
       "--embed-thumbnail",
       "--add-metadata",
     ]
@@ -466,6 +450,8 @@ mod tests {
     let expected: Vec<String> = vec![
       "--output-na-placeholder",
       "None",
+      "--merge-output-format",
+      "mp4",
       "--remux-video",
       "mp4",
       "--embed-thumbnail",
@@ -516,6 +502,8 @@ mod tests {
     let expected: Vec<String> = vec![
       "--output-na-placeholder",
       "None",
+      "--merge-output-format",
+      "mp4",
       "--remux-video",
       "mp4",
       "--embed-thumbnail",
