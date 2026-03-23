@@ -5,7 +5,6 @@ use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_info::parse_ytdlp_info;
 use crate::runners::ytdlp_runner::YtdlpRunner;
 use std::borrow::Cow;
-use std::collections::HashMap;
 use std::fmt;
 use tauri::{AppHandle, Emitter, Manager};
 
@@ -35,23 +34,29 @@ pub async fn run_ytdlp_info_fetch(
   id: String,
   group_id: String,
   url: &str,
-  headers: Option<HashMap<String, String>>,
   format: Option<FormatOptions>,
 ) -> Result<Option<ParsedMedia>, YtdlpInfoFetchError> {
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
 
   let runner = YtdlpRunner::new(app)
-    .with_format_args(&format.unwrap_or(FormatOptions {
-      track_type: TrackType::Both,
-      abr: None,
-      height: None,
-      fps: None,
-    }))
-    .with_input_args()
-    .with_auth_args()
-    .with_network_args()
+    .with_format_args(
+      &format.unwrap_or(FormatOptions {
+        track_type: TrackType::Both,
+        abr: None,
+        height: None,
+        fps: None,
+        audio_encoding: None,
+        video_encoding: None,
+        audio_track: None,
+        video_track: None,
+      }),
+      None,
+    )
+    .with_input_args(None)
+    .with_auth_args(None)
+    .with_network_args(None)
     .with_args(["-J", "--flat-playlist"])
-    .with_url(url, &headers);
+    .with_url(url);
 
   let matcher = match DiagnosticMatcher::from_json(RULES_JSON) {
     Ok(m) => m,

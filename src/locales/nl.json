@@ -185,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Overschrijven"
+      },
+      "labels": {
+        "quality": "Kies voorkeuren voor formaat, codec en tracks.",
+        "network": "Stel proxy, impersonatie en requestheaders in. Overschrijft de standaardinstellingen van de app voor deze download.",
+        "output": "Stel container, conversie en bestandsnaamsjablonen in. Overschrijft de standaardinstellingen van de app voor deze download.",
+        "headersOverride": "Eén per regel: VELD:WAARDE. Vervangt de globale headers voor deze download."
+      },
+      "hints": {
+        "format": "Kies video- of audiokwaliteit. Hogere kwaliteit betekent meestal grotere bestanden en langere downloads.",
+        "encodings": "Kies codecs met voorkeur. Handig voor afspeelcompatibiliteit of om de oorspronkelijke kwaliteit te behouden.",
+        "tracks": "Kies taal- of kanaalvarianten wanneer die beschikbaar zijn, bijvoorbeeld nagesynchroniseerde audio."
+      },
+      "tabs": {
+        "quality": "Kwaliteit",
+        "network": "Netwerk"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} van {total}",
@@ -199,6 +219,30 @@
             "noFormats": "Geen opties",
             "placeholder": "Selecteer formaat",
             "screenReader": "Selecteer formaat om de track in te downloaden"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "No audio encodings",
+            "placeholder": "Audio codec",
+            "screenReader": "Select audio encoding"
+          },
+          "videoSelect": {
+            "noFormats": "No video encodings",
+            "placeholder": "Video codec",
+            "screenReader": "Select video encoding"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "No audio tracks",
+            "placeholder": "Audio track",
+            "screenReader": "Select audio track"
+          },
+          "videoSelect": {
+            "noFormats": "No video tracks",
+            "placeholder": "Video track",
+            "screenReader": "Select video track"
           }
         },
         "metadata": {
@@ -266,6 +310,7 @@
         "externalUrl": "Bezoek website",
         "retry": "Probeer download opnieuw",
         "download": "Los downloaden",
+        "preferences": "Downloadvoorkeuren",
         "metadata": "Toon meer informatie",
         "pause": "Download pauzeren",
         "resume": "Download hervatten"
@@ -522,6 +567,15 @@
         "label": "Taal",
         "options": {
           "system": "Systeem ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Extra selector:",
+        "hint": "Kies welke extra selector vóór het downloaden wordt getoond.",
+        "options": {
+          "none": "Geen",
+          "encodings": "Coderingen",
+          "tracks": "Sporen"
         }
       }
     },

@@ -8,6 +8,7 @@ use std::thread;
 pub struct AppearanceSettings {
   pub theme: String,
   pub language: String,
+  pub expanded_options: String,
 }
 
 impl Default for AppearanceSettings {
@@ -15,6 +16,7 @@ impl Default for AppearanceSettings {
     Self {
       theme: "system".into(),
       language: "system".into(),
+      expanded_options: "none".into(),
     }
   }
 }

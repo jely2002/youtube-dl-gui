@@ -5,10 +5,12 @@ import { NotificationKind } from './app';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type LocaleOption = Locale | 'system';
+export type ExpandedOptions = 'none' | 'encodings' | 'tracks';
 
 export interface AppearanceSettings {
   theme: Theme;
   language: LocaleOption;
+  expandedOptions: ExpandedOptions;
 }
 
 export interface AuthSettings {
@@ -131,6 +133,7 @@ export interface Settings {
 export const defaultAppearanceSettings: AppearanceSettings = {
   theme: 'system',
   language: 'system',
+  expandedOptions: 'none',
 };
 
 export const defaultAuthSettings: AuthSettings = {

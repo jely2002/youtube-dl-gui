@@ -185,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Переопределение"
+      },
+      "labels": {
+        "quality": "Выберите параметры формата, кодека и дорожек.",
+        "network": "Настройте прокси, маскировку и заголовки запроса. Переопределяет стандартные настройки приложения для этой загрузки.",
+        "output": "Настройте контейнер, конвертацию и шаблоны имён файлов. Переопределяет стандартные настройки приложения для этой загрузки.",
+        "headersOverride": "По одному на строку: ПОЛЕ:ЗНАЧЕНИЕ. Заменяет глобальные заголовки для этой загрузки."
+      },
+      "hints": {
+        "format": "Выберите качество видео или аудио. Более высокое качество обычно означает больший размер файлов и более долгую загрузку.",
+        "encodings": "Выберите предпочитаемые кодеки. Полезно для совместимости при воспроизведении или сохранения исходного качества.",
+        "tracks": "Выберите языковые или канальные варианты, если они доступны, например дубляж."
+      },
+      "tabs": {
+        "quality": "Качество",
+        "network": "Сеть"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} из {total}",
@@ -199,6 +219,30 @@
             "noFormats": "Форматы недоступны",
             "placeholder": "Выбрать формат",
             "screenReader": "Выбрать формат дорожки"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "No audio encodings",
+            "placeholder": "Audio codec",
+            "screenReader": "Select audio encoding"
+          },
+          "videoSelect": {
+            "noFormats": "No video encodings",
+            "placeholder": "Video codec",
+            "screenReader": "Select video encoding"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "No audio tracks",
+            "placeholder": "Audio track",
+            "screenReader": "Select audio track"
+          },
+          "videoSelect": {
+            "noFormats": "No video tracks",
+            "placeholder": "Video track",
+            "screenReader": "Select video track"
           }
         },
         "metadata": {
@@ -266,6 +310,7 @@
         "externalUrl": "Открыть по внешней ссылке",
         "retry": "Повторить скачивание",
         "download": "Скачать отдельно",
+        "preferences": "Параметры загрузки",
         "metadata": "Показать метаданные",
         "pause": "Приостановить загрузку",
         "resume": "Возобновить загрузку"
@@ -522,6 +567,15 @@
         "label": "Язык",
         "options": {
           "system": "Системный ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Дополнительный селектор:",
+        "hint": "Выберите, какой дополнительный селектор показывать перед загрузкой.",
+        "options": {
+          "none": "Нет",
+          "encodings": "Кодеки",
+          "tracks": "Дорожки"
         }
       }
     },

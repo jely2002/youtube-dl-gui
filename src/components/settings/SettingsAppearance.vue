@@ -23,7 +23,7 @@
       <option value="light">{{ t('settings.appearance.theme.options.light') }}</option>
       <option value="dark">{{ t('settings.appearance.theme.options.dark') }}</option>
     </select>
-    <label class="font-semibold" for="language">
+    <label class="font-semibold mb-2" for="language">
       {{ t('settings.appearance.language.label') }}
     </label>
     <select
@@ -34,6 +34,19 @@
       <option value="system">{{ t('settings.appearance.language.options.system', { language: systemLocale }) }}</option>
       <option v-for="option in languageOptions()" :key="option.value" :value="option.value">{{ option.label }}</option>
     </select>
+    <label class="font-semibold" for="expandedOptions">
+      {{ t('settings.appearance.expandedOptions.label') }}
+    </label>
+    <select
+        id="expandedOptions"
+        v-model="settings.appearance.expandedOptions"
+        class="select"
+    >
+      <option value="none">{{ t('settings.appearance.expandedOptions.options.none') }}</option>
+      <option value="encodings">{{ t('settings.appearance.expandedOptions.options.encodings') }}</option>
+      <option value="tracks">{{ t('settings.appearance.expandedOptions.options.tracks') }}</option>
+    </select>
+    <p class="label">{{ t('settings.appearance.expandedOptions.hint') }}</p>
   </base-fieldset>
 </template>
 

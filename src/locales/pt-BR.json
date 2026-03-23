@@ -185,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Sobrescrever"
+      },
+      "labels": {
+        "quality": "Escolha as preferências de formato, codec e faixas.",
+        "network": "Configure proxy, personificação e cabeçalhos da solicitação. Sobrescreve os padrões do app para este download.",
+        "output": "Configure contêiner, conversão e modelos de nome de arquivo. Sobrescreve os padrões do app para este download.",
+        "headersOverride": "Uma por linha: CAMPO:VALOR. Substitui os cabeçalhos globais para este download."
+      },
+      "hints": {
+        "format": "Escolha a qualidade de vídeo ou áudio. Qualidade mais alta geralmente significa arquivos maiores e downloads mais demorados.",
+        "encodings": "Escolha os codecs preferidos. Útil para compatibilidade de reprodução ou para manter a qualidade original.",
+        "tracks": "Escolha variantes de idioma ou canais quando disponíveis, por exemplo, áudio dublado."
+      },
+      "tabs": {
+        "quality": "Qualidade",
+        "network": "Rede"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} de {total}",
@@ -199,6 +219,30 @@
             "noFormats": "Nenhum formato",
             "placeholder": "Selecione o formato",
             "screenReader": "Selecione o formato da faixa"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "No audio encodings",
+            "placeholder": "Audio codec",
+            "screenReader": "Select audio encoding"
+          },
+          "videoSelect": {
+            "noFormats": "No video encodings",
+            "placeholder": "Video codec",
+            "screenReader": "Select video encoding"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "No audio tracks",
+            "placeholder": "Audio track",
+            "screenReader": "Select audio track"
+          },
+          "videoSelect": {
+            "noFormats": "No video tracks",
+            "placeholder": "Video track",
+            "screenReader": "Select video track"
           }
         },
         "metadata": {
@@ -266,6 +310,7 @@
         "externalUrl": "Visitar um URL externo",
         "retry": "Tentar baixar novamente",
         "download": "Baixe individualmente",
+        "preferences": "Preferências de download",
         "metadata": "Mostrar metadados",
         "pause": "Pausar download",
         "resume": "Retomar download"
@@ -522,6 +567,15 @@
         "label": "Idioma",
         "options": {
           "system": "Sistema ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Seletor adicional:",
+        "hint": "Escolha qual seletor extra será exibido antes do download.",
+        "options": {
+          "none": "Nenhum",
+          "encodings": "Codificações",
+          "tracks": "Faixas"
         }
       }
     },
