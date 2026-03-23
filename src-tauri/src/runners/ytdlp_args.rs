@@ -564,10 +564,15 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv*+ba/b", "-S", "lang,res:1080,fps:30,vext:mp4,vext:m4a"]
-      .into_iter()
-      .map(String::from)
-      .collect();
+    let expected: Vec<String> = vec![
+      "-f",
+      "bv*+ba/b",
+      "-S",
+      "lang,res:1080,fps:30,vext:mp4,vext:m4a",
+    ]
+    .into_iter()
+    .map(String::from)
+    .collect();
 
     assert_eq!(args, expected);
   }
