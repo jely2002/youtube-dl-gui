@@ -153,8 +153,8 @@
         "uploader": "Opplaster:",
         "extractor": "Ekstraktor:",
         "link": "Lenke:",
-        "description": "Beskrivelse:",
-        "urlHeaders": "URL-hoder:"
+        "chapters": "Kapitler",
+        "description": "Beskrivelse"
       },
       "stats": {
         "title": "Video Statistikk",
@@ -223,26 +223,26 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "No audio encodings",
-            "placeholder": "Audio codec",
-            "screenReader": "Select audio encoding"
+            "noFormats": "Ingen lydkodeker",
+            "placeholder": "Lydkodek",
+            "screenReader": "Velg lydkodek"
           },
           "videoSelect": {
-            "noFormats": "No video encodings",
-            "placeholder": "Video codec",
-            "screenReader": "Select video encoding"
+            "noFormats": "Ingen videokodeker",
+            "placeholder": "Videokodek",
+            "screenReader": "Velg videokodek"
           }
         },
         "tracks": {
           "audioSelect": {
-            "noFormats": "No audio tracks",
-            "placeholder": "Audio track",
-            "screenReader": "Select audio track"
+            "noFormats": "Ingen lydspor",
+            "placeholder": "Lydspor",
+            "screenReader": "Velg lydspor"
           },
           "videoSelect": {
-            "noFormats": "No video tracks",
-            "placeholder": "Video track",
-            "screenReader": "Select video track"
+            "noFormats": "Ingen videospor",
+            "placeholder": "Videospor",
+            "screenReader": "Velg videospor"
           }
         },
         "metadata": {
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "Legg til tittel- og artistinformasjon:",
         "hint": "Lagre metadata som tittel, opplaster/artist og beskrivelse i filen."
+      },
+      "partialDownload": {
+        "legend": "Delvis nedlasting",
+        "hint": "Bruk tidsstempler eller kapitler for å laste ned bare deler.",
+        "use": "Bruk",
+        "useTimes": "Tidsstempler",
+        "useChapter": "Kapitler",
+        "chapter": "Kapittel",
+        "startAt": "Start",
+        "stopAt": "Stopp",
+        "allChapters": "Alle kapitler",
+        "invalidHint": "Ugyldige tidsstempler blir ignorert.",
+        "errors": {
+          "invalid": "Skriv inn en gyldig tid.",
+          "beforeStart": "Stopptiden må være etter starttiden.",
+          "exceedsDuration": "Tidsstempelet kan ikke overstige videolengden."
+        }
       },
       "location": {
         "label": "Nedlastingsplassering og filnavn:",
@@ -849,7 +866,7 @@
         "message": "Kunne ikke hente eller dekode videosignaturen."
       },
       "embedOnly": {
-        "shortMessage": "Embed-only video",
+        "shortMessage": "Kun innebygd",
         "message": "Denne videoen kan kun åpnes gjennom en innebygd spiller."
       },
       "urlUnsupported": {

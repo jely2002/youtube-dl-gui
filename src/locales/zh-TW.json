@@ -153,8 +153,8 @@
         "uploader": "上傳者:",
         "extractor": "擷取器:",
         "link": "連結:",
-        "description": "描述:",
-        "urlHeaders": "URL 標頭:"
+        "chapters": "章節",
+        "description": "描述"
       },
       "stats": {
         "title": "影片統計資料",
@@ -223,26 +223,26 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "No audio encodings",
-            "placeholder": "Audio codec",
-            "screenReader": "Select audio encoding"
+            "noFormats": "沒有音訊編碼",
+            "placeholder": "音訊編碼",
+            "screenReader": "選取音訊編碼"
           },
           "videoSelect": {
-            "noFormats": "No video encodings",
-            "placeholder": "Video codec",
-            "screenReader": "Select video encoding"
+            "noFormats": "沒有視訊編碼",
+            "placeholder": "視訊編碼",
+            "screenReader": "選取視訊編碼"
           }
         },
         "tracks": {
           "audioSelect": {
-            "noFormats": "No audio tracks",
-            "placeholder": "Audio track",
-            "screenReader": "Select audio track"
+            "noFormats": "沒有音軌",
+            "placeholder": "音軌",
+            "screenReader": "選取音軌"
           },
           "videoSelect": {
-            "noFormats": "No video tracks",
-            "placeholder": "Video track",
-            "screenReader": "Select video track"
+            "noFormats": "沒有視訊軌",
+            "placeholder": "視訊軌",
+            "screenReader": "選取視訊軌"
           }
         },
         "metadata": {
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "加入標題與演出者資訊:",
         "hint": "將標題、上傳者/演出者與描述等中繼資料儲存至檔案中。"
+      },
+      "partialDownload": {
+        "legend": "部分下載",
+        "hint": "用時間戳或章節，只下載部分內容。",
+        "use": "使用",
+        "useTimes": "時間戳",
+        "useChapter": "章節",
+        "chapter": "章節",
+        "startAt": "開始於",
+        "stopAt": "結束於",
+        "allChapters": "所有章節",
+        "invalidHint": "無效的時間戳會被忽略。",
+        "errors": {
+          "invalid": "請輸入有效時間。",
+          "beforeStart": "結束時間必須晚於開始時間。",
+          "exceedsDuration": "時間戳不能超過影片長度。"
+        }
       },
       "location": {
         "label": "下載位置與檔名:",

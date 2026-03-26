@@ -13,7 +13,7 @@ use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
 use std::collections::HashSet;
 use std::io;
-use std::io::{BufRead, BufReader};
+use std::io::{BufReader, Read};
 use std::path::PathBuf;
 use std::process::{Command, ExitStatus, Stdio};
 use std::sync::Arc;
@@ -224,13 +224,14 @@ impl<'a> YtdlpRunner<'a> {
     format_options: &FormatOptions,
     overrides: Option<&DownloadOverrides>,
   ) -> Self {
-    let output_settings = resolve_with_patch(
-      &self.cfg.output,
-      overrides.and_then(|value| value.output.as_ref()),
-    );
-    self
-      .args
-      .extend(build_output_args(format_options, &output_settings));
+    let output_overrides = overrides.and_then(|value| value.output.as_ref());
+    let output_settings = resolve_with_patch(&self.cfg.output, output_overrides);
+    let partial_download = output_overrides.and_then(|value| value.partial_download.as_ref());
+    self.args.extend(build_output_args(
+      format_options,
+      &output_settings,
+      partial_download,
+    ));
     self
   }
 
@@ -386,11 +387,27 @@ fn spawn_reader<R: io::Read + Send + 'static>(
   thread::spawn(move || {
     let mut reader = BufReader::new(reader);
     let mut buf = Vec::new();
+    let mut byte = [0_u8; 1];
+
     loop {
-      buf.clear();
-      match reader.read_until(b'\n', &mut buf) {
-        Ok(0) => break,
-        Ok(_) => {
+      match reader.read(&mut byte) {
+        Ok(0) => {
+          if !buf.is_empty() {
+            let out = std::mem::take(&mut buf);
+            let event = if is_stdout {
+              YtdlpCommandEvent::Stdout(out)
+            } else {
+              YtdlpCommandEvent::Stderr(out)
+            };
+            let _ = tx.send(event);
+          }
+          break;
+        }
+        Ok(_) if matches!(byte[0], b'\n' | b'\r') => {
+          if buf.is_empty() {
+            continue;
+          }
+
           let out = std::mem::take(&mut buf);
           let event = if is_stdout {
             YtdlpCommandEvent::Stdout(out)
@@ -399,6 +416,7 @@ fn spawn_reader<R: io::Read + Send + 'static>(
           };
           let _ = tx.send(event);
         }
+        Ok(_) => buf.push(byte[0]),
         Err(err) => {
           let _ = tx.send(YtdlpCommandEvent::Error(err.to_string()));
           break;

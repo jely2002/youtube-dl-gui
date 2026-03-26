@@ -153,8 +153,8 @@
         "uploader": "Enviador:",
         "extractor": "Extrator:",
         "link": "Link:",
-        "description": "Descrição:",
-        "urlHeaders": "Cabeçalhos de URL:"
+        "chapters": "Capítulos",
+        "description": "Descrição"
       },
       "stats": {
         "title": "Estatísticas de Vídeo",
@@ -223,26 +223,26 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "No audio encodings",
-            "placeholder": "Audio codec",
-            "screenReader": "Select audio encoding"
+            "noFormats": "Sem codecs de áudio",
+            "placeholder": "Codec de áudio",
+            "screenReader": "Selecionar codec de áudio"
           },
           "videoSelect": {
-            "noFormats": "No video encodings",
-            "placeholder": "Video codec",
-            "screenReader": "Select video encoding"
+            "noFormats": "Sem codecs de vídeo",
+            "placeholder": "Codec de vídeo",
+            "screenReader": "Selecionar codec de vídeo"
           }
         },
         "tracks": {
           "audioSelect": {
-            "noFormats": "No audio tracks",
-            "placeholder": "Audio track",
-            "screenReader": "Select audio track"
+            "noFormats": "Sem faixas de áudio",
+            "placeholder": "Faixa de áudio",
+            "screenReader": "Selecionar faixa de áudio"
           },
           "videoSelect": {
-            "noFormats": "No video tracks",
-            "placeholder": "Video track",
-            "screenReader": "Select video track"
+            "noFormats": "Sem faixas de vídeo",
+            "placeholder": "Faixa de vídeo",
+            "screenReader": "Selecionar faixa de vídeo"
           }
         },
         "metadata": {
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "Adicionar o título e as informações do artista:",
         "hint": "Salve metadados como título, autor/artista e descrição dentro do arquivo."
+      },
+      "partialDownload": {
+        "legend": "Download parcial",
+        "hint": "Use timestamps ou capítulos para baixar só algumas partes.",
+        "use": "Usar",
+        "useTimes": "Marcas de tempo",
+        "useChapter": "Capítulos",
+        "chapter": "Capítulo",
+        "startAt": "Início",
+        "stopAt": "Fim",
+        "allChapters": "Todos os capítulos",
+        "invalidHint": "Timestamps inválidos serão ignorados.",
+        "errors": {
+          "invalid": "Digite um horário válido.",
+          "beforeStart": "O fim precisa ser depois do início.",
+          "exceedsDuration": "O timestamp não pode passar da duração do vídeo."
+        }
       },
       "location": {
         "label": "Local de download e nomes de arquivos:",
@@ -925,7 +942,7 @@
         "message": "Não foi possível verificar a conexão segura. Verifique seus certificados ou data/hora."
       },
       "sponsorBlockUnreachable": {
-        "shortMessage": "SponsorBlock offline",
+        "shortMessage": "SponsorBlock indisponível",
         "message": "Não foi possível conectar-se à API do SponsorBlock para obter dados de segmento."
       },
       "downloadRetryingFragment": {

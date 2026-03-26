@@ -81,7 +81,7 @@ jobs:
     name: 'E2E Tests'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.57.0-noble
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
       options: --ipc=host --shm-size=1g
     env:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

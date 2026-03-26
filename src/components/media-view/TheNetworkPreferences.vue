@@ -1,6 +1,6 @@
 <template>
   <form class="py-4 px-8">
-    <div class="flex flex-col gap-4 max-w-4xl">
+    <div class="flex flex-col max-w-4xl">
       <base-fieldset
         :legend="t('settings.network.legend')"
         :badge="t('media.preferences.badges.override')"
@@ -46,7 +46,7 @@
         </select>
         <span class="label">{{ t('settings.network.impersonate.hint') }}</span>
       </base-fieldset>
-
+      <div class="divider my-2" />
       <base-fieldset
         :legend="t('auth.credentials.customHeaders.legend')"
         :badge="t('auth.credentials.customHeaders.legendBadge')"

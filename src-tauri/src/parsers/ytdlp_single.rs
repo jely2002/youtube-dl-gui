@@ -1,5 +1,5 @@
-use crate::models::ytdlp::YtdlpFormat;
-use crate::models::{MediaFormat, MediaTrack, ParsedMedia, ParsedSingleVideo, YtdlpInfo};
+use crate::models::ytdlp::{YtdlpChapter, YtdlpFormat};
+use crate::models::{Chapter, MediaFormat, MediaTrack, ParsedMedia, ParsedSingleVideo, YtdlpInfo};
 use std::collections::HashSet;
 
 struct ProcessedFormats {
@@ -65,7 +65,29 @@ pub fn parse_single(info: YtdlpInfo, id: String) -> ParsedMedia {
     video_tracks,
     audio_tracks,
     formats: media_formats,
+    chapters: process_chapters(info.chapters.as_deref()),
   })
+}
+
+fn process_chapters(chapters: Option<&[YtdlpChapter]>) -> Vec<Chapter> {
+  chapters
+    .unwrap_or_default()
+    .iter()
+    .filter_map(|chapter| {
+      let title = chapter.title.as_ref()?.trim();
+      let start_time = chapter.start_time?;
+      let end_time = chapter.end_time?;
+      if title.is_empty() || end_time <= start_time {
+        return None;
+      }
+
+      Some(Chapter {
+        title: title.to_string(),
+        start_time,
+        end_time,
+      })
+    })
+    .collect()
 }
 
 fn process_formats(formats: &[YtdlpFormat]) -> ProcessedFormats {
@@ -354,6 +376,7 @@ mod tests {
       filesize: None,
       filesize_approx: None,
       playlist_count: None,
+      chapters: None,
     }
   }
 
@@ -532,6 +555,7 @@ mod tests {
       filesize: None,
       filesize_approx: None,
       playlist_count: None,
+      chapters: None,
     };
 
     let ParsedMedia::Single(single) = parse_single(info, "id3".into()) else {
@@ -542,5 +566,35 @@ mod tests {
     assert_eq!(single.audio_tracks[0].id, "auto");
     assert_eq!(single.video_tracks.len(), 1);
     assert_eq!(single.video_tracks[0].id, "auto");
+  }
+
+  #[test]
+  fn parse_single_extracts_valid_chapters() {
+    let mut info = base_info(Vec::new());
+    info.chapters = Some(vec![
+      YtdlpChapter {
+        title: Some("Intro".into()),
+        start_time: Some(0.0),
+        end_time: Some(25.0),
+      },
+      YtdlpChapter {
+        title: Some("".into()),
+        start_time: Some(25.0),
+        end_time: Some(50.0),
+      },
+      YtdlpChapter {
+        title: Some("Main".into()),
+        start_time: Some(25.0),
+        end_time: Some(120.0),
+      },
+    ]);
+
+    let ParsedMedia::Single(single) = parse_single(info, "id4".into()) else {
+      panic!("expected single");
+    };
+
+    assert_eq!(single.chapters.len(), 2);
+    assert_eq!(single.chapters[0].title, "Intro");
+    assert_eq!(single.chapters[1].title, "Main");
   }
 }
