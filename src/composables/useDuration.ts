@@ -2,9 +2,10 @@ import { computed, ComputedRef } from 'vue';
 import { MediaItem } from '../tauri/types/media';
 
 export function formatDuration(totalSeconds: number): string {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
+  const wholeSeconds = Math.max(0, Math.floor(totalSeconds));
+  const hours = Math.floor(wholeSeconds / 3600);
+  const minutes = Math.floor((wholeSeconds % 3600) / 60);
+  const seconds = wholeSeconds % 60;
 
   const two = (n: number) => n.toString().padStart(2, '0');
 

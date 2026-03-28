@@ -34,6 +34,14 @@ describe('partial download helpers', () => {
     });
   });
 
+  it('floors fractional media durations when creating the default section', () => {
+    expect(createDefaultSection('p3', 2463.8)).toEqual({
+      id: 'p3',
+      start: '00:00:00',
+      end: '00:41:03',
+    });
+  });
+
   it('validates ordering and duration bounds', () => {
     expect(validateSelection({ start: '00:01:00', end: '00:00:30' })).toEqual({
       start: null,
