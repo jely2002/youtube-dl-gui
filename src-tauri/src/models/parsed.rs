@@ -33,6 +33,14 @@ pub struct MediaTrack {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct Chapter {
+  pub title: String,
+  pub start_time: f64,
+  pub end_time: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ParsedSingleVideo {
   pub id: String,
   pub url: Option<String>,
@@ -53,6 +61,7 @@ pub struct ParsedSingleVideo {
   pub video_tracks: Vec<MediaTrack>,
   pub audio_tracks: Vec<MediaTrack>,
   pub formats: Vec<MediaFormat>,
+  pub chapters: Vec<Chapter>,
   pub filesize: Option<u64>,
 }
 

@@ -1,4 +1,4 @@
-import { EntryItem, MediaFormat, MediaItem, MediaTrack } from './media';
+import { Chapter, EntryItem, MediaFormat, MediaItem, MediaTrack } from './media';
 
 export type Group = {
   id: string;
@@ -25,6 +25,7 @@ export type Group = {
   audioTracks?: MediaTrack[];
   videoTracks?: MediaTrack[];
   formats: MediaFormat[];
+  chapters?: Chapter[];
   entries?: EntryItem[];
   filesize: number;
   playlistId?: string;

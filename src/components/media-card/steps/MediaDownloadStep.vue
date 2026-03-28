@@ -63,7 +63,8 @@ const progress = computed(() => store.findDownloadProgress(group.id));
 
 const isIndeterminate = computed(() => {
   if (!progress.value) return true;
-  return progress.value.stage !== ProgressStage.downloading;
+  if (progress.value.stage !== ProgressStage.downloading) return true;
+  return progress.value.percentage == null;
 });
 
 const statusLocalization: Record<string, string> = i18n.tm('media.steps.download.status');
@@ -71,6 +72,9 @@ const indeterminateDisplay = computed(() => {
   let stage = ProgressStage.initializing as ProgressStage;
   if (progress.value?.stage) {
     stage = progress.value.stage;
+  }
+  if (stage === ProgressStage.downloading && progress.value?.percentage == null) {
+    stage = ProgressStage.initializing;
   }
   return statusLocalization[stage] ?? capitalizeFirstLetter(stage);
 });

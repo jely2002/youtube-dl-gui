@@ -153,8 +153,8 @@
         "uploader": "Uploader:",
         "extractor": "Extractor:",
         "link": "Link:",
-        "description": "Description:",
-        "urlHeaders": "URL Headers:"
+        "chapters": "Chapters",
+        "description": "Description"
       },
       "stats": {
         "title": "Video Statistics",
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "Add title & artist info:",
         "hint": "Save metadata such as title, uploader/artist and description inside the file."
+      },
+      "partialDownload": {
+        "legend": "Partial download",
+        "hint": "Set timestamps or chapters to download only some parts.",
+        "use": "Use",
+        "useTimes": "Timestamps",
+        "useChapter": "Chapters",
+        "chapter": "Chapter",
+        "startAt": "Start at",
+        "stopAt": "Stop at",
+        "invalidHint": "Invalid timestamps will be ignored.",
+        "allChapters": "All chapters",
+        "errors": {
+          "invalid": "Enter a valid time.",
+          "beforeStart": "The stop time must be after the start time.",
+          "exceedsDuration": "The timestamp cannot exceed the video duration."
+        }
       },
       "location": {
         "label": "Download location & filenames:",

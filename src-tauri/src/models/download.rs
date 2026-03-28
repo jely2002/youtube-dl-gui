@@ -100,6 +100,21 @@ pub struct OutputOverrides {
   pub file_name_template: Option<String>,
   pub audio_file_name_template: Option<String>,
   pub restrict_filenames: Option<bool>,
+  pub partial_download: Option<PartialDownloadOverride>,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PartialDownloadOverride {
+  pub section: Option<DownloadSection>,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DownloadSection {
+  pub id: String,
+  pub start: String,
+  pub end: String,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]

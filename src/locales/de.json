@@ -153,8 +153,8 @@
         "uploader": "Uploader:",
         "extractor": "Extractor:",
         "link": "Link:",
-        "description": "Beschreibung:",
-        "urlHeaders": "URL-Header:"
+        "chapters": "Kapitel",
+        "description": "Beschreibung"
       },
       "stats": {
         "title": "Videostatistiken",
@@ -223,26 +223,26 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "No audio encodings",
-            "placeholder": "Audio codec",
-            "screenReader": "Select audio encoding"
+            "noFormats": "Keine Audio-Codecs",
+            "placeholder": "Audio-Codec",
+            "screenReader": "Audio-Codec auswählen"
           },
           "videoSelect": {
-            "noFormats": "No video encodings",
-            "placeholder": "Video codec",
-            "screenReader": "Select video encoding"
+            "noFormats": "Keine Video-Codecs",
+            "placeholder": "Video-Codec",
+            "screenReader": "Video-Codec auswählen"
           }
         },
         "tracks": {
           "audioSelect": {
-            "noFormats": "No audio tracks",
-            "placeholder": "Audio track",
-            "screenReader": "Select audio track"
+            "noFormats": "Keine Audiospuren",
+            "placeholder": "Audiospur",
+            "screenReader": "Audiospur auswählen"
           },
           "videoSelect": {
-            "noFormats": "No video tracks",
-            "placeholder": "Video track",
-            "screenReader": "Select video track"
+            "noFormats": "Keine Videospuren",
+            "placeholder": "Videospur",
+            "screenReader": "Videospur auswählen"
           }
         },
         "metadata": {
@@ -502,6 +502,23 @@
       "addMetadata": {
         "label": "Titel- und Künstlerinfos hinzufügen:",
         "hint": "Metadaten wie Titel, Uploader/Künstler und Beschreibung in der Datei speichern."
+      },
+      "partialDownload": {
+        "legend": "Teilweiser Download",
+        "hint": "Zeitstempel oder Kapitel setzen, um nur Teile herunterzuladen.",
+        "use": "Verwenden",
+        "useTimes": "Zeitstempel",
+        "useChapter": "Kapitel",
+        "chapter": "Kapitel",
+        "startAt": "Start",
+        "stopAt": "Ende",
+        "allChapters": "Alle Kapitel",
+        "invalidHint": "Ungültige Zeitstempel werden ignoriert.",
+        "errors": {
+          "invalid": "Gültige Zeit eingeben.",
+          "beforeStart": "Die Endzeit muss nach der Startzeit liegen.",
+          "exceedsDuration": "Der Zeitstempel darf die Videolänge nicht überschreiten."
+        }
       },
       "location": {
         "label": "Download-Speicherort & Dateinamen:",
