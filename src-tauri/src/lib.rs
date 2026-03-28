@@ -97,6 +97,8 @@ pub fn run() {
       let shared_preferences = Arc::new(preferences_handle);
       handle.manage::<SharedPreferences>(shared_preferences);
 
+      create_main_window(handle, &path_handle)?;
+
       // setup i18n management
       handle.manage(I18nManager::new(handle));
 
@@ -202,6 +204,31 @@ pub fn run() {
       }
     }
   });
+}
+
+fn create_main_window(app: &AppHandle, paths: &PathsManager) -> tauri::Result<()> {
+  let window_config = app
+    .config()
+    .app
+    .windows
+    .first()
+    .expect("missing main window config");
+
+  #[cfg(not(windows))]
+  let _ = paths;
+
+  let builder = tauri::WebviewWindowBuilder::from_config(app, window_config)?;
+
+  #[cfg(windows)]
+  let builder = if paths.is_portable_app() {
+    builder.data_directory(paths.app_dir().join("webview"))
+  } else {
+    builder
+  };
+
+  builder.build()?;
+
+  Ok(())
 }
 
 pub fn init_tracing() {

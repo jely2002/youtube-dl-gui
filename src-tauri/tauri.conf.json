@@ -13,6 +13,7 @@
   "app": {
     "windows": [
       {
+        "create": false,
         "title": "Open Video Downloader",
         "width": 800,
         "minWidth": 750,
