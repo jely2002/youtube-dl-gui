@@ -74,13 +74,6 @@ pub async fn run_ytdlp_download(
     progress_category_for_track_type(&entry.format.track_type),
     partial_download_duration_secs,
   );
-  tracing::debug!(
-    id = %entry.id,
-    group_id = %entry.group_id,
-    track_type = ?entry.format.track_type,
-    partial_download_duration_secs,
-    "Initialized yt-dlp progress parser"
-  );
 
   let (mut rx, child) = runner.spawn().map_err(YtdlpDownloadError::SpawnFailed)?;
   let mut cancel_rx = subscribe_group(&entry.group_id);
@@ -188,35 +181,12 @@ fn parse_progress_line(line: &str, progress_parser: &mut YtdlpProgressParser, ap
   for progress_event in progress_events {
     match progress_event {
       ProgressEvent::Destination(destination) => {
-        tracing::debug!(
-          id = %destination.id,
-          group_id = %destination.group_id,
-          confidence = destination.destination.confidence,
-          path = %destination.destination.path,
-          is_merged = destination.is_merged,
-          "Emitting media destination"
-        );
         app.emit("media_destination", destination).ok();
       }
       ProgressEvent::Progress(progress) => {
-        tracing::debug!(
-          id = %progress.id,
-          group_id = %progress.group_id,
-          category = ?progress.category,
-          percentage = progress.percentage,
-          speed_bps = progress.speed_bps,
-          eta_secs = progress.eta_secs,
-          "Emitting media progress"
-        );
         app.emit("media_progress", progress).ok();
       }
       ProgressEvent::StageChange(progress) => {
-        tracing::debug!(
-          id = %progress.id,
-          group_id = %progress.group_id,
-          stage = ?progress.stage,
-          "Emitting media progress stage"
-        );
         app.emit("media_progress_stage", progress).ok();
       }
     }
