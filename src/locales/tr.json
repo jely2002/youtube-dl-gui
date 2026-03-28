@@ -153,6 +153,7 @@
         "uploader": "Yükleyen:",
         "extractor": "Çıkaran:",
         "link": "Bağlantı:",
+        "chapters": "Bölümler",
         "description": "Açıklama:"
       },
       "stats": {
@@ -184,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Geçersiz kılma"
+      },
+      "labels": {
+        "quality": "Format, kodek ve parça tercihlerini seçin.",
+        "network": "Vekil, taklit ve istek üstbilgilerini yapılandırın. Bu indirme için uygulamanın varsayılanlarını geçersiz kılar.",
+        "output": "Kapsayıcı, dönüştürme ve dosya adı şablonlarını yapılandırın. Bu indirme için uygulamanın varsayılanlarını geçersiz kılar.",
+        "headersOverride": "Her satıra bir tane: ALAN:DEĞER. Bu indirme için genel üstbilgilerin yerine geçer."
+      },
+      "hints": {
+        "format": "Video veya ses kalitesini seçin. Daha yüksek kalite genelde daha büyük dosyalar ve daha uzun indirme süreleri demektir.",
+        "encodings": "Tercih edilen kodekleri seçin. Oynatma uyumluluğu veya özgün kaliteyi korumak için kullanışlıdır.",
+        "tracks": "Varsa dil veya kanal varyantlarını seçin; örneğin dublajlı ses."
+      },
+      "tabs": {
+        "quality": "Kalite",
+        "network": "Ağ"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "%{percentage} — {total} taneden {done} tanesi tamamlandı",
@@ -198,6 +219,30 @@
             "noFormats": "Format yok",
             "placeholder": "Format seç",
             "screenReader": "Parçanın formatını seç"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "Ses kodlaması yok",
+            "placeholder": "Ses kodeği",
+            "screenReader": "Ses kodlamasını seç"
+          },
+          "videoSelect": {
+            "noFormats": "Video kodlaması yok",
+            "placeholder": "Video kodeği",
+            "screenReader": "Video kodlamasını seç"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "Ses parçası yok",
+            "placeholder": "Ses parçası",
+            "screenReader": "Ses parçasını seç"
+          },
+          "videoSelect": {
+            "noFormats": "Video parçası yok",
+            "placeholder": "Video parçası",
+            "screenReader": "Video parçasını seç"
           }
         },
         "metadata": {
@@ -265,6 +310,7 @@
         "externalUrl": "Harici bir URL'den ziyaret et",
         "retry": "İndirmeyi yeniden dene",
         "download": "Tek tek indir",
+        "preferences": "İndirme tercihleri",
         "pause": "İndirmeyi duraklat",
         "resume": "İndirmeyi devam ettir",
         "metadata": "Üstveriyi göster"
@@ -320,6 +366,7 @@
       "vtt": "WebVTT (.vtt)",
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
+      "json3": "JSON (.json)",
       "json": "JSON (.json)"
     }
   },
@@ -457,6 +504,23 @@
         "label": "Başlık ve sanatçı bilgisi ekle:",
         "hint": "Başlık, yükleyen/sanatçı ve açıklama gibi üstverileri dosyanın içine kaydet."
       },
+      "partialDownload": {
+        "legend": "Kısmi indirme",
+        "hint": "Yalnızca bazı bölümleri indirmek için zaman damgaları veya bölümler ayarlayın.",
+        "use": "Kullan",
+        "useTimes": "Zaman damgaları",
+        "useChapter": "Bölümler",
+        "chapter": "Bölüm",
+        "startAt": "Başlangıç",
+        "stopAt": "Bitiş",
+        "invalidHint": "Geçersiz zaman damgaları yok sayılır.",
+        "allChapters": "Tüm bölümler",
+        "errors": {
+          "invalid": "Geçerli bir zaman girin.",
+          "beforeStart": "Bitiş zamanı başlangıç zamanından sonra olmalı.",
+          "exceedsDuration": "Zaman damgası videonun süresini aşamaz."
+        }
+      },
       "location": {
         "label": "İndirme konumu ve dosya adları:",
         "link": "İndirme konumlarını ayarla"
@@ -521,6 +585,15 @@
         "label": "Dil",
         "options": {
           "system": "Sistem ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Ek seçici:",
+        "hint": "İndirme başlamadan önce hangi ek seçicinin gösterileceğini seçin.",
+        "options": {
+          "none": "Yok",
+          "encodings": "Kodlamalar",
+          "tracks": "Parçalar"
         }
       }
     },

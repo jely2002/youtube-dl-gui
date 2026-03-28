@@ -61,7 +61,19 @@
     "windows": {
       "nsis": {
         "displayLanguageSelector": true,
-        "languages": ["English", "Spanish", "Italian", "Dutch", "French", "German", "Russian", "PortugueseBR"]
+        "languages": [
+          "English",
+          "Spanish",
+          "Italian",
+          "Dutch",
+          "French",
+          "German",
+          "Norwegian",
+          "Russian",
+          "PortugueseBR",
+          "TradChinese",
+          "Turkish"
+        ]
       }
     }
   },
