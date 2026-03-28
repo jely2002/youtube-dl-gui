@@ -1,0 +1,898 @@
+{
+  "common": {
+    "download": "İndir",
+    "save": "Kaydet",
+    "later": "Daha sonra",
+    "load": "Yükle",
+    "install": "Kur",
+    "percentage": "%{percent}",
+    "add": "Ekle",
+    "back": "Geri",
+    "continue": "İlerle",
+    "retry": "Yeniden dene",
+    "enable": "Etkinleştir",
+    "pleaseWait": "Lütfen bekleyin…",
+    "loading": "Yükleniyor",
+    "emptySearch": "Bir sonuç bulunamadı.",
+    "parenthesis": "({content})",
+    "divide": "{left} / {right}",
+    "video": "video",
+    "unknown": "bilinmiyor",
+    "confirm": "Onayla",
+    "best": "En iyi",
+    "resume": "Devam et"
+  },
+  "layout": {
+    "header": {
+      "placeholder": "Sıraya eklemek için bir video/oynatma listesi URL'si ekleyin",
+      "nav": {
+        "settings": "Uygulama Ayarları"
+      }
+    },
+    "footer": {
+      "progress": {
+        "downloading": "Sıra indiriliyor - {total} taneden {done} tanesi tamamlandı.",
+        "completed": "İndirme tamamlandı – {n} içerik indirildi. | İndirme tamamlandı – {n} içerik indirildi.",
+        "ready": "İndirmeye hazır! {n} içerik sıraya eklendi. | İndirmeye hazır! {n} içerik sıraya eklendi."
+      },
+      "nav": {
+        "downloadLocation": "Konum",
+        "login": {
+          "screenReader": {
+            "on": "Oturumu düzenle (giriş yapılı)",
+            "off": "Oturumu düzenle (giriş yapılı değil)"
+          },
+          "tooltip": {
+            "on": "Oturumu düzenle",
+            "off": "Oturum aç"
+          }
+        },
+        "subtitles": {
+          "screenReader": {
+            "on": "Altyazıları düzenle (etkin)",
+            "off": "Altyazıları düzenle (devre dışı)"
+          },
+          "tooltip": "Altyazılar"
+        }
+      },
+      "format": {
+        "trackSelect": {
+          "screenReader": "Tüm videolar için parça seç"
+        },
+        "formatSelect": {
+          "noFormats": "Format yok",
+          "placeholder": "Format seç",
+          "screenReader": "Tüm videolar için format seç"
+        }
+      },
+      "queue": {
+        "empty": "Sırayı boşalt",
+        "resume": "Hepsini devam ettir",
+        "pause": "Hepsini duraklat",
+        "clearSuccessful": "İnmişleri temizle",
+        "clearErrored": "Hatayla sonuçlananları temizle",
+        "clearPending": "Bekleyenleri temizle",
+        "cancelDownloading": "İndirmeyi iptal et",
+        "more": "Daha fazla sıra eylemleri"
+      }
+    }
+  },
+  "auth": {
+    "title": "Kimlik",
+    "cookies": {
+      "legend": "Çerezler",
+      "legendBadge": "Önerilen",
+      "legendLabel": "Çerez dosyasından oturum açmış kullanıcıları kullanın veya tarayıcınızdan içe aktarın..",
+      "file": {
+        "label": "cookies.txt dosyasından çerezleri yükle",
+        "hint": "Çerezlerinizi bir dosyaya aktarmak için{link}",
+        "hintLink": "kılavuza bir göz atın."
+      },
+      "browser": {
+        "label": "Çerezleri tarayıcıdan otomatik olarak yükle:",
+        "placeholder": "Çerezleri tarayıcıdan olarak yükleme",
+        "hint": "Bazı tarayıcılardan çerezlerin yüklenmesi desteklenmeyebilir. Desteklenen tarayıcıları görmek için {link} bakın.",
+        "hintLink": "buraya"
+      }
+    },
+    "credentials": {
+      "title": "Gelişmiş yöntemler",
+      "description": "Temel kimlik doğrulama, taşıyıcı jetonlar, üstbilgiler, video şifresi vb. yöntemleri kullanın.",
+      "labels": {
+        "username": "Kullanıcı adı",
+        "password": "Parola",
+        "token": "Jeton",
+        "headers": "Üstbilgiler"
+      },
+      "basicAuth": {
+        "legend": "Temel kimlik doğrulama",
+        "legendLabel": "Temel kimlik doğrulaması olan siteler için kullanılır."
+      },
+      "videoPassword": {
+        "legend": "Video şifresi",
+        "legendLabel": "Korumalı videolara erişmek için şifre girin."
+      },
+      "bearerToken": {
+        "legend": "Taşıyıcı jeton",
+        "legendLabel": "Özel kaynaklara erişmek için bir taşıyıcı jetonu girin."
+      },
+      "customHeaders": {
+        "legend": "Üstbilgiler",
+        "legendBadge": "Gelişmiş",
+        "legendLabel": "Satır başına bir tane: FIELD:VALUE",
+        "placeholder": "X-Api-Key:…"
+      }
+    },
+    "init": {
+      "title": "Kimlik bilgisi deposu etkin değil",
+      "description": "Gelişmiş kimlik doğrulama yöntemlerinin kullanılabilmesi için kimlik bilgisi deposunun etkinleştirilmesi gerekiyor.",
+      "hint": "Kimlik bilgisi deposu, sisteminizin anahtarlığını kullanır. Bu, şifre gerektirebilir.",
+      "error": {
+        "title": "Kimlik bilgisi deposu etkinleştirilemedi",
+        "description": "Kimlik bilgisi deposu etkinleştirilirken bir hata oluştu, lütfen yeniden deneyin.",
+        "hint": "Hata: {error}",
+        "unknown": "Bilinmeyen hata"
+      },
+      "toasts": {
+        "error": "Kimlik bilgisi deposu başlatılamadı: {error}"
+      }
+    },
+    "toasts": {
+      "error": "Kimlik ayarları kaydedilemedi. {error}",
+      "saved": "Kimlik ayarları kaydedildi!"
+    }
+  },
+  "media": {
+    "view": {
+      "tabs": {
+        "metadata": "Üstveri",
+        "logs": "Günlük kayıtları"
+      },
+      "thumbnailAlt": "{title} için küçük resim",
+      "metadata": {
+        "uploader": "Yükleyen:",
+        "extractor": "Çıkaran:",
+        "link": "Bağlantı:",
+        "description": "Açıklama:"
+      },
+      "stats": {
+        "title": "Video Statistics",
+        "views": "Görüntülenme",
+        "likes": "Beğeni",
+        "dislikes": "Beğenmeme",
+        "comments": "Yorum",
+        "rating": "Puan",
+        "duration": "Uzunluk"
+      },
+      "logs": {
+        "failure": "Başarısız",
+        "errors": {
+          "count": "Hatalar ({count})",
+          "empty": "Hata bulunamadı."
+        },
+        "warnings": {
+          "count": "Uyarılar ({count})",
+          "empty": "Uyarı bulunamadı."
+        },
+        "all": {
+          "title": "Tüm kayıtlar",
+          "empty": "Kayıt bulunamadı."
+        },
+        "toasts": {
+          "reported": "Hatalar bildirildi.",
+          "error": "Hata bildirilirken sorun oluştu."
+        }
+      }
+    },
+    "steps": {
+      "fetch": {
+        "progress": "%{percentage} — {total} taneden {done} tanesi tamamlandı",
+        "progressLabel": "Üstveri alınıyor…"
+      },
+      "configure": {
+        "format": {
+          "trackSelect": {
+            "screenReader": "İndirmek için parça seç"
+          },
+          "formatSelect": {
+            "noFormats": "Format yok",
+            "placeholder": "Format seç",
+            "screenReader": "Parçanın formatını seç"
+          }
+        },
+        "metadata": {
+          "duration": "Uzunluk: {duration}",
+          "size": "Boyut: ",
+          "sizeInfo": "İndirilecek olan verinin boyutu.\nDosyanın nihai boyutu değil.",
+          "items": "Items: {amount} {failedCount}",
+          "failedCount": "({amount} failed)"
+        },
+        "trackTypes": {
+          "both": "Video + Ses",
+          "audio": "Ses",
+          "video": "Video"
+        }
+      },
+      "download": {
+        "progress": "{category} indiriliyor… — %{percentage}",
+        "progressList": "İndiriliyor… %{percentage} — {total} taneden {done} tanesi tamamlandı",
+        "indeterminate": "{status}…",
+        "category": {
+          "video": "video",
+          "audio": "ses",
+          "subtitles": "altyazılar",
+          "thumbnail": "küçük resim",
+          "metadata": "üstveri",
+          "other": "diğer"
+        },
+        "status": {
+          "initializing": "Başlatılıyor",
+          "downloading": "İndiriliyor",
+          "merging": "Birleştiriliyor",
+          "finalizing": "Artıklar temizleniyor"
+        },
+        "metadata": {
+          "eta": "Tahmini süre: {eta}",
+          "speed": "Hız: {speed}"
+        }
+      },
+      "paused": {
+        "progress": "İndirme duraklatıldı — {percentage}%",
+        "progressList": "İndirme duraklatıldı — %{percentage} — {total} taneden {done} tanesi",
+        "indeterminate": "İndirme duraklatıldı",
+        "metadata": {
+          "eta": "Kalan: {eta}",
+          "etaItems": "Kalan: {n} içerik | Kalan: {n} içerik"
+        }
+      },
+      "done": {
+        "complete": "İndirme tamamlandı — %100",
+        "showFolder": "Klasörde göster",
+        "open": "Dosyayı aç",
+        "openFirst": "İlk dosyayı aç",
+        "undeterminedLocation": "Bu içeriğin indirme konumu belirlenemedi."
+      },
+      "error": {
+        "errorPrefix": "Hata - {message}",
+        "report": "Rapor",
+        "showFull": "Kayıtlara bak",
+        "signIn": "Giriş yap"
+      }
+    },
+    "card": {
+      "actions": {
+        "remove": "Kaldır",
+        "externalUrl": "Harici bir URL'den ziyaret et",
+        "retry": "İndirmeyi yeniden dene",
+        "download": "Tek tek indir",
+        "pause": "İndirmeyi duraklat",
+        "resume": "İndirmeyi devam ettir",
+        "metadata": "Üstveriyi göster"
+      },
+      "toasts": {
+        "retry": "İndirme yeniden deneniyor.",
+        "retryError": "İndirme yeniden denenemedi."
+      }
+    }
+  },
+  "subtitles": {
+    "title": "Altyazılar",
+    "options": {
+      "enable": {
+        "legend": "Altyazı indirmeleri",
+        "legendLabel": "Ortam indirilirken altyazıların nasıl alınacağını seç.",
+        "label": "Altyazıları etkinleştir",
+        "hint": "Ortamınız indirilirken altyazı dosyalarını da indir."
+      },
+      "autoGenerated": {
+        "label": "Otomatik oluşturulmuş altyazıları dahil et",
+        "hint": "Üreticinin sunduklarının haricinde otomatik oluşturulmuş altyazıları da indir."
+      },
+      "format": {
+        "legend": "Tercih edilen format",
+        "legendLabel": "Tercih ettiğiniz altyazı formatınızı seçin. Eğer format yoksa bir sonraki en iyi format seçilecektir.",
+        "label": "Format"
+      },
+      "embed": {
+        "label": "Altyazı parçası ekle:",
+        "hint": "Video dosyasına altyazıları ekle. Bu mp4, mkv ve webm formatlarında çalışır."
+      },
+      "languages": {
+        "legend": "Diller",
+        "legendLabel": "İndirilecek altyazı dillerini seçin.",
+        "downloadAll": "Tüm mevcut altyazıları indir.",
+        "search": "Dil ara",
+        "searchPlaceholder": "Dil isimleriyle ara",
+        "suggested": "Sizin için önerilenler",
+        "all": "Tüm diller",
+        "noResult": "Eşleşen dil yok\"{query}\".",
+        "selected": "Seçilen(ler):",
+        "allSelected": "Tüm mevcut altyazılar",
+        "searchHint": "İpucu: Listeyi hızlıca filtrelemek için arama kutusunu kullanın. Seçilen diller vurgulu olarak kalır."
+      }
+    },
+    "toasts": {
+      "saved": "Altyazı ayarları kaydedildi!",
+      "error": "Altyazı ayarları kaydedilemedi. {error}"
+    },
+    "formats": {
+      "srt": "SubRip (.srt)",
+      "vtt": "WebVTT (.vtt)",
+      "ass": "Advanced SubStation Alpha (.ass)",
+      "ttml": "Timed Text Markup (.ttml)",
+      "json": "JSON (.json)"
+    }
+  },
+  "location": {
+    "title": "İndirme konumu",
+    "downloadDir": {
+      "label": "İndirme konumu",
+      "hint": "Videoların nereye indirileceğini seçmek için kutuya tıklayın."
+    },
+    "directory": {
+      "legend": "Şuna göre düzenle",
+      "legendLabel": "İndirilenlerin klasörlerde nasıl düzenleneceğini seçin.",
+      "videoDir": {
+        "label": "İndirme konumu:",
+        "hint": "Videoları indirirken genel indirme konumunu geçersiz kıl."
+      },
+      "audioDir": {
+        "label": "İndirme konumu:",
+        "hint": "Videoları indirirken genel indirme konumunu geçersiz kıl."
+      },
+      "directoryPreset": {
+        "label": "İndirilenleri şuna düzenle:",
+        "exampleLabel": "Örnek çıktı:",
+        "options": {
+          "none": "Alt klasör yok",
+          "playlist": "Oynatma listesi",
+          "channel": "Kanal",
+          "channelPlaylist": "Kanal → oynatma listesi",
+          "yearMonth": "Yıl / ay",
+          "artistAlbum": "Sanatçı → albüm",
+          "custom": "Kişisel"
+        },
+        "examples": {
+          "playlist": "Oynatma Listem/",
+          "channel": "Kanalım/",
+          "channelPlaylist": "Kanalım/Oynatma Listem/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "Sanatçı İsmi/Albüm İsmi/"
+        }
+      },
+      "outputFormat": {
+        "label": "Dizin formatı:"
+      }
+    },
+    "filename": {
+      "legend": "Dosya adı formatı",
+      "legendLabel": "İndirilenlerin edineceği dosya ismini seçin.",
+      "formatPreset": {
+        "label": "Dosya adı ön ayarı:",
+        "exampleLabel": "Örnek çıktı:",
+        "options": {
+          "titleQuality": "Başlık + kalite",
+          "titleOnly": "Sadece başlık",
+          "titleQualityPlaylist": "Oynatma listesi + başlık + kalite",
+          "custom": "Kişisel"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Videom-(1080p30).mp4",
+            "titleOnly": "Videom.mp4",
+            "titleQualityPlaylist": "03-Videom-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Sesim-(320k).mp3",
+            "titleOnly": "Sesim.mp3",
+            "titleQualityPlaylist": "03-Sesim-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "Dosya adını kısıtla:",
+          "hint": "Dosya adlarındaki boşlukları alt çizgi ile değiştirir ve \"&\" gibi özel karakterleri kaldırır."
+        }
+      },
+      "outputFormat": {
+        "label": "Dosya adı formatı:"
+      }
+    },
+    "toasts": {
+      "saved": "Konumlar kaydedildi!",
+      "error": "Konumlar kaydedilemedi."
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "reset": {
+      "label": "Sıfırla",
+      "confirm": "Sıfırlamak için tekrar tıkla"
+    },
+    "performance": {
+      "legend": "Performans",
+      "legendLabel": "Ne kadar sistem kaynağı kullanılacağını ayarlayın.",
+      "maxConcurrency": {
+        "label": "Aynı anda işlenebilecek azami iş sayısı:"
+      },
+      "splitPlaylistThreshold": {
+        "label": "Şu durumda oynatma listelerini ayrı videolara böl:",
+        "options": {
+          "never": "Asla bölme",
+          "lessThan": "{number} videodan daha az olduğunda"
+        }
+      },
+      "autoLoadSize": {
+        "label": "Video boyutunu otomatik olarak yükle:"
+      }
+    },
+    "input": {
+      "legend": "Girdi",
+      "legendLabel": "OVD ile indirmeye nasıl başlayacağınızı seçin.",
+      "autoFillClipboard": {
+        "label": "Kopyalanmış bağlantıları otomatik kullan:",
+        "hint": "Tek tıkla indirebilmeniz için kopyaladığınız bağlantıları tespit eder."
+      },
+      "preferVideoInMixedLinks": {
+        "label": "Oynatma listesi bağlantılarında tek bir videoyu tercih et:",
+        "hint": "Bir bağlantı hem video hemde oynatma listesi içeriyorsa sadece videoyu indir."
+      },
+      "globalShortcuts": {
+        "label": "Kısayolları etkinleştir:",
+        "add_hint": "Sıraya videoları ekle:",
+        "download_hint": "Sırayı indir:"
+      },
+      "authentication": {
+        "label": "Gizli videoları indirmek için oturum açın:",
+        "link": "Kimliği ayarlar"
+      }
+    },
+    "output": {
+      "legend": "Çıktı",
+      "legendLabel": "Ne tür dosyaların indirileceğini ayarla.",
+      "addThumbnail": {
+        "label": "Kapak görseli ekle:",
+        "hint": "Ortam oynatıcıların görseli görüntüleyebilmeleri için küçük resmi dosyanın içine dahil et."
+      },
+      "addMetadata": {
+        "label": "Başlık ve sanatçı bilgisi ekle:",
+        "hint": "Başlık, yükleyen/sanatçı ve açıklama gibi üstverileri dosyanın içine kaydet."
+      },
+      "location": {
+        "label": "İndirme konumu ve dosya adları:",
+        "link": "İndirme konumlarını ayarla"
+      },
+      "subtitles": {
+        "label": "Altyazıları ekle:",
+        "link": "Altyazıları ayarla"
+      },
+      "policy": {
+        "label": "Dönüştürme modu:",
+        "hint": "İndirilen dosya seçtiğiniz formatla zaten eşleşmiyorsa dönüştürülmesi gerekebilir. Dönüştürmeyi atla: en hızlı yöntemdir, seçtiğiniz formatı göz ardı edebilir. Mümkünse dönüştür: yeniden kodlama yapmadan kapsayıcıyı değiştirmeye çalışır. Gerekirse dönüştür: her zaman seçilen formatı kullanır ancak daha yavaştır ve daha fazla CPU kullanır.",
+        "options": {
+          "never": "Dönüştürmeyi atla",
+          "remuxOnly": "Mümkünse dönüştür (önerilen)",
+          "allowReencode": "Gerekirse dönüştür (daha yavaş)"
+        }
+      },
+      "tabs": {
+        "audio": {
+          "screenreader": "Ses ayarları",
+          "label": "Ses",
+          "format": {
+            "label": "Ses formatı:",
+            "hint": "Tercih edilen ses formatını seçin. Dönüştürme modu, dosyanın gerçekten dönüştürülüp dönüştürülmeyeceğine karar verir.",
+            "options": {
+              "mp3": "MP3 (önerilen)",
+              "m4a": "M4A",
+              "ogg": "OGG",
+              "aac": "AAC",
+              "opus": "Opus",
+              "wav": "WAV",
+              "flac": "FLAC"
+            }
+          }
+        },
+        "video": {
+          "screenreader": "Video ayarları",
+          "label": "Video",
+          "container": {
+            "label": "Video formatı:",
+            "hint": "Tercih edilen video formatını seçin. Dönüştürme modu, dosyanın gerçekten dönüştürülüp dönüştürülmeyeceğine karar verir.",
+            "options": {
+              "mp4": "MP4",
+              "mkv": "MKV"
+            }
+          }
+        }
+      }
+    },
+    "appearance": {
+      "legend": "Görünüm",
+      "legendLabel": "Uygulamanın nasıl göründüğünü ve hissettirdiğini ayarlayın.",
+      "theme": {
+        "label": "Tema:",
+        "options": {
+          "system": "Sistem ({theme})",
+          "light": "Aydınlık",
+          "dark": "Karanlık"
+        }
+      },
+      "language": {
+        "label": "Dil",
+        "options": {
+          "system": "Sistem ({language})"
+        }
+      }
+    },
+    "network": {
+      "legend": "Ağ",
+      "legendLabel": "Uygulamanın internete nasıl bağlandığını ayarlayın.",
+      "enableProxy": {
+        "label": "Vekil üzerinden bağlan:"
+      },
+      "proxy": {
+        "label": "Vekil yapılandırması:"
+      },
+      "impersonate": {
+        "label": "Taklit:",
+        "hint": "Parmak izinin alınmasını önlemek için belirli bir işletim sistemini veya tarayıcıyı taklit et.",
+        "options": {
+          "none": "Taklit etme",
+          "any": "Rastgele bir istemciyi taklit et"
+        }
+      }
+    },
+    "sponsorBlock": {
+      "legend": "SponsorBlock",
+      "legendLabel": "Videonun kısımlarını kaldır ya da işaretle.",
+      "removeParts": {
+        "label": "Kaldırılacak bölümler",
+        "placeholder": "Videodan kaldırmak için 1 ya da daha fazla kısım seçin."
+      },
+      "markParts": {
+        "label": "İşaretlenecek bölümler",
+        "placeholder": "Bölüm ile işaretlemek için 1 ya da daha fazla kısım seçin."
+      },
+      "apiUrl": {
+        "label": "API URL"
+      },
+      "parts": {
+        "sponsor": {
+          "label": "Sponsor",
+          "description": "Ücretli tanıtım, ücretli yönlendirmeler ve doğrudan reklamlar."
+        },
+        "selfpromo": {
+          "label": "Karşılıksız / Kendi Reklamı",
+          "description": "Sponsor seçeneğinden farkı para karşılığı olmaması veya kendi reklamını yapmasıdır. Buna kendi markalı ürünlerini satmak, bağış toplamak ve videoda işbirliği yaptığı kimselerden bahsetmek dahildir."
+        },
+        "interaction": {
+          "label": "Etkileşim Hatırlatıcısı",
+          "description": "Videonun ortasında beğenmek, abone olmak veya takip etmek için kısa bir hatırlatma olan kısımdır."
+        },
+        "intro": {
+          "label": "Aralık / Giriş Animasyonu",
+          "description": "Gerçek içeriği olmayan bir aralık. Duraklama, sabit ekran, tekrar eden animasyon olabilir."
+        },
+        "outro": {
+          "label": "Bitiş Ekranı / Jenerik",
+          "description": "Videoda emeği geçenlerin veya video sonunda çıkan kartların gösterildiği kısımlar."
+        },
+        "hook": {
+          "label": "İma / Selamlama",
+          "description": "Gelecek video için anlatımlı fragmanlar, selamlaşmalar ve vedalaşmalar."
+        },
+        "music_offtopic": {
+          "label": "Müzik Olmayan Bölüm",
+          "description": "Müzikli videolarda konuşma bölümleri veya dikkat dağıtıcı unsurlar."
+        },
+        "preview": {
+          "label": "Ön İzleme / Özet",
+          "description": "Bu videoda veya diğer videolarda neler olduğunu gösteren, videonun ilerleyen zamanında tüm bilgilerin tekrarlandığı bir dizi klip koleksiyonudur  ."
+        },
+        "filler": {
+          "label": "Geyik Muhabbeti / Şakalar",
+          "description": "Videonun ana içeriğini anlamak için gerekli olmayan, yalnızca geyik muhabbeti veya şakalardan oluşan sahneler."
+        },
+        "chapter": {
+          "label": "Bölüm",
+          "description": "Videonun bir kısmını/kesitini işaretler (bölüm eylem türüyle birlikte kullanılır)."
+        }
+      }
+    },
+    "update": {
+      "legend": "Güncellemeler",
+      "legendLabel": "Uygulamanın hangi kısımlarının otomatik olarak güncelleneceğini seçin.",
+      "updateBinaries": {
+        "label": "Araçları otomatik olarak güncelle:",
+        "hint": "OVD, videoları indirmek için yt-dlp ve ffmpeg gibi araçları kullanır. Bunları güncel tutmak için bu ayarı etkinleştirin."
+      },
+      "updateApp": {
+        "label": "Uygulamayı otomatik olarak güncelle:",
+        "hint": "Yeni özellikleri ve hata düzeltmelerini yeni sürüm çıkar çıkmaz almak için bu ayarı etkinleştirin."
+      }
+    },
+    "system": {
+      "legend": "Sistem",
+      "legendLabel": "Bu uygulamanın sistemle nasıl entegre olacağını Configure how this application integrates with the system.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Menü çubuğu simgesini göster",
+          "generic": "Sistem tepsisi simgesini göster"
+        },
+        "hint": {
+          "mac": "Hızlı erişim için menü çubuğu simgesini gösterir..",
+          "generic": "Sistem tepsisinde hızlı erişim için bir simge gösterir.."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Küçültürken tepsiye küçült.",
+        "hint": "Pencereyi kapatmak, uygulamayı tamamen kapatmak yerine sistem tepsisinde gizler."
+      },
+      "autoStart": {
+        "label": "Oturum açışında başlat",
+        "hint": "Oturum açtığınızda Open Video Downloader'ı' otomatik olarak başlat."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Oturum açışında gizli başlat",
+          "windows": "Oturum açtığınızda tepsiye simge durumuna küçültülmüş olarak başlatır",
+          "generic": "Oturum açışında gizli olarak başlat (önerilmez)"
+        },
+        "hint": {
+          "mac": "Uygulama oturum açma sırasında başlatıldığında bir pencere açmaz. Uygulamayı açmak için menü çubuğunu veya Dock simgesini kullanın.",
+          "windows": "Uygulama oturum açıldığında pencere açmadan sistem tepsisinde başlayacaktır.",
+          "generic": "Uygulama oturum açma sırasında başlatıldığında bir pencere açılmayacaktır."
+        }
+      }
+    },
+    "notifications": {
+      "legend": "Bildirimler",
+      "legendLabel": "Ne zaman bildirim görüntüleneceğini ayarlayın.",
+      "behavior": {
+        "label": "Bildirimleri göster:",
+        "options": {
+          "always": "Her zaman",
+          "onBackground": "Arka plandayken",
+          "never": "Asla"
+        },
+        "hint": "İpucu: Uygulamayı kısayollarla kullanırken bildirimler faydalı olabilir."
+      },
+      "disabled": {
+        "label": "Belirli bildirimleri etkinleştir/devre dışı bırak",
+        "disabledScreenReader": "Bu seçenek devre dışı bırakıldı.",
+        "kinds": {
+          "queueAdded": "Sıra eklendi",
+          "queueDownloading": "Sıra indiriliyor",
+          "queueFinished": "Sıra indirildi",
+          "videoFinished": "Video indirildi",
+          "playlistFinished": "Oynatma listesi indirildi",
+          "downloadFailed": "İndirme başarısız oldu",
+          "videoReady": "Video hazır",
+          "playlistReady": "Oynatma listesi hazır"
+        }
+      }
+    },
+    "toasts": {
+      "saved": "Ayarlar kaydedildi!",
+      "reset": "Ayarları varsayılana sıfırla."
+    }
+  },
+  "updater": {
+    "available": "Güncelleme mevcut!",
+    "install": {
+      "title": "Güncellemeyi indir",
+      "subtitle": "Bu, uygulamayı yeniden başlatacaktır."
+    },
+    "downloading": "Güncelleme indiriliyor…"
+  },
+  "install": {
+    "title": {
+      "installing": "Gerekli araçlar indiriliyor…",
+      "failed": "Bazı gerekli araçların indirilimesi başarısız oldu.",
+      "installed": "Gerekli araçlar indirildi."
+    },
+    "subtitle": {
+      "installing": "Her şeyi hazır hale getiriyoruz.",
+      "failed": "Bu uygulama beklendiği gibi çalışmayabilir, lütfen bunu bildirin.",
+      "installed": "İndirmeye hazır!"
+    }
+  },
+  "components": {
+    "base": {
+      "emptyState": {
+        "title": "Sıranız boş",
+        "subtitle": "Başlamak için birkaç video ekleyin."
+      },
+      "dragState": {
+        "title": "Sıraya eklemek için sürükle",
+        "subtitle": "Videoları sürükleyerek sıraya ekleyin."
+      },
+      "fileInput": {
+        "select": "Dosya seç",
+        "placeholder": "Dosya seç…",
+        "invalid": "Geçersiz dosya.",
+        "clear": "Dosyayı temizle",
+        "recents": {
+          "clear": "Yakın zamandaki dosyaları temizle",
+          "open": "Yakın zamandaki seçimleri aç",
+          "empty": "Yakın zamanda bir seçim yok"
+        }
+      },
+      "folderInput": {
+        "select": "Klasör seç",
+        "placeholder": "Klasör seç…",
+        "invalid": "Geçersiz klasör.",
+        "clear": "Klasörü temizle",
+        "recents": {
+          "clear": "Yakın zamandaki temizle",
+          "open": "Yakın zamandaki seçimleri aç",
+          "empty": "Yakın zamanda bir seçim yok"
+        }
+      },
+      "secretInput": {
+        "hide": "Gizle",
+        "show": "Göster",
+        "clear": "Temizle {label}"
+      },
+      "toolCard": {
+        "failed": "Bu aracı indirme başarısız oldu. Daha fazla bilgi için genişletin."
+      }
+    }
+  },
+  "errors": {
+    "runner": {
+      "internal": {
+        "shortMessage": "Dahili hata",
+        "message": "Bu öğe işlenirken dahili bir hata oluştu."
+      },
+      "signInRequired": {
+        "shortMessage": "Giriş yapmak gerekli",
+        "message": "Bu içeriği görebilmeniz için giriş yapmanız gerek."
+      },
+      "membersOnly": {
+        "shortMessage": "Üyelere özel",
+        "message": "Bu video sadece kanal üyeleri tarafından erişilebilir."
+      },
+      "geoBlocked": {
+        "shortMessage": "Bölge engellendi",
+        "message": "Bu içerik bölgenizde kullanıma sunulmadı."
+      },
+      "accessForbidden403": {
+        "shortMessage": "Erişim engellendi",
+        "message": "Bu kaynağa erişim yetkiniz yok (HTTP 403)."
+      },
+      "notFound404": {
+        "shortMessage": "Bulunamadı",
+        "message": "İstek atılan video/oynatma listesi bulunamadı (HTTP 404)."
+      },
+      "server5xx": {
+        "shortMessage": "Sunucu hatası",
+        "message": "Geçici bir sunucu sorunu oluştu. Daha sonra tekrar deneyin."
+      },
+      "rateLimited429": {
+        "shortMessage": "Sınıra ulaşıldı",
+        "message": "Çok fazla istek atıldı. Lütfen bekleyin ve yeniden deneyin."
+      },
+      "requestedFormatUnavailable": {
+        "shortMessage": "Format kullanılabilir değil",
+        "message": "Seçilmiş format bu video için mevcut değil."
+      },
+      "unableToExtractInitialData": {
+        "shortMessage": "Veri çıkarımı başarısız oldu",
+        "message": "Gerekeli başlangıç video verileri çıkarılamadı."
+      },
+      "unableToExtractIdOrInfo": {
+        "shortMessage": "Üstveri hatası",
+        "message": "Video ya yükleyici bilgisi çıkarımı başarısız oldu."
+      },
+      "nsigExtractionFailed": {
+        "shortMessage": "İmza hatası",
+        "message": "Video imzası çıkarımı ya da çözümü başarısız oldu."
+      },
+      "embedOnly": {
+        "shortMessage": "Sadece gömülü video",
+        "message": "Bu video yalnızca gömülü bir oynatıcı aracılığıyla erişilebilir."
+      },
+      "urlUnsupported": {
+        "shortMessage": "Geçersiz URl",
+        "message": "Girilen bağlantı desteklenmiyor ya da tanınamadı."
+      },
+      "unknownUrlType": {
+        "shortMessage": "Bilinmeyen URL tipi",
+        "message": "Girilen URL desteklenmeyen bir protokol kullanıyor."
+      },
+      "networkNameResolutionFailed": {
+        "shortMessage": "Ağ hatası",
+        "message": "Sunucu adı çözümlenemedi. İnternet bağlantınızı kontrol edin."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Vekil bağlantısı başarısız oldu",
+        "message": "Vekile bağlanılamadı. Vekil ayarlarınızı kontrol edin."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "Giriş yapmak gerekli",
+        "message": "Robot olmadığınızı doğrulamak için giriş yapın."
+      },
+      "playlistPrivateOrMissing": {
+        "shortMessage": "Oynatma listesi mevcut değil",
+        "message": "Bu oynatma listesi gizli ya da silinmiş."
+      },
+      "videoNotFoundOrPrivate": {
+        "shortMessage": "Video mevcut değil",
+        "message": "Bu video kaldırılmış ya da gizliye alınmış."
+      },
+      "channelUnavailable": {
+        "shortMessage": "Kanal mevcut değil",
+        "message": "Bu içeriği yayınlayan kanal artık erişilebilir değil."
+      },
+      "ffmpegNotFound": {
+        "shortMessage": "ffmpeg bulunamadı",
+        "message": "Mp3 veya mp4 dönüştürmesi ffmpeg'i gerektirir."
+      },
+      "ffmpegFailed": {
+        "shortMessage": "ffmpeg başarısız oldu",
+        "message": "FFmpeg işleme sırasında bir hatayla karşılaştı."
+      },
+      "cannotAllocateMemory": {
+        "shortMessage": "Bellek hatası",
+        "message": "FFmpeg bu videoyu işlerken belleği doldu."
+      },
+      "permissionDenied": {
+        "shortMessage": "Erişim reddedildi",
+        "message": "Uygulamanın bu dosyaya ya da klasöre erişme yetkisi yok."
+      },
+      "noWritePermission": {
+        "shortMessage": "Yazılamadı",
+        "message": "Hedef dizin yazılabilir değil."
+      },
+      "windowsFileMissing": {
+        "shortMessage": "Dosya eksik",
+        "message": "Kaynak dosya bulunamadı (WinError 2)."
+      },
+      "blockedGeneric": {
+        "shortMessage": "Video engellendi",
+        "message": "Bu video engellendi ve indirilemez."
+      },
+      "copyrightClaimed": {
+        "shortMessage": "Telif hakkı ihlali",
+        "message": "Bu video telif hakkı ihlali nedeniyle engellendi."
+      },
+      "notPremieredYet": {
+        "shortMessage": "İlk gösterim henüz başlamadı",
+        "message": "Bu video ilk gösterim başlayana kadar mevcut değil."
+      },
+      "livestreamNotStarted": {
+        "shortMessage": "Canlı yayın bekleniyor",
+        "message": "Canlı yayın henüz başlamadı. Lütfen daha sonra kontrol edin."
+      },
+      "sslVerifyFailed": {
+        "shortMessage": "SSL hatası",
+        "message": "Güvenli bağlantı doğrulanamadı. Sertifikalarınızı ya da tarihinizi kontrol edin."
+      },
+      "sponsorBlockUnreachable": {
+        "shortMessage": "SponsorBlock çevrim dışı",
+        "message": "Bölüm bilgisi için SponsorBlock API'sine bağlanılamadı."
+      },
+      "downloadRetryingFragment": {
+        "shortMessage": "Parça yeniden deneniyor",
+        "message": "Bir parçanın indirmesi başarısız oldu ve otomatik olarak yeniden denenecek."
+      },
+      "unknown": {
+        "shortMessage": "Bilinmeyen hata",
+        "message": "Bu öğe işlenirken bilinmeyen bir hata oluştu."
+      }
+    }
+  },
+  "about": {
+    "title": "Hakkında",
+    "credit": "jely2002 & katkıda bulunanlar tarafından ❤ ile yapıldı ",
+    "poweredBy": "Açık kaynakla güç bulmuştur:",
+    "viewLicenses": "Lisanlara göz at",
+    "version": "Sürüm: {version}",
+    "links": {
+      "github": "GitHub",
+      "wiki": "Wiki",
+      "reportABug": "Hata bildir"
+    }
+  }
+}

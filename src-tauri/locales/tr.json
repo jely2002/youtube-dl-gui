@@ -1,0 +1,48 @@
+{
+  "tray": {
+    "quit": "Çık",
+    "showOrHide": "Pencere Gizle/Göster",
+    "addToQueue": "Panodan ekle",
+    "downloadQueue": "Sırayı indir",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftEnter": "Alt + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Sıraya eklendi",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Sıra indiriliyor",
+      "body": "{n} içerik indiriliyor | {n} içerik indiriliyor"
+    },
+    "queueFinished": {
+      "title": "Sıra indirildi",
+      "body": "{n} içerik indirildi | {n} içerik indirildi"
+    },
+    "videoFinished": {
+      "title": "İndirme tamamlandı",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Oynatma listesi indirildi",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "İndirilmeye hazır",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Oynatma listesi indirilmeye hazır",
+      "body": "{title} | {title} ({n} içerik) | {title} ({n} içerik)"
+    },
+    "downloadFailed": {
+      "title": "İndirme başarısız oldu",
+      "body": "{title}\n{message}"
+    }
+  }
+}
