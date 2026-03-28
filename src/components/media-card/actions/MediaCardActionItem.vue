@@ -16,7 +16,7 @@ const { icon, label, to } = defineProps({
     required: true,
   },
   to: {
-    type: Object as PropType<RouteLocationRaw>,
+    type: [String, Object] as PropType<RouteLocationRaw>,
     required: false,
   },
   disabled: {
