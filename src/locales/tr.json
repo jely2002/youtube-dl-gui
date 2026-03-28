@@ -156,7 +156,7 @@
         "description": "Açıklama:"
       },
       "stats": {
-        "title": "Video Statistics",
+        "title": "Video İstatistikleri",
         "views": "Görüntülenme",
         "likes": "Beğeni",
         "dislikes": "Beğenmeme",
@@ -204,8 +204,8 @@
           "duration": "Uzunluk: {duration}",
           "size": "Boyut: ",
           "sizeInfo": "İndirilecek olan verinin boyutu.\nDosyanın nihai boyutu değil.",
-          "items": "Items: {amount} {failedCount}",
-          "failedCount": "({amount} failed)"
+          "items": "İçerik: {amount} {failedCount}",
+          "failedCount": "({amount} başarısız oldu)"
         },
         "trackTypes": {
           "both": "Video + Ses",
@@ -237,7 +237,7 @@
         }
       },
       "paused": {
-        "progress": "İndirme duraklatıldı — {percentage}%",
+        "progress": "İndirme duraklatıldı — %{percentage}",
         "progressList": "İndirme duraklatıldı — %{percentage} — {total} taneden {done} tanesi",
         "indeterminate": "İndirme duraklatıldı",
         "metadata": {
@@ -613,7 +613,7 @@
     },
     "system": {
       "legend": "Sistem",
-      "legendLabel": "Bu uygulamanın sistemle nasıl entegre olacağını Configure how this application integrates with the system.",
+      "legendLabel": "Bu uygulamanın sistemle nasıl entegre olacağını yapılandır.",
       "trayEnabled": {
         "label": {
           "mac": "Menü çubuğu simgesini göster",
@@ -885,7 +885,7 @@
   },
   "about": {
     "title": "Hakkında",
-    "credit": "jely2002 & katkıda bulunanlar tarafından ❤ ile yapıldı ",
+    "credit": "jely2002 & katkıda bulunanlar tarafından ❤ ile yapıldı",
     "poweredBy": "Açık kaynakla güç bulmuştur:",
     "viewLicenses": "Lisanlara göz at",
     "version": "Sürüm: {version}",
