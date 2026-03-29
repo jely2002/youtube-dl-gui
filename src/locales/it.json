@@ -223,14 +223,14 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "Nessun codec audio",
+            "noFormats": "Nessun codifica audio",
             "placeholder": "Codec audio",
-            "screenReader": "Seleziona codec audio"
+            "screenReader": "Seleziona codifica audio"
           },
           "videoSelect": {
-            "noFormats": "Nessun codec video",
+            "noFormats": "Nessun codifica video",
             "placeholder": "Codec video",
-            "screenReader": "Seleziona codec video"
+            "screenReader": "Seleziona codifica video"
           }
         },
         "tracks": {
@@ -281,6 +281,15 @@
           "speed": "Velocità: {speed}"
         }
       },
+      "paused": {
+        "progress": "Download in pausa — {percentage}%",
+        "progressList": "Download in pausa — {percentage}% — {done} di {total}",
+        "indeterminate": "Download in pausa",
+        "metadata": {
+          "eta": "Rimangono: {eta}",
+          "etaItems": "Rimangono: {n} elemento | Rimangono: {n} elementi"
+        }
+      },
       "done": {
         "complete": "Download completato — 100%",
         "showFolder": "Visualizza nella cartella",
@@ -293,15 +302,6 @@
         "report": "Rapporto",
         "showFull": "Visualizza registro",
         "signIn": "Accedi"
-      },
-      "paused": {
-        "progress": "Download in pausa — {percentage}%",
-        "progressList": "Download in pausa — {percentage}% — {done} di {total}",
-        "indeterminate": "Download in pausa",
-        "metadata": {
-          "eta": "Rimangono: {eta}",
-          "etaItems": "Rimangono: {n} elemento | Rimangono: {n} elementi"
-        }
       }
     },
     "card": {
@@ -512,11 +512,11 @@
         "chapter": "Capitolo",
         "startAt": "Inizio",
         "stopAt": "Fine",
-        "allChapters": "Tutti i capitoli",
         "invalidHint": "I timestamp non validi saranno ignorati.",
+        "allChapters": "Tutti i capitoli",
         "errors": {
           "invalid": "Inserisci un orario valido.",
-          "beforeStart": "L'ora di fine deve essere dopo quella di inizio.",
+          "beforeStart": "L'orario finale deve essere superiore a quello iniziale.",
           "exceedsDuration": "Il timestamp non può superare la durata del video."
         }
       },
@@ -821,10 +821,6 @@
         "shortMessage": "È richiesto l'accesso",
         "message": "Per visualizzare questo contenuto è necessario accedere."
       },
-      "signInRequiredForBotDetection": {
-        "shortMessage": "È richiesto l'accesso",
-        "message": "Accedi per confermare che non sei un bot."
-      },
       "membersOnly": {
         "shortMessage": "Riservato ai membri",
         "message": "Questo video è disponibile solo per gli abbonati al canale."
@@ -884,6 +880,10 @@
       "unableToConnectToProxy": {
         "shortMessage": "Connessione al proxy non riuscita",
         "message": "Impossibile connettersi al proxy. Controlla le impostazioni proxy."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "È richiesto l'accesso",
+        "message": "Accedi per confermare che non sei un bot."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist non disponibile",
