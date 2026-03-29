@@ -48,13 +48,6 @@ pub fn build_format_args(
       if audio_track_pref.language.is_none() {
         sort_fields.push("lang".into());
       }
-      if let Some(audio_encoding) = format_options
-        .audio_encoding
-        .as_ref()
-        .filter(|value| !value.trim().is_empty())
-      {
-        sort_fields.push(format!("acodec:{audio_encoding}"));
-      }
       if let Some(channels) = audio_track_pref.channels {
         sort_fields.push(format!("channels:{channels}"));
       }
@@ -485,7 +478,7 @@ mod tests {
       args,
       vec![
         "-f",
-        "b*[language=ja]/b[language=ja]/bv/b",
+        "bv*[language=ja]/b[language=ja]/bv/b",
         "-S",
         "vcodec:avc1,res:1080,fps:60",
       ]
