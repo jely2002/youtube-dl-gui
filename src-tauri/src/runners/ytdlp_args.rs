@@ -478,7 +478,7 @@ mod tests {
       args,
       vec![
         "-f",
-        "bv*[language=ja]/b[language=ja]/bv/b",
+        "bv[language=ja]/b[language=ja]/bv/b",
         "-S",
         "vcodec:avc1,res:1080,fps:60",
       ]
