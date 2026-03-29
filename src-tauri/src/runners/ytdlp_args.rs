@@ -21,23 +21,39 @@ pub fn build_format_args(
       args.push("-x".into());
 
       args.push("-f".into());
+      let acodecs = acodec_filters(output_settings.audio.format);
+      let mut selectors = Vec::new();
       if let Some(language) = audio_track_pref.language.as_ref() {
-        let candidates = language_candidates(language);
-        let mut selectors: Vec<String> = candidates
-          .iter()
-          .map(|lang| format!("ba[language={lang}]"))
-          .collect();
-        selectors.extend(["ba".into(), "best".into()]);
-        args.push(selectors.join("/"));
-      } else {
-        args.push("ba/best".into());
+        let langs = language_candidates(language);
+        for &acodec in acodecs {
+          for lang in &langs {
+            selectors.push(format!("ba[acodec^={acodec}][language={lang}]"));
+          }
+        }
+        for lang in &langs {
+          selectors.extend([
+            format!("ba[language={lang}]"),
+            format!("b[language={lang}]"),
+          ]);
+        }
       }
+      for &acodec in acodecs {
+        selectors.push(format!("ba[acodec^={acodec}]"));
+      }
+      selectors.extend(["ba".into(), "b".into()]);
+      args.push(selectors.join("/"));
 
       let mut sort_fields = Vec::new();
-      if let Some(language) = audio_track_pref.language {
-        sort_fields.push(format!("lang:{language}"));
-      } else {
+
+      if audio_track_pref.language.is_none() {
         sort_fields.push("lang".into());
+      }
+      if let Some(audio_encoding) = format_options
+        .audio_encoding
+        .as_ref()
+        .filter(|value| !value.trim().is_empty())
+      {
+        sort_fields.push(format!("acodec:{audio_encoding}"));
       }
       if let Some(channels) = audio_track_pref.channels {
         sort_fields.push(format!("channels:{channels}"));
@@ -47,39 +63,12 @@ pub fn build_format_args(
         sort_fields.push(format!("abr~{abr}"));
       }
 
-      if let Some(audio_encoding) = format_options
-        .audio_encoding
-        .as_ref()
-        .filter(|value| !value.trim().is_empty())
-      {
-        sort_fields.push(format!("acodec:{audio_encoding}"));
+      if !sort_fields.is_empty() {
+        let sort_arg = sort_fields.join(",");
+
+        args.push("-S".into());
+        args.push(sort_arg);
       }
-
-      match output_settings.audio.format {
-        AudioFormat::M4a | AudioFormat::Aac => {
-          sort_fields.push("aext:m4a".into());
-          sort_fields.push("acodec:aac".into());
-        }
-        AudioFormat::Opus => {
-          sort_fields.push("acodec:opus".into());
-          sort_fields.push("aext:webm".into());
-        }
-        AudioFormat::Ogg => {
-          sort_fields.push("aext:ogg".into());
-          sort_fields.push("acodec:vorbis".into());
-        }
-        AudioFormat::Flac | AudioFormat::Wav => {
-          sort_fields.push("acodec:opus".into());
-        }
-        AudioFormat::Mp3 => {
-          sort_fields.push("aext:mp3".into());
-        }
-      }
-
-      let sort_arg = sort_fields.join(",");
-
-      args.push("-S".into());
-      args.push(sort_arg);
     }
 
     TrackType::Video | TrackType::Both => {
@@ -95,7 +84,7 @@ pub fn build_format_args(
               .iter()
               .flat_map(|lang| {
                 [
-                  format!("bv*[language={lang}]"),
+                  format!("bv[language={lang}]"),
                   format!("b[language={lang}]"),
                 ]
               })
@@ -103,21 +92,18 @@ pub fn build_format_args(
             selectors.extend(["bv".into(), "b".into()]);
             selectors.join("/")
           } else {
-            "bv".to_string()
+            "bv/b".to_string()
           }
         }
         TrackType::Both => {
           if let Some(language) = audio_track_pref.language.as_ref() {
             let candidates = language_candidates(language);
-            // For combined downloads, multilingual audio is often only available on
-            // progressive/HLS combined streams, so prioritize b[language=..] first.
             let mut selectors: Vec<String> = candidates
               .iter()
               .flat_map(|lang| {
                 [
-                  format!("b[language={lang}]"),
                   format!("bv*+ba[language={lang}]"),
-                  format!("bv+ba[language={lang}]"),
+                  format!("b[language={lang}]"),
                 ]
               })
               .collect();
@@ -147,24 +133,22 @@ pub fn build_format_args(
       args.push(selector);
 
       let mut sort_fields = Vec::new();
-      if let Some(language) = video_track_pref.language.or(audio_track_pref.language) {
-        sort_fields.push(format!("lang:{language}"));
-      } else {
-        sort_fields.push("lang".into());
-      }
 
-      if let Some(h) = format_options.height {
-        sort_fields.push(format!("res:{h}"));
-      }
-      if let Some(f) = format_options.fps {
-        sort_fields.push(format!("fps:{f}"));
-      }
       if let Some(video_encoding) = format_options
         .video_encoding
         .as_ref()
         .filter(|value| !value.trim().is_empty())
       {
         sort_fields.push(format!("vcodec:{video_encoding}"));
+      }
+      if video_track_pref.language.is_none() && audio_track_pref.language.is_none() {
+        sort_fields.push("lang".into());
+      }
+      if let Some(h) = format_options.height {
+        sort_fields.push(format!("res:{h}"));
+      }
+      if let Some(f) = format_options.fps {
+        sort_fields.push(format!("fps:{f}"));
       }
       if matches!(format_options.track_type, TrackType::Both) {
         if let Some(audio_encoding) = format_options
@@ -175,21 +159,27 @@ pub fn build_format_args(
           sort_fields.push(format!("acodec:{audio_encoding}"));
         }
       }
-      if matches!(output_settings.video.container, VideoContainer::Mp4) {
-        sort_fields.push("vext:mp4".into());
-        sort_fields.push("vext:m4a".into());
-      } else {
-        sort_fields.push("vext".into());
+
+      if !sort_fields.is_empty() {
+        let sort_arg = sort_fields.join(",");
+
+        args.push("-S".into());
+        args.push(sort_arg);
       }
-
-      let sort_arg = sort_fields.join(",");
-
-      args.push("-S".into());
-      args.push(sort_arg);
     }
   }
 
   args
+}
+
+fn acodec_filters(format: AudioFormat) -> &'static [&'static str] {
+  match format {
+    AudioFormat::M4a | AudioFormat::Aac => &["aac", "mp4a.40."],
+    AudioFormat::Opus => &["opus"],
+    AudioFormat::Ogg => &["ogg", "vorbis"],
+    AudioFormat::Flac | AudioFormat::Wav => &["flac", "wav"],
+    AudioFormat::Mp3 => &["mp3"],
+  }
 }
 
 #[derive(Debug, Default)]
@@ -341,8 +331,10 @@ pub fn build_output_args(
   if partial_download.is_some_and(|value| value.section.is_some()) {
     // Embedding chapters breaks the video when downloading a section, as the chapter metadata track is longer than the video.
     args.push("--no-embed-chapters".into());
-    // Ensure we don't get black screens or missing audio.
-    args.push("--force-keyframes-at-cuts".into());
+    if output_settings.video.policy == TranscodePolicy::AllowReencode {
+      // Ensure we don't get black screens or missing audio.
+      args.push("--force-keyframes-at-cuts".into());
+    }
   }
 
   args
@@ -471,9 +463,9 @@ mod tests {
       vec![
         "-x",
         "-f",
-        "ba[language=en]/ba/best",
+        "ba[acodec^=aac][language=en]/ba[acodec^=mp4a.40.][language=en]/ba[language=en]/b[language=en]/ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b",
         "-S",
-        "lang:en,channels:2,abr~128,acodec:aac,aext:mp3",
+        "channels:2,abr~128",
       ]
       .into_iter()
       .map(String::from)
@@ -493,9 +485,9 @@ mod tests {
       args,
       vec![
         "-f",
-        "bv*[language=ja]/b[language=ja]/bv/b",
+        "b*[language=ja]/b[language=ja]/bv/b",
         "-S",
-        "lang:ja,res:1080,fps:60,vcodec:avc1,vext:mp4,vext:m4a",
+        "vcodec:avc1,res:1080,fps:60",
       ]
       .into_iter()
       .map(String::from)
@@ -517,9 +509,9 @@ mod tests {
       args,
       vec![
         "-f",
-        "b[language=fr-FR]/bv*+ba[language=fr-FR]/bv+ba[language=fr-FR]/b[language=fr]/bv*+ba[language=fr]/bv+ba[language=fr]/bv*+ba/b",
+        "bv*+ba[language=fr-FR]/b[language=fr-FR]/bv*+ba[language=fr]/b[language=fr]/bv*+ba/b",
         "-S",
-        "lang:fr-FR,res:720,fps:30,vcodec:vp9,acodec:opus,vext:mp4,vext:m4a",
+        "vcodec:vp9,res:720,fps:30,acodec:opus",
       ]
       .into_iter()
       .map(String::from)
@@ -534,7 +526,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,aext:mp3"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba[acodec^=mp3]/ba/b", "-S", "lang"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -549,7 +541,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-x", "-f", "ba/best", "-S", "lang,abr~44,aext:mp3"]
+    let expected: Vec<String> = vec!["-x", "-f", "ba[acodec^=mp3]/ba/b", "-S", "lang,abr~44"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -564,7 +556,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext:mp4,vext:m4a"]
+    let expected: Vec<String> = vec!["-f", "bv/b", "-S", "lang,res:720,fps:60"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -581,7 +573,7 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec!["-f", "bv", "-S", "lang,res:720,fps:60,vext"]
+    let expected: Vec<String> = vec!["-f", "bv/b", "-S", "lang,res:720,fps:60"]
       .into_iter()
       .map(String::from)
       .collect();
@@ -596,15 +588,10 @@ mod tests {
 
     let args = build_format_args(&format_options, &settings);
 
-    let expected: Vec<String> = vec![
-      "-f",
-      "bv*+ba/b",
-      "-S",
-      "lang,res:1080,fps:30,vext:mp4,vext:m4a",
-    ]
-    .into_iter()
-    .map(String::from)
-    .collect();
+    let expected: Vec<String> = vec!["-f", "bv*+ba/b", "-S", "lang,res:1080,fps:30"]
+      .into_iter()
+      .map(String::from)
+      .collect();
 
     assert_eq!(args, expected);
   }
