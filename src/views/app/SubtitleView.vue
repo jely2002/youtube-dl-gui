@@ -251,7 +251,7 @@ const formatLabels = new Map(
     { value: 'vtt', label: t('subtitles.formats.vtt') },
     { value: 'ass', label: t('subtitles.formats.ass') },
     { value: 'ttml', label: t('subtitles.formats.ttml') },
-    { value: 'json', label: t('subtitles.formats.json') },
+    { value: 'json', label: t('subtitles.formats.json3') },
   ].map(option => [option.value, option.label] as const),
 );
 

@@ -1,18 +1,19 @@
-use crate::models::download::FormatOptions;
+use crate::models::download::{DownloadOverrides, FormatOptions};
 use crate::models::TrackType;
 use crate::paths::PathsManager;
+use crate::runners::override_resolver::resolve_with_patch;
 use crate::runners::template_context::TemplateContext;
 use crate::runners::ytdlp_args::{build_format_args, build_location_args, build_output_args};
 use crate::runners::ytdlp_process::{
   configure_command, kill_platform_process, platform_process_from_child, PlatformProcess,
 };
-use crate::state::config_models::{Config, SubtitleSettings};
+use crate::state::config_models::{AuthSettings, Config, SubtitleSettings};
 use crate::state::preferences_models::Preferences;
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
 use std::collections::HashSet;
 use std::io;
-use std::io::{BufRead, BufReader};
+use std::io::{BufReader, Read};
 use std::path::PathBuf;
 use std::process::{Command, ExitStatus, Stdio};
 use std::sync::Arc;
@@ -82,16 +83,20 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
-  pub fn with_network_args(mut self) -> Self {
-    let proxy_enabled = self.cfg.network.enable_proxy.is_some_and(|enabled| enabled);
+  pub fn with_network_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
+    let network = resolve_with_patch(
+      &self.cfg.network,
+      overrides.and_then(|value| value.network.as_ref()),
+    );
+    let proxy_enabled = network.enable_proxy.is_some_and(|enabled| enabled);
     if proxy_enabled {
-      if let Some(proxy) = self.cfg.network.proxy.as_ref() {
+      if let Some(proxy) = network.proxy.as_ref() {
         self.args.push("--proxy".to_string());
         self.args.push(proxy.clone());
       }
     }
 
-    match self.cfg.network.impersonate.as_str() {
+    match network.impersonate.as_str() {
       "none" => {}
       "any" => {
         self.args.push("--impersonate".to_string());
@@ -106,55 +111,67 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
-  pub fn with_auth_args(mut self) -> Self {
-    if self.cfg.auth.cookie_browser != "none" {
+  pub fn with_auth_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
+    let auth_overrides = overrides.and_then(|value| value.auth.as_ref());
+    let auth_settings: AuthSettings = resolve_with_patch(&self.cfg.auth, auth_overrides);
+    if auth_settings.cookie_browser != "none" {
       self.args.extend_from_slice(&[
         "--cookies-from-browser".into(),
-        self.cfg.auth.cookie_browser.clone(),
+        auth_settings.cookie_browser,
       ]);
     }
-    if self.cfg.auth.cookie_file.is_some() {
-      self.args.extend_from_slice(&[
-        "--cookies".into(),
-        self.cfg.auth.cookie_file.clone().unwrap(),
-      ]);
+    if let Some(cookie_file) = auth_settings.cookie_file {
+      self
+        .args
+        .extend_from_slice(&["--cookies".into(), cookie_file]);
     }
 
+    let mut effective_auth_secrets = AuthSecrets::default();
     if let Some(sh_state) = self.app.try_state::<StrongholdState>() {
       if let Ok(secrets) = sh_state.load_auth_secrets() {
-        self.apply_auth_secrets(secrets);
+        effective_auth_secrets = secrets;
       }
     }
+    let effective_auth_secrets = resolve_with_patch(&effective_auth_secrets, auth_overrides);
+    self.apply_auth_secrets(effective_auth_secrets);
 
     self
   }
 
-  pub fn with_subtitle_args(mut self) -> Self {
-    if let Some(subtitle_args) = build_subtitle_args(&self.cfg.subtitles) {
+  pub fn with_subtitle_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
+    let subtitle_settings = resolve_with_patch(
+      &self.cfg.subtitles,
+      overrides.and_then(|value| value.subtitles.as_ref()),
+    );
+    if let Some(subtitle_args) = build_subtitle_args(&subtitle_settings) {
       self.args.extend(subtitle_args);
     }
 
     self
   }
 
-  pub fn with_sponsorblock_args(mut self) -> Self {
-    if let Some(api_url) = &self.cfg.sponsor_block.api_url {
+  pub fn with_sponsorblock_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
+    let sponsor_block = resolve_with_patch(
+      &self.cfg.sponsor_block,
+      overrides.and_then(|value| value.sponsor_block.as_ref()),
+    );
+    if let Some(api_url) = &sponsor_block.api_url {
       self
         .args
         .extend_from_slice(&["--sponsorblock-api".into(), api_url.clone()]);
     }
 
-    if !self.cfg.sponsor_block.remove_parts.is_empty() {
+    if !sponsor_block.remove_parts.is_empty() {
       self.args.extend_from_slice(&[
         "--sponsorblock-remove".into(),
-        self.cfg.sponsor_block.remove_parts.join(","),
+        sponsor_block.remove_parts.join(","),
       ]);
     }
 
-    if !self.cfg.sponsor_block.mark_parts.is_empty() {
+    if !sponsor_block.mark_parts.is_empty() {
       self.args.extend_from_slice(&[
         "--sponsorblock-mark".into(),
-        self.cfg.sponsor_block.mark_parts.join(","),
+        sponsor_block.mark_parts.join(","),
       ]);
     }
 
@@ -174,15 +191,27 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
-  pub fn with_format_args(mut self, format_options: &FormatOptions) -> Self {
+  pub fn with_format_args(
+    mut self,
+    format_options: &FormatOptions,
+    overrides: Option<&DownloadOverrides>,
+  ) -> Self {
+    let output_settings = resolve_with_patch(
+      &self.cfg.output,
+      overrides.and_then(|value| value.output.as_ref()),
+    );
     self
       .args
-      .extend(build_format_args(format_options, &self.cfg.output.clone()));
+      .extend(build_format_args(format_options, &output_settings));
     self
   }
 
-  pub fn with_input_args(mut self) -> Self {
-    if self.cfg.input.prefer_video_in_mixed_links {
+  pub fn with_input_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
+    let input = resolve_with_patch(
+      &self.cfg.input,
+      overrides.and_then(|value| value.input.as_ref()),
+    );
+    if input.prefer_video_in_mixed_links {
       self.args.push("--no-playlist".into());
     } else {
       self.args.push("--yes-playlist".into());
@@ -190,10 +219,19 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
-  pub fn with_output_args(mut self, format_options: &FormatOptions) -> Self {
-    self
-      .args
-      .extend(build_output_args(format_options, &self.cfg.output));
+  pub fn with_output_args(
+    mut self,
+    format_options: &FormatOptions,
+    overrides: Option<&DownloadOverrides>,
+  ) -> Self {
+    let output_overrides = overrides.and_then(|value| value.output.as_ref());
+    let output_settings = resolve_with_patch(&self.cfg.output, output_overrides);
+    let partial_download = output_overrides.and_then(|value| value.partial_download.as_ref());
+    self.args.extend(build_output_args(
+      format_options,
+      &output_settings,
+      partial_download,
+    ));
     self
   }
 
@@ -201,7 +239,12 @@ impl<'a> YtdlpRunner<'a> {
     mut self,
     track_type: &TrackType,
     template_context: &TemplateContext,
+    overrides: Option<&DownloadOverrides>,
   ) -> Self {
+    let output_settings = resolve_with_patch(
+      &self.cfg.output,
+      overrides.and_then(|value| value.output.as_ref()),
+    );
     let fallback_dir = self
       .app
       .path()
@@ -210,7 +253,7 @@ impl<'a> YtdlpRunner<'a> {
     self.args.extend(build_location_args(
       track_type,
       template_context,
-      &self.cfg.output,
+      &output_settings,
       &self.prefs.paths,
       fallback_dir,
     ));
@@ -344,11 +387,27 @@ fn spawn_reader<R: io::Read + Send + 'static>(
   thread::spawn(move || {
     let mut reader = BufReader::new(reader);
     let mut buf = Vec::new();
+    let mut byte = [0_u8; 1];
+
     loop {
-      buf.clear();
-      match reader.read_until(b'\n', &mut buf) {
-        Ok(0) => break,
-        Ok(_) => {
+      match reader.read(&mut byte) {
+        Ok(0) => {
+          if !buf.is_empty() {
+            let out = std::mem::take(&mut buf);
+            let event = if is_stdout {
+              YtdlpCommandEvent::Stdout(out)
+            } else {
+              YtdlpCommandEvent::Stderr(out)
+            };
+            let _ = tx.send(event);
+          }
+          break;
+        }
+        Ok(_) if matches!(byte[0], b'\n' | b'\r') => {
+          if buf.is_empty() {
+            continue;
+          }
+
           let out = std::mem::take(&mut buf);
           let event = if is_stdout {
             YtdlpCommandEvent::Stdout(out)
@@ -357,6 +416,7 @@ fn spawn_reader<R: io::Read + Send + 'static>(
           };
           let _ = tx.send(event);
         }
+        Ok(_) => buf.push(byte[0]),
         Err(err) => {
           let _ = tx.send(YtdlpCommandEvent::Error(err.to_string()));
           break;
@@ -398,7 +458,7 @@ fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {
 }
 
 fn sanitize_subtitle_formats(formats: &[String]) -> Vec<String> {
-  const DEFAULT_FORMATS: [&str; 5] = ["srt", "vtt", "ass", "ttml", "json"];
+  const DEFAULT_FORMATS: [&str; 5] = ["srt", "vtt", "ass", "ttml", "json3"];
 
   let normalized_inputs = sanitize_vec(formats);
 
@@ -451,6 +511,15 @@ fn sanitize_subtitle_languages(languages: &[String]) -> Vec<String> {
   }
 
   sanitized
+    .into_iter()
+    .map(|language| {
+      if has_subtitle_language_pattern_syntax(&language) {
+        language
+      } else {
+        format!("{language}.*")
+      }
+    })
+    .collect()
 }
 
 fn sanitize_vec(items: &[String]) -> Vec<String> {
@@ -470,6 +539,16 @@ fn sanitize_vec(items: &[String]) -> Vec<String> {
   }
 
   sanitized
+}
+
+fn has_subtitle_language_pattern_syntax(language: &str) -> bool {
+  language.starts_with('-')
+    || language.chars().any(|ch| {
+      matches!(
+        ch,
+        '*' | '[' | ']' | '(' | ')' | '?' | '+' | '{' | '}' | '|' | '^' | '$' | '\\' | ':' | ','
+      )
+    })
 }
 
 #[cfg(test)]
@@ -501,9 +580,9 @@ mod tests {
         "--no-write-auto-subs",
         "--no-write-subs",
         "--sub-format",
-        "srt/vtt/ass/ttml/json",
+        "srt/vtt/ass/ttml/json3",
         "--sub-langs",
-        "en"
+        "en.*"
       ]
     );
   }
@@ -526,9 +605,9 @@ mod tests {
         "--no-write-subs",
         "--write-auto-subs",
         "--sub-format",
-        "srt/vtt/ass/ttml/json",
+        "srt/vtt/ass/ttml/json3",
         "--sub-langs",
-        "en"
+        "en.*"
       ]
     );
   }
@@ -551,7 +630,7 @@ mod tests {
         "--no-embed-subs",
         "--write-auto-subs",
         "--sub-format",
-        "srt/vtt/ass/ttml/json",
+        "srt/vtt/ass/ttml/json3",
         "--sub-langs",
         "all"
       ]
@@ -562,12 +641,21 @@ mod tests {
   fn subtitles_trim_and_dedupe_values() {
     let settings = SubtitleSettings {
       enabled: true,
-      languages: vec![" en ".into(), "EN".into(), String::new()],
-      format_preference: vec![" srt ".into(), "SRT".into(), String::new()],
+      languages: vec![" en ".into(), "EN".into(), "pt-BR".into(), String::new()],
       ..Default::default()
     };
     let args = build_subtitle_args(&settings).expect("args");
-    assert_eq!(args[5], "srt/vtt/ass/ttml/json");
-    assert_eq!(args[7], "en");
+    assert_eq!(args[7], "en.*,pt-br.*");
+  }
+
+  #[test]
+  fn subtitles_preserve_existing_patterns() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      languages: vec!["en.*".into(), "-live_chat".into()],
+      ..Default::default()
+    };
+    let args = build_subtitle_args(&settings).expect("args");
+    assert_eq!(args[7], "en.*,-live_chat");
   }
 }

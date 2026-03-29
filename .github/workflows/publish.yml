@@ -32,7 +32,7 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-24.04' || matrix.platform == 'ubuntu-24.04-arm'
@@ -52,23 +52,24 @@ jobs:
             xdg-utils
 
       - name: setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           cache: 'npm'
 
-      - name: install Rust nightly
-        uses: dtolnay/rust-toolchain@nightly
+      - name: install Rust 1.94.1
+        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # rust-toolchain action
         with:
+          toolchain: 1.94.1
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || matrix.platform == 'windows-11-arm' && 'aarch64-pc-windows-msvc' || '' }}
 
       - name: Install cargo-about
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@0fde6d128a3d980ceac30be8c8b8739abd963b81 # v2
         with:
           tool: cargo-about
 
       - name: Rust cache
-        uses: swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae # v2
         with:
           workspaces: './src-tauri -> target'
 
@@ -102,9 +103,9 @@ jobs:
 
       - name: Setup Sentry CLI
         if: matrix.platform != 'windows-11-arm'
-        uses: matbour/setup-sentry-cli@v2
+        uses: matbour/setup-sentry-cli@ac9d752ca8f44ef545fb2ce2dcd329cce57d778b # v2
         with:
-          version: latest
+          version: 2.58.2
           token: ${{ secrets.SENTRY_AUTH_TOKEN }}
           organization: ${{ secrets.SENTRY_ORG }}
           project: ${{ secrets.SENTRY_PROJECT }}
@@ -128,7 +129,7 @@ jobs:
         run: |
           cargo install tauri-cli
 
-      - uses: tauri-apps/tauri-action@v0
+      - uses: tauri-apps/tauri-action@fce9c6108b31ea247710505d3aaaa893ee6768d4 # v0
         id: tauri
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -285,14 +286,14 @@ jobs:
 
       - name: Upload MSIX artifact (Windows only)
         if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ovd-msix-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
           path: OpenVideoDownloader_${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}.msix
 
       - name: Upload PDB symbols (Windows only)
         if: matrix.platform == 'windows-latest' || matrix.platform == 'windows-11-arm'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ovd-pdb-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
           path: src-tauri/target/release/public-pdb/*.pdb
@@ -302,25 +303,25 @@ jobs:
     needs: publish-tauri
     steps:
       - name: Download x64 MSIX
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: ovd-msix-x64
           path: dist/msix/x64
 
       - name: Download arm64 MSIX
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: ovd-msix-arm64
           path: dist/msix/arm64
 
       - name: Download x64 PDB symbols
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: ovd-pdb-x64
           path: dist/symbols/x64
 
       - name: Download arm64 PDB symbols
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: ovd-pdb-arm64
           path: dist/symbols/arm64
@@ -365,7 +366,7 @@ jobs:
           Compress-Archive -Path "upload\*" -DestinationPath "OpenVideoDownloader.msixupload" -Force
 
       - name: Upload msixupload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ovd-msixupload
           path: OpenVideoDownloader.msixupload

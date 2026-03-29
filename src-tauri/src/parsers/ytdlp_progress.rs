@@ -1,7 +1,7 @@
 use crate::models::progress::MediaDestinationPath;
 use crate::models::{
   MediaDestination, MediaProgress, MediaProgressStage, ProgressCategory, ProgressEvent,
-  ProgressStage,
+  ProgressStage, TrackType,
 };
 use std::path::Path;
 
@@ -10,15 +10,22 @@ pub struct YtdlpProgressParser {
   group_id: String,
   current_category: ProgressCategory,
   current_stage: ProgressStage,
+  partial_download_duration_secs: Option<f64>,
 }
 
 impl YtdlpProgressParser {
-  pub fn new(id: &str, group_id: &str) -> Self {
+  pub fn new(
+    id: &str,
+    group_id: &str,
+    initial_category: ProgressCategory,
+    partial_download_duration_secs: Option<f64>,
+  ) -> Self {
     Self {
       id: id.to_string(),
       group_id: group_id.to_string(),
-      current_category: ProgressCategory::Other,
+      current_category: initial_category,
       current_stage: ProgressStage::Initializing,
+      partial_download_duration_secs,
     }
   }
 
@@ -36,6 +43,19 @@ impl YtdlpProgressParser {
 
     if let Some(evt) = self.try_progress_update(line) {
       evts.push(evt);
+      return evts;
+    }
+
+    if let Some(progress) = self.try_ffmpeg_progress_update(line) {
+      if self.current_stage != ProgressStage::Downloading {
+        self.current_stage = ProgressStage::Downloading;
+        evts.push(ProgressEvent::StageChange(MediaProgressStage {
+          id: self.id.clone(),
+          group_id: self.group_id.clone(),
+          stage: self.current_stage.clone(),
+        }));
+      }
+      evts.push(progress);
       return evts;
     }
 
@@ -283,6 +303,36 @@ impl YtdlpProgressParser {
     }))
   }
 
+  fn try_ffmpeg_progress_update(&self, line: &str) -> Option<ProgressEvent> {
+    let total_secs = self.partial_download_duration_secs?;
+    if total_secs <= 0.0 {
+      return None;
+    }
+
+    let elapsed_secs = parse_ffmpeg_progress_time_secs(line)?;
+    if elapsed_secs < 0.0 {
+      return None;
+    }
+    let percentage = ((elapsed_secs / total_secs) * 100.0).clamp(0.0, 100.0);
+    let speed = parse_ffmpeg_speed_factor(line);
+    let eta_secs = speed.and_then(|value| {
+      if value <= 0.0 {
+        None
+      } else {
+        Some(((total_secs - elapsed_secs).max(0.0) / value).ceil() as u64)
+      }
+    });
+
+    Some(ProgressEvent::Progress(MediaProgress {
+      id: self.id.clone(),
+      group_id: self.group_id.clone(),
+      category: self.current_category.clone(),
+      percentage: Some(percentage),
+      speed_bps: None,
+      eta_secs,
+    }))
+  }
+
   fn try_merging_stage(&mut self, line: &str) -> Option<ProgressEvent> {
     if line.starts_with("[Merger]") && self.current_stage != ProgressStage::Merging {
       self.current_stage = ProgressStage::Merging;
@@ -310,5 +360,122 @@ impl YtdlpProgressParser {
       }));
     }
     None
+  }
+}
+
+pub fn progress_category_for_track_type(track_type: &TrackType) -> ProgressCategory {
+  match track_type {
+    TrackType::Audio => ProgressCategory::Audio,
+    TrackType::Video | TrackType::Both => ProgressCategory::Video,
+  }
+}
+
+fn parse_ffmpeg_progress_time_secs(line: &str) -> Option<f64> {
+  extract_latest_ffmpeg_progress_sample(line)
+    .and_then(|sample| extract_token_value(sample, "time="))
+    .and_then(parse_clock_to_secs)
+}
+
+fn parse_ffmpeg_speed_factor(line: &str) -> Option<f64> {
+  extract_latest_ffmpeg_progress_sample(line)
+    .and_then(|sample| extract_token_value(sample, "speed="))
+    .and_then(|speed_value| speed_value.trim_end_matches('x').trim().parse::<f64>().ok())
+}
+
+fn extract_latest_ffmpeg_progress_sample(line: &str) -> Option<&str> {
+  line
+    .split('\r')
+    .rev()
+    .map(str::trim)
+    .find(|sample| sample.contains("time=") && sample.contains("frame="))
+}
+
+fn extract_token_value<'a>(line: &'a str, token: &str) -> Option<&'a str> {
+  let start = line.find(token)? + token.len();
+  let rest = &line[start..];
+  let end = rest.find(char::is_whitespace).unwrap_or(rest.len());
+  let value = rest[..end].trim();
+  if value.is_empty() {
+    None
+  } else {
+    Some(value)
+  }
+}
+
+fn parse_clock_to_secs(value: &str) -> Option<f64> {
+  let mut total = 0.0;
+  let parts = value.trim().split(':').collect::<Vec<_>>();
+  if parts.len() != 3 {
+    return None;
+  }
+
+  for (index, part) in parts.iter().enumerate() {
+    let component = part.trim().parse::<f64>().ok()?;
+    total += component
+      * match index {
+        0 => 3600.0,
+        1 => 60.0,
+        2 => 1.0,
+        _ => unreachable!(),
+      };
+  }
+
+  Some(total)
+}
+
+#[cfg(test)]
+mod tests {
+  use super::{progress_category_for_track_type, YtdlpProgressParser};
+  use crate::models::{ProgressCategory, ProgressEvent, TrackType};
+
+  #[test]
+  fn parses_ffmpeg_progress_for_partial_downloads() {
+    let parser = YtdlpProgressParser::new("item", "group", ProgressCategory::Video, Some(60.0));
+    let event = parser
+      .try_ffmpeg_progress_update(
+        "frame= 1861 fps=164 q=-1.0 size=    1433kB time=00:00:28.98 bitrate=405.1kbits/s speed=2.56x",
+      )
+      .expect("expected ffmpeg progress");
+
+    let ProgressEvent::Progress(progress) = event else {
+      panic!("expected progress event");
+    };
+
+    assert_eq!(progress.category, ProgressCategory::Video);
+    assert!(progress
+      .percentage
+      .is_some_and(|value| value > 48.0 && value < 49.0));
+    assert_eq!(progress.eta_secs, Some(13));
+    assert_eq!(progress.speed_bps, None);
+  }
+
+  #[test]
+  fn ignores_ffmpeg_progress_without_partial_duration() {
+    let parser = YtdlpProgressParser::new("item", "group", ProgressCategory::Audio, None);
+
+    assert!(parser
+      .try_ffmpeg_progress_update("frame=1 time=00:00:05.00 speed=1.0x")
+      .is_none());
+  }
+
+  #[test]
+  fn parses_fractional_clock_values() {
+    assert_eq!(super::parse_clock_to_secs("00:01:02.50"), Some(62.5));
+  }
+
+  #[test]
+  fn derives_category_from_track_type() {
+    assert_eq!(
+      progress_category_for_track_type(&TrackType::Audio),
+      ProgressCategory::Audio
+    );
+    assert_eq!(
+      progress_category_for_track_type(&TrackType::Video),
+      ProgressCategory::Video
+    );
+    assert_eq!(
+      progress_category_for_track_type(&TrackType::Both),
+      ProgressCategory::Video
+    );
   }
 }

@@ -7,11 +7,9 @@ use crate::{
   scheduling::concurrency::DynamicSemaphore,
   scheduling::dispatcher::{DispatchEntry, DispatchRequest, GenericDispatcher},
 };
+use std::collections::HashMap;
 use std::sync::LazyLock;
-use std::{
-  collections::HashMap,
-  sync::{Arc, Mutex},
-};
+use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Emitter};
 use tokio::sync::mpsc::UnboundedSender;
 use uuid::Uuid;

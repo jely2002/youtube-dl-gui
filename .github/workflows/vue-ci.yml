@@ -29,16 +29,20 @@ on:
       - 'vitest.*'
       - '*.config.*'
       - 'tsconfig.*'
+
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: 'Lint'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           cache: npm
@@ -51,12 +55,14 @@ jobs:
   unit-tests:
     name: 'Unit Tests'
     runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           cache: npm
@@ -67,25 +73,28 @@ jobs:
           npm run test:unit
 
       - name: Upload unit coverage to Codecov
-        uses: codecov/codecov-action@v5
+        if: ${{ env.CODECOV_TOKEN != '' }}
+        uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5
         with:
           files: coverage/units/lcov.info
           flags: unit
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
   e2e-tests:
     name: 'E2E Tests'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.57.0-noble
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
       options: --ipc=host --shm-size=1g
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
           cache: npm
@@ -99,11 +108,12 @@ jobs:
         run: npm run test:e2e
 
       - name: Upload e2e coverage to Codecov
-        uses: codecov/codecov-action@v5
+        if: ${{ env.CODECOV_TOKEN != '' }}
+        uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5
         with:
           files: coverage/e2e/lcov.info
           flags: e2e
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
   build:
@@ -111,10 +121,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
           cache: npm

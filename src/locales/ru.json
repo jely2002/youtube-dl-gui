@@ -151,9 +151,10 @@
       "thumbnailAlt": "Миниатюра для {title}",
       "metadata": {
         "uploader": "Автор:",
-        "extractor": "Экстрактор:",
+        "extractor": "Источник:",
         "link": "Ссылка:",
-        "description": "Описание:"
+        "chapters": "Главы",
+        "description": "Описание"
       },
       "stats": {
         "title": "Статистика видео",
@@ -184,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Переопределение"
+      },
+      "labels": {
+        "quality": "Выберите параметры формата, кодека и дорожек.",
+        "network": "Настройте прокси, маскировку и заголовки запроса. Переопределяет стандартные настройки приложения для этой загрузки.",
+        "output": "Настройте контейнер, конвертацию и шаблоны имён файлов. Переопределяет стандартные настройки приложения для этой загрузки.",
+        "headersOverride": "По одному на строку: ПОЛЕ:ЗНАЧЕНИЕ. Заменяет глобальные заголовки для этой загрузки."
+      },
+      "hints": {
+        "format": "Выберите качество видео или аудио. Более высокое качество обычно означает больший размер файлов и более долгую загрузку.",
+        "encodings": "Выберите предпочитаемые кодеки. Полезно для совместимости при воспроизведении или сохранения исходного качества.",
+        "tracks": "Выберите языковые или канальные варианты, если они доступны, например дубляж."
+      },
+      "tabs": {
+        "quality": "Качество",
+        "network": "Сеть"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} из {total}",
@@ -198,6 +219,30 @@
             "noFormats": "Форматы недоступны",
             "placeholder": "Выбрать формат",
             "screenReader": "Выбрать формат дорожки"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "Нет аудиокодеков",
+            "placeholder": "Аудиокодек",
+            "screenReader": "Выбрать аудиокодек"
+          },
+          "videoSelect": {
+            "noFormats": "Нет видеокодеков",
+            "placeholder": "Видеокодек",
+            "screenReader": "Выбрать видеокодек"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "Нет аудиодорожек",
+            "placeholder": "Аудиодорожка",
+            "screenReader": "Выбрать аудиодорожку"
+          },
+          "videoSelect": {
+            "noFormats": "Нет видеодорожек",
+            "placeholder": "Видеодорожка",
+            "screenReader": "Выбрать видеодорожку"
           }
         },
         "metadata": {
@@ -265,6 +310,7 @@
         "externalUrl": "Открыть по внешней ссылке",
         "retry": "Повторить скачивание",
         "download": "Скачать отдельно",
+        "preferences": "Параметры загрузки",
         "metadata": "Показать метаданные",
         "pause": "Приостановить загрузку",
         "resume": "Возобновить загрузку"
@@ -320,7 +366,7 @@
       "vtt": "WebVTT (.vtt)",
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
-      "json": "JSON (.json)"
+      "json3": "JSON (.json)"
     }
   },
   "location": {
@@ -378,14 +424,14 @@
         },
         "examples": {
           "video": {
-            "titleQuality": "My Video-(1080p30).mp4",
-            "titleOnly": "My Video.mp4",
-            "titleQualityPlaylist": "03-My Video-(1080p30).mkv"
+            "titleQuality": "Моё видео-(1080p30).mp4",
+            "titleOnly": "Моё видео.mp4",
+            "titleQualityPlaylist": "03-Моё видео-(1080p30).mkv"
           },
           "audio": {
-            "titleQuality": "My Audio-(320k).mp3",
-            "titleOnly": "My Audio.mp3",
-            "titleQualityPlaylist": "03-My Audio-(320k).mp3"
+            "titleQuality": "Моё аудио-(320k).mp3",
+            "titleOnly": "Моё аудио.mp3",
+            "titleQualityPlaylist": "03-Моё аудио-(320k).mp3"
           }
         },
         "restrictFilenames": {
@@ -457,6 +503,23 @@
         "label": "Добавить название и автора:",
         "hint": "Сохранить метаданные (название, автор/исполнитель и описание) внутри файла."
       },
+      "partialDownload": {
+        "legend": "Частичная загрузка",
+        "hint": "Укажите таймкоды или главы, чтобы скачать только часть видео.",
+        "use": "Использовать",
+        "useTimes": "Таймкоды",
+        "useChapter": "Главы",
+        "chapter": "Глава",
+        "startAt": "Начало",
+        "stopAt": "Конец",
+        "allChapters": "Все главы",
+        "invalidHint": "Неверные таймкоды будут пропущены.",
+        "errors": {
+          "invalid": "Введите корректное время.",
+          "beforeStart": "Время окончания должно быть позже начала.",
+          "exceedsDuration": "Таймкод не может превышать длительность видео."
+        }
+      },
       "location": {
         "label": "Папка загрузок и имена файлов:",
         "link": "Настроить папки загрузки"
@@ -521,6 +584,15 @@
         "label": "Язык",
         "options": {
           "system": "Системный ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Дополнительный селектор:",
+        "hint": "Выберите, какой дополнительный селектор показывать перед загрузкой.",
+        "options": {
+          "none": "Нет",
+          "encodings": "Кодеки",
+          "tracks": "Дорожки"
         }
       }
     },

@@ -150,10 +150,11 @@
       },
       "thumbnailAlt": "Miniature pour {title}",
       "metadata": {
-        "uploader": "Uploader :",
+        "uploader": "Téléchargeur :",
         "extractor": "Extracteur :",
         "link": "Lien :",
-        "description": "Description :"
+        "chapters": "Chapitres",
+        "description": "Description"
       },
       "stats": {
         "title": "Statistiques de la vidéo",
@@ -184,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Remplacement"
+      },
+      "labels": {
+        "quality": "Choisissez les préférences de format, de codec et de piste.",
+        "network": "Configurez le proxy, l’usurpation et les en-têtes de requête. Remplace les paramètres par défaut de l’application pour ce téléchargement.",
+        "output": "Configurez le conteneur, la conversion et les modèles de nom de fichier. Remplace les paramètres par défaut de l’application pour ce téléchargement.",
+        "headersOverride": "Une entrée par ligne : CHAMP:VALEUR. Remplace les en-têtes globaux pour ce téléchargement."
+      },
+      "hints": {
+        "format": "Choisissez la qualité vidéo ou audio. Une qualité plus élevée signifie généralement des fichiers plus volumineux et des téléchargements plus longs.",
+        "encodings": "Choisissez les codecs préférés. Utile pour la compatibilité de lecture ou pour conserver la qualité d’origine.",
+        "tracks": "Choisissez des variantes de langue ou de canaux lorsqu’elles sont disponibles, par exemple un doublage."
+      },
+      "tabs": {
+        "quality": "Qualité",
+        "network": "Réseau"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} sur {total}",
@@ -198,6 +219,30 @@
             "noFormats": "Aucun format",
             "placeholder": "Sélectionner un format",
             "screenReader": "Sélectionner le format de la piste"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "Aucun codec audio",
+            "placeholder": "Codec audio",
+            "screenReader": "Sélectionner le codec audio"
+          },
+          "videoSelect": {
+            "noFormats": "Aucun codec vidéo",
+            "placeholder": "Codec vidéo",
+            "screenReader": "Sélectionner le codec vidéo"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "Aucune piste audio",
+            "placeholder": "Piste audio",
+            "screenReader": "Sélectionner la piste audio"
+          },
+          "videoSelect": {
+            "noFormats": "Aucune piste vidéo",
+            "placeholder": "Piste vidéo",
+            "screenReader": "Sélectionner la piste vidéo"
           }
         },
         "metadata": {
@@ -265,6 +310,7 @@
         "externalUrl": "Voir sur l'URL externe",
         "retry": "Réessayer le téléchargement",
         "download": "Télécharger individuellement",
+        "preferences": "Préférences de téléchargement",
         "metadata": "Afficher les métadonnées",
         "pause": "Mettre en pause le téléchargement",
         "resume": "Reprendre le téléchargement"
@@ -320,7 +366,7 @@
       "vtt": "WebVTT (.vtt)",
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
-      "json": "JSON (.json)"
+      "json3": "JSON (.json)"
     }
   },
   "location": {
@@ -457,6 +503,23 @@
         "label": "Ajouter titre & artiste :",
         "hint": "Enregistre les métadonnées comme le titre, l’uploader/artiste et la description."
       },
+      "partialDownload": {
+        "legend": "Téléchargement partiel",
+        "hint": "Utilisez des horodatages ou des chapitres pour ne télécharger que des extraits.",
+        "use": "Utiliser",
+        "useTimes": "Horodatages",
+        "useChapter": "Chapitres",
+        "chapter": "Chapitre",
+        "startAt": "Début",
+        "stopAt": "Fin",
+        "allChapters": "Tous les chapitres",
+        "invalidHint": "Les horodatages invalides seront ignorés.",
+        "errors": {
+          "invalid": "Saisissez une heure valide.",
+          "beforeStart": "L'heure de fin doit être après l'heure de début.",
+          "exceedsDuration": "L'horodatage ne peut pas dépasser la durée de la vidéo."
+        }
+      },
       "location": {
         "label": "Emplacement de téléchargement et noms de fichiers:",
         "link": "Configurer les emplacements de téléchargement"
@@ -521,6 +584,15 @@
         "label": "Langue",
         "options": {
           "system": "Système ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Sélecteur supplémentaire :",
+        "hint": "Choisissez quel sélecteur supplémentaire est affiché avant le téléchargement.",
+        "options": {
+          "none": "Aucun",
+          "encodings": "Encodages",
+          "tracks": "Pistes"
         }
       }
     },

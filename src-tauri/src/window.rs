@@ -6,7 +6,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use tauri::async_runtime::JoinHandle;
 use tauri::{
-  AppHandle, Manager, Monitor, PhysicalPosition, PhysicalSize, Window, WindowEvent, Wry,
+  AppHandle, Manager, Monitor, PhysicalPosition, PhysicalSize, WebviewWindow, WindowEvent, Wry,
 };
 use tokio::sync::Mutex;
 
@@ -150,7 +150,7 @@ pub fn restore_main_window(app: &AppHandle<Wry>) {
     }
   };
 
-  let window = match app.get_window("main") {
+  let window = match app.get_webview_window("main") {
     Some(w) => w,
     None => {
       tracing::warn!("Main window not found, skipping window restore");
@@ -198,7 +198,7 @@ pub fn restore_main_window(app: &AppHandle<Wry>) {
 }
 
 pub fn track_main_window(app: &AppHandle<Wry>) {
-  let window = match app.get_window("main") {
+  let window = match app.get_webview_window("main") {
     Some(w) => w,
     None => {
       tracing::warn!("Main window not found, skipping window tracking");
@@ -284,7 +284,7 @@ pub fn track_main_window(app: &AppHandle<Wry>) {
 pub fn setup_close_behaviour(app: &AppHandle<Wry>) {
   let app_handle = app.clone();
 
-  let window = match app_handle.get_window("main") {
+  let window = match app_handle.get_webview_window("main") {
     Some(w) => w,
     None => {
       tracing::warn!("Main window not found; cannot wire close behavior");
@@ -356,7 +356,7 @@ fn rect_intersects_monitor(x: i32, y: i32, w: u32, h: u32, m: &Monitor) -> bool 
 }
 
 fn window_rect_is_on_some_monitor(
-  window: &Window,
+  window: &WebviewWindow,
   x: i32,
   y: i32,
   w: u32,

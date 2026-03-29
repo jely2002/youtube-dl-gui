@@ -50,7 +50,7 @@ const { loading, tooltipLocation } = defineProps({
     default: 'top',
   },
   to: {
-    type: Object as PropType<RouteLocationRaw>,
+    type: [String, Object] as PropType<RouteLocationRaw>,
     required: false,
   },
   disabled: {

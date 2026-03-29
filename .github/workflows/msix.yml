@@ -18,34 +18,35 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           cache: 'npm'
 
-      - name: Install Rust nightly
-        uses: dtolnay/rust-toolchain@nightly
+      - name: Install Rust 1.94.1
+        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # rust-toolchain action
         with:
+          toolchain: 1.94.1
           targets: ${{ matrix.platform == 'windows-11-arm' && 'aarch64-pc-windows-msvc' || '' }}
 
       - name: Install cargo-about
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@0fde6d128a3d980ceac30be8c8b8739abd963b81 # v2
         with:
           tool: cargo-about
 
       - name: Rust cache
-        uses: swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae # v2
         with:
           workspaces: './src-tauri -> target'
 
       - name: Install frontend dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build Windows exe (no bundle, no release)
-        uses: tauri-apps/tauri-action@v0
+        uses: tauri-apps/tauri-action@fce9c6108b31ea247710505d3aaaa893ee6768d4 # v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -66,7 +67,7 @@ jobs:
           architecture: ${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
 
       - name: Upload MSIX artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ovd-msix-${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}
           path: OpenVideoDownloader_${{ runner.arch == 'ARM64' && 'arm64' || 'x64' }}.msix

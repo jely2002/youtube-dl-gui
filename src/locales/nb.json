@@ -153,7 +153,8 @@
         "uploader": "Opplaster:",
         "extractor": "Ekstraktor:",
         "link": "Lenke:",
-        "description": "Beskrivelse:"
+        "chapters": "Kapitler",
+        "description": "Beskrivelse"
       },
       "stats": {
         "title": "Video Statistikk",
@@ -184,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Overstyring"
+      },
+      "labels": {
+        "quality": "Velg innstillinger for format, kodek og spor.",
+        "network": "Konfigurer proxy, identitetsforfalskning og forespørselshoder. Overstyrer appens standardinnstillinger for denne nedlastingen.",
+        "output": "Konfigurer beholderformat, konvertering og filnavnsmaler. Overstyrer appens standardinnstillinger for denne nedlastingen.",
+        "headersOverride": "En per linje: FELT:VERDI. Erstatter globale forespørselshoder for denne nedlastingen."
+      },
+      "hints": {
+        "format": "Velg video- eller lydkvalitet. Høyere kvalitet betyr vanligvis større filer og lengre nedlastinger.",
+        "encodings": "Velg foretrukne kodeker. Nyttig for avspillingskompatibilitet eller for å beholde original kvalitet.",
+        "tracks": "Velg språk- eller kanalvarianter når de er tilgjengelige, for eksempel dubbet lyd."
+      },
+      "tabs": {
+        "quality": "Kvalitet",
+        "network": "Nettverk"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} av {total}",
@@ -198,6 +219,30 @@
             "noFormats": "Ingen formater",
             "placeholder": "Velg format",
             "screenReader": "Velg format for sporet"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "Ingen lydkodeker",
+            "placeholder": "Lydkodek",
+            "screenReader": "Velg lydkodek"
+          },
+          "videoSelect": {
+            "noFormats": "Ingen videokodeker",
+            "placeholder": "Videokodek",
+            "screenReader": "Velg videokodek"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "Ingen lydspor",
+            "placeholder": "Lydspor",
+            "screenReader": "Velg lydspor"
+          },
+          "videoSelect": {
+            "noFormats": "Ingen videospor",
+            "placeholder": "Videospor",
+            "screenReader": "Velg videospor"
           }
         },
         "metadata": {
@@ -265,6 +310,7 @@
         "externalUrl": "Besøk på ekstern URL",
         "retry": "Prøv nedlasting på nytt",
         "download": "Last ned individuelt",
+        "preferences": "Nedlastingsinnstillinger",
         "metadata": "Vis metadata",
         "pause": "Sett nedlasting på pause",
         "resume": "Fortsett nedlasting"
@@ -320,7 +366,7 @@
       "vtt": "WebVTT (.vtt)",
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
-      "json": "JSON (.json)"
+      "json3": "JSON (.json)"
     }
   },
   "location": {
@@ -457,6 +503,23 @@
         "label": "Legg til tittel- og artistinformasjon:",
         "hint": "Lagre metadata som tittel, opplaster/artist og beskrivelse i filen."
       },
+      "partialDownload": {
+        "legend": "Delvis nedlasting",
+        "hint": "Bruk tidsstempler eller kapitler for å laste ned bare deler.",
+        "use": "Bruk",
+        "useTimes": "Tidsstempler",
+        "useChapter": "Kapitler",
+        "chapter": "Kapittel",
+        "startAt": "Start",
+        "stopAt": "Stopp",
+        "allChapters": "Alle kapitler",
+        "invalidHint": "Ugyldige tidsstempler blir ignorert.",
+        "errors": {
+          "invalid": "Skriv inn en gyldig tid.",
+          "beforeStart": "Stopptiden må være etter starttiden.",
+          "exceedsDuration": "Tidsstempelet kan ikke overstige videolengden."
+        }
+      },
       "location": {
         "label": "Nedlastingsplassering og filnavn:",
         "link": "Konfigurer nedlastingsplassering"
@@ -521,6 +584,15 @@
         "label": "Språk",
         "options": {
           "system": "System ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Ekstra velger:",
+        "hint": "Velg hvilken ekstra velger som vises før nedlasting.",
+        "options": {
+          "none": "Ingen",
+          "encodings": "Kodinger",
+          "tracks": "Spor"
         }
       }
     },
@@ -794,7 +866,7 @@
         "message": "Kunne ikke hente eller dekode videosignaturen."
       },
       "embedOnly": {
-        "shortMessage": "Embed-only video",
+        "shortMessage": "Kun innebygd",
         "message": "Denne videoen kan kun åpnes gjennom en innebygd spiller."
       },
       "urlUnsupported": {

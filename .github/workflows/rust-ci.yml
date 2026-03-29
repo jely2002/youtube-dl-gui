@@ -14,6 +14,9 @@ on:
       - '.github/actions/install-tauri-deps/**'
       - 'src-tauri/**'
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: 'Lint'
@@ -24,10 +27,10 @@ jobs:
       CARGO_TARGET_DIR: src-tauri/target
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Node.js for isolation build
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
           cache: npm
@@ -42,23 +45,24 @@ jobs:
 
       - name: Cache Rust registry
         if: ${{ github.event_name == 'push' }}
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('src-tauri/Cargo.toml') }}
 
       - name: Cache Rust build artifacts
         if: ${{ github.event_name == 'push' }}
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: src-tauri/target
           key: ${{ runner.os }}-cargo-target-${{ hashFiles('src-tauri/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-target-
 
-      - name: Set up Rust toolchain (nightly + Clippy)
-        uses: dtolnay/rust-toolchain@nightly
+      - name: Set up Rust toolchain (1.94.1 + Clippy)
+        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # rust-toolchain action
         with:
+          toolchain: 1.94.1
           components: clippy,rustfmt
 
       - name: Run clippy
@@ -74,12 +78,13 @@ jobs:
       CARGO_TERM_COLOR: always
       TAURI_SKIP_UPDATE_CHECK: 1
       CARGO_TARGET_DIR: src-tauri/target
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Node.js for isolation build
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
           cache: npm
@@ -94,23 +99,24 @@ jobs:
 
       - name: Cache Rust registry
         if: ${{ github.event_name == 'push' }}
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('src-tauri/Cargo.toml') }}
 
       - name: Cache Rust build artifacts
         if: ${{ github.event_name == 'push' }}
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: src-tauri/target
           key: ${{ runner.os }}-cargo-target-${{ hashFiles('src-tauri/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-target-
 
-      - name: Set up Rust toolchain (nightly + LLVM tools)
-        uses: dtolnay/rust-toolchain@nightly
+      - name: Set up Rust toolchain (1.94.1 + LLVM tools)
+        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9 # rust-toolchain action
         with:
+          toolchain: 1.94.1
           components: llvm-tools-preview
 
       - name: Install cargo-llvm-cov
@@ -122,9 +128,10 @@ jobs:
           cargo llvm-cov --manifest-path=src-tauri/Cargo.toml --lcov --output-path=coverage/rust/lcov.info --remap-path-prefix --all-features --all-targets
 
       - name: Upload Rust coverage to Codecov
-        uses: codecov/codecov-action@v5
+        if: ${{ env.CODECOV_TOKEN != '' }}
+        uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5
         with:
           files: coverage/rust/lcov.info
           flags: rust-units
-          token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ env.CODECOV_TOKEN }}
           fail_ci_if_error: true

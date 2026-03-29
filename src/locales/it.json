@@ -150,10 +150,11 @@
       },
       "thumbnailAlt": "Miniatura per {title}",
       "metadata": {
-        "uploader": "Caricatore:",
+        "uploader": "Autore:",
         "extractor": "Estrattore:",
         "link": "Collegamento:",
-        "description": "Descrizione:"
+        "chapters": "Capitoli",
+        "description": "Descrizione"
       },
       "stats": {
         "title": "Statistiche video",
@@ -184,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Sovrascrivi"
+      },
+      "labels": {
+        "quality": "Scegli le preferenze per formato, codec e tracce.",
+        "network": "Configura proxy, impersonazione e intestazioni della richiesta. Sovrascrive le impostazioni predefinite dell'app per questo download.",
+        "output": "Configura contenitore, conversione e modelli per il nome file. Sovrascrive le impostazioni predefinite dell'app per questo download.",
+        "headersOverride": "Una voce per riga: CAMPO:VALORE. Sostituisce le intestazioni globali per questo download."
+      },
+      "hints": {
+        "format": "Scegli la qualità video o audio. Una qualità più alta significa di solito file più grandi e download più lunghi.",
+        "encodings": "Scegli i codec preferiti. Utile per la compatibilità di riproduzione o per mantenere la qualità originale.",
+        "tracks": "Scegli varianti di lingua o di canale quando disponibili, ad esempio l'audio doppiato."
+      },
+      "tabs": {
+        "quality": "Qualità",
+        "network": "Rete"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} di {total}",
@@ -198,6 +219,30 @@
             "noFormats": "Nessun formato",
             "placeholder": "Seleziona formato",
             "screenReader": "Seleziona il formato della traccia"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "Nessun codifica audio",
+            "placeholder": "Codec audio",
+            "screenReader": "Seleziona codifica audio"
+          },
+          "videoSelect": {
+            "noFormats": "Nessun codifica video",
+            "placeholder": "Codec video",
+            "screenReader": "Seleziona codifica video"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "Nessuna traccia audio",
+            "placeholder": "Traccia audio",
+            "screenReader": "Seleziona traccia audio"
+          },
+          "videoSelect": {
+            "noFormats": "Nessuna traccia video",
+            "placeholder": "Traccia video",
+            "screenReader": "Seleziona traccia video"
           }
         },
         "metadata": {
@@ -236,6 +281,15 @@
           "speed": "Velocità: {speed}"
         }
       },
+      "paused": {
+        "progress": "Download in pausa — {percentage}%",
+        "progressList": "Download in pausa — {percentage}% — {done} di {total}",
+        "indeterminate": "Download in pausa",
+        "metadata": {
+          "eta": "Rimangono: {eta}",
+          "etaItems": "Rimangono: {n} elemento | Rimangono: {n} elementi"
+        }
+      },
       "done": {
         "complete": "Download completato — 100%",
         "showFolder": "Visualizza nella cartella",
@@ -246,17 +300,8 @@
       "error": {
         "errorPrefix": "Errore - {message}",
         "report": "Rapporto",
-        "showFull": "Vedi log",
+        "showFull": "Visualizza registro",
         "signIn": "Accedi"
-      },
-      "paused": {
-        "progress": "Download in pausa — {percentage}%",
-        "progressList": "Download in pausa — {percentage}% — {done} di {total}",
-        "indeterminate": "Download in pausa",
-        "metadata": {
-          "eta": "Rimangono: {eta}",
-          "etaItems": "Rimangono: {n} elemento | Rimangono: {n} elementi"
-        }
       }
     },
     "card": {
@@ -265,6 +310,7 @@
         "externalUrl": "Visita URL esterna",
         "retry": "Riprova download",
         "download": "Download individuale",
+        "preferences": "Preferenze di download",
         "metadata": "Visualizza metadati",
         "pause": "Metti in pausa download",
         "resume": "Riprendi download"
@@ -320,7 +366,7 @@
       "vtt": "WebVTT (.vtt)",
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
-      "json": "JSON (.json)"
+      "json3": "JSON (.json)"
     }
   },
   "location": {
@@ -457,6 +503,23 @@
         "label": "Aggiungi info su titolo e artista:",
         "hint": "Salva metadati all'interno del file (titolo, utente che ha caricato/artista e descrizione)."
       },
+      "partialDownload": {
+        "legend": "Download parziale",
+        "hint": "Usa timestamp o capitoli per scaricare solo alcune parti.",
+        "use": "Usa",
+        "useTimes": "Timestamp",
+        "useChapter": "Capitoli",
+        "chapter": "Capitolo",
+        "startAt": "Inizio",
+        "stopAt": "Fine",
+        "invalidHint": "I timestamp non validi saranno ignorati.",
+        "allChapters": "Tutti i capitoli",
+        "errors": {
+          "invalid": "Inserisci un orario valido.",
+          "beforeStart": "L'orario finale deve essere superiore a quello iniziale.",
+          "exceedsDuration": "Il timestamp non può superare la durata del video."
+        }
+      },
       "location": {
         "label": "Percorso download e nomi file:",
         "link": "Imposta percorsi download"
@@ -521,6 +584,15 @@
         "label": "Lingua UI",
         "options": {
           "system": "Sistema ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Selettore aggiuntivo:",
+        "hint": "Scegli quale selettore aggiuntivo mostrare prima del download.",
+        "options": {
+          "none": "Nessuno",
+          "encodings": "Codifiche",
+          "tracks": "Tracce"
         }
       }
     },
@@ -749,10 +821,6 @@
         "shortMessage": "È richiesto l'accesso",
         "message": "Per visualizzare questo contenuto è necessario accedere."
       },
-      "signInRequiredForBotDetection": {
-        "shortMessage": "È richiesto l'accesso",
-        "message": "Accedi per confermare che non sei un bot."
-      },
       "membersOnly": {
         "shortMessage": "Riservato ai membri",
         "message": "Questo video è disponibile solo per gli abbonati al canale."
@@ -812,6 +880,10 @@
       "unableToConnectToProxy": {
         "shortMessage": "Connessione al proxy non riuscita",
         "message": "Impossibile connettersi al proxy. Controlla le impostazioni proxy."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "È richiesto l'accesso",
+        "message": "Accedi per confermare che non sei un bot."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist non disponibile",

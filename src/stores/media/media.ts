@@ -94,6 +94,9 @@ export const useMediaStore = defineStore('media', () => {
       isCombined: false,
       url,
       audioCodecs: [],
+      videoCodecs: [],
+      audioTracks: [],
+      videoTracks: [],
       formats: [],
       filesize: 0,
       fromShortcut,
@@ -103,6 +106,9 @@ export const useMediaStore = defineStore('media', () => {
           isLeader: true,
           url,
           audioCodecs: [],
+          videoCodecs: [],
+          audioTracks: [],
+          videoTracks: [],
           formats: [],
           filesize: 0,
         },
@@ -123,6 +129,16 @@ export const useMediaStore = defineStore('media', () => {
 
     const items: MediaItem[] = Object.values(group.items);
     const itemsWithoutLeader: MediaItem[] = items.filter(item => !item.entries && stateStore.getState(item.id) !== MediaState.done);
+    const encodings = optionsStore.getEncodings(groupId);
+    const tracks = optionsStore.getTracks(groupId);
+    const overrides = optionsStore.getOverrides(groupId);
+    const resolvedOptions: DownloadOptions = {
+      ...options,
+      audioEncoding: encodings?.audio,
+      videoEncoding: encodings?.video,
+      audioTrack: tracks?.audio,
+      videoTrack: tracks?.video,
+    };
 
     if (itemsWithoutLeader.length === 0) return;
 
@@ -137,7 +153,8 @@ export const useMediaStore = defineStore('media', () => {
         items: itemsWithoutLeader.map(item => ({
           id: item.id,
           url: item.url,
-          format: options,
+          format: resolvedOptions,
+          overrides,
           templateContext: {
             values: buildTemplateContext(item, group),
           },

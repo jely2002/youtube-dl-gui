@@ -1,14 +1,12 @@
-use crate::models::download::FormatOptions;
+use crate::models::download::{DownloadOverrides, FormatOptions};
 use crate::models::DownloadItem;
 use crate::runners::template_context::TemplateContext;
 use crate::runners::ytdlp_download::{run_ytdlp_download, YtdlpDownloadError};
 use crate::scheduling::concurrency::DynamicSemaphore;
 use crate::scheduling::dispatcher::{DispatchEntry, DispatchRequest, GenericDispatcher};
+use std::collections::HashMap;
 use std::sync::LazyLock;
-use std::{
-  collections::HashMap,
-  sync::{Arc, Mutex},
-};
+use std::sync::{Arc, Mutex};
 use tauri::AppHandle;
 use tokio::sync::mpsc::UnboundedSender;
 
@@ -29,6 +27,7 @@ pub struct DownloadEntry {
   pub id: String,
   pub url: String,
   pub format: FormatOptions,
+  pub overrides: Option<DownloadOverrides>,
   pub template_context: TemplateContext,
 }
 
@@ -39,6 +38,7 @@ impl From<(DownloadItem, String)> for DownloadEntry {
       id: item.0.id,
       url: item.0.url,
       format: item.0.format,
+      overrides: item.0.overrides,
       template_context: item.0.template_context,
     }
   }

@@ -25,6 +25,7 @@ pub struct YtdlpInfo {
   pub filesize: Option<i64>,
   pub filesize_approx: Option<i64>,
   pub playlist_count: Option<i64>,
+  pub chapters: Option<Vec<YtdlpChapter>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -43,10 +44,22 @@ pub struct YtdlpEntry {
 #[derive(Debug, Deserialize)]
 pub struct YtdlpFormat {
   pub format_id: Option<String>,
+  pub format: Option<String>,
+  pub format_note: Option<String>,
   pub height: Option<i64>,
   pub fps: Option<f64>,
   pub abr: Option<f64>,
+  pub audio_channels: Option<f64>,
+  pub language: Option<String>,
+  pub language_preference: Option<i64>,
   pub ext: Option<String>,
   pub vcodec: Option<String>,
   pub acodec: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct YtdlpChapter {
+  pub title: Option<String>,
+  pub start_time: Option<f64>,
+  pub end_time: Option<f64>,
 }

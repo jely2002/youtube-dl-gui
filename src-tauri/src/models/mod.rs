@@ -6,7 +6,9 @@ pub mod progress;
 pub mod ytdlp;
 
 pub use download::{DownloadItem, TrackType};
-pub use parsed::{MediaFormat, ParsedMedia, ParsedPlaylist, ParsedSingleVideo, PlaylistEntry};
+pub use parsed::{
+  Chapter, MediaFormat, MediaTrack, ParsedMedia, ParsedPlaylist, ParsedSingleVideo, PlaylistEntry,
+};
 pub use payloads::{MediaAddPayload, MediaDiagnosticPayload, MediaFatalPayload};
 pub use progress::{
   MediaDestination, MediaProgress, MediaProgressComplete, MediaProgressStage, ProgressCategory,

@@ -3,12 +3,15 @@ name: 'Distribute'
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   distribute-windows:
     runs-on: windows-latest
     steps:
       - name: Checkout release branch for current package.json
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: release
       - name: Update winget manifest

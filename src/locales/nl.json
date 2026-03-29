@@ -13,7 +13,7 @@
     "enable": "Inschakelen",
     "pleaseWait": "Even geduld…",
     "loading": "Laden",
-    "emptySearch": "No results found.",
+    "emptySearch": "Geen resultaten gevonden.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
     "video": "video",
@@ -153,7 +153,8 @@
         "uploader": "Uploader:",
         "extractor": "Extractor:",
         "link": "Link:",
-        "description": "Beschrijving:"
+        "chapters": "Hoofdstukken",
+        "description": "Beschrijving"
       },
       "stats": {
         "title": "Videostatistieken",
@@ -184,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Overschrijven"
+      },
+      "labels": {
+        "quality": "Kies voorkeuren voor formaat, codec en tracks.",
+        "network": "Stel proxy, impersonatie en requestheaders in. Overschrijft de standaardinstellingen van de app voor deze download.",
+        "output": "Stel container, conversie en bestandsnaamsjablonen in. Overschrijft de standaardinstellingen van de app voor deze download.",
+        "headersOverride": "Eén per regel: VELD:WAARDE. Vervangt de globale headers voor deze download."
+      },
+      "hints": {
+        "format": "Kies video- of audiokwaliteit. Hogere kwaliteit betekent meestal grotere bestanden en langere downloads.",
+        "encodings": "Kies codecs met voorkeur. Handig voor afspeelcompatibiliteit of om de oorspronkelijke kwaliteit te behouden.",
+        "tracks": "Kies taal- of kanaalvarianten wanneer die beschikbaar zijn, bijvoorbeeld nagesynchroniseerde audio."
+      },
+      "tabs": {
+        "quality": "Kwaliteit",
+        "network": "Netwerk"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} van {total}",
@@ -198,6 +219,30 @@
             "noFormats": "Geen opties",
             "placeholder": "Selecteer formaat",
             "screenReader": "Selecteer formaat om de track in te downloaden"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "Geen audiocodecs",
+            "placeholder": "Audiocodec",
+            "screenReader": "Audiocodec kiezen"
+          },
+          "videoSelect": {
+            "noFormats": "Geen videocodecs",
+            "placeholder": "Videocodec",
+            "screenReader": "Videocodec kiezen"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "Geen audiosporen",
+            "placeholder": "Audiospoor",
+            "screenReader": "Audiospoor kiezen"
+          },
+          "videoSelect": {
+            "noFormats": "Geen videosporen",
+            "placeholder": "Videospoor",
+            "screenReader": "Videospoor kiezen"
           }
         },
         "metadata": {
@@ -265,6 +310,7 @@
         "externalUrl": "Bezoek website",
         "retry": "Probeer download opnieuw",
         "download": "Los downloaden",
+        "preferences": "Downloadvoorkeuren",
         "metadata": "Toon meer informatie",
         "pause": "Download pauzeren",
         "resume": "Download hervatten"
@@ -320,7 +366,7 @@
       "vtt": "WebVTT (.vtt)",
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
-      "json": "JSON (.json)"
+      "json3": "JSON (.json)"
     }
   },
   "location": {
@@ -405,7 +451,7 @@
   "settings": {
     "title": "Instellingen",
     "reset": {
-      "label": "Reset",
+      "label": "Resetten",
       "confirm": "Klik nogmaals"
     },
     "performance": {
@@ -447,7 +493,7 @@
       }
     },
     "output": {
-      "legend": "Output",
+      "legend": "Uitvoer",
       "legendLabel": "Stel in welke bestanden je wilt downloaden.",
       "addThumbnail": {
         "label": "Thumbnail insluiten:",
@@ -456,6 +502,23 @@
       "addMetadata": {
         "label": "Titel & artiest opslaan:",
         "hint": "Slaat info zoals titel, uploader/artist en beschrijving op in het bestand."
+      },
+      "partialDownload": {
+        "legend": "Gedeeltelijke download",
+        "hint": "Gebruik timestamps of hoofdstukken om alleen delen te downloaden.",
+        "use": "Gebruik",
+        "useTimes": "Timestamps",
+        "useChapter": "Hoofdstukken",
+        "chapter": "Hoofdstuk",
+        "startAt": "Vanaf",
+        "stopAt": "Tot",
+        "allChapters": "Alle hoofdstukken",
+        "invalidHint": "Ongeldige timestamps worden genegeerd.",
+        "errors": {
+          "invalid": "Voer een geldige tijd in.",
+          "beforeStart": "De eindtijd moet na de starttijd liggen.",
+          "exceedsDuration": "De timestamp mag niet langer dan de totale duur zijn."
+        }
       },
       "location": {
         "label": "Downloadlocatie en bestandsnamen:",
@@ -521,6 +584,15 @@
         "label": "Taal",
         "options": {
           "system": "Systeem ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Extra selector:",
+        "hint": "Kies welke extra selector vóór het downloaden wordt getoond.",
+        "options": {
+          "none": "Geen",
+          "encodings": "Coderingen",
+          "tracks": "Sporen"
         }
       }
     },
@@ -870,7 +942,7 @@
         "message": "De beveiligde verbinding kon niet worden geverifieerd. Controleer je certificaten of datum/tijd."
       },
       "sponsorBlockUnreachable": {
-        "shortMessage": "SponsorBlock offline",
+        "shortMessage": "SponsorBlock niet bereikbaar",
         "message": "Kon geen verbinding maken met de SponsorBlock-API voor segmentgegevens."
       },
       "downloadRetryingFragment": {

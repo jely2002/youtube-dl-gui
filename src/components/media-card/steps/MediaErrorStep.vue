@@ -1,17 +1,23 @@
 <template>
-  <div class="card-body py-0 pr-0 grow w-full min-w-0">
-    <h2 :title="group.title ?? group.url" class="card-title w-full block leading-8 overflow-hidden text-nowrap text-ellipsis text-base">{{ group.title ?? group.url }}</h2>
+  <div class="card-body py-0 pr-0 grow w-full min-w-0 overflow-hidden">
+    <h2
+      :title="group.title ?? group.url"
+      class="card-title w-full block shrink-0 leading-8 overflow-hidden whitespace-nowrap text-ellipsis text-base"
+    >
+      {{ group.title ?? group.url }}
+    </h2>
     <base-progress
-        :id="`${group.id}-progress`"
-        :max="100"
-        :value="100"
-        :style="ProgressStyle.error"
+      :id="`${group.id}-progress`"
+      :max="100"
+      :value="100"
+      :style="ProgressStyle.error"
+      class="shrink-0"
     >
       {{ t('media.steps.error.errorPrefix', { message: diagnosticDisplay.shortMessage }) }}
     </base-progress>
-    <p>{{ diagnosticDisplay.message }}</p>
-    <div class="w-full flex gap-4">
-      <button @click="report" v-if="isReportable" :disabled="hasReported"  class="btn btn-subtle">
+    <p class="min-h-0 overflow-y-auto break-words leading-5">{{ diagnosticDisplay.message }}</p>
+    <div class="w-full flex shrink-0 gap-4">
+      <button @click="report" v-if="isReportable" :disabled="hasReported" class="btn btn-subtle">
         <template v-if="isReporting">
           <span class="sr-only">{{ t('common.loading') }}</span>
           <span class="loading loading-spinner loading-sm"></span>

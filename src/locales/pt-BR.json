@@ -150,10 +150,11 @@
       },
       "thumbnailAlt": "Miniatura para {title}",
       "metadata": {
-        "uploader": "Uploader:",
+        "uploader": "Enviador:",
         "extractor": "Extrator:",
         "link": "Link:",
-        "description": "Descrição:"
+        "chapters": "Capítulos",
+        "description": "Descrição"
       },
       "stats": {
         "title": "Estatísticas de Vídeo",
@@ -184,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Sobrescrever"
+      },
+      "labels": {
+        "quality": "Escolha as preferências de formato, codec e faixas.",
+        "network": "Configure proxy, personificação e cabeçalhos da solicitação. Sobrescreve os padrões do app para este download.",
+        "output": "Configure contêiner, conversão e modelos de nome de arquivo. Sobrescreve os padrões do app para este download.",
+        "headersOverride": "Uma por linha: CAMPO:VALOR. Substitui os cabeçalhos globais para este download."
+      },
+      "hints": {
+        "format": "Escolha a qualidade de vídeo ou áudio. Qualidade mais alta geralmente significa arquivos maiores e downloads mais demorados.",
+        "encodings": "Escolha os codecs preferidos. Útil para compatibilidade de reprodução ou para manter a qualidade original.",
+        "tracks": "Escolha variantes de idioma ou canais quando disponíveis, por exemplo, áudio dublado."
+      },
+      "tabs": {
+        "quality": "Qualidade",
+        "network": "Rede"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} de {total}",
@@ -198,6 +219,30 @@
             "noFormats": "Nenhum formato",
             "placeholder": "Selecione o formato",
             "screenReader": "Selecione o formato da faixa"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "Sem codecs de áudio",
+            "placeholder": "Codec de áudio",
+            "screenReader": "Selecionar codec de áudio"
+          },
+          "videoSelect": {
+            "noFormats": "Sem codecs de vídeo",
+            "placeholder": "Codec de vídeo",
+            "screenReader": "Selecionar codec de vídeo"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "Sem faixas de áudio",
+            "placeholder": "Faixa de áudio",
+            "screenReader": "Selecionar faixa de áudio"
+          },
+          "videoSelect": {
+            "noFormats": "Sem faixas de vídeo",
+            "placeholder": "Faixa de vídeo",
+            "screenReader": "Selecionar faixa de vídeo"
           }
         },
         "metadata": {
@@ -265,6 +310,7 @@
         "externalUrl": "Visitar um URL externo",
         "retry": "Tentar baixar novamente",
         "download": "Baixe individualmente",
+        "preferences": "Preferências de download",
         "metadata": "Mostrar metadados",
         "pause": "Pausar download",
         "resume": "Retomar download"
@@ -320,7 +366,7 @@
       "vtt": "WebVTT (.vtt)",
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
-      "json": "JSON (.json)"
+      "json3": "JSON (.json)"
     }
   },
   "location": {
@@ -457,6 +503,23 @@
         "label": "Adicionar o título e as informações do artista:",
         "hint": "Salve metadados como título, autor/artista e descrição dentro do arquivo."
       },
+      "partialDownload": {
+        "legend": "Download parcial",
+        "hint": "Use timestamps ou capítulos para baixar só algumas partes.",
+        "use": "Usar",
+        "useTimes": "Marcas de tempo",
+        "useChapter": "Capítulos",
+        "chapter": "Capítulo",
+        "startAt": "Início",
+        "stopAt": "Fim",
+        "allChapters": "Todos os capítulos",
+        "invalidHint": "Timestamps inválidos serão ignorados.",
+        "errors": {
+          "invalid": "Digite um horário válido.",
+          "beforeStart": "O fim precisa ser depois do início.",
+          "exceedsDuration": "O timestamp não pode passar da duração do vídeo."
+        }
+      },
       "location": {
         "label": "Local de download e nomes de arquivos:",
         "link": "Configurar locais de download"
@@ -521,6 +584,15 @@
         "label": "Idioma",
         "options": {
           "system": "Sistema ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Seletor adicional:",
+        "hint": "Escolha qual seletor extra será exibido antes do download.",
+        "options": {
+          "none": "Nenhum",
+          "encodings": "Codificações",
+          "tracks": "Faixas"
         }
       }
     },
@@ -870,7 +942,7 @@
         "message": "Não foi possível verificar a conexão segura. Verifique seus certificados ou data/hora."
       },
       "sponsorBlockUnreachable": {
-        "shortMessage": "SponsorBlock offline",
+        "shortMessage": "SponsorBlock indisponível",
         "message": "Não foi possível conectar-se à API do SponsorBlock para obter dados de segmento."
       },
       "downloadRetryingFragment": {

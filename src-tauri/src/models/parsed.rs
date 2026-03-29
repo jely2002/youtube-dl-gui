@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "type")]
+#[allow(clippy::large_enum_variant)]
 pub enum ParsedMedia {
   Single(ParsedSingleVideo),
   Playlist(ParsedPlaylist),
@@ -16,6 +17,26 @@ pub struct MediaFormat {
   pub height: Option<u64>,
   pub fps: Option<u64>,
   pub codecs: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MediaTrack {
+  pub id: String,
+  pub label: String,
+  pub language: Option<String>,
+  pub language_preference: Option<i64>,
+  pub format_note: Option<String>,
+  pub format: Option<String>,
+  pub audio_channels: Option<u64>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Chapter {
+  pub title: String,
+  pub start_time: f64,
+  pub end_time: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -37,7 +58,10 @@ pub struct ParsedSingleVideo {
   pub extractor: Option<String>,
   pub video_codecs: Vec<String>,
   pub audio_codecs: Vec<String>,
+  pub video_tracks: Vec<MediaTrack>,
+  pub audio_tracks: Vec<MediaTrack>,
   pub formats: Vec<MediaFormat>,
+  pub chapters: Vec<Chapter>,
   pub filesize: Option<u64>,
 }
 

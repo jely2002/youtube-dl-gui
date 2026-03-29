@@ -153,7 +153,8 @@
         "uploader": "Uploader:",
         "extractor": "Extractor:",
         "link": "Link:",
-        "description": "Beschreibung:"
+        "chapters": "Kapitel",
+        "description": "Beschreibung"
       },
       "stats": {
         "title": "Videostatistiken",
@@ -184,6 +185,26 @@
         }
       }
     },
+    "preferences": {
+      "badges": {
+        "override": "Überschrieben"
+      },
+      "labels": {
+        "quality": "Format-, Codec- und Spur-Einstellungen auswählen.",
+        "network": "Proxy, Identitätsvortäuschung und Request-Header konfigurieren. Überschreibt die App-Standards für diesen Download.",
+        "output": "Container, Konvertierung und Dateinamen-Vorlagen konfigurieren. Überschreibt die App-Standards für diesen Download.",
+        "headersOverride": "Eine Angabe pro Zeile: FELD:WERT. Ersetzt die globalen Header für diesen Download."
+      },
+      "hints": {
+        "format": "Video- oder Audioqualität auswählen. Höhere Qualität bedeutet meist größere Dateien und längere Downloads.",
+        "encodings": "Bevorzugte Codecs auswählen. Nützlich für bessere Kompatibilität oder zum Erhalt der Originalqualität.",
+        "tracks": "Sprach- oder Kanalvarianten auswählen, wenn verfügbar, zum Beispiel eine synchronisierte Tonspur."
+      },
+      "tabs": {
+        "quality": "Qualität",
+        "network": "Netzwerk"
+      }
+    },
     "steps": {
       "fetch": {
         "progress": "{percentage}% — {done} von {total}",
@@ -198,6 +219,30 @@
             "noFormats": "Keine Formate",
             "placeholder": "Format auswählen",
             "screenReader": "Format der Spur auswählen"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "Keine Audio-Codecs",
+            "placeholder": "Audio-Codec",
+            "screenReader": "Audio-Codec auswählen"
+          },
+          "videoSelect": {
+            "noFormats": "Keine Video-Codecs",
+            "placeholder": "Video-Codec",
+            "screenReader": "Video-Codec auswählen"
+          }
+        },
+        "tracks": {
+          "audioSelect": {
+            "noFormats": "Keine Audiospuren",
+            "placeholder": "Audiospur",
+            "screenReader": "Audiospur auswählen"
+          },
+          "videoSelect": {
+            "noFormats": "Keine Videospuren",
+            "placeholder": "Videospur",
+            "screenReader": "Videospur auswählen"
           }
         },
         "metadata": {
@@ -265,6 +310,7 @@
         "externalUrl": "Auf externer URL öffnen",
         "retry": "Download erneut versuchen",
         "download": "Einzeln herunterladen",
+        "preferences": "Download-Einstellungen",
         "metadata": "Metadaten anzeigen",
         "pause": "Download pausieren",
         "resume": "Download fortsetzen"
@@ -320,7 +366,7 @@
       "vtt": "WebVTT (.vtt)",
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
-      "json": "JSON (.json)"
+      "json3": "JSON (.json)"
     }
   },
   "location": {
@@ -457,6 +503,23 @@
         "label": "Titel- und Künstlerinfos hinzufügen:",
         "hint": "Metadaten wie Titel, Uploader/Künstler und Beschreibung in der Datei speichern."
       },
+      "partialDownload": {
+        "legend": "Teilweiser Download",
+        "hint": "Zeitstempel oder Kapitel setzen, um nur Teile herunterzuladen.",
+        "use": "Verwenden",
+        "useTimes": "Zeitstempel",
+        "useChapter": "Kapitel",
+        "chapter": "Kapitel",
+        "startAt": "Start",
+        "stopAt": "Ende",
+        "allChapters": "Alle Kapitel",
+        "invalidHint": "Ungültige Zeitstempel werden ignoriert.",
+        "errors": {
+          "invalid": "Gültige Zeit eingeben.",
+          "beforeStart": "Die Endzeit muss nach der Startzeit liegen.",
+          "exceedsDuration": "Der Zeitstempel darf die Videolänge nicht überschreiten."
+        }
+      },
       "location": {
         "label": "Download-Speicherort & Dateinamen:",
         "link": "Download-Speicherorte konfigurieren"
@@ -521,6 +584,15 @@
         "label": "Sprache",
         "options": {
           "system": "System ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Zusätzlicher Selektor:",
+        "hint": "Wähle aus, welcher zusätzliche Selektor vor dem Download angezeigt wird.",
+        "options": {
+          "none": "Keine",
+          "encodings": "Kodierungen",
+          "tracks": "Spuren"
         }
       }
     },

@@ -1,13 +1,18 @@
 <template>
   <header class="p-4 bg-base-300 flex gap-4 justify-center w-full shadow-lg">
-    <form @submit.prevent="submitUrl" class="join w-full max-w-155 grow">
+    <form @submit.prevent="submitUrl" class="join w-full max-w-155 grow" autocomplete="off">
       <input
           v-model="url"
-          id="url-input"
-          name="URL input for video or playlist"
+          id="queue-url-input"
+          name="URL input to queue a video or playlist"
           class="input join-item w-full"
           :placeholder="inputPlaceholder"
           type="text"
+          inputmode="url"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
           ref="input"
       />
       <button

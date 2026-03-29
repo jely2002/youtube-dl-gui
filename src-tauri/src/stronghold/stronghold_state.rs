@@ -1,6 +1,6 @@
 use base64::engine::general_purpose;
 use base64::Engine;
-use rand::RngCore;
+use rand::Rng;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use tauri::{AppHandle, State};
