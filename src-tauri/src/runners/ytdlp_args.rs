@@ -21,11 +21,14 @@ pub fn build_format_args(
       args.push("-x".into());
 
       args.push("-f".into());
-      let acodecs = acodec_filters(output_settings.audio.format);
+      let audio_encoding = format_options
+        .audio_encoding
+        .as_ref()
+        .filter(|value| !value.trim().is_empty());
       let mut selectors = Vec::new();
       if let Some(language) = audio_track_pref.language.as_ref() {
         let langs = language_candidates(language);
-        for &acodec in acodecs {
+        if let Some(acodec) = audio_encoding {
           for lang in &langs {
             selectors.push(format!("ba[acodec^={acodec}][language={lang}]"));
           }
@@ -37,7 +40,7 @@ pub fn build_format_args(
           ]);
         }
       }
-      for &acodec in acodecs {
+      if let Some(acodec) = audio_encoding {
         selectors.push(format!("ba[acodec^={acodec}]"));
       }
       selectors.extend(["ba".into(), "b".into()]);
@@ -165,15 +168,15 @@ pub fn build_format_args(
   args
 }
 
-fn acodec_filters(format: AudioFormat) -> &'static [&'static str] {
-  match format {
-    AudioFormat::M4a | AudioFormat::Aac => &["aac", "mp4a.40."],
-    AudioFormat::Opus => &["opus"],
-    AudioFormat::Ogg => &["ogg", "vorbis"],
-    AudioFormat::Flac | AudioFormat::Wav => &["flac", "wav"],
-    AudioFormat::Mp3 => &["mp3"],
-  }
-}
+// fn acodec_filters(format: AudioFormat) -> &'static [&'static str] {
+//   match format {
+//     AudioFormat::M4a | AudioFormat::Aac => &["aac", "mp4a.40."],
+//     AudioFormat::Opus => &["opus"],
+//     AudioFormat::Ogg => &["ogg", "vorbis"],
+//     AudioFormat::Flac | AudioFormat::Wav => &["flac", "wav"],
+//     AudioFormat::Mp3 => &["mp3"],
+//   }
+// }
 
 #[derive(Debug, Default)]
 struct TrackPreference {
@@ -456,7 +459,7 @@ mod tests {
       vec![
         "-x",
         "-f",
-        "ba[acodec^=aac][language=en]/ba[acodec^=mp4a.40.][language=en]/ba[language=en]/b[language=en]/ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b",
+        "ba[acodec^=aac][language=en]/ba[language=en]/b[language=en]/ba[acodec^=aac]/ba/b",
         "-S",
         "channels:2,abr~128",
       ]
