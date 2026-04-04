@@ -16,11 +16,13 @@
     "emptySearch": "Ничего не найдено.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
+    "availableInResolutions": "Available in",
     "video": "видео",
     "unknown": "неизвестно",
     "confirm": "Подтвердить",
     "best": "Лучшее",
-    "resume": "Возобновить"
+    "resume": "Возобновить",
+    "unavailableForSelectedResolution": "Unavailable for selected resolution"
   },
   "layout": {
     "header": {

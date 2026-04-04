@@ -34,7 +34,18 @@ export type DownloadOptions = {
   videoEncoding?: string;
   audioTrack?: string;
   videoTrack?: string;
+  id?: string;
+  videoCodecs?: MediaCodec[];
+  audioTrackIds?: string[];
+  videoTrackIds?: string[];
 };
+
+export type MediaCodecInfo = {
+  id: string;
+  label: string;
+};
+
+export type MediaCodec = string | MediaCodecInfo;
 
 export type DownloadOverrides = {
   output?: OutputOverrides;
@@ -148,8 +159,8 @@ export interface MediaItem {
   duration?: number;
   rating?: number;
   extractor?: string;
-  audioCodecs: string[];
-  videoCodecs?: string[];
+  audioCodecs: MediaCodec[];
+  videoCodecs?: MediaCodec[];
   audioTracks?: MediaTrack[];
   videoTracks?: MediaTrack[];
   formats: MediaFormat[];
@@ -173,7 +184,9 @@ export interface MediaFormat {
   height?: number;
   abr?: number;
   fps?: number;
-  videoCodecs: string[];
+  videoCodecs: MediaCodec[];
+  audioTrackIds?: string[];
+  videoTrackIds?: string[];
 }
 
 export interface MediaTrack {

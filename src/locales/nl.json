@@ -16,11 +16,13 @@
     "emptySearch": "Geen resultaten gevonden.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
+    "availableInResolutions": "Available in",
     "video": "video",
     "unknown": "onbekend",
     "confirm": "Bevestigen",
     "best": "Beste",
-    "resume": "Hervatten"
+    "resume": "Hervatten",
+    "unavailableForSelectedResolution": "Unavailable for selected resolution"
   },
   "layout": {
     "header": {

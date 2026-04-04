@@ -16,11 +16,13 @@
     "emptySearch": "找不到結果。",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
+    "availableInResolutions": "Available in",
     "video": "影片",
     "unknown": "未知",
     "confirm": "確認",
     "best": "最佳",
-    "resume": "繼續"
+    "resume": "繼續",
+    "unavailableForSelectedResolution": "Unavailable for selected resolution"
   },
   "layout": {
     "header": {

@@ -145,7 +145,12 @@ const trackOptions = computed<SelectOption[]>(() => {
   }));
 });
 
-const BEST_AUDIO_FORMAT: MediaFormat = Object.freeze({ id: 'best', videoCodecs: [] });
+const BEST_AUDIO_FORMAT: MediaFormat = Object.freeze({
+  id: 'best',
+  videoCodecs: [],
+  audioTrackIds: [],
+  videoTrackIds: [],
+});
 
 const formatsByTrackType = computed<Record<TrackType, MediaFormat[]>>(() => {
   const list = formats.value ?? [];
@@ -278,6 +283,8 @@ function matchByDownloadOptions(options: DownloadOptions): MediaFormat | undefin
       return {
         id: 'best',
         videoCodecs: [],
+        audioTrackIds: [],
+        videoTrackIds: [],
       };
     }
     match

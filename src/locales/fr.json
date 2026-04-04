@@ -16,11 +16,13 @@
     "emptySearch": "Aucun résultat trouvé.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
+    "availableInResolutions": "Available in",
     "video": "vidéo",
     "unknown": "inconnu",
     "confirm": "Confirmer",
     "best": "Meilleure",
-    "resume": "Reprendre"
+    "resume": "Reprendre",
+    "unavailableForSelectedResolution": "Unavailable for selected resolution"
   },
   "layout": {
     "header": {

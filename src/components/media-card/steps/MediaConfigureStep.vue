@@ -15,8 +15,8 @@
         v-if="expandedOptionsType === 'encodings'"
         v-model="selectedEncodings"
         :default-value="optionsStore.getGlobalEncodings()"
-        :audio-codecs="group.audioCodecs"
-        :video-codecs="videoCodecs"
+        :audio-options="audioCodecOptions"
+        :video-options="videoCodecOptions"
         :track-type="selectedTrackType"
         class="flex gap-4 w-full col-start-1 col-end-3"
     />
@@ -24,8 +24,8 @@
         v-if="expandedOptionsType === 'tracks'"
         v-model="selectedTracks"
         :default-value="optionsStore.getGlobalTracks()"
-        :audio-tracks="group.audioTracks ?? []"
-        :video-tracks="group.videoTracks ?? []"
+        :audio-options="audioTrackOptions"
+        :video-options="videoTrackOptions"
         :track-type="selectedTrackType"
         class="flex gap-4 w-full col-start-1 col-end-3"
     />
@@ -59,6 +59,7 @@
 import { computed, PropType, ref, watch } from 'vue';
 import { DownloadOptions, EncodingOptions, TrackOptions, TrackType } from '../../../tauri/types/media';
 import { useDuration } from '../../../composables/useDuration';
+import { useMediaResolutionSelection } from '../../../composables/useMediaResolutionSelection';
 import { Size, useMediaSizeStore } from '../../../stores/media/size';
 import { useSettingsStore } from '../../../stores/settings';
 import { formatBytes } from '../../../helpers/units';
@@ -86,6 +87,8 @@ const isSizeLoading = ref(false);
 const optionsStore = useMediaOptionsStore();
 const expandedOptionsType = computed(() => settingsStore.settings.appearance.expandedOptions);
 const showExpandedOptions = computed(() => expandedOptionsType.value === 'encodings' || expandedOptionsType.value === 'tracks');
+const unavailableTrackSuffix = computed(() => t('common.unavailableForSelectedResolution'));
+const availableTrackPrefix = computed(() => t('common.availableInResolutions'));
 
 const failedItemDisplay = computed(() => {
   return group?.errored > 0 ? t('media.steps.configure.metadata.failedCount', { amount: group?.errored }) : '';
@@ -111,17 +114,21 @@ const selectedTracks = computed({
   },
 });
 const selectedTrackType = computed(() => selectedOptions.value?.trackType ?? TrackType.both);
-
-const videoCodecs = computed(() => {
-  const seen = new Set<string>();
-  const deduped: string[] = [];
-  for (const codec of group.videoCodecs ?? []) {
-    const normalized = codec?.trim().toLowerCase();
-    if (!normalized || seen.has(normalized)) continue;
-    seen.add(normalized);
-    deduped.push(codec.trim());
-  }
-  return deduped.sort((a, b) => a.localeCompare(b));
+const {
+  audioCodecOptions,
+  videoCodecOptions,
+  audioTrackOptions,
+  videoTrackOptions,
+} = useMediaResolutionSelection({
+  formats: () => group.formats,
+  audioCodecs: () => group.audioCodecs,
+  videoCodecs: () => group.videoCodecs ?? [],
+  audioTracks: () => group.audioTracks ?? [],
+  videoTracks: () => group.videoTracks ?? [],
+  selectedOptions,
+  approximate: true,
+  unavailableTrackSuffix,
+  availableTrackPrefix,
 });
 
 const size = computed(() => {

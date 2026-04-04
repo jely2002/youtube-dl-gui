@@ -23,8 +23,8 @@
           <media-encoding-options
             v-model="selectedEncodings"
             :default-value="optionsStore.getGlobalEncodings()"
-            :audio-codecs="group.audioCodecs"
-            :video-codecs="videoCodecs"
+            :audio-options="audioCodecOptions"
+            :video-options="videoCodecOptions"
             :track-type="selectedTrackType"
             class="preferences-select flex gap-3 flex-col sm:flex-row"
           />
@@ -36,8 +36,8 @@
           <media-track-options
             v-model="selectedTracks"
             :default-value="optionsStore.getGlobalTracks()"
-            :audio-tracks="group.audioTracks ?? []"
-            :video-tracks="group.videoTracks ?? []"
+            :audio-options="audioTrackOptions"
+            :video-options="videoTrackOptions"
             :track-type="selectedTrackType"
             class="preferences-select flex gap-3 flex-col sm:flex-row"
           />
@@ -58,6 +58,7 @@ import { useMediaOptionsStore } from '../../stores/media/options.ts';
 import { computed, watch } from 'vue';
 import BaseFieldset from '../base/BaseFieldset.vue';
 import { useI18n } from 'vue-i18n';
+import { useMediaResolutionSelection } from '../../composables/useMediaResolutionSelection';
 
 const groupStore = useMediaGroupStore();
 const optionsStore = useMediaOptionsStore();
@@ -92,17 +93,23 @@ const selectedTracks = computed({
   },
 });
 const selectedTrackType = computed(() => selectedOptions.value?.trackType ?? TrackType.both);
-
-const videoCodecs = computed(() => {
-  const seen = new Set<string>();
-  const deduped: string[] = [];
-  for (const codec of group.value?.videoCodecs ?? []) {
-    const normalized = codec?.trim().toLowerCase();
-    if (!normalized || seen.has(normalized)) continue;
-    seen.add(normalized);
-    deduped.push(codec.trim());
-  }
-  return deduped.sort((a, b) => a.localeCompare(b));
+const unavailableTrackSuffix = computed(() => t('common.unavailableForSelectedResolution'));
+const availableTrackPrefix = computed(() => t('common.availableInResolutions'));
+const {
+  audioCodecOptions,
+  videoCodecOptions,
+  audioTrackOptions,
+  videoTrackOptions,
+} = useMediaResolutionSelection({
+  formats: () => group.value?.formats ?? [],
+  audioCodecs: () => group.value?.audioCodecs ?? [],
+  videoCodecs: () => group.value?.videoCodecs ?? [],
+  audioTracks: () => group.value?.audioTracks ?? [],
+  videoTracks: () => group.value?.videoTracks ?? [],
+  selectedOptions,
+  approximate: true,
+  unavailableTrackSuffix,
+  availableTrackPrefix,
 });
 
 watch(selectedOptions, () => {

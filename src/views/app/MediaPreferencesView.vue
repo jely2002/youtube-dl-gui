@@ -6,8 +6,8 @@
       <template v-slot:title>
         <div role="tablist" class="tabs tabs-box flex gap-2">
           <router-link exactActiveClass="tab-active" role="tab" :to="{ name: 'preferences.quality', params: { groupId } }" class="tab">{{ t('media.preferences.tabs.quality') }}</router-link>
-          <router-link exactActiveClass="tab-active" role="tab" :to="{ name: 'preferences.network', params: { groupId } }" class="tab">{{ t('media.preferences.tabs.network') }}</router-link>
           <router-link exactActiveClass="tab-active" role="tab" :to="{ name: 'preferences.output', params: { groupId } }" class="tab">{{ t('settings.output.legend') }}</router-link>
+          <router-link exactActiveClass="tab-active" role="tab" :to="{ name: 'preferences.network', params: { groupId } }" class="tab">{{ t('media.preferences.tabs.network') }}</router-link>
         </div>
       </template>
     </base-sub-nav>

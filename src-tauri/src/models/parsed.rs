@@ -11,12 +11,21 @@ pub enum ParsedMedia {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct MediaCodec {
+  pub id: String,
+  pub label: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MediaFormat {
   pub id: String,
   pub abr: Option<u64>,
   pub height: Option<u64>,
   pub fps: Option<u64>,
-  pub codecs: Vec<String>,
+  pub video_codecs: Vec<MediaCodec>,
+  pub audio_track_ids: Vec<String>,
+  pub video_track_ids: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -56,8 +65,8 @@ pub struct ParsedSingleVideo {
   pub duration: Option<f64>,
   pub rating: Option<f64>,
   pub extractor: Option<String>,
-  pub video_codecs: Vec<String>,
-  pub audio_codecs: Vec<String>,
+  pub video_codecs: Vec<MediaCodec>,
+  pub audio_codecs: Vec<MediaCodec>,
   pub video_tracks: Vec<MediaTrack>,
   pub audio_tracks: Vec<MediaTrack>,
   pub formats: Vec<MediaFormat>,

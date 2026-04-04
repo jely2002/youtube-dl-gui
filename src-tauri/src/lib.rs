@@ -239,6 +239,8 @@ pub fn init_tracing() {
         "tao::platform_impl::platform::event_loop::runner",
         LevelFilter::OFF,
       )
+      .with_target("h2", LevelFilter::OFF)
+      .with_target("hyper_util", LevelFilter::OFF)
       .with_default(tracing_levels()),
   );
 

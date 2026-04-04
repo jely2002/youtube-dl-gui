@@ -16,11 +16,13 @@
     "emptySearch": "Ingen resultater funnet.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
+    "availableInResolutions": "Available in",
     "video": "video",
     "unknown": "ukjent",
     "confirm": "Bekreft",
     "best": "Best",
-    "resume": "Fortsett"
+    "resume": "Fortsett",
+    "unavailableForSelectedResolution": "Unavailable for selected resolution"
   },
   "layout": {
     "header": {
