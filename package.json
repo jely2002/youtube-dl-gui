@@ -74,7 +74,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.1",
     "unzipper": "^0.12.3",
-    "vite": "^8.0.1",
+    "vite": "^8.0.5",
     "vite-plugin-vue-devtools": "^8.1.0",
     "vitest": "4.1.0",
     "vue-eslint-parser": "^10.4.0",
