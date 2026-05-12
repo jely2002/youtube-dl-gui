@@ -501,6 +501,10 @@
         "label": "Coverbild hinzufügen:",
         "hint": "Das Vorschaubild in die Datei einbetten, damit Mediaplayer Grafiken anzeigen können."
       },
+      "saveThumbnail": {
+        "label": "Vorschaubild speichern:",
+        "hint": "Das beste verfügbare Vorschaubild neben der Mediendatei herunterladen."
+      },
       "addMetadata": {
         "label": "Titel- und Künstlerinfos hinzufügen:",
         "hint": "Metadaten wie Titel, Uploader/Künstler und Beschreibung in der Datei speichern."

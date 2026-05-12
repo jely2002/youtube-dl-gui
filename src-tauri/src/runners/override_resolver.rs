@@ -68,6 +68,7 @@ impl ApplyPatch<OutputSettings> for OutputOverrides {
     apply_nested_patch!(self, target, audio);
     apply_copy_patch!(self, target, add_metadata);
     apply_copy_patch!(self, target, add_thumbnail);
+    apply_copy_patch!(self, target, save_thumbnail);
     apply_clone_patch!(self, target, file_name_template);
     apply_clone_patch!(self, target, audio_file_name_template);
     apply_copy_patch!(self, target, restrict_filenames);
@@ -158,6 +159,7 @@ mod tests {
         policy: Some(TranscodePolicy::Never),
       }),
       add_thumbnail: Some(false),
+      save_thumbnail: Some(true),
       ..Default::default()
     };
 
@@ -165,6 +167,7 @@ mod tests {
     assert!(matches!(resolved.video.container, VideoContainer::Mkv));
     assert!(matches!(resolved.video.policy, TranscodePolicy::Never));
     assert!(!resolved.add_thumbnail);
+    assert!(resolved.save_thumbnail);
     assert_eq!(resolved.add_metadata, base.add_metadata);
   }
 
@@ -175,6 +178,7 @@ mod tests {
       resolve_with_patch::<OutputSettings, OutputOverrides>(&base, None);
     assert_eq!(resolved.add_metadata, base.add_metadata);
     assert_eq!(resolved.add_thumbnail, base.add_thumbnail);
+    assert_eq!(resolved.save_thumbnail, base.save_thumbnail);
     assert!(matches!(resolved.video.container, VideoContainer::Mp4));
   }
 

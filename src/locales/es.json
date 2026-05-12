@@ -501,6 +501,10 @@
         "label": "Añadir imagen de portada:",
         "hint": "Incrustar la miniatura dentro del archivo para que los reproductores muestren la carátula."
       },
+      "saveThumbnail": {
+        "label": "Guardar miniatura:",
+        "hint": "Descarga la mejor miniatura disponible junto al archivo multimedia."
+      },
       "addMetadata": {
         "label": "Añadir info de título y artista:",
         "hint": "Guardar metadatos como título, uploader/artista y descripción dentro del archivo."

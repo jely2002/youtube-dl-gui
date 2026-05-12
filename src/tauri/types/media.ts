@@ -67,6 +67,7 @@ export type OutputOverrides = {
   };
   addMetadata?: boolean;
   addThumbnail?: boolean;
+  saveThumbnail?: boolean;
   fileNameTemplate?: string;
   audioFileNameTemplate?: string;
   restrictFilenames?: boolean;

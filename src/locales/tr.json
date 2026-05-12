@@ -502,6 +502,10 @@
         "label": "Kapak görseli ekle:",
         "hint": "Ortam oynatıcıların görseli görüntüleyebilmeleri için küçük resmi dosyanın içine dahil et."
       },
+      "saveThumbnail": {
+        "label": "Küçük resim dosyasını kaydet:",
+        "hint": "Mevcut en iyi küçük resmi medya dosyasının yanına indir."
+      },
       "addMetadata": {
         "label": "Başlık ve sanatçı bilgisi ekle:",
         "hint": "Başlık, yükleyen/sanatçı ve açıklama gibi üstverileri dosyanın içine kaydet."

@@ -501,6 +501,10 @@
         "label": "Thumbnail insluiten:",
         "hint": "Voegt de thumbnail toe als cover-art in het bestand."
       },
+      "saveThumbnail": {
+        "label": "Thumbnailbestand opslaan:",
+        "hint": "Downloadt de beste beschikbare thumbnail naast het mediabestand."
+      },
       "addMetadata": {
         "label": "Titel & artiest opslaan:",
         "hint": "Slaat info zoals titel, uploader/artist en beschrijving op in het bestand."

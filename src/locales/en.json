@@ -501,6 +501,10 @@
         "label": "Add cover image:",
         "hint": "Embed the thumbnail inside the file so media players can display artwork."
       },
+      "saveThumbnail": {
+        "label": "Save thumbnail file:",
+        "hint": "Download the best available thumbnail next to the media file."
+      },
       "addMetadata": {
         "label": "Add title & artist info:",
         "hint": "Save metadata such as title, uploader/artist and description inside the file."

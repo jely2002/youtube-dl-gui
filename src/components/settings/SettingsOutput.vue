@@ -70,6 +70,19 @@
       {{ t('settings.output.addThumbnail.hint') }}
     </p>
 
+    <label class="font-semibold mt-2" for="saveThumbnail">
+      {{ t('settings.output.saveThumbnail.label') }}
+    </label>
+    <input
+        id="saveThumbnail"
+        type="checkbox"
+        v-model="settings.output.saveThumbnail"
+        class="toggle toggle-primary"
+    />
+    <p class="label">
+      {{ t('settings.output.saveThumbnail.hint') }}
+    </p>
+
     <label class="font-semibold mt-2" for="addMetadata">
       {{ t('settings.output.addMetadata.label') }}
     </label>

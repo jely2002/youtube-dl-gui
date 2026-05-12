@@ -501,6 +501,10 @@
         "label": "Adicionar imagem de capa:",
         "hint": "Incorporar a miniatura dentro do arquivo para que os reprodutores de mídia possam exibir a arte."
       },
+      "saveThumbnail": {
+        "label": "Salvar arquivo de miniatura:",
+        "hint": "Baixe a melhor miniatura disponível ao lado do arquivo de mídia."
+      },
       "addMetadata": {
         "label": "Adicionar o título e as informações do artista:",
         "hint": "Salve metadados como título, autor/artista e descrição dentro do arquivo."
