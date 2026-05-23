@@ -482,16 +482,6 @@
         "label": "Videogrootte automatisch laden:"
       }
     },
-    "extractor": {
-      "legend": "Extractor",
-      "legendLabel": "Stel in hoe de app informatie van websites uitleest.",
-      "extractorArgs": {
-        "label": "Extractor-argumenten:",
-        "hint": "Pas de extractor-argumenten voor yt-dlp aan. Eén argument per regel.",
-        "placeholder": "youtube:player_js_variant=main",
-        "flagWarning": "Voer alleen de waarde in. De app voegt --extractor-args automatisch toe."
-      }
-    },
     "input": {
       "legend": "Invoer",
       "legendLabel": "Kies hoe je downloads start in OVD.",

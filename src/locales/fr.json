@@ -482,16 +482,6 @@
         "label": "Charger automatiquement la taille de la vidéo :"
       }
     },
-    "extractor": {
-      "legend": "Extracteur",
-      "legendLabel": "Configurez la manière dont l’application extrait les informations des sites web.",
-      "extractorArgs": {
-        "label": "Arguments d’extracteur :",
-        "hint": "Personnalisez les arguments d’extracteur pour yt-dlp. Un argument par ligne.",
-        "placeholder": "youtube:player_js_variant=main",
-        "flagWarning": "Saisissez uniquement la valeur. L’application ajoute --extractor-args automatiquement."
-      }
-    },
     "input": {
       "legend": "Entrée",
       "legendLabel": "Choisissez comment démarrer le téléchargement avec OVD.",

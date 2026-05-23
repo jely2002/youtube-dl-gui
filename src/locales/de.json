@@ -482,16 +482,6 @@
         "label": "Videogröße automatisch laden:"
       }
     },
-    "extractor": {
-      "legend": "Extractor",
-      "legendLabel": "Lege fest, wie die App Informationen von Websites ausliest.",
-      "extractorArgs": {
-        "label": "Extractor-Argumente:",
-        "hint": "Passe die Extractor-Argumente für yt-dlp an. Ein Argument pro Zeile.",
-        "placeholder": "youtube:player_js_variant=main",
-        "flagWarning": "Nur den Wert eingeben. Die App ergänzt --extractor-args automatisch."
-      }
-    },
     "input": {
       "legend": "Eingabe",
       "legendLabel": "Wähle, wie du mit OVD Downloads startest.",

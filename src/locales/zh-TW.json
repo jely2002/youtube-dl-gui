@@ -482,16 +482,6 @@
         "label": "自動載入影片大小:"
       }
     },
-    "extractor": {
-      "legend": "擷取器",
-      "legendLabel": "設定應用程式如何從網站擷取資訊。",
-      "extractorArgs": {
-        "label": "擷取器參數:",
-        "hint": "自訂 yt-dlp 的擷取器參數。每行一個參數。",
-        "placeholder": "youtube:player_js_variant=main",
-        "flagWarning": "只需輸入值。應用程式會自動加入 --extractor-args。"
-      }
-    },
     "input": {
       "legend": "輸入",
       "legendLabel": "選擇使用 OVD 開始下載的方式。",
