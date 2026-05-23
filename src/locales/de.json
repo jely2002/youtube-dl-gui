@@ -654,6 +654,12 @@
           "none": "Nicht impersonieren",
           "any": "Zufälligen Client impersonieren"
         }
+      },
+      "extractorArgs": {
+        "label": "Extractor-Argumente:",
+        "hint": "Passe die Extractor-Argumente für yt-dlp an. Ein Argument pro Zeile.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Nur den Wert eingeben. Die App ergänzt --extractor-args automatisch."
       }
     },
     "sponsorBlock": {

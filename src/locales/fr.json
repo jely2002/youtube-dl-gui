@@ -654,6 +654,12 @@
           "none": "Ne pas simuler",
           "any": "Simuler un client aléatoire"
         }
+      },
+      "extractorArgs": {
+        "label": "Arguments d’extracteur :",
+        "hint": "Personnalisez les arguments d’extracteur pour yt-dlp. Un argument par ligne.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Saisissez uniquement la valeur. L’application ajoute --extractor-args automatiquement."
       }
     },
     "sponsorBlock": {

@@ -108,6 +108,11 @@ impl<'a> YtdlpRunner<'a> {
       }
     }
 
+    if let Some(extractor_args) = normalize_extractor_args(&network.extractor_args) {
+      self.args.push("--extractor-args".into());
+      self.args.push(extractor_args);
+    }
+
     self
   }
 
@@ -434,6 +439,20 @@ fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {
   Some(args)
 }
 
+fn normalize_extractor_args(value: &str) -> Option<String> {
+  let normalized = value
+    .lines()
+    .map(str::trim)
+    .filter(|line| !line.is_empty())
+    .collect::<Vec<_>>()
+    .join(" ");
+  if normalized.is_empty() {
+    None
+  } else {
+    Some(normalized)
+  }
+}
+
 fn build_sponsorblock_args(settings: &SponsorBlockSettings) -> Vec<String> {
   let mut args = Vec::new();
 
@@ -552,7 +571,7 @@ fn has_subtitle_language_pattern_syntax(language: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-  use super::{build_sponsorblock_args, build_subtitle_args};
+  use super::{build_sponsorblock_args, build_subtitle_args, normalize_extractor_args};
   use crate::state::config_models::{SponsorBlockSettings, SubtitleSettings};
 
   #[test]
@@ -656,6 +675,30 @@ mod tests {
     };
     let args = build_subtitle_args(&settings).expect("args");
     assert_eq!(args[7], "en.*,-live_chat");
+  }
+
+  #[test]
+  fn extractor_args_empty_returns_none() {
+    assert_eq!(normalize_extractor_args(""), None);
+    assert_eq!(normalize_extractor_args("   "), None);
+  }
+
+  #[test]
+  fn extractor_args_trim_whitespace() {
+    assert_eq!(
+      normalize_extractor_args(" youtube:player_js_variant=main "),
+      Some("youtube:player_js_variant=main".into())
+    );
+  }
+
+  #[test]
+  fn extractor_args_join_non_empty_lines_with_spaces() {
+    assert_eq!(
+      normalize_extractor_args(
+        " youtube:player_js_variant=main \n\n youtube:skip=hls,dash \r\n generic:impersonate"
+      ),
+      Some("youtube:player_js_variant=main youtube:skip=hls,dash generic:impersonate".into())
+    );
   }
 
   #[test]

@@ -654,6 +654,12 @@
           "none": "Не имперсонировать",
           "any": "Случайный клиент"
         }
+      },
+      "extractorArgs": {
+        "label": "Аргументы экстрактора:",
+        "hint": "Настройте аргументы экстрактора для yt-dlp. По одному аргументу на строку.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Введите только значение. Приложение само добавит --extractor-args."
       }
     },
     "sponsorBlock": {

@@ -654,6 +654,12 @@
           "none": "No suplantar",
           "any": "Suplantar un cliente aleatorio"
         }
+      },
+      "extractorArgs": {
+        "label": "Argumentos del extractor:",
+        "hint": "Personaliza los argumentos del extractor para yt-dlp. Un argumento por línea.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Introduce solo el valor. La app añade --extractor-args automáticamente."
       }
     },
     "sponsorBlock": {

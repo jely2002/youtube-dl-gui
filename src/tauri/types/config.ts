@@ -29,6 +29,7 @@ export interface NetworkSettings {
   enableProxy: boolean | null;
   proxy: string | null;
   impersonate: string;
+  extractorArgs: string;
 }
 
 export interface VideoOutputSettings {
@@ -158,6 +159,7 @@ export const defaultNetworkSettings: NetworkSettings = {
   enableProxy: false,
   proxy: null,
   impersonate: 'none',
+  extractorArgs: '',
 };
 
 export const defaultInputSettings: InputSettings = {

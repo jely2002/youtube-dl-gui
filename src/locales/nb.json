@@ -654,6 +654,12 @@
           "none": "Ikke impersoner",
           "any": "Impersoner en tilfeldig klient"
         }
+      },
+      "extractorArgs": {
+        "label": "Ekstraktorargumenter:",
+        "hint": "Tilpass ekstraktorargumentene for yt-dlp. Ett argument per linje.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Skriv bare inn verdien. Appen legger til --extractor-args automatisk."
       }
     },
     "sponsorBlock": {

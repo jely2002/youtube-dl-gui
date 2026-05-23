@@ -618,6 +618,12 @@
           "none": "Non simulare s.o.",
           "any": "Simula un client casuale"
         }
+      },
+      "extractorArgs": {
+        "label": "Argomenti estrattore:",
+        "hint": "Personalizza gli argomenti dell'estrattore per yt-dlp. Un argomento per riga.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Inserisci solo il valore. L'app aggiunge automaticamente --extractor-args."
       }
     },
     "sponsorBlock": {

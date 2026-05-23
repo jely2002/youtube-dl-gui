@@ -654,6 +654,12 @@
           "none": "Niet imiteren",
           "any": "Willekeurige client imiteren"
         }
+      },
+      "extractorArgs": {
+        "label": "Extractor-argumenten:",
+        "hint": "Pas de extractor-argumenten voor yt-dlp aan. Eén argument per regel.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Voer alleen de waarde in. De app voegt --extractor-args automatisch toe."
       }
     },
     "sponsorBlock": {

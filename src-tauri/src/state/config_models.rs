@@ -46,6 +46,7 @@ pub struct NetworkSettings {
   pub enable_proxy: Option<bool>,
   pub proxy: Option<String>,
   pub impersonate: String,
+  pub extractor_args: String,
 }
 
 impl Default for NetworkSettings {
@@ -54,6 +55,7 @@ impl Default for NetworkSettings {
       enable_proxy: None,
       proxy: None,
       impersonate: "none".into(),
+      extractor_args: String::new(),
     }
   }
 }

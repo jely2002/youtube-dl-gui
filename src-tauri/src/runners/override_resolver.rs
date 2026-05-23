@@ -89,6 +89,7 @@ impl ApplyPatch<NetworkSettings> for NetworkOverrides {
       target.proxy = Some(proxy.clone());
     }
     apply_clone_patch!(self, target, impersonate);
+    apply_clone_patch!(self, target, extractor_args);
   }
 }
 
