@@ -14,6 +14,7 @@ import MediaPreferencesView from './views/app/MediaPreferencesView.vue';
 import TheDownloadPreferences from './components/media-view/TheDownloadPreferences.vue';
 import TheNetworkPreferences from './components/media-view/TheNetworkPreferences.vue';
 import TheOutputPreferences from './components/media-view/TheOutputPreferences.vue';
+import TheSubtitlePreferences from './components/media-view/TheSubtitlePreferences.vue';
 import SettingsAboutTab from './views/app/settings/SettingsAboutTab.vue';
 import SettingsAppTab from './views/app/settings/SettingsAppTab.vue';
 import SettingsDownloadsTab from './views/app/settings/SettingsDownloadsTab.vue';
@@ -149,6 +150,13 @@ const routes = [
             path: 'output',
             name: 'preferences.output',
             component: TheOutputPreferences,
+            props: true,
+            meta: { index: 1 },
+          },
+          {
+            path: 'subtitles',
+            name: 'preferences.subtitles',
+            component: TheSubtitlePreferences,
             props: true,
             meta: { index: 1 },
           },

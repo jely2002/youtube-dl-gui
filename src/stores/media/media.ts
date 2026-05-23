@@ -154,6 +154,7 @@ export const useMediaStore = defineStore('media', () => {
           id: item.id,
           url: item.url,
           format: resolvedOptions,
+          subtitleInventory: item.subtitleInventory,
           overrides,
           templateContext: {
             values: buildTemplateContext(item, group),

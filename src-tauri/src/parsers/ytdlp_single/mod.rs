@@ -10,14 +10,19 @@ mod test_support;
 #[cfg(test)]
 mod tests;
 
-use crate::models::{ParsedMedia, ParsedSingleVideo, YtdlpInfo};
+use crate::models::{ParsedMedia, ParsedSingleVideo, SubtitleInventory, YtdlpInfo};
 use chapters::process_chapters;
 use formats::{process_formats, ProcessedFormats};
 use tracks::auto_track;
+use std::collections::{HashMap, HashSet};
 
 pub(crate) use common::i64_to_u64;
 
 pub fn parse_single(info: YtdlpInfo, id: String) -> ParsedMedia {
+  let subtitle_inventory = parse_subtitle_inventory(
+    info.subtitles.as_ref(),
+    info.automatic_captions.as_ref(),
+  );
   let ProcessedFormats {
     video_codecs,
     audio_codecs,
@@ -72,6 +77,44 @@ pub fn parse_single(info: YtdlpInfo, id: String) -> ParsedMedia {
     video_tracks,
     audio_tracks,
     formats: media_formats,
+    subtitle_inventory,
     chapters: process_chapters(info.chapters.as_deref()),
   })
+}
+
+fn parse_subtitle_inventory(
+  manual: Option<&HashMap<String, Vec<crate::models::ytdlp::YtdlpSubtitle>>>,
+  automatic: Option<&HashMap<String, Vec<crate::models::ytdlp::YtdlpSubtitle>>>,
+) -> SubtitleInventory {
+  SubtitleInventory {
+    manual_languages: collect_subtitle_languages(manual),
+    auto_languages: collect_subtitle_languages(automatic),
+  }
+}
+
+fn collect_subtitle_languages(
+  subtitles: Option<&HashMap<String, Vec<crate::models::ytdlp::YtdlpSubtitle>>>,
+) -> Vec<String> {
+  let Some(subtitles) = subtitles else {
+    return Vec::new();
+  };
+
+  let mut seen = HashSet::new();
+  let mut languages = Vec::new();
+
+  for (language, tracks) in subtitles {
+    let normalized = language.trim().to_ascii_lowercase();
+    if normalized.is_empty() || tracks.is_empty() {
+      continue;
+    }
+    if tracks.iter().all(|track| track.ext.as_deref().is_none_or(str::is_empty)) {
+      continue;
+    }
+    if seen.insert(normalized.clone()) {
+      languages.push(normalized);
+    }
+  }
+
+  languages.sort();
+  languages
 }

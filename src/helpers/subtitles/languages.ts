@@ -31,6 +31,51 @@ export const languageOptionsLookup = new Map(
   languageOptions.map(option => [option.code, option] as const),
 );
 
+export function getSubtitleLanguageLabel(code: string): string {
+  const trimmed = code.trim();
+  if (!trimmed) {
+    return code;
+  }
+
+  const normalized = trimmed.replace('_', '-');
+  const lower = normalized.toLowerCase();
+  const isOrig = lower.endsWith('-orig');
+  const base = isOrig ? normalized.slice(0, -5) : normalized;
+  const exact = languageOptionsLookup.get(base)
+    || languageOptionsLookup.get(base.toLowerCase());
+  const label = exact?.englishName ?? normalized.toUpperCase();
+
+  return isOrig ? `${label} (Original audio)` : label;
+}
+
+export function getPreferredAutoSubtitleLanguages(codes: string[]): string[] {
+  const groups = new Map<string, { plain?: string; orig?: string }>();
+
+  for (const code of codes) {
+    const trimmed = code.trim();
+    if (!trimmed) continue;
+
+    const normalized = trimmed.replace('_', '-');
+    const lower = normalized.toLowerCase();
+    const isOrig = lower.endsWith('-orig');
+    const base = (isOrig ? normalized.slice(0, -5) : normalized).toLowerCase();
+    const existing = groups.get(base) ?? {};
+
+    if (isOrig) existing.orig = lower;
+    else existing.plain = lower;
+
+    groups.set(base, existing);
+  }
+
+  const hasOrigVariant = [...groups.values()].some(value => value.orig);
+
+  return [...groups.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .filter(([, value]) => !hasOrigVariant || value.orig)
+    .map(([, value]) => value.plain ?? value.orig!)
+    .filter(Boolean);
+}
+
 export function detectBrowserLanguageCodes(): string[] {
   let candidates = navigator?.languages ?? [];
   if (candidates.length === 0) {

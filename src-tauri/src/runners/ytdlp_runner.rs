@@ -1,4 +1,5 @@
 use crate::models::download::{DownloadOverrides, FormatOptions};
+use crate::models::SubtitleInventory;
 use crate::models::TrackType;
 use crate::paths::PathsManager;
 use crate::runners::override_resolver::resolve_with_patch;
@@ -11,7 +12,7 @@ use crate::state::config_models::{AuthSettings, Config, SponsorBlockSettings, Su
 use crate::state::preferences_models::Preferences;
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::io;
 use std::io::{BufReader, Read};
 use std::path::PathBuf;
@@ -143,12 +144,21 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
-  pub fn with_subtitle_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
+  pub fn with_subtitle_args(
+    mut self,
+    overrides: Option<&DownloadOverrides>,
+    subtitle_inventory: Option<&SubtitleInventory>,
+  ) -> Self {
+    let subtitle_overrides = overrides.and_then(|value| value.subtitles.as_ref());
     let subtitle_settings = resolve_with_patch(
       &self.cfg.subtitles,
-      overrides.and_then(|value| value.subtitles.as_ref()),
+      subtitle_overrides,
     );
-    if let Some(subtitle_args) = build_subtitle_args(&subtitle_settings) {
+    if let Some(subtitle_args) = build_subtitle_args(
+      &subtitle_settings,
+      subtitle_overrides,
+      subtitle_inventory,
+    ) {
       self.args.extend(subtitle_args);
     }
 
@@ -408,10 +418,18 @@ fn spawn_reader<R: io::Read + Send + 'static>(
   });
 }
 
-fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {
+fn build_subtitle_args(
+  settings: &SubtitleSettings,
+  overrides: Option<&crate::models::download::SubtitleOverrides>,
+  subtitle_inventory: Option<&SubtitleInventory>,
+) -> Option<Vec<String>> {
   if !settings.enabled {
     return None;
   }
+
+  let Some(resolution) = resolve_subtitle_request(settings, overrides, subtitle_inventory) else {
+    return None;
+  };
 
   let mut args = vec!["--write-subs".into()];
 
@@ -424,7 +442,7 @@ fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {
     args.push("--no-embed-subs".into());
   }
 
-  if settings.include_auto_generated {
+  if resolution.include_auto_generated {
     args.push("--write-auto-subs".into());
   }
 
@@ -432,9 +450,8 @@ fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {
   args.push("--sub-format".into());
   args.push(formats.join("/"));
 
-  let languages = sanitize_subtitle_languages(&settings.languages);
   args.push("--sub-langs".into());
-  args.push(languages.join(","));
+  args.push(resolution.languages.join(","));
 
   Some(args)
 }
@@ -478,7 +495,15 @@ fn build_sponsorblock_args(settings: &SponsorBlockSettings) -> Vec<String> {
 fn sanitize_subtitle_formats(formats: &[String]) -> Vec<String> {
   const DEFAULT_FORMATS: [&str; 5] = ["srt", "vtt", "ass", "ttml", "json3"];
 
-  let normalized_inputs = sanitize_vec(formats);
+  let normalized_inputs = sanitize_vec(formats)
+    .into_iter()
+    .map(|value| if value == "json" { "json3".to_string() } else { value })
+    .fold(Vec::new(), |mut acc, value| {
+      if !acc.contains(&value) {
+        acc.push(value);
+      }
+      acc
+    });
 
   let primary = normalized_inputs
     .iter()
@@ -515,13 +540,6 @@ fn sanitize_subtitle_formats(formats: &[String]) -> Vec<String> {
 }
 
 fn sanitize_subtitle_languages(languages: &[String]) -> Vec<String> {
-  if languages
-    .iter()
-    .any(|language| language.trim().eq_ignore_ascii_case("all"))
-  {
-    return vec!["all".into()];
-  }
-
   let mut sanitized = sanitize_vec(languages);
 
   if sanitized.is_empty() {
@@ -529,15 +547,6 @@ fn sanitize_subtitle_languages(languages: &[String]) -> Vec<String> {
   }
 
   sanitized
-    .into_iter()
-    .map(|language| {
-      if has_subtitle_language_pattern_syntax(&language) {
-        language
-      } else {
-        format!("{language}.*")
-      }
-    })
-    .collect()
 }
 
 fn sanitize_vec(items: &[String]) -> Vec<String> {
@@ -559,29 +568,238 @@ fn sanitize_vec(items: &[String]) -> Vec<String> {
   sanitized
 }
 
-fn has_subtitle_language_pattern_syntax(language: &str) -> bool {
-  language.starts_with('-')
-    || language.chars().any(|ch| {
-      matches!(
-        ch,
-        '*' | '[' | ']' | '(' | ')' | '?' | '+' | '{' | '}' | '|' | '^' | '$' | '\\' | ':' | ','
-      )
+struct ResolvedSubtitleRequest {
+  languages: Vec<String>,
+  include_auto_generated: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct AutoLanguagePreference {
+  request: String,
+  base: String,
+}
+
+fn resolve_subtitle_request(
+  settings: &SubtitleSettings,
+  overrides: Option<&crate::models::download::SubtitleOverrides>,
+  subtitle_inventory: Option<&SubtitleInventory>,
+) -> Option<ResolvedSubtitleRequest> {
+  let inventory = subtitle_inventory?;
+  let manual = sanitize_vec(&inventory.manual_languages);
+  let automatic = sanitize_vec(&inventory.auto_languages);
+  let preferred_automatic = preferred_auto_languages(&automatic);
+
+  if let Some(overrides) = overrides {
+    let has_source_specific_languages
+      = overrides.manual_languages.is_some() || overrides.auto_languages.is_some();
+    if has_source_specific_languages {
+      let manual_languages = resolve_manual_override_languages(
+        overrides.manual_languages.as_deref().unwrap_or(&[]),
+        &manual,
+      );
+      let auto_languages = resolve_auto_override_languages(
+        overrides.auto_languages.as_deref().unwrap_or(&[]),
+        &preferred_automatic,
+      );
+      let languages = available_subtitle_languages(&manual_languages, &auto_languages);
+      if languages.is_empty() {
+        return None;
+      }
+
+      return Some(ResolvedSubtitleRequest {
+        languages,
+        include_auto_generated: !auto_languages.is_empty(),
+      });
+    }
+  }
+
+  let requested = sanitize_subtitle_languages(&settings.languages);
+  let wants_all = requested.iter().any(|language| language == "all");
+  let manual_languages = if wants_all {
+    manual.clone()
+  } else {
+    let manual_set = manual
+      .iter()
+      .map(|language| subtitle_language_base(language))
+      .collect::<HashSet<_>>();
+    requested
+      .iter()
+      .filter(|language| manual_set.contains(&subtitle_language_base(language)))
+      .cloned()
+      .collect::<Vec<_>>()
+  };
+  let auto_languages = if settings.include_auto_generated {
+    if wants_all {
+      preferred_automatic
+        .iter()
+        .map(|language| language.request.clone())
+        .collect::<Vec<_>>()
+    } else {
+      resolve_auto_subtitle_languages(&requested, &preferred_automatic)
+    }
+  } else {
+    Vec::new()
+  };
+
+  let safe_for_auto = !auto_languages.is_empty() && {
+    let manual_bases = subtitle_language_bases(&manual_languages);
+    let auto_bases = subtitle_language_bases(&auto_languages);
+    manual_bases.is_empty() || manual_bases == auto_bases
+  };
+  let languages = if safe_for_auto {
+    available_subtitle_languages(&manual_languages, &auto_languages)
+  } else {
+    manual_languages
+  };
+
+  if languages.is_empty() {
+    None
+  } else {
+    Some(ResolvedSubtitleRequest {
+      languages,
+      include_auto_generated: safe_for_auto,
     })
+  }
+}
+
+fn resolve_manual_override_languages(requested: &[String], available: &[String]) -> Vec<String> {
+  let requested = sanitize_subtitle_languages(requested);
+  if requested.iter().any(|language| language == "all") {
+    return available.to_vec();
+  }
+
+  let available_set = available
+    .iter()
+    .map(|language| subtitle_language_base(language))
+    .collect::<HashSet<_>>();
+  requested
+    .iter()
+    .filter(|language| available_set.contains(&subtitle_language_base(language)))
+    .cloned()
+    .collect()
+}
+
+fn resolve_auto_override_languages(
+  requested: &[String],
+  preferred_automatic: &[AutoLanguagePreference],
+) -> Vec<String> {
+  let requested = sanitize_subtitle_languages(requested);
+  if requested.iter().any(|language| language == "all") {
+    return preferred_automatic
+      .iter()
+      .map(|language| language.request.clone())
+      .collect();
+  }
+
+  resolve_auto_subtitle_languages(&requested, preferred_automatic)
+}
+
+fn available_subtitle_languages(manual: &[String], automatic: &[String]) -> Vec<String> {
+  let mut seen = HashSet::new();
+  let mut available = Vec::new();
+
+  for language in manual.iter().chain(automatic.iter()) {
+    if seen.insert(language.clone()) {
+      available.push(language.clone());
+    }
+  }
+
+  available
+}
+
+fn resolve_auto_subtitle_languages(
+  requested: &[String],
+  automatic: &[AutoLanguagePreference],
+) -> Vec<String> {
+  let automatic_by_base = automatic
+    .iter()
+    .map(|language| (language.base.clone(), language.request.clone()))
+    .collect::<HashMap<_, _>>();
+  let mut resolved = Vec::new();
+  let mut seen = HashSet::new();
+
+  for language in requested {
+    let Some(candidate) = automatic_by_base.get(&subtitle_language_base(language)).cloned() else {
+      continue;
+    };
+
+    if seen.insert(candidate.clone()) {
+      resolved.push(candidate);
+    }
+  }
+
+  resolved
+}
+
+fn preferred_auto_languages(automatic: &[String]) -> Vec<AutoLanguagePreference> {
+  let mut grouped = HashMap::<String, (Option<String>, Option<String>)>::new();
+
+  for language in automatic {
+    let base = subtitle_language_base(language);
+    let entry = grouped.entry(base).or_insert((None, None));
+    if language.ends_with("-orig") {
+      entry.1 = Some(language.clone());
+    } else {
+      entry.0 = Some(language.clone());
+    }
+  }
+
+  let has_orig_variant = grouped.values().any(|(_, orig)| orig.is_some());
+
+  let mut preferred = grouped
+    .into_iter()
+    .filter(|(_, (_, orig))| !has_orig_variant || orig.is_some())
+    .map(|(base, (plain, orig))| AutoLanguagePreference {
+      request: plain.or(orig).expect("auto language group should not be empty"),
+      base,
+    })
+    .collect::<Vec<_>>();
+  preferred.sort_by(|left, right| left.base.cmp(&right.base));
+  preferred
+}
+
+fn subtitle_language_base(language: &str) -> String {
+  language
+    .trim()
+    .trim_end_matches("-orig")
+    .to_ascii_lowercase()
+}
+
+fn subtitle_language_bases(languages: &[String]) -> Vec<String> {
+  let mut seen = HashSet::new();
+  let mut bases = Vec::new();
+
+  for language in languages {
+    let base = subtitle_language_base(language);
+    if seen.insert(base.clone()) {
+      bases.push(base);
+    }
+  }
+
+  bases
 }
 
 #[cfg(test)]
 mod tests {
   use super::{build_sponsorblock_args, build_subtitle_args, normalize_extractor_args};
+  use crate::models::SubtitleInventory;
   use crate::state::config_models::{SponsorBlockSettings, SubtitleSettings};
+
+  fn inventory(manual: &[&str], automatic: &[&str]) -> SubtitleInventory {
+    SubtitleInventory {
+      manual_languages: manual.iter().map(|value| (*value).to_string()).collect(),
+      auto_languages: automatic.iter().map(|value| (*value).to_string()).collect(),
+    }
+  }
 
   #[test]
   fn subtitles_disabled_returns_none() {
     let settings = SubtitleSettings::default();
-    assert!(build_subtitle_args(&settings).is_none());
+    assert!(build_subtitle_args(&settings, None, Some(&inventory(&["en"], &[]))).is_none());
   }
 
   #[test]
-  fn subtitles_enabled_uses_defaults_when_empty() {
+  fn subtitles_enabled_uses_defaults_when_available() {
     let mut settings = SubtitleSettings {
       enabled: true,
       ..Default::default()
@@ -589,7 +807,7 @@ mod tests {
     settings.languages.clear();
     settings.format_preference.clear();
 
-    let args = build_subtitle_args(&settings).expect("args");
+    let args = build_subtitle_args(&settings, None, Some(&inventory(&["en"], &[]))).expect("args");
     assert_eq!(
       args,
       vec![
@@ -600,7 +818,7 @@ mod tests {
         "--sub-format",
         "srt/vtt/ass/ttml/json3",
         "--sub-langs",
-        "en.*"
+        "en"
       ]
     );
   }
@@ -613,7 +831,7 @@ mod tests {
       include_auto_generated: true,
       ..Default::default()
     };
-    let args = build_subtitle_args(&settings).expect("args");
+    let args = build_subtitle_args(&settings, None, Some(&inventory(&[], &["en"]))).expect("args");
     assert_eq!(
       args,
       vec![
@@ -625,7 +843,7 @@ mod tests {
         "--sub-format",
         "srt/vtt/ass/ttml/json3",
         "--sub-langs",
-        "en.*"
+        "en"
       ]
     );
   }
@@ -640,17 +858,17 @@ mod tests {
       include_auto_generated: true,
     };
 
-    let args = build_subtitle_args(&settings).expect("args");
+    let args =
+      build_subtitle_args(&settings, None, Some(&inventory(&["de"], &["en"]))).expect("args");
     assert_eq!(
       args,
       vec![
         "--write-subs",
         "--no-embed-subs",
-        "--write-auto-subs",
         "--sub-format",
         "srt/vtt/ass/ttml/json3",
         "--sub-langs",
-        "all"
+        "de"
       ]
     );
   }
@@ -662,19 +880,136 @@ mod tests {
       languages: vec![" en ".into(), "EN".into(), "pt-BR".into(), String::new()],
       ..Default::default()
     };
-    let args = build_subtitle_args(&settings).expect("args");
-    assert_eq!(args[7], "en.*,pt-br.*");
+    let args =
+      build_subtitle_args(&settings, None, Some(&inventory(&["en", "pt-br"], &[]))).expect("args");
+    assert_eq!(args[7], "en,pt-br");
   }
 
   #[test]
-  fn subtitles_preserve_existing_patterns() {
+  fn subtitles_normalize_legacy_json_format_to_json3() {
     let settings = SubtitleSettings {
       enabled: true,
-      languages: vec!["en.*".into(), "-live_chat".into()],
+      format_preference: vec!["json".into(), "json3".into()],
       ..Default::default()
     };
-    let args = build_subtitle_args(&settings).expect("args");
-    assert_eq!(args[7], "en.*,-live_chat");
+
+    let args = build_subtitle_args(&settings, None, Some(&inventory(&["en"], &[]))).expect("args");
+    assert_eq!(args[5], "json3/srt/vtt/ass/ttml");
+  }
+
+  #[test]
+  fn subtitles_skip_unavailable_requested_languages() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      languages: vec!["fr".into()],
+      ..Default::default()
+    };
+
+    assert!(build_subtitle_args(&settings, None, Some(&inventory(&["en"], &[]))).is_none());
+  }
+
+  #[test]
+  fn subtitles_skip_auto_languages_when_auto_generated_disabled() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      include_auto_generated: false,
+      ..Default::default()
+    };
+
+    assert!(build_subtitle_args(&settings, None, Some(&inventory(&[], &["en"]))).is_none());
+  }
+
+  #[test]
+  fn subtitles_include_auto_when_manual_and_auto_languages_match() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      include_auto_generated: true,
+      ..Default::default()
+    };
+
+    let args =
+      build_subtitle_args(&settings, None, Some(&inventory(&["en"], &["en"]))).expect("args");
+    assert_eq!(args[4], "--write-auto-subs");
+    assert_eq!(args[8], "en");
+  }
+
+  #[test]
+  fn subtitles_match_base_language_to_orig_auto_caption() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      include_auto_generated: true,
+      ..Default::default()
+    };
+
+    let args =
+      build_subtitle_args(&settings, None, Some(&inventory(&[], &["en-orig"]))).expect("args");
+    assert_eq!(args[4], "--write-auto-subs");
+    assert_eq!(args[8], "en-orig");
+  }
+
+  #[test]
+  fn subtitles_prefer_plain_auto_caption_when_plain_and_orig_exist() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      include_auto_generated: true,
+      ..Default::default()
+    };
+
+    let args =
+      build_subtitle_args(&settings, None, Some(&inventory(&[], &["en", "en-orig"]))).expect("args");
+    assert_eq!(args[4], "--write-auto-subs");
+    assert_eq!(args[8], "en");
+  }
+
+  #[test]
+  fn subtitles_ignore_translation_only_auto_captions_when_orig_variants_exist() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      include_auto_generated: true,
+      ..Default::default()
+    };
+
+    let args = build_subtitle_args(
+      &settings,
+      None,
+      Some(&inventory(&[], &["en", "en-orig", "de", "fr"])),
+    )
+    .expect("args");
+    assert_eq!(args[4], "--write-auto-subs");
+    assert_eq!(args[8], "en");
+  }
+
+  #[test]
+  fn subtitles_require_inventory() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      ..Default::default()
+    };
+
+    assert!(build_subtitle_args(&settings, None, None).is_none());
+
+  }
+
+  #[test]
+  fn subtitles_source_specific_override_allows_independent_manual_and_auto_selection() {
+    let settings = SubtitleSettings {
+      enabled: true,
+      ..Default::default()
+    };
+    let overrides = crate::models::download::SubtitleOverrides {
+      manual_languages: Some(vec!["en".into()]),
+      auto_languages: Some(vec!["nl".into()]),
+      ..Default::default()
+    };
+
+    let args = build_subtitle_args(
+      &settings,
+      Some(&overrides),
+      Some(&inventory(&["en"], &["nl"])),
+    )
+    .expect("args");
+    assert_eq!(args[4], "--write-auto-subs");
+    assert_eq!(args[8], "en,nl");
   }
 
   #[test]
@@ -726,7 +1061,7 @@ mod tests {
     };
 
     assert_eq!(
-      build_sponsorblock_args(&settings),
+      build_sponsorblock_args(&settings, false),
       vec!["--sponsorblock-mark", "sponsor"]
     );
   }

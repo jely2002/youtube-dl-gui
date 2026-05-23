@@ -18,6 +18,8 @@ pub(super) fn base_info(formats: Vec<YtdlpFormat>) -> YtdlpInfo {
     thumbnail: None,
     thumbnails: None,
     formats: Some(formats),
+    subtitles: None,
+    automatic_captions: None,
     type_: Some("video".into()),
     is_live: Some(false),
     entries: None,

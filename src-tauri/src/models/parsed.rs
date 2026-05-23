@@ -40,6 +40,13 @@ pub struct MediaTrack {
   pub audio_channels: Option<u64>,
 }
 
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SubtitleInventory {
+  pub manual_languages: Vec<String>,
+  pub auto_languages: Vec<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Chapter {
@@ -70,6 +77,7 @@ pub struct ParsedSingleVideo {
   pub video_tracks: Vec<MediaTrack>,
   pub audio_tracks: Vec<MediaTrack>,
   pub formats: Vec<MediaFormat>,
+  pub subtitle_inventory: SubtitleInventory,
   pub chapters: Vec<Chapter>,
   pub filesize: Option<u64>,
 }
