@@ -1,5 +1,8 @@
 use crate::commands::NotificationKind;
-use crate::models::download::{AudioFormat, TranscodePolicy, VideoContainer};
+use crate::models::download::{
+  AudioFormat, AudioPostprocessPreset, TranscodePolicy, VideoContainer, VideoPostprocessMode,
+  VideoPostprocessPreset,
+};
 use serde::{Deserialize, Serialize};
 use std::thread;
 
@@ -78,13 +81,19 @@ impl Default for InputSettings {
 pub struct VideoOutputSettings {
   pub container: VideoContainer,
   pub policy: TranscodePolicy,
+  pub postprocess_preset: VideoPostprocessPreset,
+  pub custom_postprocess_mode: VideoPostprocessMode,
+  pub postprocess_args: String,
 }
 
 impl Default for VideoOutputSettings {
   fn default() -> Self {
     Self {
-      policy: TranscodePolicy::RemuxOnly,
+      policy: TranscodePolicy::AllowReencode,
       container: VideoContainer::Mp4,
+      postprocess_preset: VideoPostprocessPreset::None,
+      custom_postprocess_mode: VideoPostprocessMode::Remux,
+      postprocess_args: String::new(),
     }
   }
 }
@@ -94,6 +103,8 @@ impl Default for VideoOutputSettings {
 pub struct AudioOutputSettings {
   pub format: AudioFormat,
   pub policy: TranscodePolicy,
+  pub postprocess_preset: AudioPostprocessPreset,
+  pub postprocess_args: String,
 }
 
 impl Default for AudioOutputSettings {
@@ -101,6 +112,8 @@ impl Default for AudioOutputSettings {
     Self {
       policy: TranscodePolicy::AllowReencode,
       format: AudioFormat::Mp3,
+      postprocess_preset: AudioPostprocessPreset::None,
+      postprocess_args: String::new(),
     }
   }
 }
