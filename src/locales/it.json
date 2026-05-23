@@ -473,6 +473,16 @@
         "label": "Carica automaticamente dimensioni video:"
       }
     },
+    "extractor": {
+      "legend": "Estrattore",
+      "legendLabel": "Configura come l'app estrae le informazioni dai siti web.",
+      "extractorArgs": {
+        "label": "Argomenti estrattore:",
+        "hint": "Personalizza gli argomenti dell'estrattore per yt-dlp. Un argomento per riga.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Inserisci solo il valore. L'app aggiunge automaticamente --extractor-args."
+      }
+    },
     "input": {
       "legend": "Input",
       "legendLabel": "Scegli come iniziare a scaricare con OVD.",
@@ -618,6 +628,12 @@
           "none": "Non simulare s.o.",
           "any": "Simula un client casuale"
         }
+      },
+      "extractorArgs": {
+        "label": "Argomenti estrattore:",
+        "hint": "Personalizza gli argomenti dell'estrattore per yt-dlp. Un argomento per riga.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Inserisci solo il valore. L'app aggiunge automaticamente --extractor-args."
       }
     },
     "sponsorBlock": {

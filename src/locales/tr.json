@@ -482,6 +482,16 @@
         "label": "Video boyutunu otomatik olarak yükle:"
       }
     },
+    "extractor": {
+      "legend": "Çıkarıcı",
+      "legendLabel": "Uygulamanın web sitelerinden bilgiyi nasıl çıkardığını yapılandırın.",
+      "extractorArgs": {
+        "label": "Çıkarıcı bağımsız değişkenleri:",
+        "hint": "yt-dlp için çıkarıcı bağımsız değişkenlerini özelleştirin. Her satıra bir bağımsız değişken yazın.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Yalnızca değeri girin. Uygulama --extractor-args seçeneğini otomatik ekler."
+      }
+    },
     "input": {
       "legend": "Girdi",
       "legendLabel": "OVD ile indirmeye nasıl başlayacağınızı seçin.",
@@ -654,6 +664,12 @@
           "none": "Taklit etme",
           "any": "Rastgele bir istemciyi taklit et"
         }
+      },
+      "extractorArgs": {
+        "label": "Çıkarıcı bağımsız değişkenleri:",
+        "hint": "yt-dlp için çıkarıcı bağımsız değişkenlerini özelleştirin. Her satıra bir bağımsız değişken yazın.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Yalnızca değeri girin. Uygulama --extractor-args seçeneğini otomatik ekler."
       }
     },
     "sponsorBlock": {

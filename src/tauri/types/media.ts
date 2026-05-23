@@ -125,6 +125,7 @@ export type NetworkOverrides = {
   enableProxy?: boolean;
   proxy?: string;
   impersonate?: string;
+  extractorArgs?: string;
 };
 
 export type SubtitleOverrides = {

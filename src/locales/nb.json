@@ -482,6 +482,16 @@
         "label": "Last automatisk inn videostørrelse:"
       }
     },
+    "extractor": {
+      "legend": "Ekstraktor",
+      "legendLabel": "Angi hvordan appen henter informasjon fra nettsteder.",
+      "extractorArgs": {
+        "label": "Ekstraktorargumenter:",
+        "hint": "Tilpass ekstraktorargumentene for yt-dlp. Ett argument per linje.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Skriv bare inn verdien. Appen legger til --extractor-args automatisk."
+      }
+    },
     "input": {
       "legend": "Input",
       "legendLabel": "Velg hvordan du starter nedlasting med OVD.",
@@ -654,6 +664,12 @@
           "none": "Ikke impersoner",
           "any": "Impersoner en tilfeldig klient"
         }
+      },
+      "extractorArgs": {
+        "label": "Ekstraktorargumenter:",
+        "hint": "Tilpass ekstraktorargumentene for yt-dlp. Ett argument per linje.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Skriv bare inn verdien. Appen legger til --extractor-args automatisk."
       }
     },
     "sponsorBlock": {

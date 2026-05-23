@@ -482,6 +482,16 @@
         "label": "Carregar tamanho do vídeo automaticamente:"
       }
     },
+    "extractor": {
+      "legend": "Extrator",
+      "legendLabel": "Configure como o app extrai informações dos sites.",
+      "extractorArgs": {
+        "label": "Argumentos do extrator:",
+        "hint": "Personalize os argumentos do extrator do yt-dlp. Um argumento por linha.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Digite apenas o valor. O app adiciona --extractor-args automaticamente."
+      }
+    },
     "input": {
       "legend": "Entrada",
       "legendLabel": "Escolha como deseja iniciar o download com o OVD.",
@@ -654,6 +664,12 @@
           "none": "Não representar",
           "any": "Representar um cliente aleatório"
         }
+      },
+      "extractorArgs": {
+        "label": "Argumentos do extrator:",
+        "hint": "Personalize os argumentos do extrator do yt-dlp. Um argumento por linha.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Digite apenas o valor. O app adiciona --extractor-args automaticamente."
       }
     },
     "sponsorBlock": {

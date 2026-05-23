@@ -178,6 +178,7 @@ pub struct NetworkOverrides {
   pub enable_proxy: Option<bool>,
   pub proxy: Option<String>,
   pub impersonate: Option<String>,
+  pub extractor_args: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]

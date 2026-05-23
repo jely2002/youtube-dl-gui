@@ -191,7 +191,7 @@
       },
       "labels": {
         "quality": "Choose format, codec, and track preferences.",
-        "network": "Configure proxy, impersonation, and request headers. Overrides app defaults for this download.",
+        "network": "Configure proxy, impersonation, extractor settings, and request headers. Overrides app defaults for this download.",
         "output": "Configure container, conversion, and filename templates. Overrides app defaults for this download.",
         "headersOverride": "One per line: FIELD:VALUE. Replaces global headers for this download."
       },
@@ -654,6 +654,12 @@
           "none": "Do not impersonate",
           "any": "Impersonate a random client"
         }
+      },
+      "extractorArgs": {
+        "label": "Extractor arguments:",
+        "hint": "Customise the extractor arguments for yt-dlp. One argument per line.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Enter only the value. The app adds --extractor-args automatically."
       }
     },
     "sponsorBlock": {

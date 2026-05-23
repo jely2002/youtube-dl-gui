@@ -67,6 +67,7 @@ const syncFromStore = () => {
     enableProxy: current?.network?.enableProxy ?? false,
     proxy: current?.network?.proxy ?? '',
     impersonate: current?.network?.impersonate ?? 'none',
+    extractorArgs: current?.network?.extractorArgs ?? '',
   };
   headersText.value = (current?.auth?.headers ?? []).join('\n');
 };
@@ -77,6 +78,8 @@ watch([networkState, headersText], () => {
   const trimmedProxy = networkState.value.proxy?.trim() ?? '';
   const headers = parseHeaders(headersText.value);
   const globalNetwork = settingsStore.settings.network;
+  const extractorArgs = networkState.value.extractorArgs.trim();
+  const globalExtractorArgs = settingsStore.settings.network.extractorArgs.trim();
 
   const networkPayload = {
     enableProxy: networkState.value.enableProxy ?? false,
@@ -84,11 +87,13 @@ watch([networkState, headersText], () => {
     impersonate: networkState.value.impersonate !== 'none'
       ? networkState.value.impersonate
       : undefined,
+    extractorArgs: extractorArgs || undefined,
   };
   const hasNetwork
     = (globalNetwork.enableProxy ?? false) !== (networkState.value.enableProxy ?? false)
       || (globalNetwork.proxy ?? '') !== trimmedProxy
-      || (globalNetwork.impersonate ?? 'none') !== networkState.value.impersonate;
+      || (globalNetwork.impersonate ?? 'none') !== networkState.value.impersonate
+      || globalExtractorArgs !== extractorArgs;
   const hasAuth = headers.length > 0;
 
   const existing = optionsStore.getOverrides(props.groupId);
