@@ -7,7 +7,7 @@ use crate::runners::ytdlp_args::{build_format_args, build_location_args, build_o
 use crate::runners::ytdlp_process::{
   configure_command, kill_platform_process, platform_process_from_child, PlatformProcess,
 };
-use crate::state::config_models::{AuthSettings, Config, SubtitleSettings};
+use crate::state::config_models::{AuthSettings, Config, SponsorBlockSettings, SubtitleSettings};
 use crate::state::preferences_models::Preferences;
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
@@ -155,25 +155,7 @@ impl<'a> YtdlpRunner<'a> {
       &self.cfg.sponsor_block,
       overrides.and_then(|value| value.sponsor_block.as_ref()),
     );
-    if let Some(api_url) = &sponsor_block.api_url {
-      self
-        .args
-        .extend_from_slice(&["--sponsorblock-api".into(), api_url.clone()]);
-    }
-
-    if !sponsor_block.remove_parts.is_empty() {
-      self.args.extend_from_slice(&[
-        "--sponsorblock-remove".into(),
-        sponsor_block.remove_parts.join(","),
-      ]);
-    }
-
-    if !sponsor_block.mark_parts.is_empty() {
-      self.args.extend_from_slice(&[
-        "--sponsorblock-mark".into(),
-        sponsor_block.mark_parts.join(","),
-      ]);
-    }
+    self.args.extend(build_sponsorblock_args(&sponsor_block));
 
     self
   }
@@ -452,6 +434,28 @@ fn build_subtitle_args(settings: &SubtitleSettings) -> Option<Vec<String>> {
   Some(args)
 }
 
+fn build_sponsorblock_args(settings: &SponsorBlockSettings) -> Vec<String> {
+  let mut args = Vec::new();
+
+  if let Some(api_url) = &settings.api_url {
+    args.extend_from_slice(&["--sponsorblock-api".into(), api_url.clone()]);
+  }
+
+  if !settings.remove_parts.is_empty() {
+    args.extend_from_slice(&[
+      "--sponsorblock-remove".into(),
+      settings.remove_parts.join(","),
+      "--force-keyframes-at-cuts".into(),
+    ]);
+  }
+
+  if !settings.mark_parts.is_empty() {
+    args.extend_from_slice(&["--sponsorblock-mark".into(), settings.mark_parts.join(",")]);
+  }
+
+  args
+}
+
 fn sanitize_subtitle_formats(formats: &[String]) -> Vec<String> {
   const DEFAULT_FORMATS: [&str; 5] = ["srt", "vtt", "ass", "ttml", "json3"];
 
@@ -548,8 +552,8 @@ fn has_subtitle_language_pattern_syntax(language: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-  use super::build_subtitle_args;
-  use crate::state::config_models::SubtitleSettings;
+  use super::{build_sponsorblock_args, build_subtitle_args};
+  use crate::state::config_models::{SponsorBlockSettings, SubtitleSettings};
 
   #[test]
   fn subtitles_disabled_returns_none() {
@@ -652,5 +656,35 @@ mod tests {
     };
     let args = build_subtitle_args(&settings).expect("args");
     assert_eq!(args[7], "en.*,-live_chat");
+  }
+
+  #[test]
+  fn sponsorblock_remove_adds_force_keyframes_at_cuts() {
+    let settings = SponsorBlockSettings {
+      remove_parts: vec!["sponsor".into(), "intro".into()],
+      ..Default::default()
+    };
+
+    assert_eq!(
+      build_sponsorblock_args(&settings),
+      vec![
+        "--sponsorblock-remove",
+        "sponsor,intro",
+        "--force-keyframes-at-cuts",
+      ]
+    );
+  }
+
+  #[test]
+  fn sponsorblock_mark_does_not_add_force_keyframes_at_cuts() {
+    let settings = SponsorBlockSettings {
+      mark_parts: vec!["sponsor".into()],
+      ..Default::default()
+    };
+
+    assert_eq!(
+      build_sponsorblock_args(&settings),
+      vec!["--sponsorblock-mark", "sponsor"]
+    );
   }
 }
