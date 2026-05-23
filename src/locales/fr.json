@@ -501,6 +501,10 @@
         "label": "Ajouter l’image de couverture :",
         "hint": "Incorpore la miniature dans le fichier pour les lecteurs."
       },
+      "saveThumbnail": {
+        "label": "Enregistrer la miniature :",
+        "hint": "Télécharge la meilleure miniature disponible à côté du fichier multimédia."
+      },
       "addMetadata": {
         "label": "Ajouter titre & artiste :",
         "hint": "Enregistre les métadonnées comme le titre, l’uploader/artiste et la description."

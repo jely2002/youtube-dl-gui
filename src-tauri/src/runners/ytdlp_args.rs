@@ -329,6 +329,10 @@ pub fn build_output_args(
     args.push("--add-metadata".into());
   }
 
+  if output_settings.save_thumbnail {
+    args.push("--write-thumbnail".into());
+  }
+
   if output_settings.restrict_filenames {
     args.push("--restrict-filenames".into());
   }
@@ -812,6 +816,19 @@ mod tests {
     let args = build_output_args(&format_options, &settings, None);
 
     assert!(!args.contains(&"--restrict-filenames".to_string()));
+  }
+
+  #[test]
+  fn save_thumbnail_adds_write_thumbnail_flag() {
+    let format_options = make_video_format_options(Some(720), Some(60));
+
+    let mut settings = OutputSettings::default();
+    settings.video.policy = TranscodePolicy::Never;
+    settings.save_thumbnail = true;
+
+    let args = build_output_args(&format_options, &settings, None);
+
+    assert!(args.contains(&"--write-thumbnail".to_string()));
   }
 
   #[test]

@@ -97,6 +97,7 @@ pub struct OutputOverrides {
   pub audio: Option<AudioOutputOverrides>,
   pub add_metadata: Option<bool>,
   pub add_thumbnail: Option<bool>,
+  pub save_thumbnail: Option<bool>,
   pub file_name_template: Option<String>,
   pub audio_file_name_template: Option<String>,
   pub restrict_filenames: Option<bool>,

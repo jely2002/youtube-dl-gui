@@ -80,6 +80,15 @@ pub struct VideoOutputSettings {
   pub policy: TranscodePolicy,
 }
 
+impl Default for VideoOutputSettings {
+  fn default() -> Self {
+    Self {
+      policy: TranscodePolicy::RemuxOnly,
+      container: VideoContainer::Mp4,
+    }
+  }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AudioOutputSettings {
@@ -87,13 +96,23 @@ pub struct AudioOutputSettings {
   pub policy: TranscodePolicy,
 }
 
+impl Default for AudioOutputSettings {
+  fn default() -> Self {
+    Self {
+      policy: TranscodePolicy::AllowReencode,
+      format: AudioFormat::Mp3,
+    }
+  }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(default, rename_all = "camelCase")]
 pub struct OutputSettings {
   pub video: VideoOutputSettings,
   pub audio: AudioOutputSettings,
   pub add_metadata: bool,
   pub add_thumbnail: bool,
+  pub save_thumbnail: bool,
   pub download_dir: Option<String>,
   pub file_name_template: String,
   pub audio_file_name_template: String,
@@ -103,16 +122,11 @@ pub struct OutputSettings {
 impl Default for OutputSettings {
   fn default() -> Self {
     Self {
-      video: VideoOutputSettings {
-        policy: TranscodePolicy::RemuxOnly,
-        container: VideoContainer::Mp4,
-      },
-      audio: AudioOutputSettings {
-        policy: TranscodePolicy::AllowReencode,
-        format: AudioFormat::Mp3,
-      },
+      video: VideoOutputSettings::default(),
+      audio: AudioOutputSettings::default(),
       add_metadata: true,
       add_thumbnail: true,
+      save_thumbnail: false,
       download_dir: None,
       file_name_template: "%(title).200s-(%(height)sp%(fps).0d).%(ext)s".into(),
       audio_file_name_template: "%(title).200s-(%(abr)dk).%(ext)s".into(),

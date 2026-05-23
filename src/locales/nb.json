@@ -501,6 +501,10 @@
         "label": "Legg til omslagsbilde:",
         "hint": "Legg inn miniatyren i filen slik at mediespillere kan vise omslagsbildet."
       },
+      "saveThumbnail": {
+        "label": "Lagre miniatyrbildefil:",
+        "hint": "Last ned beste tilgjengelige miniatyrbilde ved siden av mediefilen."
+      },
       "addMetadata": {
         "label": "Legg til tittel- og artistinformasjon:",
         "hint": "Lagre metadata som tittel, opplaster/artist og beskrivelse i filen."

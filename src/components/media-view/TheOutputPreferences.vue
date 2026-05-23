@@ -83,6 +83,17 @@
         />
         <p class="label">{{ t('settings.output.addThumbnail.hint') }}</p>
 
+        <label class="mt-2 font-semibold" for="override-save-thumbnail">
+          {{ t('settings.output.saveThumbnail.label') }}
+        </label>
+        <input
+          id="override-save-thumbnail"
+          v-model="outputState.saveThumbnail"
+          type="checkbox"
+          class="toggle toggle-primary"
+        />
+        <p class="label">{{ t('settings.output.saveThumbnail.hint') }}</p>
+
         <label class="mt-2 font-semibold" for="override-add-metadata">
           {{ t('settings.output.addMetadata.label') }}
         </label>
@@ -198,6 +209,7 @@ const outputOverride = computed<DownloadOverrides['output'] | undefined>(() => {
       fileNameTemplate: outputState.fileNameTemplate,
       audioFileNameTemplate: outputState.audioFileNameTemplate,
       addThumbnail: outputState.addThumbnail,
+      saveThumbnail: outputState.saveThumbnail,
       addMetadata: outputState.addMetadata,
       restrictFilenames: outputState.restrictFilenames,
     },
@@ -205,6 +217,7 @@ const outputOverride = computed<DownloadOverrides['output'] | undefined>(() => {
       fileNameTemplate: global.fileNameTemplate,
       audioFileNameTemplate: global.audioFileNameTemplate,
       addThumbnail: global.addThumbnail,
+      saveThumbnail: global.saveThumbnail,
       addMetadata: global.addMetadata,
       restrictFilenames: global.restrictFilenames,
     },
