@@ -49,8 +49,8 @@ pub async fn run_ytdlp_download(
     .with_sponsorblock_args(entry.overrides.as_ref())
     .with_format_args(&entry.format, entry.overrides.as_ref())
     .with_input_args(entry.overrides.as_ref());
-  let runner = match runner.try_with_output_args(&entry.format, entry.overrides.as_ref()) {
-    Ok(runner) => runner,
+  let output_args = match runner.output_args(&entry.format, entry.overrides.as_ref()) {
+    Ok(args) => args,
     Err(err) => {
       emit_internal_fatal(
         &app,
@@ -60,13 +60,15 @@ pub async fn run_ytdlp_download(
       );
       return Err(YtdlpDownloadError::InvalidArguments(err));
     }
-  }
-  .with_location_args(
-    &entry.format.track_type,
-    &entry.template_context,
-    entry.overrides.as_ref(),
-  )
-  .with_url(&entry.url);
+  };
+  let runner = runner
+    .with_args(output_args)
+    .with_location_args(
+      &entry.format.track_type,
+      &entry.template_context,
+      entry.overrides.as_ref(),
+    )
+    .with_url(&entry.url);
 
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
   let matcher = match DiagnosticMatcher::from_json(RULES_JSON) {

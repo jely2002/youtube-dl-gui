@@ -219,21 +219,15 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
-  #[allow(clippy::question_mark)]
-  pub fn try_with_output_args(
-    mut self,
+  pub fn output_args(
+    &self,
     format_options: &FormatOptions,
     overrides: Option<&DownloadOverrides>,
-  ) -> Result<Self, String> {
+  ) -> Result<Vec<String>, String> {
     let output_overrides = overrides.and_then(|value| value.output.as_ref());
     let output_settings = resolve_with_patch(&self.cfg.output, output_overrides);
     let partial_download = output_overrides.and_then(|value| value.partial_download.as_ref());
-    let output_args = match build_output_args(format_options, &output_settings, partial_download) {
-      Ok(args) => args,
-      Err(err) => return Err(err),
-    };
-    self.args.extend(output_args);
-    Ok(self)
+    build_output_args(format_options, &output_settings, partial_download)
   }
 
   pub fn with_location_args(
