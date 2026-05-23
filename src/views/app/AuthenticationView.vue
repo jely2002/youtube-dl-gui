@@ -14,7 +14,7 @@
     </base-sub-nav>
     <div class="flex flex-col py-4 px-8">
       <cookies-config v-model="cookieFields"/>
-      <div class="divider my-2"/>
+      <div class="divider -mt-2 mb-4"/>
       <credentials-config v-model="strongholdFields"/>
     </div>
   </form>

@@ -14,6 +14,11 @@ import MediaPreferencesView from './views/app/MediaPreferencesView.vue';
 import TheDownloadPreferences from './components/media-view/TheDownloadPreferences.vue';
 import TheNetworkPreferences from './components/media-view/TheNetworkPreferences.vue';
 import TheOutputPreferences from './components/media-view/TheOutputPreferences.vue';
+import SettingsAboutTab from './views/app/settings/SettingsAboutTab.vue';
+import SettingsAppTab from './views/app/settings/SettingsAppTab.vue';
+import SettingsDownloadsTab from './views/app/settings/SettingsDownloadsTab.vue';
+import SettingsNetworkTab from './views/app/settings/SettingsNetworkTab.vue';
+import SettingsSystemTab from './views/app/settings/SettingsSystemTab.vue';
 
 const routes = [
   {
@@ -45,6 +50,38 @@ const routes = [
         name: 'settings',
         component: SettingsView,
         meta: { index: 1 },
+        children: [
+          {
+            path: '',
+            name: 'settings.downloads',
+            component: SettingsDownloadsTab,
+            meta: { index: 0 },
+          },
+          {
+            path: 'app',
+            name: 'settings.app',
+            component: SettingsAppTab,
+            meta: { index: 1 },
+          },
+          {
+            path: 'network',
+            name: 'settings.network',
+            component: SettingsNetworkTab,
+            meta: { index: 1 },
+          },
+          {
+            path: 'system',
+            name: 'settings.system',
+            component: SettingsSystemTab,
+            meta: { index: 1 },
+          },
+          {
+            path: 'about',
+            name: 'settings.about',
+            component: SettingsAboutTab,
+            meta: { index: 1 },
+          },
+        ],
       },
       {
         path: 'location',
@@ -113,7 +150,7 @@ const routes = [
             name: 'preferences.output',
             component: TheOutputPreferences,
             props: true,
-            meta: { index: 2 },
+            meta: { index: 1 },
           },
         ],
       },
