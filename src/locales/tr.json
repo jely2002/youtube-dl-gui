@@ -16,13 +16,11 @@
     "emptySearch": "Bir sonuç bulunamadı.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
-    "availableInResolutions": "Available in",
     "video": "video",
     "unknown": "bilinmiyor",
     "confirm": "Onayla",
     "best": "En iyi",
-    "resume": "Devam et",
-    "unavailableForSelectedResolution": "Unavailable for selected resolution"
+    "resume": "Devam et"
   },
   "layout": {
     "header": {
@@ -236,6 +234,8 @@
           }
         },
         "tracks": {
+          "availableInResolutions": "Şunlarda mevcut",
+          "unavailableForSelectedResolution": "Seçilen çözünürlük için kullanılamıyor",
           "audioSelect": {
             "noFormats": "Ses parçası yok",
             "placeholder": "Ses parçası",
@@ -276,6 +276,8 @@
           "initializing": "Başlatılıyor",
           "downloading": "İndiriliyor",
           "merging": "Birleştiriliyor",
+          "remuxing": "Remux yapılıyor",
+          "reencoding": "Yeniden kodlanıyor",
           "finalizing": "Artıklar temizleniyor"
         },
         "metadata": {
@@ -368,8 +370,7 @@
       "vtt": "WebVTT (.vtt)",
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
-      "json3": "JSON (.json)",
-      "json": "JSON (.json)"
+      "json3": "JSON (.json)"
     }
   },
   "location": {
@@ -457,6 +458,13 @@
       "label": "Sıfırla",
       "confirm": "Sıfırlamak için tekrar tıkla"
     },
+    "tabs": {
+      "downloads": "İndirme",
+      "app": "App",
+      "network": "Ağ",
+      "system": "Sistem",
+      "about": "Bilgi"
+    },
     "performance": {
       "legend": "Performans",
       "legendLabel": "Ne kadar sistem kaynağı kullanılacağını ayarlayın.",
@@ -535,14 +543,34 @@
         "label": "Altyazıları ekle:",
         "link": "Altyazıları ayarla"
       },
-      "policy": {
-        "label": "Dönüştürme modu:",
-        "hint": "İndirilen dosya seçtiğiniz formatla zaten eşleşmiyorsa dönüştürülmesi gerekebilir. Dönüştürmeyi atla: en hızlı yöntemdir, seçtiğiniz formatı göz ardı edebilir. Mümkünse dönüştür: yeniden kodlama yapmadan kapsayıcıyı değiştirmeye çalışır. Gerekirse dönüştür: her zaman seçilen formatı kullanır ancak daha yavaştır ve daha fazla CPU kullanır.",
+      "keepOriginalStreams": {
+        "label": "Özgün akışları koru",
+        "hint": "Seçilen son işlem bunu gerektirmedikçe kapsayıcı değişimini ve yeniden kodlamayı önler."
+      },
+      "postprocess": {
+        "label": "Video son işlemi:",
+        "hint": "İndirme bittikten sonra çalışır.",
+        "reencodeWarning": "Bu seçenek yeniden kodlar ve uzun sürebilir.",
+        "keepOriginalStreamsConflict": "Bu seçenek yeniden kodlama gerektirir. Kullanmak için «Özgün akışları koru» seçeneğini kapatın.",
+        "mp42RequiresMp4": "Bu seçenek MP4 çıktı gerektirir.",
         "options": {
-          "never": "Dönüştürmeyi atla",
-          "remuxOnly": "Mümkünse dönüştür (önerilen)",
-          "allowReencode": "Gerekirse dönüştür (daha yavaş)"
+          "none": "Yok",
+          "fps30": "30 fps'e yeniden kodla",
+          "mp42": "MP4 markasını mp42 yap",
+          "custom": "Özel"
         }
+      },
+      "postprocessMode": {
+        "label": "Özel son işleme modu:",
+        "hint": "Özel ffmpeg argümanlarının remux sırasında mı yoksa yeniden kodlama sırasında mı çalışacağını seçin.",
+        "options": {
+          "remux": "Remux sırasında çalıştır",
+          "reencode": "Yeniden kodlama sırasında çalıştır"
+        }
+      },
+      "postprocessArgs": {
+        "label": "Gelişmiş ffmpeg argümanları:",
+        "hint": "Yalnızca ileri düzey kullanıcılar için. Argümanları boşlukla ayırın; tırnaklar korunur."
       },
       "tabs": {
         "audio": {
@@ -550,7 +578,7 @@
           "label": "Ses",
           "format": {
             "label": "Ses formatı:",
-            "hint": "Tercih edilen ses formatını seçin. Dönüştürme modu, dosyanın gerçekten dönüştürülüp dönüştürülmeyeceğine karar verir.",
+            "hint": "Tercih edilen ses biçimini seçin.",
             "options": {
               "mp3": "MP3 (önerilen)",
               "m4a": "M4A",
@@ -560,6 +588,13 @@
               "wav": "WAV",
               "flac": "FLAC"
             }
+          },
+          "postprocess": {
+            "label": "Ses son işlemi:",
+            "options": {
+              "none": "Yok",
+              "custom": "Özel"
+            }
           }
         },
         "video": {
@@ -567,7 +602,7 @@
           "label": "Video",
           "container": {
             "label": "Video formatı:",
-            "hint": "Tercih edilen video formatını seçin. Dönüştürme modu, dosyanın gerçekten dönüştürülüp dönüştürülmeyeceğine karar verir.",
+            "hint": "Tercih edilen video kapsayıcısını seçin.",
             "options": {
               "mp4": "MP4",
               "mkv": "MKV"

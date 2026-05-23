@@ -14,7 +14,7 @@
     </base-sub-nav>
     <div class="flex flex-col py-4 px-8">
       <cookies-config v-model="cookieFields"/>
-      <div class="divider my-2"/>
+      <div class="divider -mt-2 mb-4"/>
       <credentials-config v-model="strongholdFields"/>
     </div>
   </form>
@@ -78,7 +78,7 @@ const save = async () => {
     }
     toastStore.showToast(t('auth.toasts.saved'), { style: 'success' });
   } catch (e) {
-    toastStore.showToast(t('auth.toasts.error', { error: e as string }), { style: 'error' });
+    toastStore.showToast(t('auth.toasts.error', { error: e }), { style: 'error' });
   } finally {
     isSaving.value = false;
   }

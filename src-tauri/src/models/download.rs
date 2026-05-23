@@ -16,6 +16,29 @@ pub enum VideoContainer {
   Mkv,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum VideoPostprocessPreset {
+  None,
+  Fps30,
+  Mp42,
+  Custom,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum VideoPostprocessMode {
+  Remux,
+  Reencode,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum AudioPostprocessPreset {
+  None,
+  Custom,
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum AudioFormat {
@@ -51,7 +74,7 @@ impl AudioFormat {
 #[serde(rename_all = "camelCase")]
 pub enum TranscodePolicy {
   Never,
-  RemuxOnly,
+  #[serde(alias = "remuxOnly")]
   AllowReencode,
 }
 
@@ -123,6 +146,9 @@ pub struct DownloadSection {
 pub struct VideoOutputOverrides {
   pub container: Option<VideoContainer>,
   pub policy: Option<TranscodePolicy>,
+  pub postprocess_preset: Option<VideoPostprocessPreset>,
+  pub custom_postprocess_mode: Option<VideoPostprocessMode>,
+  pub postprocess_args: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
@@ -130,6 +156,8 @@ pub struct VideoOutputOverrides {
 pub struct AudioOutputOverrides {
   pub format: Option<AudioFormat>,
   pub policy: Option<TranscodePolicy>,
+  pub postprocess_preset: Option<AudioPostprocessPreset>,
+  pub postprocess_args: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
@@ -174,4 +202,15 @@ pub struct SponsorBlockOverrides {
 #[serde(rename_all = "camelCase")]
 pub struct InputOverrides {
   pub prefer_video_in_mixed_links: Option<bool>,
+}
+
+#[cfg(test)]
+mod tests {
+  use super::TranscodePolicy;
+
+  #[test]
+  fn transcode_policy_deserializes_legacy_remux_only_as_allow_reencode() {
+    let policy: TranscodePolicy = serde_json::from_str(r#""remuxOnly""#).unwrap();
+    assert!(matches!(policy, TranscodePolicy::AllowReencode));
+  }
 }

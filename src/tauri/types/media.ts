@@ -6,13 +6,29 @@ export enum TrackType {
 
 export enum TranscodePolicy {
   never = 'never',
-  remuxOnly = 'remuxOnly',
   allowReencode = 'allowReencode',
 }
 
 export enum VideoContainer {
   mp4 = 'mp4',
   mkv = 'mkv',
+}
+
+export enum VideoPostprocessPreset {
+  none = 'none',
+  fps30 = 'fps30',
+  mp42 = 'mp42',
+  custom = 'custom',
+}
+
+export enum VideoPostprocessMode {
+  remux = 'remux',
+  reencode = 'reencode',
+}
+
+export enum AudioPostprocessPreset {
+  none = 'none',
+  custom = 'custom',
 }
 
 export enum AudioFormat {
@@ -60,10 +76,15 @@ export type OutputOverrides = {
   video?: {
     container?: VideoContainer;
     policy?: TranscodePolicy;
+    postprocessPreset?: VideoPostprocessPreset;
+    customPostprocessMode?: VideoPostprocessMode;
+    postprocessArgs?: string;
   };
   audio?: {
     format?: AudioFormat;
     policy?: TranscodePolicy;
+    postprocessPreset?: AudioPostprocessPreset;
+    postprocessArgs?: string;
   };
   addMetadata?: boolean;
   addThumbnail?: boolean;

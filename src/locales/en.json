@@ -16,13 +16,11 @@
     "emptySearch": "No results found.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
-    "availableInResolutions": "Available in",
     "video": "video",
     "unknown": "unknown",
     "confirm": "Confirm",
     "best": "Best",
-    "resume": "Resume",
-    "unavailableForSelectedResolution": "Unavailable for selected resolution"
+    "resume": "Resume"
   },
   "layout": {
     "header": {
@@ -236,6 +234,8 @@
           }
         },
         "tracks": {
+          "availableInResolutions": "Available in",
+          "unavailableForSelectedResolution": "Unavailable for selected resolution",
           "audioSelect": {
             "noFormats": "No audio tracks",
             "placeholder": "Audio track",
@@ -276,6 +276,8 @@
           "initializing": "Initializing",
           "downloading": "Downloading",
           "merging": "Merging",
+          "remuxing": "Remuxing",
+          "reencoding": "Re-encoding",
           "finalizing": "Cleaning up"
         },
         "metadata": {
@@ -456,6 +458,13 @@
       "label": "Reset",
       "confirm": "Click again to reset"
     },
+    "tabs": {
+      "downloads": "Downloads",
+      "app": "App",
+      "network": "Network",
+      "system": "System",
+      "about": "About"
+    },
     "performance": {
       "legend": "Performance",
       "legendLabel": "Configure how many system resources are used.",
@@ -534,14 +543,34 @@
         "label": "Add subtitles:",
         "link": "Configure subtitles"
       },
-      "policy": {
-        "label": "Conversion mode:",
-        "hint": "If the downloaded file doesn't already match your selected format, it may need to be converted. Skip conversion: fastest, may ignore your chosen format. Convert if possible: tries to change the container without re-encoding. Convert if needed: always uses the selected format, but is slower and uses more CPU.",
+      "keepOriginalStreams": {
+        "label": "Keep original streams",
+        "hint": "Avoid container conversion and re-encoding unless a selected post-processing step requires it."
+      },
+      "postprocess": {
+        "label": "Video post-processing:",
+        "hint": "Post-processing runs after the download finishes.",
+        "reencodeWarning": "This option will re-encode, this is heavy and can take a long time.",
+        "keepOriginalStreamsConflict": "This option requires re-encoding. Disable Keep original streams to use it.",
+        "mp42RequiresMp4": "This option requires mp4 output.",
         "options": {
-          "never": "Skip conversion",
-          "remuxOnly": "Convert if possible (recommended)",
-          "allowReencode": "Convert if needed (slower)"
+          "none": "None",
+          "fps30": "Re-encode to 30 fps",
+          "mp42": "Set mp4 brand to mp42",
+          "custom": "Custom"
         }
+      },
+      "postprocessMode": {
+        "label": "Custom post-processing mode:",
+        "hint": "Choose whether custom ffmpeg args run during remuxing or re-encoding.",
+        "options": {
+          "remux": "Run during remux",
+          "reencode": "Run during re-encode"
+        }
+      },
+      "postprocessArgs": {
+        "label": "Advanced ffmpeg args:",
+        "hint": "Advanced users only. Separate arguments with spaces; quoted values are preserved."
       },
       "tabs": {
         "audio": {
@@ -549,7 +578,7 @@
           "label": "Audio",
           "format": {
             "label": "Audio format:",
-            "hint": "Choose the preferred audio format. Conversion mode decides whether the file will actually be converted.",
+            "hint": "Choose the preferred audio format.",
             "options": {
               "mp3": "MP3 (recommended)",
               "m4a": "M4A",
@@ -559,6 +588,13 @@
               "wav": "WAV",
               "flac": "FLAC"
             }
+          },
+          "postprocess": {
+            "label": "Audio post-processing:",
+            "options": {
+              "none": "None",
+              "custom": "Custom"
+            }
           }
         },
         "video": {
@@ -566,7 +602,7 @@
           "label": "Video",
           "container": {
             "label": "Video format:",
-            "hint": "Choose the preferred video format. Conversion mode decides whether the file will actually be converted.",
+            "hint": "Choose the preferred video container.",
             "options": {
               "mp4": "MP4",
               "mkv": "MKV"

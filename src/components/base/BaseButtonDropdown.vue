@@ -4,7 +4,9 @@
         class="join-item"
         :class="btnClasses"
         :tooltip="mainTooltip"
-        :disabled="disabled"
+        :disabled="disabled || mainDisabled ? true : undefined"
+        :type="mainType ?? 'button'"
+        :loading="mainLoading"
         @click="onMainClick"
     >
       <slot name="main" />
@@ -21,12 +23,12 @@
           :aria-label="caretAriaLabel"
       >
         <slot name="caret">
-          <chevron-down-icon class="w-5 h-5" />
+          <chevron-down-icon class="w-4 h-4" />
         </slot>
       </button>
 
       <ul
-          class="dropdown-content menu bg-base-100 rounded-box shadow z-1 border border-base-300"
+          class="dropdown-content menu w-fit bg-base-100 rounded-box shadow z-1 border border-base-300"
           :class="menuClasses"
           tabindex="0"
           role="menu"
@@ -56,6 +58,9 @@ const props = withDefaults(
     menuSize?: 'sm' | 'md';
     menuWidthClass?: string;
     mainTooltip?: string;
+    mainType?: string;
+    mainLoading?: boolean;
+    mainDisabled?: boolean;
     caretAriaLabel?: string;
     closeOnItemClick?: boolean;
   }>(),
@@ -68,6 +73,8 @@ const props = withDefaults(
     menuSize: 'sm',
     menuWidthClass: 'w-56',
     mainTooltip: '',
+    mainLoading: false,
+    mainDisabled: false,
     caretAriaLabel: '',
     closeOnItemClick: true,
   },

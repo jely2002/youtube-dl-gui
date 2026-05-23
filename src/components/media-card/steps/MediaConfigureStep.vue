@@ -87,8 +87,8 @@ const isSizeLoading = ref(false);
 const optionsStore = useMediaOptionsStore();
 const expandedOptionsType = computed(() => settingsStore.settings.appearance.expandedOptions);
 const showExpandedOptions = computed(() => expandedOptionsType.value === 'encodings' || expandedOptionsType.value === 'tracks');
-const unavailableTrackSuffix = computed(() => t('common.unavailableForSelectedResolution'));
-const availableTrackPrefix = computed(() => t('common.availableInResolutions'));
+const unavailableTrackSuffix = computed(() => t('media.steps.configure.tracks.unavailableForSelectedResolution'));
+const availableTrackPrefix = computed(() => t('media.steps.configure.tracks.availableInResolutions'));
 
 const failedItemDisplay = computed(() => {
   return group?.errored > 0 ? t('media.steps.configure.metadata.failedCount', { amount: group?.errored }) : '';

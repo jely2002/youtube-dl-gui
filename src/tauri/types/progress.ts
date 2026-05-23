@@ -54,6 +54,8 @@ export enum ProgressStage {
   initializing = 'initializing',
   downloading = 'downloading',
   merging = 'merging',
+  remuxing = 'remuxing',
+  reencoding = 'reencoding',
   finalizing = 'finalizing',
 }
 
