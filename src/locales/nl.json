@@ -16,13 +16,11 @@
     "emptySearch": "Geen resultaten gevonden.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
-    "availableInResolutions": "Available in",
     "video": "video",
     "unknown": "onbekend",
     "confirm": "Bevestigen",
     "best": "Beste",
-    "resume": "Hervatten",
-    "unavailableForSelectedResolution": "Unavailable for selected resolution"
+    "resume": "Hervatten"
   },
   "layout": {
     "header": {
@@ -236,6 +234,8 @@
           }
         },
         "tracks": {
+          "availableInResolutions": "Beschikbaar in",
+          "unavailableForSelectedResolution": "Niet beschikbaar voor de geselecteerde resolutie",
           "audioSelect": {
             "noFormats": "Geen audiosporen",
             "placeholder": "Audiospoor",
@@ -276,11 +276,22 @@
           "initializing": "Initialiseren",
           "downloading": "Downloaden",
           "merging": "Samenvoegen",
+          "remuxing": "Remuxen",
+          "reencoding": "Hercoderen",
           "finalizing": "Afronden"
         },
         "metadata": {
           "eta": "Resterend: {eta}",
           "speed": "Snelheid: {speed}"
+        }
+      },
+      "paused": {
+        "progress": "Download gepauzeerd — {percentage}%",
+        "progressList": "Download gepauzeerd — {percentage}% — {done} van {total}",
+        "indeterminate": "Download gepauzeerd",
+        "metadata": {
+          "eta": "Resterend: {eta}",
+          "etaItems": "Resterend: {n} item | Resterend: {n} items"
         }
       },
       "done": {
@@ -295,15 +306,6 @@
         "report": "Rapporteren",
         "showFull": "Bekijk log",
         "signIn": "Inloggen"
-      },
-      "paused": {
-        "progress": "Download gepauzeerd — {percentage}%",
-        "progressList": "Download gepauzeerd — {percentage}% — {done} van {total}",
-        "indeterminate": "Download gepauzeerd",
-        "metadata": {
-          "eta": "Resterend: {eta}",
-          "etaItems": "Resterend: {n} item | Resterend: {n} items"
-        }
       }
     },
     "card": {
@@ -313,9 +315,9 @@
         "retry": "Probeer download opnieuw",
         "download": "Los downloaden",
         "preferences": "Downloadvoorkeuren",
-        "metadata": "Toon meer informatie",
         "pause": "Download pauzeren",
-        "resume": "Download hervatten"
+        "resume": "Download hervatten",
+        "metadata": "Toon meer informatie"
       },
       "toasts": {
         "retry": "De video wordt opnieuw gedownload.",
@@ -456,6 +458,13 @@
       "label": "Resetten",
       "confirm": "Klik nogmaals"
     },
+    "tabs": {
+      "downloads": "Downloads",
+      "app": "App",
+      "network": "Netwerk",
+      "system": "Systeem",
+      "about": "Over"
+    },
     "performance": {
       "legend": "Prestaties",
       "legendLabel": "Bepaal hoeveel systeembronnen worden gebruikt.",
@@ -518,8 +527,8 @@
         "chapter": "Hoofdstuk",
         "startAt": "Vanaf",
         "stopAt": "Tot",
-        "allChapters": "Alle hoofdstukken",
         "invalidHint": "Ongeldige timestamps worden genegeerd.",
+        "allChapters": "Alle hoofdstukken",
         "errors": {
           "invalid": "Voer een geldige tijd in.",
           "beforeStart": "De eindtijd moet na de starttijd liggen.",
@@ -534,14 +543,34 @@
         "label": "Ondertitels toevoegen:",
         "link": "Ondertitels instellen"
       },
-      "policy": {
-        "label": "Conversiemodus:",
-        "hint": "Als het bestand niet overeenkomt met je gekozen formaat kan het worden omgezet. Overslaan: snelst, maar formaat kan afwijken. Converteren als mogelijk: past alleen de container aan. Altijd converteren: gebruikt altijd het gekozen formaat maar kost meer tijd en CPU",
+      "keepOriginalStreams": {
+        "label": "Oorspronkelijke streams behouden",
+        "hint": "Voorkomt hercodering, tenzij dit nodig is voor verdere verwerking."
+      },
+      "postprocess": {
+        "label": "Video verwerking:",
+        "hint": "Wordt uitgevoerd nadat de download klaar is.",
+        "reencodeWarning": "Deze optie hercodeert en kan lang duren.",
+        "keepOriginalStreamsConflict": "Deze optie vereist hercodering. Schakel ‘Oorspronkelijke streams behouden’ uit om deze te gebruiken.",
+        "mp42RequiresMp4": "Deze optie vereist MP4-uitvoer.",
         "options": {
-          "never": "Conversie overslaan",
-          "remuxOnly": "Converteren als mogelijk (aanbevolen)",
-          "allowReencode": "Altijd converteren (trager)"
+          "none": "Geen",
+          "fps30": "Hercodeer naar 30 fps",
+          "mp42": "Stel MP4-brand in op mp42",
+          "custom": "Aangepast"
         }
+      },
+      "postprocessMode": {
+        "label": "Aangepaste verwerkingsmodus:",
+        "hint": "Kies of aangepaste ffmpeg-argumenten tijdens remuxen of tijdens hercoderen worden uitgevoerd.",
+        "options": {
+          "remux": "Uitvoeren tijdens remuxen",
+          "reencode": "Uitvoeren tijdens hercoderen"
+        }
+      },
+      "postprocessArgs": {
+        "label": "Geavanceerde ffmpeg-args:",
+        "hint": "Alleen voor gevorderden. Splits argumenten met spaties; aanhalingstekens blijven behouden."
       },
       "tabs": {
         "audio": {
@@ -549,7 +578,7 @@
           "label": "Audio",
           "format": {
             "label": "Audioformaat:",
-            "hint": "Conversiemodus bepaalt of dit formaat ook echt wordt toegepast",
+            "hint": "Kies het gewenste formaat voor audio.",
             "options": {
               "mp3": "MP3 (aanbevolen)",
               "m4a": "M4A",
@@ -559,6 +588,13 @@
               "wav": "WAV",
               "flac": "FLAC"
             }
+          },
+          "postprocess": {
+            "label": "Audio verwerking:",
+            "options": {
+              "none": "Geen",
+              "custom": "Aangepast"
+            }
           }
         },
         "video": {
@@ -566,7 +602,7 @@
           "label": "Video",
           "container": {
             "label": "Videoformaat:",
-            "hint": "Conversiemodus bepaalt of dit formaat ook echt wordt toegepast",
+            "hint": "Kies het gewenste formaat voor video.",
             "options": {
               "mp4": "MP4",
               "mkv": "MKV"
@@ -827,10 +863,6 @@
         "shortMessage": "Aanmelding vereist",
         "message": "Je moet je aanmelden om deze inhoud te bekijken."
       },
-      "signInRequiredForBotDetection": {
-        "shortMessage": "Aanmelding vereist",
-        "message": "Meld je aan om te bevestigen dat je geen bot bent."
-      },
       "membersOnly": {
         "shortMessage": "Alleen voor leden",
         "message": "Deze video is alleen beschikbaar voor kanaalleden."
@@ -890,6 +922,10 @@
       "unableToConnectToProxy": {
         "shortMessage": "Proxyverbinding mislukt",
         "message": "Kan geen verbinding maken met de proxy. Controleer de proxy-instellingen."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "Aanmelden vereist",
+        "message": "Meld je aan om te bevestigen dat je geen bot bent."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist niet beschikbaar",
@@ -964,7 +1000,7 @@
   "about": {
     "title": "Over deze app",
     "credit": "Gemaakt met ❤ door jely2002 & bijdragers",
-    "poweredBy": "Aangedreven door open source:",
+    "poweredBy": "Mogelijk gemaakt door open source:",
     "viewLicenses": "Licenties bekijken",
     "version": "Versie: {version}",
     "links": {

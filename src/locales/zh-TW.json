@@ -16,13 +16,11 @@
     "emptySearch": "找不到結果。",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
-    "availableInResolutions": "Available in",
     "video": "影片",
     "unknown": "未知",
     "confirm": "確認",
     "best": "最佳",
-    "resume": "繼續",
-    "unavailableForSelectedResolution": "Unavailable for selected resolution"
+    "resume": "繼續"
   },
   "layout": {
     "header": {
@@ -236,6 +234,8 @@
           }
         },
         "tracks": {
+          "availableInResolutions": "可用於",
+          "unavailableForSelectedResolution": "所選解析度無法使用",
           "audioSelect": {
             "noFormats": "沒有音軌",
             "placeholder": "音軌",
@@ -276,6 +276,8 @@
           "initializing": "正在初始化",
           "downloading": "正在下載",
           "merging": "正在合併",
+          "remuxing": "正在重封裝",
+          "reencoding": "正在重新編碼",
           "finalizing": "正在清理"
         },
         "metadata": {
@@ -456,6 +458,13 @@
       "label": "重設",
       "confirm": "再按一次以重設"
     },
+    "tabs": {
+      "downloads": "下載",
+      "app": "應用",
+      "network": "網路",
+      "system": "系統",
+      "about": "關於"
+    },
     "performance": {
       "legend": "效能",
       "legendLabel": "設定系統資源的使用量。",
@@ -518,8 +527,8 @@
         "chapter": "章節",
         "startAt": "開始於",
         "stopAt": "結束於",
-        "allChapters": "所有章節",
         "invalidHint": "無效的時間戳會被忽略。",
+        "allChapters": "所有章節",
         "errors": {
           "invalid": "請輸入有效時間。",
           "beforeStart": "結束時間必須晚於開始時間。",
@@ -534,14 +543,34 @@
         "label": "加入字幕:",
         "link": "設定字幕"
       },
-      "policy": {
-        "label": "轉換模式:",
-        "hint": "若下載的檔案與選取的格式不相符，可能需要轉換。略過轉換: 最快，可能忽略所選格式。可轉換時轉換: 嘗試不重新編碼只更換容器 (建議)。需要時轉換: 一律使用所選格式，但較慢且使用更多 CPU。",
+      "keepOriginalStreams": {
+        "label": "保留原始串流",
+        "hint": "除非所選後處理需要，否則避免更換容器或重新編碼。"
+      },
+      "postprocess": {
+        "label": "影片後處理：",
+        "hint": "會在下載完成後執行。",
+        "reencodeWarning": "此選項會重新編碼，可能需要較長時間。",
+        "keepOriginalStreamsConflict": "此選項需要重新編碼。請停用「保留原始串流」後再使用。",
+        "mp42RequiresMp4": "此選項需要 MP4 輸出。",
         "options": {
-          "never": "略過轉換",
-          "remuxOnly": "可轉換時轉換 (建議)",
-          "allowReencode": "需要時轉換 (較慢)"
+          "none": "無",
+          "fps30": "重新編碼為 30 fps",
+          "mp42": "將 MP4 品牌設為 mp42",
+          "custom": "自訂"
         }
+      },
+      "postprocessMode": {
+        "label": "自訂後處理模式：",
+        "hint": "選擇自訂 ffmpeg 參數要在重封裝或重新編碼期間執行。",
+        "options": {
+          "remux": "於重封裝期間執行",
+          "reencode": "於重新編碼期間執行"
+        }
+      },
+      "postprocessArgs": {
+        "label": "進階 ffmpeg 參數：",
+        "hint": "僅限進階使用者。請以空格分隔參數；引號會被保留。"
       },
       "tabs": {
         "audio": {
@@ -549,7 +578,7 @@
           "label": "音訊",
           "format": {
             "label": "音訊格式:",
-            "hint": "選擇偏好的音訊格式。是否實際轉換取決於轉換模式。",
+            "hint": "選擇偏好的音訊格式。",
             "options": {
               "mp3": "MP3 (建議)",
               "m4a": "M4A",
@@ -559,6 +588,13 @@
               "wav": "WAV",
               "flac": "FLAC"
             }
+          },
+          "postprocess": {
+            "label": "音訊後處理：",
+            "options": {
+              "none": "無",
+              "custom": "自訂"
+            }
           }
         },
         "video": {
@@ -566,7 +602,7 @@
           "label": "影片",
           "container": {
             "label": "影片格式:",
-            "hint": "選擇偏好的影片格式。是否實際轉換取決於轉換模式。",
+            "hint": "選擇偏好的影片容器格式。",
             "options": {
               "mp4": "MP4",
               "mkv": "MKV"
@@ -827,10 +863,6 @@
         "shortMessage": "需要登入",
         "message": "您需要登入才能檢視此內容。"
       },
-      "signInRequiredForBotDetection": {
-        "shortMessage": "需要登入",
-        "message": "登入以確認您不是機器人。"
-      },
       "membersOnly": {
         "shortMessage": "僅限會員",
         "message": "此影片僅限頻道會員觀看。"
@@ -890,6 +922,10 @@
       "unableToConnectToProxy": {
         "shortMessage": "Proxy 連線失敗",
         "message": "無法連線至 Proxy。請檢查 Proxy 設定。"
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "需要登入",
+        "message": "登入以確認您不是機器人。"
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "播放清單不可用",

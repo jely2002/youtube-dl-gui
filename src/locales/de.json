@@ -16,13 +16,11 @@
     "emptySearch": "Keine Ergebnisse gefunden.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
-    "availableInResolutions": "Available in",
     "video": "Video",
     "unknown": "Unbekannt",
     "confirm": "Bestätigen",
     "best": "Beste",
-    "resume": "Fortsetzen",
-    "unavailableForSelectedResolution": "Unavailable for selected resolution"
+    "resume": "Fortsetzen"
   },
   "layout": {
     "header": {
@@ -236,6 +234,8 @@
           }
         },
         "tracks": {
+          "availableInResolutions": "Verfügbar in",
+          "unavailableForSelectedResolution": "Für die ausgewählte Auflösung nicht verfügbar",
           "audioSelect": {
             "noFormats": "Keine Audiospuren",
             "placeholder": "Audiospur",
@@ -276,11 +276,22 @@
           "initializing": "Initialisieren",
           "downloading": "Herunterladen",
           "merging": "Zusammenführen",
+          "remuxing": "Remuxen",
+          "reencoding": "Neu kodieren",
           "finalizing": "Aufräumen"
         },
         "metadata": {
           "eta": "Verbleibende Zeit: {eta}",
           "speed": "Geschwindigkeit: {speed}"
+        }
+      },
+      "paused": {
+        "progress": "Download pausiert — {percentage}%",
+        "progressList": "Download pausiert — {percentage}% — {done} von {total}",
+        "indeterminate": "Download pausiert",
+        "metadata": {
+          "eta": "Verbleibend: {eta}",
+          "etaItems": "Verbleibend: {n} Element | Verbleibend: {n} Elemente"
         }
       },
       "done": {
@@ -295,15 +306,6 @@
         "report": "Melden",
         "showFull": "Logs ansehen",
         "signIn": "Anmelden"
-      },
-      "paused": {
-        "progress": "Download pausiert — {percentage}%",
-        "progressList": "Download pausiert — {percentage}% — {done} von {total}",
-        "indeterminate": "Download pausiert",
-        "metadata": {
-          "eta": "Verbleibend: {eta}",
-          "etaItems": "Verbleibend: {n} Element | Verbleibend: {n} Elemente"
-        }
       }
     },
     "card": {
@@ -313,9 +315,9 @@
         "retry": "Download erneut versuchen",
         "download": "Einzeln herunterladen",
         "preferences": "Download-Einstellungen",
-        "metadata": "Metadaten anzeigen",
         "pause": "Download pausieren",
-        "resume": "Download fortsetzen"
+        "resume": "Download fortsetzen",
+        "metadata": "Metadaten anzeigen"
       },
       "toasts": {
         "retry": "Download wird erneut versucht.",
@@ -456,6 +458,13 @@
       "label": "Zurücksetzen",
       "confirm": "Zum Zurücksetzen erneut klicken"
     },
+    "tabs": {
+      "downloads": "Downloads",
+      "app": "App",
+      "network": "Netzwerk",
+      "system": "System",
+      "about": "Info"
+    },
     "performance": {
       "legend": "Leistung",
       "legendLabel": "Lege fest, wie viele Systemressourcen verwendet werden.",
@@ -518,8 +527,8 @@
         "chapter": "Kapitel",
         "startAt": "Start",
         "stopAt": "Ende",
-        "allChapters": "Alle Kapitel",
         "invalidHint": "Ungültige Zeitstempel werden ignoriert.",
+        "allChapters": "Alle Kapitel",
         "errors": {
           "invalid": "Gültige Zeit eingeben.",
           "beforeStart": "Die Endzeit muss nach der Startzeit liegen.",
@@ -534,14 +543,34 @@
         "label": "Untertitel hinzufügen:",
         "link": "Untertitel konfigurieren"
       },
-      "policy": {
-        "label": "Konvertierungsmodus:",
-        "hint": "Wenn die heruntergeladene Datei nicht bereits deinem gewählten Format entspricht, muss sie ggf. konvertiert werden. Konvertierung überspringen: am schnellsten, kann dein gewähltes Format ignorieren. Wenn möglich konvertieren: versucht den Container ohne erneutes Kodieren zu ändern. Wenn nötig konvertieren: verwendet immer das gewählte Format, ist aber langsamer und benötigt mehr CPU.",
+      "keepOriginalStreams": {
+        "label": "Originalspuren behalten",
+        "hint": "Vermeidet Container-Wechsel und Neu-Kodierung, außer eine gewählte Nachbearbeitung erfordert es."
+      },
+      "postprocess": {
+        "label": "Video-Nachbearbeitung:",
+        "hint": "Wird nach dem Download ausgeführt.",
+        "reencodeWarning": "Diese Option kodiert neu. Das kann lange dauern.",
+        "keepOriginalStreamsConflict": "Diese Option erfordert eine Neu-Kodierung. Deaktiviere „Originalspuren behalten“, um sie zu verwenden.",
+        "mp42RequiresMp4": "Diese Option erfordert MP4-Ausgabe.",
         "options": {
-          "never": "Konvertierung überspringen",
-          "remuxOnly": "Wenn möglich konvertieren (empfohlen)",
-          "allowReencode": "Wenn nötig konvertieren (langsamer)"
+          "none": "Keine",
+          "fps30": "Auf 30 fps neu kodieren",
+          "mp42": "MP4-Brand auf mp42 setzen",
+          "custom": "Benutzerdefiniert"
         }
+      },
+      "postprocessMode": {
+        "label": "Modus für benutzerdefinierte Nachbearbeitung:",
+        "hint": "Wähle, ob benutzerdefinierte ffmpeg-Argumente beim Remuxen oder beim Neu-Kodieren ausgeführt werden.",
+        "options": {
+          "remux": "Beim Remuxen ausführen",
+          "reencode": "Beim Neu-Kodieren ausführen"
+        }
+      },
+      "postprocessArgs": {
+        "label": "Erweiterte ffmpeg-Argumente:",
+        "hint": "Nur für Fortgeschrittene. Argumente mit Leerzeichen trennen; Anführungszeichen bleiben erhalten."
       },
       "tabs": {
         "audio": {
@@ -549,7 +578,7 @@
           "label": "Audio",
           "format": {
             "label": "Audioformat:",
-            "hint": "Wähle das bevorzugte Audioformat. Der Konvertierungsmodus entscheidet, ob die Datei tatsächlich konvertiert wird.",
+            "hint": "Bevorzugtes Audioformat wählen.",
             "options": {
               "mp3": "MP3 (empfohlen)",
               "m4a": "M4A",
@@ -559,6 +588,13 @@
               "wav": "WAV",
               "flac": "FLAC"
             }
+          },
+          "postprocess": {
+            "label": "Audio-Nachbearbeitung:",
+            "options": {
+              "none": "Keine",
+              "custom": "Benutzerdefiniert"
+            }
           }
         },
         "video": {
@@ -566,7 +602,7 @@
           "label": "Video",
           "container": {
             "label": "Videoformat:",
-            "hint": "Wähle das bevorzugte Videoformat. Der Konvertierungsmodus entscheidet, ob die Datei tatsächlich konvertiert wird.",
+            "hint": "Bevorzugten Videocontainer wählen.",
             "options": {
               "mp4": "MP4",
               "mkv": "MKV"
@@ -827,10 +863,6 @@
         "shortMessage": "Anmeldung erforderlich",
         "message": "Du musst dich anmelden, um diese Inhalte anzusehen."
       },
-      "signInRequiredForBotDetection": {
-        "shortMessage": "Anmeldung erforderlich",
-        "message": "Melde dich an, um zu bestätigen, dass du kein Bot bist."
-      },
       "membersOnly": {
         "shortMessage": "Nur für Mitglieder",
         "message": "Dieses Video ist nur für Kanalmitglieder verfügbar."
@@ -890,6 +922,10 @@
       "unableToConnectToProxy": {
         "shortMessage": "Proxy-Verbindung fehlgeschlagen",
         "message": "Verbindung zum Proxy nicht möglich. Prüfe die Proxy-Einstellungen."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "Anmeldung erforderlich",
+        "message": "Melde dich an, um zu bestätigen, dass du kein Bot bist."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Playlist nicht verfügbar",

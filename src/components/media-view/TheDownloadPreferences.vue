@@ -93,8 +93,8 @@ const selectedTracks = computed({
   },
 });
 const selectedTrackType = computed(() => selectedOptions.value?.trackType ?? TrackType.both);
-const unavailableTrackSuffix = computed(() => t('common.unavailableForSelectedResolution'));
-const availableTrackPrefix = computed(() => t('common.availableInResolutions'));
+const unavailableTrackSuffix = computed(() => t('media.steps.configure.tracks.unavailableForSelectedResolution'));
+const availableTrackPrefix = computed(() => t('media.steps.configure.tracks.availableInResolutions'));
 const {
   audioCodecOptions,
   videoCodecOptions,

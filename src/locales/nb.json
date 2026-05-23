@@ -16,13 +16,11 @@
     "emptySearch": "Ingen resultater funnet.",
     "parenthesis": "({content})",
     "divide": "{left} / {right}",
-    "availableInResolutions": "Available in",
     "video": "video",
     "unknown": "ukjent",
     "confirm": "Bekreft",
     "best": "Best",
-    "resume": "Fortsett",
-    "unavailableForSelectedResolution": "Unavailable for selected resolution"
+    "resume": "Fortsett"
   },
   "layout": {
     "header": {
@@ -236,6 +234,8 @@
           }
         },
         "tracks": {
+          "availableInResolutions": "Tilgjengelig i",
+          "unavailableForSelectedResolution": "Utilgjengelig for valgt oppløsning",
           "audioSelect": {
             "noFormats": "Ingen lydspor",
             "placeholder": "Lydspor",
@@ -276,11 +276,22 @@
           "initializing": "Initialiserer",
           "downloading": "Laster ned",
           "merging": "Slår sammen",
+          "remuxing": "Remuxer",
+          "reencoding": "Omkoder",
           "finalizing": "Rydder opp"
         },
         "metadata": {
           "eta": "Estimert tid: {eta}",
           "speed": "Hastighet: {speed}"
+        }
+      },
+      "paused": {
+        "progress": "Nedlasting pauset — {percentage}%",
+        "progressList": "Nedlasting pauset — {percentage}% — {done} av {total}",
+        "indeterminate": "Nedlasting pauset",
+        "metadata": {
+          "eta": "Gjenstår: {eta}",
+          "etaItems": "Gjenstår: {n} element | Gjenstår: {n} elementer"
         }
       },
       "done": {
@@ -295,15 +306,6 @@
         "report": "Rapporter",
         "showFull": "Se logger",
         "signIn": "Logg inn"
-      },
-      "paused": {
-        "progress": "Nedlasting pauset — {percentage}%",
-        "progressList": "Nedlasting pauset — {percentage}% — {done} av {total}",
-        "indeterminate": "Nedlasting pauset",
-        "metadata": {
-          "eta": "Gjenstår: {eta}",
-          "etaItems": "Gjenstår: {n} element | Gjenstår: {n} elementer"
-        }
       }
     },
     "card": {
@@ -313,9 +315,9 @@
         "retry": "Prøv nedlasting på nytt",
         "download": "Last ned individuelt",
         "preferences": "Nedlastingsinnstillinger",
-        "metadata": "Vis metadata",
         "pause": "Sett nedlasting på pause",
-        "resume": "Fortsett nedlasting"
+        "resume": "Fortsett nedlasting",
+        "metadata": "Vis metadata"
       },
       "toasts": {
         "retry": "Prøver nedlasting på nytt.",
@@ -456,6 +458,13 @@
       "label": "Tilbakestill",
       "confirm": "Klikk igjen for å tilbakestille"
     },
+    "tabs": {
+      "downloads": "Nedlasting",
+      "app": "App",
+      "network": "Nettverk",
+      "system": "System",
+      "about": "Om"
+    },
     "performance": {
       "legend": "Ytelse",
       "legendLabel": "Konfigurer hvor mange systemressurser som brukes.",
@@ -518,8 +527,8 @@
         "chapter": "Kapittel",
         "startAt": "Start",
         "stopAt": "Stopp",
-        "allChapters": "Alle kapitler",
         "invalidHint": "Ugyldige tidsstempler blir ignorert.",
+        "allChapters": "Alle kapitler",
         "errors": {
           "invalid": "Skriv inn en gyldig tid.",
           "beforeStart": "Stopptiden må være etter starttiden.",
@@ -534,14 +543,34 @@
         "label": "Legg til undertekster:",
         "link": "Konfigurer undertekster"
       },
-      "policy": {
-        "label": "Konverteringsmodus:",
-        "hint": "Hvis den nedlastede filen ikke allerede samsvarer med det valgte formatet, kan det hende den må konverteres. Hopp over konvertering: raskest, kan ignorere valgt format. Konverter om mulig: prøver å endre beholder uten re-koding. Konverter om nødvendig: bruker alltid valgt format, men er tregere og bruker mer CPU.",
+      "keepOriginalStreams": {
+        "label": "Behold originalstrømmene",
+        "hint": "Unngår containerbytte og omkoding, med mindre valgt etterbehandling krever det."
+      },
+      "postprocess": {
+        "label": "Videoetterbehandling:",
+        "hint": "Kjøres etter at nedlastingen er ferdig.",
+        "reencodeWarning": "Dette valget omkoder og kan ta en stund.",
+        "keepOriginalStreamsConflict": "Dette valget krever omkoding. Slå av «Behold originalstrømmene» for å bruke det.",
+        "mp42RequiresMp4": "Dette valget krever MP4-utdata.",
         "options": {
-          "never": "Hopp over konvertering",
-          "remuxOnly": "Konverter om mulig (anbefalt)",
-          "allowReencode": "Konverter om nødvendig (tregere)"
+          "none": "Ingen",
+          "fps30": "Kod om til 30 fps",
+          "mp42": "Sett MP4-brand til mp42",
+          "custom": "Tilpasset"
         }
+      },
+      "postprocessMode": {
+        "label": "Tilpasset etterbehandlingsmodus:",
+        "hint": "Velg om tilpassede ffmpeg-argumenter skal kjøres under remuxing eller omkoding.",
+        "options": {
+          "remux": "Kjør under remuxing",
+          "reencode": "Kjør under omkoding"
+        }
+      },
+      "postprocessArgs": {
+        "label": "Avanserte ffmpeg-argumenter:",
+        "hint": "Kun for avanserte brukere. Skill argumenter med mellomrom; anførselstegn beholdes."
       },
       "tabs": {
         "audio": {
@@ -549,7 +578,7 @@
           "label": "Lyd",
           "format": {
             "label": "Lydformat:",
-            "hint": "Velg foretrukket lydformat. Konverteringsmodus avgjør om filen faktisk vil bli konvertert.",
+            "hint": "Velg ønsket lydformat.",
             "options": {
               "mp3": "MP3 (anbefalt)",
               "m4a": "M4A",
@@ -559,6 +588,13 @@
               "wav": "WAV",
               "flac": "FLAC"
             }
+          },
+          "postprocess": {
+            "label": "Lydetterbehandling:",
+            "options": {
+              "none": "Ingen",
+              "custom": "Tilpasset"
+            }
           }
         },
         "video": {
@@ -566,7 +602,7 @@
           "label": "Video",
           "container": {
             "label": "Videoformat:",
-            "hint": "Velg foretrukket videoformat. Konverteringsmodus avgjør om filen faktisk vil bli konvertert.",
+            "hint": "Velg ønsket videobeholder.",
             "options": {
               "mp4": "MP4",
               "mkv": "MKV"
@@ -827,10 +863,6 @@
         "shortMessage": "Innlogging kreves",
         "message": "Du må logge inn for å se dette innholdet."
       },
-      "signInRequiredForBotDetection": {
-        "shortMessage": "Innlogging kreves",
-        "message": "Logg inn for å bekrefte at du ikke er en bot."
-      },
       "membersOnly": {
         "shortMessage": "Kun tilgjengelig for medlemmer",
         "message": "Denne videoen er kun tilgjengelig for kanalmedlemmer."
@@ -890,6 +922,10 @@
       "unableToConnectToProxy": {
         "shortMessage": "Proxy-tilkobling mislyktes",
         "message": "Kunne ikke koble til proxyen. Sjekk proxyinnstillingene."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "Innlogging kreves",
+        "message": "Logg inn for å bekrefte at du ikke er en bot."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Spilleliste utilgjengelig",
