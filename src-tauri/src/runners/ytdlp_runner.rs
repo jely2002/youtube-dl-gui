@@ -219,6 +219,7 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
+  #[allow(clippy::question_mark)]
   pub fn try_with_output_args(
     mut self,
     format_options: &FormatOptions,
