@@ -78,7 +78,7 @@ const save = async () => {
     }
     toastStore.showToast(t('auth.toasts.saved'), { style: 'success' });
   } catch (e) {
-    toastStore.showToast(t('auth.toasts.error', { error: e as string }), { style: 'error' });
+    toastStore.showToast(t('auth.toasts.error', { error: e }), { style: 'error' });
   } finally {
     isSaving.value = false;
   }
