@@ -14,6 +14,7 @@ use tokio::sync::watch;
 
 #[derive(Debug)]
 pub enum YtdlpDownloadError {
+  InvalidArguments(String),
   InvalidDiagnosticRules(String),
   SpawnFailed(String),
   RunnerError(String),
@@ -24,6 +25,7 @@ pub enum YtdlpDownloadError {
 impl fmt::Display for YtdlpDownloadError {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
+      Self::InvalidArguments(e) => write!(f, "Invalid yt-dlp arguments: {e}"),
       Self::InvalidDiagnosticRules(e) => write!(f, "Invalid diagnostic rules: {e}"),
       Self::SpawnFailed(e) => write!(f, "Failed to spawn yt-dlp: {e}"),
       Self::RunnerError(e) => write!(f, "yt-dlp runner error: {e}"),
@@ -46,18 +48,39 @@ pub async fn run_ytdlp_download(
     .with_subtitle_args(entry.overrides.as_ref())
     .with_sponsorblock_args(entry.overrides.as_ref())
     .with_format_args(&entry.format, entry.overrides.as_ref())
-    .with_input_args(entry.overrides.as_ref())
-    .with_output_args(&entry.format, entry.overrides.as_ref())
-    .with_location_args(
-      &entry.format.track_type,
-      &entry.template_context,
-      entry.overrides.as_ref(),
-    )
-    .with_url(&entry.url);
+    .with_input_args(entry.overrides.as_ref());
+  let runner = match runner.try_with_output_args(&entry.format, entry.overrides.as_ref()) {
+    Ok(runner) => runner,
+    Err(err) => {
+      emit_internal_fatal(
+        &app,
+        &entry,
+        format!("Invalid download configuration: {err}"),
+        Some(err.clone()),
+      );
+      return Err(YtdlpDownloadError::InvalidArguments(err));
+    }
+  }
+  .with_location_args(
+    &entry.format.track_type,
+    &entry.template_context,
+    entry.overrides.as_ref(),
+  )
+  .with_url(&entry.url);
 
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
-  let matcher = DiagnosticMatcher::from_json(RULES_JSON)
-    .map_err(|e| YtdlpDownloadError::InvalidDiagnosticRules(e.to_string()))?;
+  let matcher = match DiagnosticMatcher::from_json(RULES_JSON) {
+    Ok(matcher) => matcher,
+    Err(err) => {
+      emit_internal_fatal(
+        &app,
+        &entry,
+        format!("Invalid diagnostic rules: {err}"),
+        Some(err.to_string()),
+      );
+      return Err(YtdlpDownloadError::InvalidDiagnosticRules(err.to_string()));
+    }
+  };
 
   let error_parser = YtdlpErrorParser::new(&entry.id, &entry.group_id, matcher);
   let partial_download_duration_secs = entry
@@ -75,7 +98,17 @@ pub async fn run_ytdlp_download(
     partial_download_duration_secs,
   );
 
-  let (mut rx, child) = runner.spawn().map_err(YtdlpDownloadError::SpawnFailed)?;
+  let (mut rx, child) = match runner.spawn() {
+    Ok(result) => result,
+    Err(err) => {
+      let message = format!("Failed to spawn yt-dlp: {err}");
+      let _ = app.emit(
+        "media_fatal",
+        MediaFatalPayload::with_exit(entry.group_id.clone(), entry.id.clone(), 1, message),
+      );
+      return Err(YtdlpDownloadError::SpawnFailed(err));
+    }
+  };
   let mut cancel_rx = subscribe_group(&entry.group_id);
 
   loop {
@@ -131,15 +164,7 @@ pub async fn run_ytdlp_download(
           }
           YtdlpCommandEvent::Error(err) => {
             let msg = format!("Download failed for group {}: {}", entry.group_id, err);
-            let _ = app.emit(
-              "media_fatal",
-              MediaFatalPayload::internal(
-                entry.id.clone(),
-                entry.group_id.clone(),
-                msg.clone(),
-                Some(err.clone()),
-              ),
-            );
+            emit_internal_fatal(&app, &entry, msg.clone(), Some(err.clone()));
 
             return Err(YtdlpDownloadError::RunnerError(err));
           }
@@ -155,7 +180,25 @@ pub async fn run_ytdlp_download(
     }
   }
 
+  emit_internal_fatal(
+    &app,
+    &entry,
+    "yt-dlp event stream ended unexpectedly".to_string(),
+    None,
+  );
   Err(YtdlpDownloadError::EventStreamEnded)
+}
+
+fn emit_internal_fatal(
+  app: &AppHandle,
+  entry: &DownloadEntry,
+  message: String,
+  details: Option<String>,
+) {
+  let _ = app.emit(
+    "media_fatal",
+    MediaFatalPayload::internal(entry.group_id.clone(), entry.id.clone(), message, details),
+  );
 }
 
 fn is_cancelled_now(cancel_rx: &watch::Receiver<bool>) -> bool {
