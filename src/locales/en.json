@@ -532,6 +532,10 @@
         "label": "Add title & artist info:",
         "hint": "Save metadata such as title, uploader/artist and description inside the file."
       },
+      "preciseCuts": {
+        "label": "Precise cut:",
+        "hint": "Cuts at exact frames instead of nearby keyframes. Very slow.\nEnable only if normal cuts are wrong, garbled, or have black/missing segments."
+      },
       "partialDownload": {
         "legend": "Partial download",
         "hint": "Set timestamps or chapters to download only some parts.",
@@ -688,7 +692,11 @@
         "placeholder": "Select 1 or more parts to mark with a chapter."
       },
       "apiUrl": {
-        "label": "API URL"
+        "label": "API URL:"
+      },
+      "preciseCuts": {
+        "label": "Precise cut:",
+        "hint": "Makes SponsorBlock removals and partial downloads cut at exact frames. Very slow.\nEnable only if normal cuts are wrong, garbled, or have black/missing segments."
       },
       "parts": {
         "sponsor": {
