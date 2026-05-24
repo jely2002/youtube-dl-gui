@@ -569,7 +569,7 @@
         "label": "Post elaborazione video:",
         "hint": "La post-elaborazione viene eseguita a download.",
         "reencodeWarning": "Questa opzione verrà ricodificata, è pesante e può richiedere molto tempo.",
-        "keepOriginalStreamsConflict": "Questa opzione richiede la ricodifica. Per suarla disabilita 'Mantieni stream originali'.",
+        "keepOriginalStreamsConflict": "Questa opzione richiede la ricodifica. Per usarla disabilita 'Mantieni stream originali'.",
         "mp42RequiresMp4": "Questa opzione richiede un output mp4.",
         "options": {
           "none": "Nessuna",
@@ -684,7 +684,7 @@
       "legend": "SponsorBlock",
       "legendLabel": "Rimuovi o contrassegna parti di un video.",
       "removeParts": {
-        "label": "Parti da rimuovere",
+        "label": "Parti da rimuovere:",
         "placeholder": "Seleziona una o più parti del video da rimuovere."
       },
       "markParts": {
