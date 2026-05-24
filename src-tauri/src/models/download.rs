@@ -1,3 +1,4 @@
+use crate::models::SubtitleInventory;
 use crate::runners::template_context::TemplateContext;
 use serde::{Deserialize, Serialize};
 
@@ -84,6 +85,8 @@ pub struct DownloadItem {
   pub id: String,
   pub url: String,
   pub format: FormatOptions,
+  #[serde(default)]
+  pub subtitle_inventory: Option<SubtitleInventory>,
   #[serde(default)]
   pub overrides: Option<DownloadOverrides>,
   pub template_context: TemplateContext,
@@ -187,6 +190,8 @@ pub struct SubtitleOverrides {
   pub enabled: Option<bool>,
   pub include_auto_generated: Option<bool>,
   pub languages: Option<Vec<String>>,
+  pub manual_languages: Option<Vec<String>>,
+  pub auto_languages: Option<Vec<String>>,
   pub format_preference: Option<Vec<String>>,
   pub embed_subtitles: Option<bool>,
 }

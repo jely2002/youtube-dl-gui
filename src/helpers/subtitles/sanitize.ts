@@ -1,5 +1,4 @@
-export const DEFAULT_SUBTITLE_FORMAT_ORDER = ['srt', 'vtt', 'ass', 'ttml', 'json'] as const;
-const DEFAULT_LANGUAGES = ['en'];
+export const DEFAULT_SUBTITLE_FORMAT_ORDER = ['srt', 'vtt', 'ass', 'ttml', 'json3'] as const;
 
 const pushUnique = (target: string[], seen: Set<string>, value: string) => {
   if (!seen.has(value)) {
@@ -13,7 +12,8 @@ export function sanitizeSubtitleFormats(formats: string[]): string[] {
   const seenInputs = new Set<string>();
 
   for (const raw of formats) {
-    const value = raw.trim().toLowerCase();
+    const normalizedRaw = raw.trim().toLowerCase();
+    const value = normalizedRaw === 'json' ? 'json3' : normalizedRaw;
     if (!value) {
       continue;
     }
@@ -68,5 +68,5 @@ export function sanitizeSubtitleLanguages(languages: string[]): string[] {
     }
   }
 
-  return sanitized.length ? sanitized : [...DEFAULT_LANGUAGES];
+  return sanitized;
 }

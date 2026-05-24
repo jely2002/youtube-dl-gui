@@ -1,6 +1,8 @@
 use super::parse_single;
 use super::test_support::{base_info, make_format};
+use crate::models::ytdlp::YtdlpSubtitle;
 use crate::models::{ParsedMedia, YtdlpInfo};
+use std::collections::HashMap;
 
 #[test]
 fn parse_single_extracts_rich_tracks() {
@@ -78,6 +80,8 @@ fn parse_single_without_formats_adds_auto_tracks() {
     thumbnail: None,
     thumbnails: None,
     formats: None,
+    subtitles: None,
+    automatic_captions: None,
     type_: Some("video".into()),
     is_live: Some(false),
     entries: None,
@@ -96,4 +100,56 @@ fn parse_single_without_formats_adds_auto_tracks() {
   assert_eq!(single.audio_tracks[0].id, "auto");
   assert_eq!(single.video_tracks.len(), 1);
   assert_eq!(single.video_tracks[0].id, "auto");
+}
+
+#[test]
+fn parse_single_collects_subtitle_inventory() {
+  let mut info = base_info(vec![make_format(
+    Some("en"),
+    Some(10),
+    Some("main"),
+    Some("1080p"),
+    Some(2.0),
+    Some("avc1"),
+    Some("aac"),
+  )]);
+  info.subtitles = Some(HashMap::from([
+    (
+      "en".into(),
+      vec![YtdlpSubtitle {
+        ext: Some("vtt".into()),
+      }],
+    ),
+    (
+      "de".into(),
+      vec![YtdlpSubtitle {
+        ext: Some("srt".into()),
+      }],
+    ),
+  ]));
+  info.automatic_captions = Some(HashMap::from([
+    (
+      "en-orig".into(),
+      vec![YtdlpSubtitle {
+        ext: Some("json3".into()),
+      }],
+    ),
+    (
+      "fr".into(),
+      vec![YtdlpSubtitle {
+        ext: Some("json3".into()),
+      }],
+    ),
+    ("es".into(), vec![]),
+  ]));
+
+  let ParsedMedia::Single(single) = parse_single(info, "id-subs".into()) else {
+    panic!("expected single");
+  };
+
+  assert_eq!(single.subtitle_inventory.manual_languages, vec!["de", "en"]);
+  assert_eq!(
+    single.subtitle_inventory.auto_languages,
+    vec!["en-orig", "fr"]
+  );
 }
