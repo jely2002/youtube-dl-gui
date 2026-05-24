@@ -18,6 +18,7 @@
     "rust:clippy": "cargo clippy --manifest-path=src-tauri/Cargo.toml --all-features --all-targets -- -D warnings",
     "rust:fmt": "cargo fmt --manifest-path=src-tauri/Cargo.toml --all",
     "rust:lint": "npm run rust:fmt && npm run rust:clippy",
+    "rust:test": "cargo test --manifest-path=src-tauri/Cargo.toml --all-features --all-targets",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "test": "npm run test:unit && npm run test:e2e",

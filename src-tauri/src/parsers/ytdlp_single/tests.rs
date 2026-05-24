@@ -1,7 +1,7 @@
 use super::parse_single;
 use super::test_support::{base_info, make_format};
-use crate::models::{ParsedMedia, YtdlpInfo};
 use crate::models::ytdlp::YtdlpSubtitle;
+use crate::models::{ParsedMedia, YtdlpInfo};
 use std::collections::HashMap;
 
 #[test]
@@ -148,5 +148,8 @@ fn parse_single_collects_subtitle_inventory() {
   };
 
   assert_eq!(single.subtitle_inventory.manual_languages, vec!["de", "en"]);
-  assert_eq!(single.subtitle_inventory.auto_languages, vec!["en-orig", "fr"]);
+  assert_eq!(
+    single.subtitle_inventory.auto_languages,
+    vec!["en-orig", "fr"]
+  );
 }

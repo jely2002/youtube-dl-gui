@@ -13,7 +13,6 @@ use crate::state::preferences_models::Preferences;
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
 use std::collections::{HashMap, HashSet};
-use std::io;
 use std::io::{BufReader, Read};
 use std::path::PathBuf;
 use std::process::{Command, ExitStatus, Stdio};
@@ -150,15 +149,10 @@ impl<'a> YtdlpRunner<'a> {
     subtitle_inventory: Option<&SubtitleInventory>,
   ) -> Self {
     let subtitle_overrides = overrides.and_then(|value| value.subtitles.as_ref());
-    let subtitle_settings = resolve_with_patch(
-      &self.cfg.subtitles,
-      subtitle_overrides,
-    );
-    if let Some(subtitle_args) = build_subtitle_args(
-      &subtitle_settings,
-      subtitle_overrides,
-      subtitle_inventory,
-    ) {
+    let subtitle_settings = resolve_with_patch(&self.cfg.subtitles, subtitle_overrides);
+    if let Some(subtitle_args) =
+      build_subtitle_args(&subtitle_settings, subtitle_overrides, subtitle_inventory)
+    {
       self.args.extend(subtitle_args);
     }
 
@@ -371,7 +365,7 @@ impl YtdlpChild {
   }
 }
 
-fn spawn_reader<R: io::Read + Send + 'static>(
+fn spawn_reader<R: Read + Send + 'static>(
   reader: R,
   tx: UnboundedSender<YtdlpCommandEvent>,
   is_stdout: bool,
@@ -427,9 +421,7 @@ fn build_subtitle_args(
     return None;
   }
 
-  let Some(resolution) = resolve_subtitle_request(settings, overrides, subtitle_inventory) else {
-    return None;
-  };
+  let resolution = resolve_subtitle_request(settings, overrides, subtitle_inventory)?;
 
   let mut args = vec!["--write-subs".into()];
 
@@ -497,7 +489,13 @@ fn sanitize_subtitle_formats(formats: &[String]) -> Vec<String> {
 
   let normalized_inputs = sanitize_vec(formats)
     .into_iter()
-    .map(|value| if value == "json" { "json3".to_string() } else { value })
+    .map(|value| {
+      if value == "json" {
+        "json3".to_string()
+      } else {
+        value
+      }
+    })
     .fold(Vec::new(), |mut acc, value| {
       if !acc.contains(&value) {
         acc.push(value);
@@ -590,8 +588,8 @@ fn resolve_subtitle_request(
   let preferred_automatic = preferred_auto_languages(&automatic);
 
   if let Some(overrides) = overrides {
-    let has_source_specific_languages
-      = overrides.manual_languages.is_some() || overrides.auto_languages.is_some();
+    let has_source_specific_languages =
+      overrides.manual_languages.is_some() || overrides.auto_languages.is_some();
     if has_source_specific_languages {
       let manual_languages = resolve_manual_override_languages(
         overrides.manual_languages.as_deref().unwrap_or(&[]),
@@ -719,7 +717,10 @@ fn resolve_auto_subtitle_languages(
   let mut seen = HashSet::new();
 
   for language in requested {
-    let Some(candidate) = automatic_by_base.get(&subtitle_language_base(language)).cloned() else {
+    let Some(candidate) = automatic_by_base
+      .get(&subtitle_language_base(language))
+      .cloned()
+    else {
       continue;
     };
 
@@ -750,7 +751,9 @@ fn preferred_auto_languages(automatic: &[String]) -> Vec<AutoLanguagePreference>
     .into_iter()
     .filter(|(_, (_, orig))| !has_orig_variant || orig.is_some())
     .map(|(base, (plain, orig))| AutoLanguagePreference {
-      request: plain.or(orig).expect("auto language group should not be empty"),
+      request: plain
+        .or(orig)
+        .expect("auto language group should not be empty"),
       base,
     })
     .collect::<Vec<_>>();
@@ -955,8 +958,8 @@ mod tests {
       ..Default::default()
     };
 
-    let args =
-      build_subtitle_args(&settings, None, Some(&inventory(&[], &["en", "en-orig"]))).expect("args");
+    let args = build_subtitle_args(&settings, None, Some(&inventory(&[], &["en", "en-orig"])))
+      .expect("args");
     assert_eq!(args[4], "--write-auto-subs");
     assert_eq!(args[8], "en");
   }
@@ -987,7 +990,6 @@ mod tests {
     };
 
     assert!(build_subtitle_args(&settings, None, None).is_none());
-
   }
 
   #[test]
@@ -1061,7 +1063,7 @@ mod tests {
     };
 
     assert_eq!(
-      build_sponsorblock_args(&settings, false),
+      build_sponsorblock_args(&settings),
       vec!["--sponsorblock-mark", "sponsor"]
     );
   }
