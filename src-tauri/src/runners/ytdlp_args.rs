@@ -365,8 +365,10 @@ pub fn build_output_args(
   if partial_download.is_some_and(|value| value.section.is_some()) {
     // Embedding chapters breaks the video when downloading a section, as the chapter metadata track is longer than the video.
     args.push("--no-embed-chapters".into());
-    // Ensure we don't get black screens or missing audio.
-    args.push("--force-keyframes-at-cuts".into());
+    if output_settings.precise_cuts {
+      // Ensure we don't get black screens or missing audio when precise cuts are explicitly requested.
+      args.push("--force-keyframes-at-cuts".into());
+    }
   }
 
   Ok(args)
@@ -1216,6 +1218,34 @@ mod tests {
 
     assert!(args.contains(&"--download-sections".to_string()));
     assert!(args.contains(&"--no-embed-chapters".to_string()));
+    assert!(!args.contains(&"--force-keyframes-at-cuts".to_string()));
+    assert_eq!(
+      args
+        .windows(2)
+        .filter(|pair| pair[0] == "--download-sections")
+        .map(|pair| pair[1].clone())
+        .collect::<Vec<_>>(),
+      vec!["*00:01:30-00:02:45".to_string()],
+    );
+  }
+
+  #[test]
+  fn partial_download_precise_cuts_add_force_keyframes_at_cuts() {
+    let format_options = make_video_format_options(Some(720), Some(60));
+    let settings = OutputSettings {
+      precise_cuts: true,
+      ..OutputSettings::default()
+    };
+    let partial_download = PartialDownloadOverride {
+      section: Some(DownloadSection {
+        id: "a".into(),
+        start: "00:01:30".into(),
+        end: "00:02:45".into(),
+      }),
+    };
+
+    let args = build_output_args(&format_options, &settings, Some(&partial_download)).unwrap();
+
     assert!(args.contains(&"--force-keyframes-at-cuts".to_string()));
     assert_eq!(
       args

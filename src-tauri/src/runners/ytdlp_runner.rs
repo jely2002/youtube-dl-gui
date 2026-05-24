@@ -164,7 +164,14 @@ impl<'a> YtdlpRunner<'a> {
       &self.cfg.sponsor_block,
       overrides.and_then(|value| value.sponsor_block.as_ref()),
     );
-    self.args.extend(build_sponsorblock_args(&sponsor_block));
+    let output_settings = resolve_with_patch(
+      &self.cfg.output,
+      overrides.and_then(|value| value.output.as_ref()),
+    );
+    self.args.extend(build_sponsorblock_args(
+      &sponsor_block,
+      output_settings.precise_cuts,
+    ));
 
     self
   }
@@ -462,7 +469,7 @@ fn normalize_extractor_args(value: &str) -> Option<String> {
   }
 }
 
-fn build_sponsorblock_args(settings: &SponsorBlockSettings) -> Vec<String> {
+fn build_sponsorblock_args(settings: &SponsorBlockSettings, precise_cuts: bool) -> Vec<String> {
   let mut args = Vec::new();
 
   if let Some(api_url) = &settings.api_url {
@@ -473,8 +480,10 @@ fn build_sponsorblock_args(settings: &SponsorBlockSettings) -> Vec<String> {
     args.extend_from_slice(&[
       "--sponsorblock-remove".into(),
       settings.remove_parts.join(","),
-      "--force-keyframes-at-cuts".into(),
     ]);
+    if precise_cuts {
+      args.push("--force-keyframes-at-cuts".into());
+    }
   }
 
   if !settings.mark_parts.is_empty() {
@@ -1039,18 +1048,31 @@ mod tests {
   }
 
   #[test]
-  fn sponsorblock_remove_adds_force_keyframes_at_cuts() {
+  fn sponsorblock_remove_omits_force_keyframes_at_cuts_by_default() {
     let settings = SponsorBlockSettings {
       remove_parts: vec!["sponsor".into(), "intro".into()],
       ..Default::default()
     };
 
     assert_eq!(
-      build_sponsorblock_args(&settings),
+      build_sponsorblock_args(&settings, false),
+      vec!["--sponsorblock-remove", "sponsor,intro"]
+    );
+  }
+
+  #[test]
+  fn sponsorblock_remove_precise_cuts_add_force_keyframes_at_cuts() {
+    let settings = SponsorBlockSettings {
+      remove_parts: vec!["sponsor".into(), "intro".into()],
+      ..Default::default()
+    };
+
+    assert_eq!(
+      build_sponsorblock_args(&settings, true),
       vec![
         "--sponsorblock-remove",
         "sponsor,intro",
-        "--force-keyframes-at-cuts",
+        "--force-keyframes-at-cuts"
       ]
     );
   }
@@ -1063,7 +1085,7 @@ mod tests {
     };
 
     assert_eq!(
-      build_sponsorblock_args(&settings),
+      build_sponsorblock_args(&settings, false),
       vec!["--sponsorblock-mark", "sponsor"]
     );
   }

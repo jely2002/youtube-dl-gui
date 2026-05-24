@@ -76,6 +76,7 @@ export interface OutputSettings {
   addMetadata: boolean;
   addThumbnail: boolean;
   saveThumbnail: boolean;
+  preciseCuts: boolean;
   downloadDir: string | null;
   fileNameTemplate: string;
   audioFileNameTemplate: string;
@@ -185,6 +186,7 @@ export const defaultOutputSettings: OutputSettings = {
   addMetadata: true,
   addThumbnail: true,
   saveThumbnail: false,
+  preciseCuts: false,
   downloadDir: null,
   fileNameTemplate: '%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
   audioFileNameTemplate: '%(title).200s-(%(abr)dk).%(ext)s',

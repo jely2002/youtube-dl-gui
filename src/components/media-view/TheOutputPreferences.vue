@@ -6,7 +6,7 @@
         :badge="t('media.preferences.badges.override')"
         :label="t('media.preferences.labels.output')"
       >
-        <output-settings-editor v-model="outputState" id-prefix="override">
+        <output-settings-editor v-model="outputState" id-prefix="override" :show-precise-cuts="false">
           <template #video-extra>
             <label class="mb-2 mt-4 font-semibold" for="video-file-template">
               {{ t('location.filename.outputFormat.label') }}
@@ -59,6 +59,20 @@
                 :duration-seconds="durationSeconds"
               />
             </base-fieldset>
+            <div class="flex max-w-xl flex-col gap-1">
+              <label class="font-semibold" for="override-precise-cuts">
+                {{ t('settings.output.preciseCuts.label') }}
+              </label>
+              <input
+                id="override-precise-cuts"
+                v-model="outputState.preciseCuts"
+                type="checkbox"
+                class="toggle toggle-primary my-1"
+              />
+              <p class="label whitespace-pre-line">
+                {{ t('settings.output.preciseCuts.hint') }}
+              </p>
+            </div>
           </template>
         </output-settings-editor>
       </base-fieldset>
@@ -133,6 +147,7 @@ const outputOverride = computed<DownloadOverrides['output'] | undefined>(() => {
       addThumbnail: outputState.value.addThumbnail,
       saveThumbnail: outputState.value.saveThumbnail,
       addMetadata: outputState.value.addMetadata,
+      preciseCuts: outputState.value.preciseCuts,
       restrictFilenames: outputState.value.restrictFilenames,
     },
     {
@@ -141,6 +156,7 @@ const outputOverride = computed<DownloadOverrides['output'] | undefined>(() => {
       addThumbnail: global.addThumbnail,
       saveThumbnail: global.saveThumbnail,
       addMetadata: global.addMetadata,
+      preciseCuts: global.preciseCuts,
       restrictFilenames: global.restrictFilenames,
     },
   );

@@ -179,6 +179,21 @@
       </p>
     </div>
 
+    <div v-if="showPreciseCuts" class="mb-4 flex flex-col gap-1">
+      <label class="font-semibold" :for="fieldId('precise-cuts')">
+        {{ t('settings.output.preciseCuts.label') }}
+      </label>
+      <input
+          :id="fieldId('precise-cuts')"
+          type="checkbox"
+          v-model="outputState.preciseCuts"
+          class="toggle toggle-primary my-1"
+      />
+      <p class="label whitespace-pre-line">
+        {{ t('settings.output.preciseCuts.hint') }}
+      </p>
+    </div>
+
     <slot name="after-common" />
   </div>
 </template>
@@ -205,6 +220,11 @@ const { idPrefix } = defineProps({
     type: String,
     required: false,
     default: '',
+  },
+  showPreciseCuts: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
 });
 
