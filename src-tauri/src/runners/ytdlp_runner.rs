@@ -168,9 +168,10 @@ impl<'a> YtdlpRunner<'a> {
       &self.cfg.output,
       overrides.and_then(|value| value.output.as_ref()),
     );
-    self
-      .args
-      .extend(build_sponsorblock_args(&sponsor_block, output_settings.precise_cuts));
+    self.args.extend(build_sponsorblock_args(
+      &sponsor_block,
+      output_settings.precise_cuts,
+    ));
 
     self
   }
@@ -476,7 +477,10 @@ fn build_sponsorblock_args(settings: &SponsorBlockSettings, precise_cuts: bool) 
   }
 
   if !settings.remove_parts.is_empty() {
-    args.extend_from_slice(&["--sponsorblock-remove".into(), settings.remove_parts.join(",")]);
+    args.extend_from_slice(&[
+      "--sponsorblock-remove".into(),
+      settings.remove_parts.join(","),
+    ]);
     if precise_cuts {
       args.push("--force-keyframes-at-cuts".into());
     }
@@ -1065,7 +1069,11 @@ mod tests {
 
     assert_eq!(
       build_sponsorblock_args(&settings, true),
-      vec!["--sponsorblock-remove", "sponsor,intro", "--force-keyframes-at-cuts"]
+      vec![
+        "--sponsorblock-remove",
+        "sponsor,intro",
+        "--force-keyframes-at-cuts"
+      ]
     );
   }
 
@@ -1077,7 +1085,7 @@ mod tests {
     };
 
     assert_eq!(
-      build_sponsorblock_args(&settings),
+      build_sponsorblock_args(&settings, false),
       vec!["--sponsorblock-mark", "sponsor"]
     );
   }

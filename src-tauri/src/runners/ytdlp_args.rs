@@ -1232,8 +1232,10 @@ mod tests {
   #[test]
   fn partial_download_precise_cuts_add_force_keyframes_at_cuts() {
     let format_options = make_video_format_options(Some(720), Some(60));
-    let mut settings = OutputSettings::default();
-    settings.precise_cuts = true;
+    let settings = OutputSettings {
+      precise_cuts: true,
+      ..OutputSettings::default()
+    };
     let partial_download = PartialDownloadOverride {
       section: Some(DownloadSection {
         id: "a".into(),
