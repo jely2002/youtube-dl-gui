@@ -21,6 +21,7 @@ struct FormatAggregate {
   abr: Option<u64>,
   height: Option<u64>,
   fps: Option<u64>,
+  audio_codecs: HashMap<String, MediaCodec>,
   video_codecs: HashMap<String, MediaCodec>,
   audio_track_ids: HashSet<String>,
   video_track_ids: HashSet<String>,
@@ -78,11 +79,17 @@ pub(super) fn process_formats(formats: &[YtdlpFormat]) -> ProcessedFormats {
           abr: group.abr,
           height: group.height,
           fps: group.fps,
+          audio_codecs: HashMap::new(),
           video_codecs: HashMap::new(),
           audio_track_ids: HashSet::new(),
           video_track_ids: HashSet::new(),
         });
 
+      if let Some(ac) = &fmt.acodec {
+        if ac != "none" {
+          insert_codec(&mut entry.audio_codecs, ac);
+        }
+      }
       if let Some(vc) = &fmt.vcodec {
         if is_real_video_codec(vc) {
           insert_codec(&mut entry.video_codecs, vc);
@@ -114,6 +121,7 @@ pub(super) fn process_formats(formats: &[YtdlpFormat]) -> ProcessedFormats {
   let mut media_formats: Vec<MediaFormat> = aggregates
     .into_values()
     .map(|agg| {
+      let audio_codecs = sort_codecs(agg.audio_codecs.into_values().collect());
       let video_codecs = sort_codecs(agg.video_codecs.into_values().collect());
       let mut audio_track_ids = agg.audio_track_ids.into_iter().collect::<Vec<_>>();
       audio_track_ids.sort();
@@ -125,6 +133,7 @@ pub(super) fn process_formats(formats: &[YtdlpFormat]) -> ProcessedFormats {
         abr: agg.abr,
         height: agg.height,
         fps: agg.fps,
+        audio_codecs,
         video_codecs,
         audio_track_ids,
         video_track_ids,
@@ -332,6 +341,8 @@ mod tests {
       .find(|fmt| fmt.abr == Some(128))
       .expect("128k");
     assert!(fmt128.height.is_none());
+    assert_eq!(fmt128.audio_codecs.len(), 1);
+    assert_eq!(fmt128.audio_codecs[0].id, "aac");
     assert!(fmt128
       .audio_track_ids
       .iter()
@@ -361,6 +372,7 @@ mod tests {
     }]);
 
     let fmt = processed.media_formats.first().expect("format");
+    assert!(fmt.audio_codecs.is_empty());
     assert!(fmt.audio_track_ids.is_empty());
     assert!(fmt.video_track_ids.is_empty());
     assert_eq!(processed.audio_tracks.len(), 1);
@@ -400,5 +412,95 @@ mod tests {
     assert!(processed.media_formats.is_empty());
     assert_eq!(processed.video_tracks.len(), 1);
     assert_eq!(processed.video_tracks[0].id, "auto");
+  }
+
+  #[test]
+  fn keeps_distinct_audio_codecs_per_audio_bitrate_group() {
+    let processed = process_formats(&[
+      make_group_format(GroupFormatSpec {
+        format_id: "49k-aac",
+        language: Some("en"),
+        language_preference: Some(10),
+        format_note: Some("audio"),
+        format: Some("audio"),
+        audio_channels: Some(2.0),
+        height: None,
+        fps: None,
+        abr: Some(49.0),
+        vcodec: Some("none"),
+        acodec: Some("mp4a.40.5"),
+        ext: Some("m4a"),
+      }),
+      make_group_format(GroupFormatSpec {
+        format_id: "50k-opus",
+        language: Some("en"),
+        language_preference: Some(10),
+        format_note: Some("audio"),
+        format: Some("audio"),
+        audio_channels: Some(2.0),
+        height: None,
+        fps: None,
+        abr: Some(50.0),
+        vcodec: Some("none"),
+        acodec: Some("opus"),
+        ext: Some("webm"),
+      }),
+      make_group_format(GroupFormatSpec {
+        format_id: "130k-aac",
+        language: Some("en"),
+        language_preference: Some(10),
+        format_note: Some("audio"),
+        format: Some("audio"),
+        audio_channels: Some(2.0),
+        height: None,
+        fps: None,
+        abr: Some(130.0),
+        vcodec: Some("none"),
+        acodec: Some("mp4a.40.2"),
+        ext: Some("m4a"),
+      }),
+      make_group_format(GroupFormatSpec {
+        format_id: "130k-opus",
+        language: Some("en"),
+        language_preference: Some(10),
+        format_note: Some("audio"),
+        format: Some("audio"),
+        audio_channels: Some(2.0),
+        height: None,
+        fps: None,
+        abr: Some(130.0),
+        vcodec: Some("none"),
+        acodec: Some("opus"),
+        ext: Some("webm"),
+      }),
+    ]);
+
+    let fmt49 = processed
+      .media_formats
+      .iter()
+      .find(|fmt| fmt.abr == Some(49))
+      .expect("49k");
+    assert_eq!(
+      fmt49
+        .audio_codecs
+        .iter()
+        .map(|codec| codec.id.as_str())
+        .collect::<Vec<_>>(),
+      vec!["mp4a.40.5"]
+    );
+
+    let fmt130 = processed
+      .media_formats
+      .iter()
+      .find(|fmt| fmt.abr == Some(130))
+      .expect("130k");
+    assert_eq!(
+      fmt130
+        .audio_codecs
+        .iter()
+        .map(|codec| codec.id.as_str())
+        .collect::<Vec<_>>(),
+      vec!["mp4a.40.2", "opus"]
+    );
   }
 }

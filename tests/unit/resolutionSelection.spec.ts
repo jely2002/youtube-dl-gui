@@ -52,6 +52,7 @@ describe('buildTrackOptions', () => {
       id: '1080p60',
       height: 1080,
       fps: 60,
+      audioCodecs: [],
       videoCodecs: [],
       audioTrackIds: ['lang:fr|channels:2'],
       videoTrackIds: ['lang:fr|channels:2'],
@@ -60,6 +61,7 @@ describe('buildTrackOptions', () => {
       id: '720p30',
       height: 720,
       fps: 30,
+      audioCodecs: [],
       videoCodecs: [],
       audioTrackIds: ['lang:fr|channels:2', 'lang:en|channels:2'],
       videoTrackIds: ['lang:fr|channels:2', 'lang:en|channels:2'],
@@ -88,6 +90,29 @@ describe('buildTrackOptions', () => {
       },
     ]);
   });
+
+  it('keeps tracks enabled when availability is unrestricted', () => {
+    const options = buildTrackOptions(
+      tracks,
+      undefined,
+      buildTrackResolutionLabels(formats, 'audioTrackIds'),
+      'Unavailable for selected resolution',
+      'Available in',
+    );
+
+    expect(options).toEqual([
+      {
+        value: 'lang:fr|channels:2',
+        label: 'French - 2ch',
+        disabled: false,
+      },
+      {
+        value: 'lang:en|channels:2',
+        label: 'English - 2ch',
+        disabled: false,
+      },
+    ]);
+  });
 });
 
 describe('matchDownloadOptionsToFormat', () => {
@@ -96,6 +121,7 @@ describe('matchDownloadOptionsToFormat', () => {
       id: '720p30',
       height: 720,
       fps: 30,
+      audioCodecs: [],
       videoCodecs: [{ id: 'avc1.64001f', label: 'H.264 High, Level 3.1' }],
       audioTrackIds: ['lang:en|channels:2'],
       videoTrackIds: ['lang:en|channels:2'],
@@ -103,6 +129,7 @@ describe('matchDownloadOptionsToFormat', () => {
     {
       id: '480k',
       abr: 480,
+      audioCodecs: [{ id: 'aac', label: 'AAC' }],
       videoCodecs: [{ id: 'aac', label: 'AAC' }],
       audioTrackIds: ['lang:fr|channels:2'],
       videoTrackIds: [],
@@ -113,6 +140,7 @@ describe('matchDownloadOptionsToFormat', () => {
     const options: DownloadOptions = { trackType: TrackType.audio };
     expect(matchDownloadOptionsToFormat(formats, options)).toEqual({
       id: 'best',
+      audioCodecs: [],
       videoCodecs: [],
       audioTrackIds: [],
       videoTrackIds: [],

@@ -23,6 +23,7 @@ pub struct MediaFormat {
   pub abr: Option<u64>,
   pub height: Option<u64>,
   pub fps: Option<u64>,
+  pub audio_codecs: Vec<MediaCodec>,
   pub video_codecs: Vec<MediaCodec>,
   pub audio_track_ids: Vec<String>,
   pub video_track_ids: Vec<String>,

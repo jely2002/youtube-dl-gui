@@ -147,6 +147,7 @@ const trackOptions = computed<SelectOption[]>(() => {
 
 const BEST_AUDIO_FORMAT: MediaFormat = Object.freeze({
   id: 'best',
+  audioCodecs: [],
   videoCodecs: [],
   audioTrackIds: [],
   videoTrackIds: [],
@@ -282,6 +283,7 @@ function matchByDownloadOptions(options: DownloadOptions): MediaFormat | undefin
     if (!options.height && !options.fps && !options.abr) {
       return {
         id: 'best',
+        audioCodecs: [],
         videoCodecs: [],
         audioTrackIds: [],
         videoTrackIds: [],

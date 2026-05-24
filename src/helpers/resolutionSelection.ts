@@ -26,6 +26,7 @@ export function matchDownloadOptionsToFormat(
     if (!options.height && !options.fps && !options.abr) {
       return {
         id: 'best',
+        audioCodecs: [],
         videoCodecs: [],
         audioTrackIds: [],
         videoTrackIds: [],
@@ -82,6 +83,7 @@ export function buildTrackOptions(
   unavailableSuffix: string,
   availableResolutionPrefix: string,
 ): SelectOption[] {
+  const isUnrestricted = availableTrackIds === undefined;
   const availableIds = new Set((availableTrackIds ?? []).map(id => id.trim()).filter(Boolean));
   const byId = new Map<string, { option: SelectOption; order: number; available: boolean }>();
 
@@ -89,7 +91,7 @@ export function buildTrackOptions(
     if (!track?.id || track.id === 'auto') return;
 
     const baseLabel = formatTrackLabel(track);
-    const available = availableIds.size === 0 ? false : availableIds.has(track.id);
+    const available = isUnrestricted || availableIds.has(track.id);
     const supportedResolutions = supportedTrackResolutions?.get(track.id) ?? [];
     const unavailableLabel = supportedResolutions.length
       ? `${availableResolutionPrefix} ${supportedResolutions.join(', ')}`

@@ -215,6 +215,7 @@ export interface MediaFormat {
   height?: number;
   abr?: number;
   fps?: number;
+  audioCodecs: MediaCodec[];
   videoCodecs: MediaCodec[];
   audioTrackIds?: string[];
   videoTrackIds?: string[];

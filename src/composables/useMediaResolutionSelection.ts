@@ -1,5 +1,5 @@
 import { computed, MaybeRefOrGetter, toValue } from 'vue';
-import { DownloadOptions, MediaCodec, MediaFormat, MediaTrack } from '../tauri/types/media';
+import { DownloadOptions, MediaCodec, MediaFormat, MediaTrack, TrackType } from '../tauri/types/media';
 import {
   buildCodecOptions,
   buildTrackOptions,
@@ -27,9 +27,22 @@ export function useMediaResolutionSelection(params: UseMediaResolutionSelectionP
       toValue(params.approximate) ?? false,
     ),
   );
+  const selectedTrackIds = computed(() =>
+    selectedFormat.value?.id === 'best' ? undefined : selectedFormat.value,
+  );
+  const selectedAudioCodecSource = computed(() => {
+    const options = toValue(params.selectedOptions);
+    if (options?.trackType !== TrackType.audio) {
+      return toValue(params.audioCodecs);
+    }
+    if (selectedFormat.value?.id === 'best') {
+      return toValue(params.audioCodecs);
+    }
+    return selectedFormat.value?.audioCodecs ?? toValue(params.audioCodecs);
+  });
 
   const audioCodecOptions = computed(() =>
-    buildCodecOptions(toValue(params.audioCodecs)),
+    buildCodecOptions(selectedAudioCodecSource.value),
   );
 
   const videoCodecOptions = computed(() =>
@@ -41,7 +54,7 @@ export function useMediaResolutionSelection(params: UseMediaResolutionSelectionP
   const audioTrackOptions = computed(() =>
     buildTrackOptions(
       toValue(params.audioTracks),
-      selectedFormat.value?.audioTrackIds,
+      selectedTrackIds.value?.audioTrackIds,
       buildTrackResolutionLabels(toValue(params.formats), 'audioTrackIds'),
       toValue(params.unavailableTrackSuffix),
       toValue(params.availableTrackPrefix),
@@ -51,7 +64,7 @@ export function useMediaResolutionSelection(params: UseMediaResolutionSelectionP
   const videoTrackOptions = computed(() =>
     buildTrackOptions(
       toValue(params.videoTracks),
-      selectedFormat.value?.videoTrackIds,
+      selectedTrackIds.value?.videoTrackIds,
       buildTrackResolutionLabels(toValue(params.formats), 'videoTrackIds'),
       toValue(params.unavailableTrackSuffix),
       toValue(params.availableTrackPrefix),

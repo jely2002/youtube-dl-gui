@@ -4,9 +4,9 @@ import { emit } from '@tauri-apps/api/event';
 import { MediaAddPayload, MediaFormat } from '../../../src/tauri/types/media';
 
 const sampleFormats: MediaFormat[] = [
-  { id: 'f1080', height: 1080, fps: 60, videoCodecs: [] },
-  { id: 'f720', height: 720, fps: 30, videoCodecs: [] },
-  { id: 'audio', abr: 120, videoCodecs: [] },
+  { id: 'f1080', height: 1080, fps: 60, audioCodecs: [], videoCodecs: [] },
+  { id: 'f720', height: 720, fps: 30, audioCodecs: [], videoCodecs: [] },
+  { id: 'audio', abr: 120, audioCodecs: [], videoCodecs: [] },
 ];
 
 export const mediaHandlers: Record<string, IPCHandler> = {
