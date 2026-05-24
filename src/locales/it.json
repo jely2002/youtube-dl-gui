@@ -759,7 +759,7 @@
       "trayEnabled": {
         "label": {
           "mac": "Visualizza icona nella barra dei menu",
-          "generic": "Visualiza icona nella barra di sistema"
+          "generic": "Visualizza icona nella barra di sistema"
         },
         "hint": {
           "mac": "Visualizza un'icona nella barra dei menu per un accesso rapido.",
@@ -767,12 +767,12 @@
         }
       },
       "minimiseToTray": {
-        "label": "Alla chiusura mninimizza nella barra sistema",
+        "label": "Alla chiusura minimizza nella barra sistema",
         "hint": "Chiudendo la finestra, l'app viene nascosta nella barra di sistema invece di essere chiusa."
       },
       "autoStart": {
         "label": "Avvio automatico",
-        "hint": "Esegui automaticamente Open Video Downloader all'avviuo sistema."
+        "hint": "Esegui automaticamente Open Video Downloader all'avvio sistema."
       },
       "autoStartMinimised": {
         "label": {
