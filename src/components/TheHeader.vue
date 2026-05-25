@@ -77,6 +77,7 @@ const submitUrl = () => {
   if (!urlToSubmit) return;
   void mediaStore.dispatchMediaInfoFetch(urlToSubmit);
   void router.push('/');
+  url.value = '';
 };
 
 onMounted(() => {
