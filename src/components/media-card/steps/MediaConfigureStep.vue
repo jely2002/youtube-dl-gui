@@ -172,11 +172,14 @@ watch(selectedOptions, () => {
       globalOptions,
     );
   }
+  const existingSize = selectedOptions.value
+    ? sizeStore.getSizeForGroup(group.id, selectedOptions.value)
+    : undefined;
   if (
     !group?.isCombined
     && settingsStore.settings.performance.autoLoadSize
     && selectedOptions.value
-    && !sizeStore.getSizeForGroup(group.id, selectedOptions.value)
+    && (!existingSize || existingSize.size == null)
   ) {
     loadSize();
   } else {
