@@ -25,6 +25,18 @@ const pinia = createPinia();
 pinia.use(createSentryPiniaPlugin());
 const app = createApp(App);
 
+if (import.meta.env.DEV) {
+  (globalThis as typeof globalThis & {
+    __OVD_DEBUG__?: {
+      pinia: typeof pinia;
+      getStore: (id: string) => unknown;
+    };
+  }).__OVD_DEBUG__ = {
+    pinia,
+    getStore: (id: string) => (pinia as typeof pinia & { _s: Map<string, unknown> })._s.get(id),
+  };
+}
+
 createSentry(app);
 
 if (__E2E__) {
