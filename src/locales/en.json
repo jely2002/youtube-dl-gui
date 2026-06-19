@@ -312,7 +312,12 @@
         "showFolder": "Show in folder",
         "open": "Open file",
         "openFirst": "Open first file",
-        "undeterminedLocation": "Download location could not be determined for this item."
+        "undeterminedLocation": "Download location could not be determined for this item.",
+        "audioQuality": {
+          "check": "Check audio quality",
+          "score": "Quality score: {score}/100",
+          "error": "Could not analyze audio quality"
+        }
       },
       "error": {
         "errorPrefix": "Error - {message}",

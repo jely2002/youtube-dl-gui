@@ -1,3 +1,4 @@
+mod audio_quality;
 mod binaries;
 mod commands;
 mod i18n;
@@ -165,6 +166,7 @@ pub fn run() {
       media_size,
       media_info,
       media_download,
+      media_check_audio_quality,
       group_cancel,
       logging_subscribe,
       logging_unsubscribe,

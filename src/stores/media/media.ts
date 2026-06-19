@@ -9,6 +9,7 @@ import { useMediaOptionsStore } from './options';
 import { DownloadOptions, MediaAddPayload, MediaItem, TrackType } from '../../tauri/types/media';
 import { useMediaSizeStore } from './size.ts';
 import { useMediaDiagnosticsStore } from './diagnostics.ts';
+import { useMediaAudioQualityStore } from './audioQuality.ts';
 import { useSettingsStore } from '../settings.ts';
 import { Group } from '../../tauri/types/group.ts';
 import { notify, notifyGroup } from '../../tauri/notifications';
@@ -22,6 +23,7 @@ export const useMediaStore = defineStore('media', () => {
   const optionsStore = useMediaOptionsStore();
   const sizeStore = useMediaSizeStore();
   const diagnosticsStore = useMediaDiagnosticsStore();
+  const audioQualityStore = useMediaAudioQualityStore();
   const settingsStore = useSettingsStore();
 
   function finalizePlaylistGroup(group: Group) {
@@ -249,6 +251,7 @@ export const useMediaStore = defineStore('media', () => {
     diagnosticsStore.removeDiagnostics(group.id);
     destinationStore.deleteDestinations(group.id);
     optionsStore.removeOptions(group.id);
+    audioQualityStore.removeResult(group.id);
     groupStore.cancelGroup(group.id);
     groupStore.deleteGroup(group.id);
   }

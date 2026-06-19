@@ -164,6 +164,17 @@ export type SubtitleInventory = {
   autoLanguages: string[];
 };
 
+export type AudioQualityResult = {
+  score: number;
+  passed: boolean;
+  sampleRate: number;
+  maxFrequencyHz: number;
+  dynamicRangeDb: number;
+  noiseFloorRms: number;
+  clippingDetected: boolean;
+  issues: string[];
+};
+
 export interface MediaAddPayload {
   groupId: string;
   total: number;
