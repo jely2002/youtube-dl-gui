@@ -321,7 +321,7 @@ fn audio_output_args_never_policy_produces_no_flags() {
 
   let expected: Vec<String> = vec![
     "--output-na-placeholder",
-    "None",
+    "",
     "--embed-thumbnail",
     "--add-metadata",
   ]
@@ -344,7 +344,7 @@ fn audio_output_args_allow_reencode_mp3_best() {
 
   let expected: Vec<String> = vec![
     "--output-na-placeholder",
-    "None",
+    "",
     "--audio-format",
     "mp3",
     "--audio-quality",
@@ -371,7 +371,7 @@ fn audio_output_args_allow_reencode_ogg() {
 
   let expected: Vec<String> = vec![
     "--output-na-placeholder",
-    "None",
+    "",
     "--audio-format",
     "ogg",
     "--audio-quality",
@@ -403,7 +403,7 @@ fn audio_output_args_custom_postprocess_adds_ffmpeg_args() {
     args,
     vec![
       "--output-na-placeholder",
-      "None",
+      "",
       "--audio-format",
       "mp3",
       "--audio-quality",
@@ -429,7 +429,7 @@ fn video_output_args_never_policy_produces_no_flags() {
 
   let expected: Vec<String> = vec![
     "--output-na-placeholder",
-    "None",
+    "",
     "--embed-thumbnail",
     "--add-metadata",
   ]
@@ -452,7 +452,7 @@ fn video_output_args_allow_reencode_remuxes_mp4() {
 
   let expected: Vec<String> = vec![
     "--output-na-placeholder",
-    "None",
+    "",
     "--merge-output-format",
     "mp4",
     "--remux-video",
@@ -479,7 +479,7 @@ fn video_output_args_allow_reencode_remuxes_mkv() {
 
   let expected: Vec<String> = vec![
     "--output-na-placeholder",
-    "None",
+    "",
     "--merge-output-format",
     "mkv",
     "--remux-video",
@@ -546,7 +546,7 @@ fn video_output_args_fps30_reencodes_when_allowed() {
     args,
     vec![
       "--output-na-placeholder",
-      "None",
+      "",
       "--recode-video",
       "mp4",
       "--postprocessor-args",
@@ -575,7 +575,7 @@ fn video_output_args_mp42_adds_brand_args_for_mp4_output() {
     args,
     vec![
       "--output-na-placeholder",
-      "None",
+      "",
       "--merge-output-format",
       "mp4",
       "--remux-video",
@@ -624,7 +624,7 @@ fn video_output_args_custom_preset_remuxes_with_explicit_mode() {
     args,
     vec![
       "--output-na-placeholder",
-      "None",
+      "",
       "--merge-output-format",
       "mp4",
       "--remux-video",
@@ -656,7 +656,7 @@ fn video_output_args_custom_preset_reencodes_when_explicit_mode_requires_it() {
     args,
     vec![
       "--output-na-placeholder",
-      "None",
+      "",
       "--recode-video",
       "mp4",
       "--postprocessor-args",
@@ -700,7 +700,7 @@ fn both_track_type_uses_video_policy_for_output() {
 
   let expected: Vec<String> = vec![
     "--output-na-placeholder",
-    "None",
+    "",
     "--merge-output-format",
     "mp4",
     "--remux-video",
