@@ -431,6 +431,10 @@
     "filename": {
       "legend": "Filename format",
       "legendLabel": "Select the filename that downloads will have.",
+      "reversePlaylistNumbering": {
+        "label": "Reverse playlist numbering:",
+        "hint": "Number playlist items from the end instead of the beginning."
+      },
       "formatPreset": {
         "label": "Filename preset:",
         "exampleLabel": "Example output:",

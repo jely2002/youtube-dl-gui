@@ -77,6 +77,7 @@ export interface OutputSettings {
   addThumbnail: boolean;
   saveThumbnail: boolean;
   preciseCuts: boolean;
+  reversePlaylistNumbering: boolean;
   downloadDir: string | null;
   fileNameTemplate: string;
   audioFileNameTemplate: string;
@@ -187,6 +188,7 @@ export const defaultOutputSettings: OutputSettings = {
   addThumbnail: true,
   saveThumbnail: false,
   preciseCuts: false,
+  reversePlaylistNumbering: false,
   downloadDir: null,
   fileNameTemplate: '%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
   audioFileNameTemplate: '%(title).200s-(%(abr)dk).%(ext)s',

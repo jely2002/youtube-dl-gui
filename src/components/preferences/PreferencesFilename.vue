@@ -21,7 +21,24 @@
             :example-label="t('location.filename.formatPreset.exampleLabel')"
             :restrict-filenames-label="t('location.filename.formatPreset.restrictFilenames.label')"
             :restrict-filenames-hint="t('location.filename.formatPreset.restrictFilenames.hint')"
-        />
+        >
+          <template #before-example>
+            <div class="mb-4 flex flex-col gap-1">
+              <label class="font-semibold" for="video-reverse-playlist-numbering">
+                {{ t('location.filename.reversePlaylistNumbering.label') }}
+              </label>
+              <input
+                  id="video-reverse-playlist-numbering"
+                  v-model="reversePlaylistNumbering"
+                  type="checkbox"
+                  class="toggle toggle-primary my-1"
+              />
+              <p class="label">
+                {{ t('location.filename.reversePlaylistNumbering.hint') }}
+              </p>
+            </div>
+          </template>
+        </format-preset-selector>
       </template>
 
       <template #audio>
@@ -37,7 +54,24 @@
             :example-label="t('location.filename.formatPreset.exampleLabel')"
             :restrict-filenames-label="t('location.filename.formatPreset.restrictFilenames.label')"
             :restrict-filenames-hint="t('location.filename.formatPreset.restrictFilenames.hint')"
-        />
+        >
+          <template #before-example>
+            <div class="mb-4 flex flex-col gap-1">
+              <label class="font-semibold" for="audio-reverse-playlist-numbering">
+                {{ t('location.filename.reversePlaylistNumbering.label') }}
+              </label>
+              <input
+                  id="audio-reverse-playlist-numbering"
+                  v-model="reversePlaylistNumbering"
+                  type="checkbox"
+                  class="toggle toggle-primary my-1"
+              />
+              <p class="label">
+                {{ t('location.filename.reversePlaylistNumbering.hint') }}
+              </p>
+            </div>
+          </template>
+        </format-preset-selector>
       </template>
     </base-tabbed-pane>
   </base-fieldset>
@@ -147,6 +181,13 @@ const restrictFilenames = computed<boolean>({
   get: () => settings.value.output.restrictFilenames ?? false,
   set(val) {
     settings.value.output.restrictFilenames = val;
+  },
+});
+
+const reversePlaylistNumbering = computed<boolean>({
+  get: () => settings.value.output.reversePlaylistNumbering ?? false,
+  set(val) {
+    settings.value.output.reversePlaylistNumbering = val;
   },
 });
 

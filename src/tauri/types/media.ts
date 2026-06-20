@@ -90,6 +90,7 @@ export type OutputOverrides = {
   addThumbnail?: boolean;
   saveThumbnail?: boolean;
   preciseCuts?: boolean;
+  reversePlaylistNumbering?: boolean;
   fileNameTemplate?: string;
   audioFileNameTemplate?: string;
   restrictFilenames?: boolean;
