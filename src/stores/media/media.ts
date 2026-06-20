@@ -6,13 +6,14 @@ import { useMediaGroupStore } from './group';
 import { useMediaDestinationStore } from './destination';
 import { useMediaProgressStore } from './progress';
 import { useMediaOptionsStore } from './options';
-import { DownloadOptions, MediaAddPayload, MediaItem, TrackType } from '../../tauri/types/media';
+import { DownloadOptions, DownloadOverrides, MediaAddPayload, MediaItem, TrackType } from '../../tauri/types/media';
 import { useMediaSizeStore } from './size.ts';
 import { useMediaDiagnosticsStore } from './diagnostics.ts';
 import { useSettingsStore } from '../settings.ts';
 import { Group } from '../../tauri/types/group.ts';
 import { notify, notifyGroup } from '../../tauri/notifications';
 import { NotificationKind } from '../../tauri/types/app';
+import { resolvePlaylistIndex } from '../../helpers/playlistNumbering.ts';
 
 export const useMediaStore = defineStore('media', () => {
   const groupStore = useMediaGroupStore();
@@ -157,7 +158,7 @@ export const useMediaStore = defineStore('media', () => {
           subtitleInventory: item.subtitleInventory,
           overrides,
           templateContext: {
-            values: buildTemplateContext(item, group),
+            values: buildTemplateContext(item, group, overrides),
           },
         })),
       });
@@ -192,9 +193,16 @@ export const useMediaStore = defineStore('media', () => {
     groupStore.cancelGroup(groupId);
   }
 
-  function buildTemplateContext(item: MediaItem, group: Group): Record<string, string | undefined> {
+  function buildTemplateContext(
+    item: MediaItem,
+    group: Group,
+    overrides?: DownloadOverrides,
+  ): Record<string, string | undefined> {
+    const reversePlaylistNumbering = overrides?.output?.reversePlaylistNumbering === true;
+    const playlistIndex = resolvePlaylistIndex(item.playlistIndex, group.playlistCount, reversePlaylistNumbering);
+
     return {
-      playlist_index: item.playlistIndex?.toString(),
+      playlist_index: playlistIndex?.toString(),
       playlist_id: group.playlistId ?? undefined,
       playlist_title: group.playlistTitle ?? undefined,
       playlist: group.playlistTitle ?? undefined,

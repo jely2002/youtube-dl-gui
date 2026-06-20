@@ -17,6 +17,21 @@
               type="text"
               class="input w-full"
             />
+
+            <div v-if="isPlaylistGroup" class="mt-4 flex flex-col gap-1">
+              <label class="font-semibold" for="override-video-reverse-playlist-numbering">
+                {{ t('location.filename.reversePlaylistNumbering.label') }}
+              </label>
+              <input
+                id="override-video-reverse-playlist-numbering"
+                v-model="outputState.reversePlaylistNumbering"
+                type="checkbox"
+                class="toggle toggle-primary my-1"
+              />
+              <p class="label">
+                {{ t('location.filename.reversePlaylistNumbering.hint') }}
+              </p>
+            </div>
           </template>
 
           <template #audio-extra>
@@ -29,6 +44,21 @@
               type="text"
               class="input w-full"
             />
+
+            <div v-if="isPlaylistGroup" class="mt-4 flex flex-col gap-1">
+              <label class="font-semibold" for="override-audio-reverse-playlist-numbering">
+                {{ t('location.filename.reversePlaylistNumbering.label') }}
+              </label>
+              <input
+                id="override-audio-reverse-playlist-numbering"
+                v-model="outputState.reversePlaylistNumbering"
+                type="checkbox"
+                class="toggle toggle-primary my-1"
+              />
+              <p class="label">
+                {{ t('location.filename.reversePlaylistNumbering.hint') }}
+              </p>
+            </div>
           </template>
 
           <template #after-common>
@@ -123,6 +153,10 @@ const durationSeconds = computed<number | undefined>(() => {
   return duration != null && duration > 0 ? duration : undefined;
 });
 const chapters = computed(() => groupStore.findGroupById(props.groupId)?.chapters ?? []);
+const isPlaylistGroup = computed(() => {
+  const group = groupStore.findGroupById(props.groupId);
+  return !!group?.playlistId || (group?.playlistCount ?? 0) > 1;
+});
 const resolvedOutput = computed(() => {
   const globalOutput = settingsStore.settings.output;
   const override = optionsStore.getOverrides(props.groupId)?.output;
@@ -148,6 +182,7 @@ const outputOverride = computed<DownloadOverrides['output'] | undefined>(() => {
       saveThumbnail: outputState.value.saveThumbnail,
       addMetadata: outputState.value.addMetadata,
       preciseCuts: outputState.value.preciseCuts,
+      reversePlaylistNumbering: outputState.value.reversePlaylistNumbering,
       restrictFilenames: outputState.value.restrictFilenames,
     },
     {
@@ -157,6 +192,7 @@ const outputOverride = computed<DownloadOverrides['output'] | undefined>(() => {
       saveThumbnail: global.saveThumbnail,
       addMetadata: global.addMetadata,
       preciseCuts: global.preciseCuts,
+      reversePlaylistNumbering: global.reversePlaylistNumbering,
       restrictFilenames: global.restrictFilenames,
     },
   );

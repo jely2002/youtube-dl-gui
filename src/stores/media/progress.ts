@@ -59,9 +59,16 @@ export const useMediaProgressStore = defineStore('media-progress', () => {
     const group = groupStore.findGroupById(payload.groupId);
     if (group.isCombined) {
       const items = Object.values(group.items);
-      const allItemsAreDone = !items.some(p => stateStore.getState(p.id) !== MediaState.done && !p.isLeader);
+      const allItemsAreTerminal = !items.some((item) => {
+        if (item.isLeader) return false;
+        const state = stateStore.getState(item.id);
+        return state !== MediaState.done && state !== MediaState.error;
+      });
+      const allItemsAreDone = !items.some(item => !item.isLeader && stateStore.getState(item.id) !== MediaState.done);
       if (allItemsAreDone) {
         void notifyGroup(NotificationKind.PlaylistFinished, group, {}, items.length);
+        stateStore.setGroupState(group.id, MediaState.done);
+      } else if (allItemsAreTerminal) {
         stateStore.setGroupState(group.id, MediaState.done);
       }
     } else {
@@ -86,7 +93,10 @@ export const useMediaProgressStore = defineStore('media-progress', () => {
       const itemProgress = progress.value[id];
       return sum + (itemProgress?.speedBps ?? 0);
     }, 0);
-    const done = itemIds.filter(id => stateStore.getState(id) === MediaState.done).length;
+    const done = itemIds.filter((id) => {
+      const state = stateStore.getState(id);
+      return state === MediaState.done || state === MediaState.error;
+    }).length;
     let downloading = itemIds.filter(id =>
       stateStore.getState(id) === MediaState.downloading
       || stateStore.getState(id) === MediaState.downloadingList

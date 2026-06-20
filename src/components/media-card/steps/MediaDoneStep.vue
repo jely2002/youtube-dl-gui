@@ -8,6 +8,9 @@
     >
       {{ t('media.steps.done.complete') }}
     </base-progress>
+    <p v-if="group.errored > 0" class="text-sm">
+      {{ t('media.steps.configure.metadata.items', { amount: group.total, failedCount: failedItemDisplay }) }}
+    </p>
     <div class="w-full flex gap-4">
       <div
           class="tooltip-bottom"
@@ -54,6 +57,10 @@ const { group } = defineProps({
 const groupDestination = computed(() => {
   const destination = destinationStore.getPrimaryDestination(group.id);
   return destination?.path;
+});
+
+const failedItemDisplay = computed(() => {
+  return group.errored > 0 ? t('media.steps.configure.metadata.failedCount', { amount: group.errored }) : '';
 });
 
 const openFile = async () => {

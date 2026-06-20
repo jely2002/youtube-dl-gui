@@ -76,17 +76,22 @@ fn video_only_selector(
     Some(language) => {
       let mut selectors: Vec<String> = language_candidates(language)
         .into_iter()
-        .flat_map(|lang| {
-          [
-            selector_filter.apply(&format!("bv*[language={lang}]")),
-            selector_filter.apply(&format!("b[language={lang}]")),
-          ]
-        })
+        .flat_map(|lang| selector_filter.bounded_variants(&format!("bv*[language={lang}]")))
         .collect();
-      selectors.extend([selector_filter.apply("bv"), selector_filter.apply("b")]);
+      selectors.extend(
+        language_candidates(language)
+          .into_iter()
+          .flat_map(|lang| selector_filter.bounded_variants(&format!("b[language={lang}]"))),
+      );
+      selectors.extend(selector_filter.bounded_variants("bv"));
+      selectors.extend(selector_filter.bounded_variants("b"));
       selectors.join("/")
     }
-    None => selector_filter.apply("bv"),
+    None => {
+      let mut selectors = selector_filter.bounded_variants("bv");
+      selectors.extend(selector_filter.bounded_variants("b"));
+      selectors.join("/")
+    }
   }
 }
 
@@ -100,13 +105,34 @@ fn combined_selector(
       .into_iter()
       .flat_map(|lang| {
         [
-          selector_filter.apply(&format!("b[language={lang}]")),
-          format!("{}+ba[language={lang}]", selector_filter.apply("bv*")),
-          format!("{}+ba[language={lang}]", selector_filter.apply("bv")),
+          selector_filter.apply_height_and_fps(&format!("b[language={lang}]")),
+          format!(
+            "{}+ba[language={lang}]",
+            selector_filter.apply_height_and_fps("bv*")
+          ),
+          format!(
+            "{}+ba[language={lang}]",
+            selector_filter.apply_height_and_fps("bv")
+          ),
+          selector_filter.apply_height(&format!("b[language={lang}]")),
+          format!(
+            "{}+ba[language={lang}]",
+            selector_filter.apply_height("bv*")
+          ),
+          format!("{}+ba[language={lang}]", selector_filter.apply_height("bv")),
+          selector_filter.apply_fps(&format!("b[language={lang}]")),
+          format!("{}+ba[language={lang}]", selector_filter.apply_fps("bv*")),
+          format!("{}+ba[language={lang}]", selector_filter.apply_fps("bv")),
         ]
       })
       .collect();
     selectors.extend([
+      format!("{}+ba", selector_filter.apply_height_and_fps("bv*")),
+      selector_filter.apply_height_and_fps("b"),
+      format!("{}+ba", selector_filter.apply_height("bv*")),
+      selector_filter.apply_height("b"),
+      format!("{}+ba", selector_filter.apply_fps("bv*")),
+      selector_filter.apply_fps("b"),
       format!("{}+ba", selector_filter.apply("bv*")),
       selector_filter.apply("b"),
     ]);
@@ -124,24 +150,46 @@ fn combined_selector(
         [
           format!(
             "{}+ba",
-            selector_filter.apply(&format!("bv*[language={lang}]"))
+            selector_filter.apply_height_and_fps(&format!("bv*[language={lang}]"))
           ),
-          selector_filter.apply(&format!("b[language={lang}]")),
+          selector_filter.apply_height_and_fps(&format!("b[language={lang}]")),
+          format!(
+            "{}+ba",
+            selector_filter.apply_height(&format!("bv*[language={lang}]"))
+          ),
+          selector_filter.apply_height(&format!("b[language={lang}]")),
+          format!(
+            "{}+ba",
+            selector_filter.apply_fps(&format!("bv*[language={lang}]"))
+          ),
+          selector_filter.apply_fps(&format!("b[language={lang}]")),
         ]
       })
       .collect();
     selectors.extend([
+      format!("{}+ba", selector_filter.apply_height_and_fps("bv*")),
+      selector_filter.apply_height_and_fps("b"),
+      format!("{}+ba", selector_filter.apply_height("bv*")),
+      selector_filter.apply_height("b"),
+      format!("{}+ba", selector_filter.apply_fps("bv*")),
+      selector_filter.apply_fps("b"),
       format!("{}+ba", selector_filter.apply("bv*")),
       selector_filter.apply("b"),
     ]);
     return selectors.join("/");
   }
 
-  format!(
-    "{}+ba/{}",
-    selector_filter.apply("bv*"),
+  [
+    format!("{}+ba", selector_filter.apply_height_and_fps("bv*")),
+    selector_filter.apply_height_and_fps("b"),
+    format!("{}+ba", selector_filter.apply_height("bv*")),
+    selector_filter.apply_height("b"),
+    format!("{}+ba", selector_filter.apply_fps("bv*")),
+    selector_filter.apply_fps("b"),
+    format!("{}+ba", selector_filter.apply("bv*")),
     selector_filter.apply("b"),
-  )
+  ]
+  .join("/")
 }
 
 fn audio_sort_fields(
@@ -195,6 +243,14 @@ fn video_sort_fields(
       .as_deref()
       .or(audio_track_pref.language.as_deref()),
   );
+
+  if let Some(height) = format_options.height {
+    sort.push(format!("height:{height}"));
+  }
+
+  if let Some(fps) = format_options.fps {
+    sort.push(format!("fps:{fps}"));
+  }
 
   if let Some(video_encoding) = non_empty(format_options.video_encoding.as_deref()) {
     sort.push(format!("vcodec:{video_encoding}"));
@@ -267,14 +323,50 @@ impl SelectorFilter {
   }
 
   fn apply(&self, selector: &str) -> String {
+    selector.to_string()
+  }
+
+  fn apply_height_and_fps(&self, selector: &str) -> String {
     let mut out = selector.to_string();
     if let Some(height) = self.height {
-      out.push_str(&format!("[height={height}]"));
+      out.push_str(&format!("[height<={height}]"));
     }
     if let Some(fps) = self.fps {
-      out.push_str(&format!("[fps={fps}]"));
+      out.push_str(&format!("[fps<={fps}]"));
     }
     out
+  }
+
+  fn apply_height(&self, selector: &str) -> String {
+    let mut out = selector.to_string();
+    if let Some(height) = self.height {
+      out.push_str(&format!("[height<={height}]"));
+    }
+    out
+  }
+
+  fn apply_fps(&self, selector: &str) -> String {
+    let mut out = selector.to_string();
+    if let Some(fps) = self.fps {
+      out.push_str(&format!("[fps<={fps}]"));
+    }
+    out
+  }
+
+  fn bounded_variants(&self, selector: &str) -> Vec<String> {
+    let mut variants = Vec::new();
+
+    if self.height.is_some() || self.fps.is_some() {
+      variants.push(self.apply_height_and_fps(selector));
+    }
+    if self.height.is_some() && self.fps.is_some() {
+      variants.push(self.apply_height(selector));
+      variants.push(self.apply_fps(selector));
+    }
+    variants.push(selector.to_string());
+
+    variants.dedup();
+    variants
   }
 }
 
