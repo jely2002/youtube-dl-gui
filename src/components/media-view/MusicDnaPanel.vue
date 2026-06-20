@@ -18,8 +18,12 @@
       <li v-for="suggestion in rankedSuggestions" :key="`${suggestion.title}-${suggestion.artist}`" class="list-row">
         <div class="w-full">
           <div class="flex items-center justify-between gap-3">
-            <p class="font-semibold">{{ suggestion.title }} — {{ suggestion.artist }}</p>
-            <span class="badge badge-outline">{{ Math.round(suggestion.confidence * 100) }}%</span>
+            <p class="font-semibold">
+              {{ t('common.divide', { left: suggestion.title, right: suggestion.artist }) }}
+            </p>
+            <span class="badge badge-outline">
+              {{ t('common.percentage', { percent: Math.round(suggestion.confidence * 100) }) }}
+            </span>
           </div>
           <p class="text-sm opacity-90">{{ suggestion.rationale }}</p>
           <div class="mt-2 flex gap-2 flex-wrap">
@@ -66,7 +70,7 @@ const rankedSuggestions = computed<MusicDnaSuggestion[]>(() => {
 });
 
 const parseMusicDnaError = (error: unknown): string => {
-  const raw = `${error}`;
+  const raw = String(error);
   if (raw.includes('music_dna::missing_api_key::')) return t('media.view.musicDna.errors.missingApiKey');
   if (raw.includes('music_dna::rate_limited::') || raw.includes('music_dna::provider_rate_limited::')) {
     return t('media.view.musicDna.errors.rateLimited');

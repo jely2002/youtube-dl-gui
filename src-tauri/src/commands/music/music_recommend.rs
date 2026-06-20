@@ -263,7 +263,12 @@ fn parse_suggestions(payload: &MusicDnaApiResponse) -> Result<MusicDnaRawSuggest
     .choices
     .first()
     .map(|choice| choice.message.content.as_str())
-    .ok_or_else(|| error_code("provider_payload_invalid", "No response choices were returned."))?;
+    .ok_or_else(|| {
+      error_code(
+        "provider_payload_invalid",
+        "No response choices were returned.",
+      )
+    })?;
 
   let stripped = strip_code_fences(content);
   serde_json::from_str::<MusicDnaRawSuggestions>(&stripped)
@@ -273,7 +278,9 @@ fn parse_suggestions(payload: &MusicDnaApiResponse) -> Result<MusicDnaRawSuggest
 fn strip_code_fences(content: &str) -> String {
   let trimmed = content.trim();
   if trimmed.starts_with("```") {
-    let without_open = trimmed.trim_start_matches("```json").trim_start_matches("```");
+    let without_open = trimmed
+      .trim_start_matches("```json")
+      .trim_start_matches("```");
     return without_open.trim_end_matches("```").trim().to_string();
   }
   trimmed.to_string()
@@ -301,7 +308,13 @@ fn build_system_prompt(settings: &MusicDnaSettings) -> String {
 }
 
 fn build_user_prompt(request: &MusicDnaRequest, settings: &MusicDnaSettings) -> String {
-  let seed_history: Vec<MusicDnaSeed> = settings.seed_history.iter().rev().take(5).cloned().collect();
+  let seed_history: Vec<MusicDnaSeed> = settings
+    .seed_history
+    .iter()
+    .rev()
+    .take(5)
+    .cloned()
+    .collect();
   let feedback: Vec<String> = settings
     .feedback_memory
     .iter()
