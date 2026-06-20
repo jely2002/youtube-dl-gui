@@ -62,6 +62,72 @@ impl Default for NetworkSettings {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
+pub struct MusicDnaWeights {
+  pub genre: f32,
+  pub region: f32,
+  pub era: f32,
+  pub instrumentation: f32,
+  pub mood: f32,
+}
+
+impl Default for MusicDnaWeights {
+  fn default() -> Self {
+    Self {
+      genre: 0.35,
+      region: 0.25,
+      era: 0.15,
+      instrumentation: 0.15,
+      mood: 0.1,
+    }
+  }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct MusicDnaSeed {
+  pub url: String,
+  pub title: Option<String>,
+  pub artist: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct MusicDnaSettings {
+  pub enabled: bool,
+  pub provider_base_url: String,
+  pub model: String,
+  pub max_suggestions: usize,
+  pub timeout_seconds: u64,
+  pub min_confidence: f32,
+  pub low_confidence_threshold: f32,
+  pub target_region: String,
+  pub focus_genres: Vec<String>,
+  pub feedback_memory: Vec<String>,
+  pub seed_history: Vec<MusicDnaSeed>,
+  pub weights: MusicDnaWeights,
+}
+
+impl Default for MusicDnaSettings {
+  fn default() -> Self {
+    Self {
+      enabled: false,
+      provider_base_url: "https://api.siliconflow.cn/v1".into(),
+      model: "deepseek-ai/DeepSeek-V3".into(),
+      max_suggestions: 3,
+      timeout_seconds: 20,
+      min_confidence: 0.35,
+      low_confidence_threshold: 0.55,
+      target_region: "Iraq".into(),
+      focus_genres: vec!["rock".into(), "iraqi".into()],
+      feedback_memory: vec![],
+      seed_history: vec![],
+      weights: MusicDnaWeights::default(),
+    }
+  }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
 pub struct InputSettings {
   pub auto_fill_clipboard: bool,
   pub prefer_video_in_mixed_links: bool,
@@ -304,6 +370,7 @@ pub struct Config {
   pub appearance: AppearanceSettings,
   pub auth: AuthSettings,
   pub network: NetworkSettings,
+  pub music_dna: MusicDnaSettings,
   pub input: InputSettings,
   pub output: OutputSettings,
   pub performance: PerformanceSettings,

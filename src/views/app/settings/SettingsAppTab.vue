@@ -5,6 +5,8 @@
     <SettingsAppearance v-model="settings" />
     <div class="divider my-0" />
     <SettingsNotifications v-model="settings" />
+    <div class="divider my-0" />
+    <SettingsMusicDna v-model="settings" />
   </div>
 </template>
 
@@ -13,6 +15,7 @@ import { Settings } from '../../../tauri/types/config.ts';
 import SettingsAppearance from '../../../components/settings/SettingsAppearance.vue';
 import SettingsInput from '../../../components/settings/SettingsInput.vue';
 import SettingsNotifications from '../../../components/settings/SettingsNotifications.vue';
+import SettingsMusicDna from '../../../components/settings/SettingsMusicDna.vue';
 
 const settings = defineModel<Settings>({ required: true });
 </script>

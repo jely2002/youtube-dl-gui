@@ -37,6 +37,10 @@
         {{ group.description }}
       </p>
     </div>
+    <music-dna-panel
+      v-if="group && settingsStore.settings.musicDna.enabled"
+      :group="group"
+    />
     <media-chapter-timeline
         v-if="group?.chapters?.length"
         :chapters="group.chapters"
@@ -52,9 +56,12 @@ import BaseMediaStats from '../base/BaseMediaStats.vue';
 import MediaChapterTimeline from './MediaChapterTimeline.vue';
 import { useI18n } from 'vue-i18n';
 import { useMediaGroupStore } from '../../stores/media/group.ts';
+import { useSettingsStore } from '../../stores/settings.ts';
+import MusicDnaPanel from './MusicDnaPanel.vue';
 
 const { t } = useI18n();
 const groupStore = useMediaGroupStore();
+const settingsStore = useSettingsStore();
 
 const props = defineProps<{
   groupId: string;

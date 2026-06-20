@@ -102,7 +102,8 @@
         "username": "Username",
         "password": "Password",
         "token": "Token",
-        "headers": "Headers"
+        "headers": "Headers",
+        "apiKey": "API key"
       },
       "basicAuth": {
         "legend": "Basic auth",
@@ -115,6 +116,11 @@
       "bearerToken": {
         "legend": "Bearer token",
         "legendLabel": "Provide a bearer token to access private resources."
+      },
+      "musicDnaApiKey": {
+        "legend": "Music DNA API key",
+        "legendBadge": "AI",
+        "legendLabel": "Provide your SiliconFlow API key used for DeepSeek-powered recommendations."
       },
       "customHeaders": {
         "legend": "Custom headers",
@@ -155,6 +161,24 @@
         "link": "Link:",
         "chapters": "Chapters",
         "description": "Description"
+      },
+      "musicDna": {
+        "title": "Music DNA recommendations",
+        "description": "Generate the next songs from your Music DNA profile instead of random picks.",
+        "build": "Build Music DNA",
+        "open": "Open source",
+        "lowConfidence": "Confidence is low. Review suggestions before using them.",
+        "feedback": {
+          "good": "Good match",
+          "bad": "Bad match"
+        },
+        "errors": {
+          "missingApiKey": "Music DNA API key is missing. Add it in Authentication settings.",
+          "rateLimited": "Music DNA is rate-limited. Please try again shortly.",
+          "disabled": "Music DNA is disabled in Settings.",
+          "invalidUrl": "This item does not have a valid URL for Music DNA analysis.",
+          "generic": "Unable to generate recommendations right now."
+        }
       },
       "stats": {
         "title": "Video Statistics",
@@ -678,6 +702,41 @@
         "hint": "Customise the extractor arguments for yt-dlp. One argument per line.",
         "placeholder": "youtube:player_js_variant=main",
         "flagWarning": "Enter only the value. The app adds --extractor-args automatically."
+      }
+    },
+    "musicDna": {
+      "legend": "Music DNA",
+      "legendBadge": "AI",
+      "legendLabel": "Configure DeepSeek recommendations through SiliconFlow.",
+      "enabled": {
+        "label": "Enable Music DNA recommendations:"
+      },
+      "providerBaseUrl": {
+        "label": "Provider base URL:"
+      },
+      "model": {
+        "label": "Model:"
+      },
+      "maxSuggestions": {
+        "label": "Recommendations per request:"
+      },
+      "targetRegion": {
+        "label": "Target region:"
+      },
+      "focusGenres": {
+        "label": "Focus genres:",
+        "hint": "Comma-separated genres, for example: rock, iraqi."
+      },
+      "weights": {
+        "genre": "Genre weight",
+        "region": "Region weight",
+        "era": "Era weight",
+        "instrumentation": "Instrumentation weight",
+        "mood": "Mood weight"
+      },
+      "apiKey": {
+        "label": "API key:",
+        "link": "Configure secure API key"
       }
     },
     "sponsorBlock": {

@@ -57,6 +57,21 @@
         <div class="divider my-2" />
 
         <base-fieldset
+            :legend="t('auth.credentials.musicDnaApiKey.legend')"
+            :badge="t('auth.credentials.musicDnaApiKey.legendBadge')"
+            :label="t('auth.credentials.musicDnaApiKey.legendLabel')"
+        >
+          <base-secret-input
+              v-model="strongholdFields.musicDnaApiKey"
+              :password="true"
+              id="music-dna-api-key"
+              :label="t('auth.credentials.labels.apiKey')"
+          />
+        </base-fieldset>
+
+        <div class="divider my-2" />
+
+        <base-fieldset
             :legend="t('auth.credentials.customHeaders.legend')"
             :badge="t('auth.credentials.customHeaders.legendBadge')"
             :label="t('auth.credentials.customHeaders.legendLabel')"
