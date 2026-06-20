@@ -13,6 +13,7 @@ import { useSettingsStore } from '../settings.ts';
 import { Group } from '../../tauri/types/group.ts';
 import { notify, notifyGroup } from '../../tauri/notifications';
 import { NotificationKind } from '../../tauri/types/app';
+import { resolvePlaylistIndex } from '../../helpers/playlistNumbering.ts';
 
 export const useMediaStore = defineStore('media', () => {
   const groupStore = useMediaGroupStore();
