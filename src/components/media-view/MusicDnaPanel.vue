@@ -53,6 +53,9 @@ import { useSettingsStore } from '../../stores/settings.ts';
 import { isValidUrl } from '../../helpers/url.ts';
 import { rankMusicDnaSuggestions } from '../../helpers/musicDna.ts';
 
+const MAX_SEED_HISTORY_SIZE = 30;
+const MAX_FEEDBACK_MEMORY_SIZE = 60;
+
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
 
@@ -107,7 +110,7 @@ const buildRecommendations = async (): Promise<void> => {
         artist: props.group.uploader,
       },
       ...settingsStore.settings.musicDna.seedHistory,
-    ].slice(0, 30);
+    ].slice(0, MAX_SEED_HISTORY_SIZE);
     await settingsStore.patch({ musicDna: { seedHistory: nextSeedHistory } });
   } catch (error) {
     errorMessage.value = parseMusicDnaError(error);
@@ -118,7 +121,7 @@ const buildRecommendations = async (): Promise<void> => {
 
 const rememberFeedback = async (suggestion: MusicDnaSuggestion, isPositive: boolean): Promise<void> => {
   const entry = `${isPositive ? 'good' : 'bad'}|${suggestion.title}|${suggestion.artist}`;
-  const feedbackMemory = [entry, ...settingsStore.settings.musicDna.feedbackMemory].slice(0, 60);
+  const feedbackMemory = [entry, ...settingsStore.settings.musicDna.feedbackMemory].slice(0, MAX_FEEDBACK_MEMORY_SIZE);
   await settingsStore.patch({ musicDna: { feedbackMemory } });
 };
 </script>

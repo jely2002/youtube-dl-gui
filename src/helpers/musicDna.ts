@@ -1,6 +1,9 @@
 import { MusicDnaSettings } from '../tauri/types/config.ts';
 import { MusicDnaSuggestion } from '../tauri/types/musicDna.ts';
 
+const CONFIDENCE_WEIGHT = 0.65;
+const AFFINITY_WEIGHT = 0.35;
+
 function normalize(value: string): string {
   return value.trim().toLowerCase();
 }
@@ -32,8 +35,8 @@ export function rankMusicDnaSuggestions(
   settings: MusicDnaSettings,
 ): MusicDnaSuggestion[] {
   return [...suggestions].sort((a, b) => {
-    const scoreA = (a.confidence * 0.65) + (computeAffinity(a, settings) * 0.35);
-    const scoreB = (b.confidence * 0.65) + (computeAffinity(b, settings) * 0.35);
+    const scoreA = (a.confidence * CONFIDENCE_WEIGHT) + (computeAffinity(a, settings) * AFFINITY_WEIGHT);
+    const scoreB = (b.confidence * CONFIDENCE_WEIGHT) + (computeAffinity(b, settings) * AFFINITY_WEIGHT);
     return scoreB - scoreA;
   });
 }

@@ -10,6 +10,11 @@ use std::time::{Duration, Instant};
 use tauri::State;
 
 const MUSIC_DNA_API_KEY_PATH: &str = "musicDna.apiKey";
+const MAX_REQUESTS_PER_MINUTE: usize = 12;
+const MAX_ERROR_BODY_LENGTH: usize = 250;
+const DEFAULT_MODEL_TEMPERATURE: f32 = 0.25;
+const MAX_RECENT_SEEDS_IN_PROMPT: usize = 5;
+const MAX_FEEDBACK_IN_PROMPT: usize = 15;
 
 #[derive(Default)]
 pub struct MusicDnaRateLimiter {
@@ -116,7 +121,7 @@ pub async fn music_dna_recommend(
     ));
   }
 
-  if !limiter.allow(12) {
+  if !limiter.allow(MAX_REQUESTS_PER_MINUTE) {
     return Err(error_code(
       "rate_limited",
       "Too many Music DNA requests. Please wait a minute and try again.",
@@ -132,7 +137,7 @@ pub async fn music_dna_recommend(
   let user_prompt = build_user_prompt(&request, &settings);
   let body = json!({
     "model": settings.model,
-    "temperature": 0.25,
+    "temperature": DEFAULT_MODEL_TEMPERATURE,
     "response_format": { "type": "json_object" },
     "messages": [
       { "role": "system", "content": system_prompt },
@@ -226,7 +231,10 @@ async fn request_with_retry(
 
         if !status.is_success() {
           let body_text = resp.text().await.unwrap_or_default();
-          let trimmed = body_text.chars().take(250).collect::<String>();
+          let trimmed = body_text
+            .chars()
+            .take(MAX_ERROR_BODY_LENGTH)
+            .collect::<String>();
           if status.is_server_error() && attempt < 2 {
             tokio::time::sleep(Duration::from_millis(300 * (attempt + 1) as u64)).await;
             continue;
@@ -312,14 +320,14 @@ fn build_user_prompt(request: &MusicDnaRequest, settings: &MusicDnaSettings) -> 
     .seed_history
     .iter()
     .rev()
-    .take(5)
+    .take(MAX_RECENT_SEEDS_IN_PROMPT)
     .cloned()
     .collect();
   let feedback: Vec<String> = settings
     .feedback_memory
     .iter()
     .rev()
-    .take(15)
+    .take(MAX_FEEDBACK_IN_PROMPT)
     .cloned()
     .collect();
 
