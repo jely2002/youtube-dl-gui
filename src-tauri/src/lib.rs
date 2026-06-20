@@ -121,6 +121,7 @@ pub fn run() {
 
       // manage log store
       handle.manage(LogStoreState::new());
+      handle.manage(MusicDnaRateLimiter::new());
 
       // setup dispatchers
       let cfg_snapshot = handle.state::<SharedConfig>().load();
@@ -186,6 +187,7 @@ pub fn run() {
       stronghold_set,
       get_platform,
       notify,
+      music_dna_recommend,
     ])
     .build(tauri::generate_context!())
     .expect("error while running tauri application");

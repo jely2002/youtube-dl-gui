@@ -51,7 +51,7 @@ onMounted(async () => {
 
 const cookieFields = ref(JSON.parse(JSON.stringify(settingsStore.settings.auth)) as AuthSettings);
 const strongholdFields = ref<StrongholdFields>({
-  username: null, password: null, videoPassword: null, bearer: null, headers: null,
+  username: null, password: null, videoPassword: null, bearer: null, headers: null, musicDnaApiKey: null,
 });
 const strongholdSnapshot = ref('');
 

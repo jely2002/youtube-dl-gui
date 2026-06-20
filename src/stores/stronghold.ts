@@ -19,6 +19,7 @@ export const STRONGHOLD_KEYS = {
   videoPassword: 'video.password',
   bearer: 'auth.bearer',
   headers: 'auth.headers',
+  musicDnaApiKey: 'musicDna.apiKey',
 } as const;
 
 export interface StrongholdFields {
@@ -27,6 +28,7 @@ export interface StrongholdFields {
   videoPassword: string | null;
   bearer: string | null;
   headers: string | null;
+  musicDnaApiKey: string | null;
 }
 
 export const useStrongholdStore = defineStore('stronghold', () => {
@@ -93,9 +95,32 @@ export const useStrongholdStore = defineStore('stronghold', () => {
     availableKeys.value = await invoke<number[][]>('stronghold_keys');
   }
 
+  async function getValue(key: string): Promise<string | null> {
+    const entries = await invoke<Record<string, number[] | null>>('stronghold_get', { keys: [key] });
+    const raw = entries[key];
+    if (!raw) return null;
+    return new TextDecoder().decode(new Uint8Array(raw));
+  }
+
+  async function setValue(key: string, value: string | null): Promise<void> {
+    const payload = value == null ? null : Array.from(new TextEncoder().encode(value));
+    await invoke('stronghold_set', { entries: { [key]: payload } });
+    availableKeys.value = await invoke<number[][]>('stronghold_keys');
+  }
+
   function hasAvailableKeys(): boolean {
     return availableKeys.value.length > 0;
   }
 
-  return { status, availableKeys, hasAvailableKeys, loadStatus, initialize, getValues, setValues };
+  return {
+    status,
+    availableKeys,
+    hasAvailableKeys,
+    loadStatus,
+    initialize,
+    getValues,
+    setValues,
+    getValue,
+    setValue,
+  };
 });

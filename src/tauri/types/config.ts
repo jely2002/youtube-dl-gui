@@ -32,6 +32,35 @@ export interface NetworkSettings {
   extractorArgs: string;
 }
 
+export interface MusicDnaWeights {
+  genre: number;
+  region: number;
+  era: number;
+  instrumentation: number;
+  mood: number;
+}
+
+export interface MusicDnaSeed {
+  url: string;
+  title?: string;
+  artist?: string;
+}
+
+export interface MusicDnaSettings {
+  enabled: boolean;
+  providerBaseUrl: string;
+  model: string;
+  maxSuggestions: number;
+  timeoutSeconds: number;
+  minConfidence: number;
+  lowConfidenceThreshold: number;
+  targetRegion: string;
+  focusGenres: string[];
+  feedbackMemory: string[];
+  seedHistory: MusicDnaSeed[];
+  weights: MusicDnaWeights;
+}
+
 export interface VideoOutputSettings {
   policy: TranscodePolicy;
   container: VideoContainer;
@@ -135,6 +164,7 @@ export interface Settings {
   appearance: AppearanceSettings;
   auth: AuthSettings;
   network: NetworkSettings;
+  musicDna: MusicDnaSettings;
   input: InputSettings;
   output: OutputSettings;
   performance: PerformanceSettings;
@@ -161,6 +191,27 @@ export const defaultNetworkSettings: NetworkSettings = {
   proxy: null,
   impersonate: 'none',
   extractorArgs: '',
+};
+
+export const defaultMusicDnaSettings: MusicDnaSettings = {
+  enabled: false,
+  providerBaseUrl: 'https://api.siliconflow.cn/v1',
+  model: 'deepseek-ai/DeepSeek-V3',
+  maxSuggestions: 3,
+  timeoutSeconds: 20,
+  minConfidence: 0.35,
+  lowConfidenceThreshold: 0.55,
+  targetRegion: 'Iraq',
+  focusGenres: ['rock', 'iraqi'],
+  feedbackMemory: [],
+  seedHistory: [],
+  weights: {
+    genre: 0.35,
+    region: 0.25,
+    era: 0.15,
+    instrumentation: 0.15,
+    mood: 0.1,
+  },
 };
 
 export const defaultInputSettings: InputSettings = {
@@ -234,6 +285,13 @@ export const defaultSettings: Settings = {
   appearance: defaultAppearanceSettings,
   auth: defaultAuthSettings,
   network: defaultNetworkSettings,
+  musicDna: {
+    ...defaultMusicDnaSettings,
+    focusGenres: [...defaultMusicDnaSettings.focusGenres],
+    feedbackMemory: [...defaultMusicDnaSettings.feedbackMemory],
+    seedHistory: [...defaultMusicDnaSettings.seedHistory],
+    weights: { ...defaultMusicDnaSettings.weights },
+  },
   input: defaultInputSettings,
   output: {
     ...defaultOutputSettings,
