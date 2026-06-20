@@ -86,7 +86,10 @@ fn video_format_args_include_track_and_encoding_preferences() {
   assert!(args[1].contains("/bv/"));
   assert!(args[1].ends_with("/b"));
   assert_eq!(args[2], "-S");
-  assert_eq!(args[3], "lang:ja,height:1080,fps:60,vcodec:avc1,vext:mp4,vext:m4a");
+  assert_eq!(
+    args[3],
+    "lang:ja,height:1080,fps:60,vcodec:avc1,vext:mp4,vext:m4a"
+  );
 }
 
 #[test]
