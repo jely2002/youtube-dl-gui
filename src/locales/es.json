@@ -431,6 +431,10 @@
     "filename": {
       "legend": "Formato de nombre de archivo",
       "legendLabel": "Selecciona el nombre que tendrán las descargas.",
+      "reversePlaylistNumbering": {
+        "label": "Numeración de lista invertida:",
+        "hint": "Numera los elementos de la lista desde el final en lugar del principio."
+      },
       "formatPreset": {
         "label": "Preajuste de nombre:",
         "exampleLabel": "Ejemplo de salida:",
