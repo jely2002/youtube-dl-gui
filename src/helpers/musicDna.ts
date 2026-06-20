@@ -26,8 +26,8 @@ export function computeAffinity(
 
   const genreScore = hasGenreMatch ? settings.weights.genre : 0;
   const regionScore = hasRegionMatch ? settings.weights.region : 0;
-  const neutralScore = settings.weights.era + settings.weights.instrumentation + settings.weights.mood;
-  return Math.min(1, genreScore + regionScore + neutralScore);
+  const baselineScore = settings.weights.era + settings.weights.instrumentation + settings.weights.mood;
+  return Math.min(1, genreScore + regionScore + baselineScore);
 }
 
 export function rankMusicDnaSuggestions(

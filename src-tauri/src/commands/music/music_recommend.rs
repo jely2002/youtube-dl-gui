@@ -13,6 +13,10 @@ const MUSIC_DNA_API_KEY_PATH: &str = "musicDna.apiKey";
 const MAX_REQUESTS_PER_MINUTE: usize = 12;
 const MAX_ERROR_BODY_LENGTH: usize = 250;
 const DEFAULT_MODEL_TEMPERATURE: f32 = 0.25;
+const MIN_TIMEOUT_SECONDS: u64 = 5;
+const MIN_SUGGESTIONS: usize = 1;
+const MAX_SUGGESTIONS: usize = 5;
+const RETRY_BASE_DELAY_MS: u64 = 300;
 const MAX_RECENT_SEEDS_IN_PROMPT: usize = 5;
 const MAX_FEEDBACK_IN_PROMPT: usize = 15;
 
@@ -146,7 +150,9 @@ pub async fn music_dna_recommend(
   });
 
   let client = reqwest::Client::builder()
-    .timeout(Duration::from_secs(settings.timeout_seconds.max(5)))
+    .timeout(Duration::from_secs(
+      settings.timeout_seconds.max(MIN_TIMEOUT_SECONDS),
+    ))
     .build()
     .map_err(|e| error_code("client_init_failed", e.to_string()))?;
 
@@ -168,7 +174,11 @@ pub async fn music_dna_recommend(
     .collect();
 
   suggestions.sort_by(|a, b| b.confidence.total_cmp(&a.confidence));
-  suggestions.truncate(settings.max_suggestions.clamp(1, 5));
+  suggestions.truncate(
+    settings
+      .max_suggestions
+      .clamp(MIN_SUGGESTIONS, MAX_SUGGESTIONS),
+  );
 
   let top_confidence = suggestions.first().map_or(0.0, |item| item.confidence);
   Ok(MusicDnaResponse {
@@ -236,7 +246,10 @@ async fn request_with_retry(
             .take(MAX_ERROR_BODY_LENGTH)
             .collect::<String>();
           if status.is_server_error() && attempt < 2 {
-            tokio::time::sleep(Duration::from_millis(300 * (attempt + 1) as u64)).await;
+            tokio::time::sleep(Duration::from_millis(
+              RETRY_BASE_DELAY_MS * (attempt + 1) as u64,
+            ))
+            .await;
             continue;
           }
           return Err(error_code(
@@ -253,7 +266,10 @@ async fn request_with_retry(
       Err(error) => {
         last_error = Some(error.to_string());
         if attempt < 2 {
-          tokio::time::sleep(Duration::from_millis(300 * (attempt + 1) as u64)).await;
+          tokio::time::sleep(Duration::from_millis(
+            RETRY_BASE_DELAY_MS * (attempt + 1) as u64,
+          ))
+          .await;
           continue;
         }
       }
@@ -339,7 +355,7 @@ fn build_user_prompt(request: &MusicDnaRequest, settings: &MusicDnaSettings) -> 
       "description": request.description,
       "durationSeconds": request.duration_seconds
     },
-    "targetRecommendations": settings.max_suggestions.clamp(1, 5),
+    "targetRecommendations": settings.max_suggestions.clamp(MIN_SUGGESTIONS, MAX_SUGGESTIONS),
     "constraints": {
       "targetRegion": settings.target_region,
       "focusGenres": settings.focus_genres
