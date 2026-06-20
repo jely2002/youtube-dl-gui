@@ -158,11 +158,23 @@ mod tests {
     let out = ctx.render_template("%(title)s");
     assert_eq!(out, "%(title)s");
 
+    let out_missing = ctx.render_template("%(fps)s");
+    assert_eq!(out_missing, "%(fps)s");
+
     let tpl = "%(playlist_index)03d - %(title)s";
     ctx.insert("playlist_index", "5");
     let out2 = ctx.render_template(tpl);
 
     assert_eq!(out2, "005 - %(title)s");
+  }
+  
+  #[test]
+  fn missing_numeric_field_with_formatting_returns_empty_string_if_known() {
+    let mut ctx = create_context(&[]);
+    ctx.insert("fps", ""); // yt-dlp might provide it as empty if missing
+
+    let out = ctx.render_template("%(fps).0d");
+    assert_eq!(out, "");
   }
 
   #[test]
