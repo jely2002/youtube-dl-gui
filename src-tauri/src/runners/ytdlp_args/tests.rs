@@ -80,17 +80,15 @@ fn video_format_args_include_track_and_encoding_preferences() {
   let settings = OutputSettings::default();
 
   let args = build_format_args(&format_options, &settings);
+  assert_eq!(args[0], "-f");
+  assert!(args[1].contains("bv*[language=ja][height<=1080][fps<=60]"));
+  assert!(args[1].contains("b[language=ja][height<=1080][fps<=60]"));
+  assert!(args[1].contains("/bv/"));
+  assert!(args[1].ends_with("/b"));
+  assert_eq!(args[2], "-S");
   assert_eq!(
-    args,
-    vec![
-      "-f",
-      "bv*[language=ja][height=1080][fps=60]/b[language=ja][height=1080][fps=60]/bv[height=1080][fps=60]/b[height=1080][fps=60]",
-      "-S",
-      "lang:ja,vcodec:avc1,vext:mp4,vext:m4a",
-    ]
-    .into_iter()
-    .map(String::from)
-    .collect::<Vec<_>>()
+    args[3],
+    "lang:ja,height:1080,fps:60,vcodec:avc1,vext:mp4,vext:m4a"
   );
 }
 
@@ -104,17 +102,15 @@ fn both_format_args_include_audio_and_video_encoding_preferences() {
   let settings = OutputSettings::default();
 
   let args = build_format_args(&format_options, &settings);
+  assert_eq!(args[0], "-f");
+  assert!(args[1].contains("b[language=fr-FR][height<=720][fps<=30]"));
+  assert!(args[1].contains("bv*[height<=720][fps<=30]+ba[language=fr-FR]"));
+  assert!(args[1].contains("b[language=fr][height<=720][fps<=30]"));
+  assert!(args[1].contains("bv*+ba/b"));
+  assert_eq!(args[2], "-S");
   assert_eq!(
-    args,
-    vec![
-      "-f",
-      "b[language=fr-FR][height=720][fps=30]/bv*[height=720][fps=30]+ba[language=fr-FR]/bv[height=720][fps=30]+ba[language=fr-FR]/b[language=fr][height=720][fps=30]/bv*[height=720][fps=30]+ba[language=fr]/bv[height=720][fps=30]+ba[language=fr]/bv*[height=720][fps=30]+ba/b[height=720][fps=30]",
-      "-S",
-      "lang:fr-FR,vcodec:vp9,acodec:opus,vext:mp4,vext:m4a",
-    ]
-    .into_iter()
-    .map(String::from)
-    .collect::<Vec<_>>()
+    args[3],
+    "lang:fr-FR,height:720,fps:30,vcodec:vp9,acodec:opus,vext:mp4,vext:m4a"
   );
 }
 
@@ -157,9 +153,9 @@ fn video_format_args_with_height_fps_and_mp4_bias() {
 
   let expected: Vec<String> = vec![
     "-f",
-    "bv[height=720][fps=60]",
+    "bv[height<=720][fps<=60]/bv[height<=720]/bv[fps<=60]/bv/b[height<=720][fps<=60]/b[height<=720]/b[fps<=60]/b",
     "-S",
-    "lang,vcodec:avc1,vext:mp4,vext:m4a",
+    "lang,height:720,fps:60,vcodec:avc1,vext:mp4,vext:m4a",
   ]
   .into_iter()
   .map(String::from)
@@ -177,7 +173,12 @@ fn video_format_args_with_height_fps_and_mkv_no_mp4_bias() {
 
   let args = build_format_args(&format_options, &settings);
 
-  let expected: Vec<String> = vec!["-f", "bv[height=720][fps=60]", "-S", "lang,vext"]
+  let expected: Vec<String> = vec![
+    "-f",
+    "bv[height<=720][fps<=60]/bv[height<=720]/bv[fps<=60]/bv/b[height<=720][fps<=60]/b[height<=720]/b[fps<=60]/b",
+    "-S",
+    "lang,height:720,fps:60,vext",
+  ]
     .into_iter()
     .map(String::from)
     .collect();
@@ -194,9 +195,9 @@ fn both_format_args_uses_both_selector_and_mp4_bias() {
 
   let expected: Vec<String> = vec![
     "-f",
-    "bv*[height=1080][fps=30]+ba/b[height=1080][fps=30]",
+    "bv*[height<=1080][fps<=30]+ba/b[height<=1080][fps<=30]/bv*[height<=1080]+ba/b[height<=1080]/bv*[fps<=30]+ba/b[fps<=30]/bv*+ba/b",
     "-S",
-    "lang,vcodec:avc1,acodec:aac,vext:mp4,vext:m4a",
+    "lang,height:1080,fps:30,vcodec:avc1,acodec:aac,vext:mp4,vext:m4a",
   ]
   .into_iter()
   .map(String::from)
@@ -214,9 +215,9 @@ fn video_format_args_with_mp4_bias_prefers_avc1() {
 
   let expected: Vec<String> = vec![
     "-f",
-    "bv[height=720][fps=60]",
+    "bv[height<=720][fps<=60]/bv[height<=720]/bv[fps<=60]/bv/b[height<=720][fps<=60]/b[height<=720]/b[fps<=60]/b",
     "-S",
-    "lang,vcodec:avc1,vext:mp4,vext:m4a",
+    "lang,height:720,fps:60,vcodec:avc1,vext:mp4,vext:m4a",
   ]
   .into_iter()
   .map(String::from)
@@ -234,9 +235,9 @@ fn both_format_args_with_mp4_bias_prefers_avc1_and_aac() {
 
   let expected: Vec<String> = vec![
     "-f",
-    "bv*[height=1080][fps=30]+ba/b[height=1080][fps=30]",
+    "bv*[height<=1080][fps<=30]+ba/b[height<=1080][fps<=30]/bv*[height<=1080]+ba/b[height<=1080]/bv*[fps<=30]+ba/b[fps<=30]/bv*+ba/b",
     "-S",
-    "lang,vcodec:avc1,acodec:aac,vext:mp4,vext:m4a",
+    "lang,height:1080,fps:30,vcodec:avc1,acodec:aac,vext:mp4,vext:m4a",
   ]
   .into_iter()
   .map(String::from)
@@ -254,7 +255,12 @@ fn video_format_args_with_mkv_bias_does_not_prefer_avc1() {
 
   let args = build_format_args(&format_options, &settings);
 
-  let expected: Vec<String> = vec!["-f", "bv[height=720][fps=60]", "-S", "lang,vext"]
+  let expected: Vec<String> = vec![
+    "-f",
+    "bv[height<=720][fps<=60]/bv[height<=720]/bv[fps<=60]/bv/b[height<=720][fps<=60]/b[height<=720]/b[fps<=60]/b",
+    "-S",
+    "lang,height:720,fps:60,vext",
+  ]
     .into_iter()
     .map(String::from)
     .collect();
@@ -272,9 +278,9 @@ fn both_format_args_with_explicit_audio_encoding_skips_default_aac_bias() {
 
   let expected: Vec<String> = vec![
     "-f",
-    "bv*[height=720][fps=30]+ba/b[height=720][fps=30]",
+    "bv*[height<=720][fps<=30]+ba/b[height<=720][fps<=30]/bv*[height<=720]+ba/b[height<=720]/bv*[fps<=30]+ba/b[fps<=30]/bv*+ba/b",
     "-S",
-    "lang,vcodec:avc1,acodec:opus,vext:mp4,vext:m4a",
+    "lang,height:720,fps:30,vcodec:avc1,acodec:opus,vext:mp4,vext:m4a",
   ]
   .into_iter()
   .map(String::from)
@@ -284,7 +290,7 @@ fn both_format_args_with_explicit_audio_encoding_skips_default_aac_bias() {
 }
 
 #[test]
-fn both_format_args_use_exact_resolution_filters_for_4k_selection() {
+fn both_format_args_use_bounded_resolution_filters_for_4k_selection() {
   let format_options = make_both_format_options(Some(2160), Some(30));
   let settings = OutputSettings::default();
 
@@ -292,9 +298,9 @@ fn both_format_args_use_exact_resolution_filters_for_4k_selection() {
 
   let expected: Vec<String> = vec![
     "-f",
-    "bv*[height=2160][fps=30]+ba/b[height=2160][fps=30]",
+    "bv*[height<=2160][fps<=30]+ba/b[height<=2160][fps<=30]/bv*[height<=2160]+ba/b[height<=2160]/bv*[fps<=30]+ba/b[fps<=30]/bv*+ba/b",
     "-S",
-    "lang,vcodec:avc1,acodec:aac,vext:mp4,vext:m4a",
+    "lang,height:2160,fps:30,vcodec:avc1,acodec:aac,vext:mp4,vext:m4a",
   ]
   .into_iter()
   .map(String::from)

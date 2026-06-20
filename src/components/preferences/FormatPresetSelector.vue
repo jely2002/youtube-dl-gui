@@ -41,6 +41,8 @@
       <span class="label mt-2">{{ restrictFilenamesHint }}</span>
     </div>
 
+    <slot name="before-example" />
+
     <p v-if="displayExample" class="font-semibold mb-2">
       {{ exampleLabel }}
     </p>
