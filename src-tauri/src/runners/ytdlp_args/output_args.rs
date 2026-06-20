@@ -11,7 +11,7 @@ pub fn build_output_args(
   output_settings: &OutputSettings,
   partial_download: Option<&PartialDownloadOverride>,
 ) -> Result<Vec<String>, String> {
-  let mut args = vec!["--output-na-placeholder".into(), "None".into()];
+  let mut args = vec!["--output-na-placeholder".into(), "".into()];
   let video_postprocess_plan = matches!(
     format_options.track_type,
     TrackType::Video | TrackType::Both
