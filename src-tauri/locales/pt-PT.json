@@ -1,0 +1,48 @@
+{
+  "tray": {
+    "quit": "Sair",
+    "showOrHide": "Mostrar/Ocultar janela",
+    "addToQueue": "Adicionar da área de transferência",
+    "downloadQueue": "Transferir fila",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftEnter": "Alt + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Adicionado à fila",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "A transferir fila",
+      "body": "A transferir {n} item | A transferir {n} itens"
+    },
+    "queueFinished": {
+      "title": "Fila concluída",
+      "body": "Transferência concluída de {n} item | Transferência concluída de {n} itens"
+    },
+    "videoFinished": {
+      "title": "Transferência concluída",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Lista de reprodução concluída",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Pronto para transferir",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Lista de reprodução pronta para transferir",
+      "body": "{title} | {title} ({n} item) | {title} ({n} itens)"
+    },
+    "downloadFailed": {
+      "title": "Falha na transferência",
+      "body": "{title}\n{message}"
+    }
+  }
+}
