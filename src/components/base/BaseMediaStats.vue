@@ -31,7 +31,7 @@
         <chat-bubble-left-right-icon class="inline-block h-8 w-8 stroke-current" />
       </div>
       <h3 class="stat-title">{{ t('media.view.stats.comments') }}</h3>
-      <p class="stat-value text-2xl">{{ item.comments }}</p>
+      <p class="stat-value text-2xl">{{ formatNumber(item.comments) }}</p>
     </article>
 
     <article class="stat" v-if="item.rating">

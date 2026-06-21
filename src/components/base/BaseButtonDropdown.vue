@@ -1,8 +1,8 @@
 <template>
   <div class="join divide-x-2">
     <base-button
-        class="join-item"
-        :class="btnClasses"
+        class="join-item !rounded-r-none"
+        :class="mainButtonClasses"
         :tooltip="mainTooltip"
         :disabled="disabled || mainDisabled ? true : undefined"
         :type="mainType ?? 'button'"
@@ -14,8 +14,8 @@
 
     <div class="dropdown" :class="dropdownClasses">
       <button
-          class="btn btn-subtle join-item px-1"
-          :class="btnClasses"
+          class="btn btn-subtle join-item px-1 !rounded-l-none"
+          :class="caretButtonClasses"
           type="button"
           tabindex="0"
           :disabled="disabled || caretDisabled ? true : undefined"
@@ -81,7 +81,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  mainClick: [];
+  mainClick: [event: MouseEvent];
 }>();
 
 const dropdownClasses = computed(() => [
@@ -89,15 +89,27 @@ const dropdownClasses = computed(() => [
   props.align === 'end' ? 'dropdown-end' : 'dropdown-start',
 ]);
 
-const btnClasses = computed(() => [props.btnClass]);
+const mainButtonClasses = computed(() => [props.btnClass]);
+
+const caretButtonClasses = computed(() => {
+  if (props.disabled || props.caretDisabled) {
+    return [props.btnClass];
+  }
+
+  if (props.mainDisabled) {
+    return ['btn-soft'];
+  }
+
+  return [props.btnClass];
+});
 
 const menuClasses = computed(() => [
   props.menuSize === 'sm' ? 'menu-sm' : 'menu-md',
   props.menuWidthClass,
 ]);
 
-function onMainClick() {
-  emit('mainClick');
+function onMainClick(event: MouseEvent) {
+  emit('mainClick', event);
 }
 
 function blurFromEvent(event: Event) {
