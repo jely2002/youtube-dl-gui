@@ -6,10 +6,31 @@ import TheHeader from '../../src/components/TheHeader.vue';
 import { i18n } from '../../src/i18n';
 
 const dispatchMediaInfoFetch = vi.fn();
+const addAndDownload = vi.fn();
+const addUrlBatch = vi.fn();
+const addUrlBatchAndDownload = vi.fn();
 
 vi.mock('../../src/stores/media/media', () => ({
   useMediaStore: () => ({
     dispatchMediaInfoFetch,
+    addAndDownload,
+    addUrlBatch,
+    addUrlBatchAndDownload,
+  }),
+}));
+
+vi.mock('../../src/stores/toast', () => ({
+  useToastStore: () => ({
+    showToast: vi.fn(),
+  }),
+}));
+
+vi.mock('../../src/stores/recordMode', () => ({
+  useRecordModeStore: () => ({
+    isActive: false,
+    toggle: vi.fn(),
+    hasSeen: vi.fn(() => false),
+    markSeen: vi.fn(),
   }),
 }));
 
@@ -26,6 +47,7 @@ vi.mock('../../src/stores/settings', () => ({
 vi.mock('../../src/composables/useClipboard', () => ({
   useClipboard: () => ({
     content: ref(''),
+    poll: vi.fn(),
   }),
 }));
 

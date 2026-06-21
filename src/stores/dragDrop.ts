@@ -2,6 +2,19 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useToastStore } from './toast.ts';
 import { useMediaStore } from './media/media.ts';
+import {
+  getUrlImportReadErrorToast,
+  getUrlImportToast,
+  isSupportedImportFile,
+  mergeParsedUrlImports,
+  parseUrlFileText,
+  parseUrlInputText,
+} from '../helpers/urlImport.ts';
+
+type DropPayload = {
+  urls: string[];
+  files: File[];
+};
 
 export const useDragDropStore = defineStore('dragDrop', () => {
   const isOver = ref(false);
@@ -14,37 +27,35 @@ export const useDragDropStore = defineStore('dragDrop', () => {
     isOver.value = false;
   }
 
-  async function handleDrop(paths: string[]) {
+  async function handleDrop(payload: DropPayload) {
     isOver.value = false;
 
     const toastStore = useToastStore();
     const mediaStore = useMediaStore();
 
-    const urlPaths: string[] = [];
-    for (const path of paths) {
+    const supportedFiles = payload.files.filter(isSupportedImportFile);
+    const parsedFiles = [];
+    for (const file of supportedFiles) {
       try {
-        const url = new URL(path);
-        if (!/^https?:$/.test(url.protocol)) continue;
-        urlPaths.push(path);
-      } catch {}
+        parsedFiles.push(parseUrlFileText(await file.text()));
+      } catch {
+        const toast = getUrlImportReadErrorToast();
+        toastStore.showToast(toast.message, { style: toast.style });
+        return;
+      }
     }
 
-    if (urlPaths.length === 0) {
-      toastStore.showToast(`The dropped item can't be added to the queue.`, { style: 'warning' });
-      return;
+    const result = mergeParsedUrlImports([
+      parseUrlInputText(payload.urls.join('\n')),
+      ...parsedFiles,
+    ]);
+
+    if (result.urls.length > 0) {
+      await mediaStore.addUrlBatch(result.urls);
     }
 
-    await Promise.all(
-      urlPaths.map(path => mediaStore.dispatchMediaInfoFetch(path)),
-    );
-
-    if (urlPaths.length === 1) {
-      toastStore.showToast('Link added to queue.', { style: 'info' });
-    } else {
-      toastStore.showToast(`${urlPaths.length} links added to queue.`, {
-        style: 'info',
-      });
-    }
+    const toast = getUrlImportToast(result);
+    toastStore.showToast(toast.message, { style: toast.style });
   }
 
   return {

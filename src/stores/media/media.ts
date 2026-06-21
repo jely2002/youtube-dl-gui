@@ -13,7 +13,13 @@ import { useSettingsStore } from '../settings.ts';
 import { Group } from '../../tauri/types/group.ts';
 import { notify, notifyGroup } from '../../tauri/notifications';
 import { NotificationKind } from '../../tauri/types/app';
-import { resolvePlaylistIndex } from '../../helpers/playlistNumbering.ts';
+import { resolvePlaylistIndex } from '../../helpers/playlistNumbering';
+import { useRecordModeStore } from '../recordMode.ts';
+
+type PendingReadyGroup = {
+  resolve: (groupIds: string[]) => void;
+  reject: (reason?: unknown) => void;
+};
 
 export const useMediaStore = defineStore('media', () => {
   const groupStore = useMediaGroupStore();
@@ -24,12 +30,29 @@ export const useMediaStore = defineStore('media', () => {
   const sizeStore = useMediaSizeStore();
   const diagnosticsStore = useMediaDiagnosticsStore();
   const settingsStore = useSettingsStore();
+  const recordModeStore = useRecordModeStore();
+  const pendingReadyGroups = new Map<string, PendingReadyGroup>();
+
+  function resolvePendingReadyGroup(groupId: string, resolvedIds: string[]) {
+    const pending = pendingReadyGroups.get(groupId);
+    if (!pending) return;
+    pending.resolve(resolvedIds);
+    pendingReadyGroups.delete(groupId);
+  }
+
+  function rejectPendingReadyGroup(groupId: string, reason?: unknown) {
+    const pending = pendingReadyGroups.get(groupId);
+    if (!pending) return;
+    pending.reject(reason);
+    pendingReadyGroups.delete(groupId);
+  }
 
   function finalizePlaylistGroup(group: Group) {
     const splitThreshold = settingsStore.settings.performance.splitPlaylistThreshold;
     if (group.total < splitThreshold) {
       const newGroups = groupStore.splitGroup(group);
       void notifyGroup(NotificationKind.PlaylistReady, group, {}, newGroups.length);
+      resolvePendingReadyGroup(group.id, newGroups.map(newGroup => newGroup.id));
       if (newGroups.length === 0) {
         stateStore.setGroupState(group.id, MediaState.configure);
         return;
@@ -41,6 +64,7 @@ export const useMediaStore = defineStore('media', () => {
       groupStore.consolidateGroup(group);
       void notifyGroup(NotificationKind.PlaylistReady, group, {}, group.entries?.length ?? 1);
       stateStore.setGroupState(group.id, MediaState.configure);
+      resolvePendingReadyGroup(group.id, [group.id]);
     }
   }
 
@@ -74,6 +98,7 @@ export const useMediaStore = defineStore('media', () => {
       finalizePlaylistGroup(group);
     } else if (group.total === 1) {
       void notifyGroup(NotificationKind.VideoReady, group);
+      resolvePendingReadyGroup(group.id, [group.id]);
     }
 
     const next = total > 1 && isFirst
@@ -119,12 +144,55 @@ export const useMediaStore = defineStore('media', () => {
 
     await invoke('media_info', { url, id, groupId });
     await notifyGroup(NotificationKind.QueueAdded, newGroup);
+    return groupId;
+  }
+
+  function waitForGroupReady(groupId: string): Promise<string[]> {
+    const group = groupStore.findGroupById(groupId);
+    const state = stateStore.getGroupState(groupId);
+
+    if (group && state === MediaState.configure) {
+      return Promise.resolve([groupId]);
+    }
+
+    return new Promise<string[]>((resolve, reject) => {
+      pendingReadyGroups.set(groupId, { resolve, reject });
+    });
+  }
+
+  function getDownloadOptions(groupId: string): DownloadOptions {
+    return optionsStore.getOptions(groupId) ?? optionsStore.getGlobalOptions() ?? { trackType: TrackType.both };
+  }
+
+  async function addAndDownload(url: string, fromShortcut: boolean = false) {
+    await addUrlBatchAndDownload([url], fromShortcut);
+  }
+
+  async function addUrlBatch(urls: string[], fromShortcut: boolean = false): Promise<string[]> {
+    return await Promise.all(
+      urls.map(url => dispatchMediaInfoFetch(url, fromShortcut)),
+    );
+  }
+
+  async function addUrlBatchAndDownload(urls: string[], fromShortcut: boolean = false): Promise<string[]> {
+    const initialGroupIds = await addUrlBatch(urls, fromShortcut);
+    const readyGroupIds = [...new Set(
+      (await Promise.all(initialGroupIds.map(groupId => waitForGroupReady(groupId)))).flat(),
+    )];
+
+    await notify(NotificationKind.QueueDownloading, { n: readyGroupIds.length.toString() }, fromShortcut);
+    await Promise.all(
+      readyGroupIds.map(groupId => downloadGroup(groupId, getDownloadOptions(groupId))),
+    );
+
+    return readyGroupIds;
   }
 
   async function downloadGroup(
     groupId: string,
     options: DownloadOptions,
   ) {
+    recordModeStore.disable();
     const group = groupStore.findGroupById(groupId);
     if (!group) return;
 
@@ -214,11 +282,12 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   async function downloadAllGroups(fromShortcut: boolean = false) {
+    recordModeStore.disable();
     const group_ids = groupStore.groupOrder
       .filter(gid => stateStore.getGroupState(gid) === MediaState.configure);
 
     await Promise.all(group_ids.map((gid) => {
-      const opts = optionsStore.getOptions(gid) ?? { trackType: TrackType.both };
+      const opts = getDownloadOptions(gid);
       return downloadGroup(gid, opts);
     }));
     await notify(NotificationKind.QueueDownloading, { n: group_ids.length.toString() }, fromShortcut);
@@ -280,6 +349,10 @@ export const useMediaStore = defineStore('media', () => {
     processMediaAddPayload,
     finalizePlaylistGroup,
     dispatchMediaInfoFetch,
+    rejectPendingReadyGroup,
+    addAndDownload,
+    addUrlBatch,
+    addUrlBatchAndDownload,
     downloadGroup,
     downloadAllGroups,
     pauseAllGroups,

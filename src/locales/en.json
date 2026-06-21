@@ -20,11 +20,24 @@
     "unknown": "unknown",
     "confirm": "Confirm",
     "best": "Best",
-    "resume": "Resume"
+    "resume": "Resume",
+    "urlImport": {
+      "added": "Link added to queue. | {n} links added to queue.",
+      "partial": "Added {added} links to queue. Skipped {skipped} invalid entries.",
+      "noneFound": "No valid links found in the input/file.",
+      "readError": "Could not read that file."
+    }
   },
   "layout": {
     "header": {
-      "placeholder": "Enter a video/playlist URL to add to the queue",
+      "placeholder": "Enter a video/playlist link to add to the queue",
+      "recordModePlaceholder": "Record mode on: copied links are added to the queue",
+      "actions": {
+        "more": "More add actions",
+        "recordStart": "Enable record mode",
+        "recordStop": "Disable record mode",
+        "importFile": "Import links from file"
+      },
       "nav": {
         "settings": "App Settings"
       }
@@ -324,7 +337,7 @@
     "card": {
       "actions": {
         "remove": "Remove",
-        "externalUrl": "Visit on external URL",
+        "externalUrl": "Visit on external link",
         "retry": "Retry download",
         "download": "Download individually",
         "preferences": "Download preferences",
@@ -514,7 +527,8 @@
       "globalShortcuts": {
         "label": "Enable shortcuts:",
         "add_hint": "Add videos to the queue with:",
-        "download_hint": "Download the queue with:"
+        "download_hint": "Download the queue with:",
+        "instant_hint": "Add and download immediately with:"
       },
       "authentication": {
         "label": "Log in to download private videos:",
@@ -851,7 +865,7 @@
       },
       "dragState": {
         "title": "Drop to add to queue",
-        "subtitle": "Add to the queue by dragging videos."
+        "subtitle": "Add to the queue by dragging videos or files with links."
       },
       "fileInput": {
         "select": "Select file",
@@ -940,12 +954,12 @@
         "message": "This video can only be accessed through an embedded player."
       },
       "urlUnsupported": {
-        "shortMessage": "Invalid URL",
+        "shortMessage": "Invalid link",
         "message": "The provided link isn’t supported or recognized."
       },
       "unknownUrlType": {
-        "shortMessage": "Unknown URL type",
-        "message": "The provided URL uses an unsupported protocol."
+        "shortMessage": "Unknown link type",
+        "message": "The provided link uses an unsupported protocol."
       },
       "networkNameResolutionFailed": {
         "shortMessage": "Network error",
