@@ -6,7 +6,7 @@
     "load": "Cargar",
     "install": "Instalar",
     "percentage": "{percent}%",
-    "add": "Añadir",
+    "add": "Agregar",
     "back": "Atrás",
     "continue": "Continuar",
     "retry": "Reintentar",
@@ -24,26 +24,26 @@
   },
   "layout": {
     "header": {
-      "placeholder": "Ingresa la URL de un video o lista de reproducción para añadir a la cola",
+      "placeholder": "Ingresa una URL de video o lista de reproducción para agregar a la cola",
       "nav": {
-        "settings": "Configuración de la aplicación"
+        "settings": "Configuración de la app"
       }
     },
     "footer": {
       "progress": {
-        "downloading": "Descargando cola - {done} de {total} completados.",
-        "completed": "Descarga completada – {n} elemento descargado. | Descarga completada – {n} elementos descargados.",
+        "downloading": "Descargando cola: {done} de {total} completados.",
+        "completed": "Descarga completa: {n} elemento descargado. | Descarga completa: {n} elementos descargados.",
         "ready": "¡Listo para descargar! {n} elemento en cola. | ¡Listo para descargar! {n} elementos en cola."
       },
       "nav": {
-        "downloadLocation": "Carpeta de descarga",
+        "downloadLocation": "Carpeta de descargas",
         "login": {
           "screenReader": {
             "on": "Editar inicio de sesión (actualmente conectado)",
             "off": "Editar inicio de sesión (actualmente desconectado)"
           },
           "tooltip": {
-            "on": "Editar sesión",
+            "on": "Editar inicio de sesión",
             "off": "Iniciar sesión"
           }
         },
@@ -72,8 +72,8 @@
         "clearSuccessful": "Limpiar completados",
         "clearErrored": "Limpiar errores",
         "clearPending": "Limpiar pendientes",
-        "cancelDownloading": "Cancelar la descarga",
-        "more": "Más acciones de la cola"
+        "cancelDownloading": "Cancelar descarga",
+        "more": "Más acciones de cola"
       }
     }
   },
@@ -82,24 +82,24 @@
     "cookies": {
       "legend": "Cookies",
       "legendBadge": "Recomendado",
-      "legendLabel": "Utiliza sesiones iniciadas desde un archivo de cookies o impórtalas de tu navegador.",
+      "legendLabel": "Usa sesiones iniciadas desde un archivo de cookies o impórtalas desde tu navegador.",
       "file": {
         "label": "Cargar cookies desde un archivo cookies.txt",
         "hint": "Para exportar tus cookies a un archivo {link}",
         "hintLink": "consulta la guía."
       },
       "browser": {
-        "label": "Cargar cookies automáticamente desde el navegador:",
-        "placeholder": "No cargar cookies del navegador",
-        "hint": "Es posible que algunos navegadores no admitan la carga de cookies. Mira la {link}",
+        "label": "Cargar cookies automáticamente desde un navegador:",
+        "placeholder": "No cargar cookies desde un navegador",
+        "hint": "Es posible que algunos navegadores no admitan la carga de cookies. Consulta la {link}",
         "hintLink": "lista de navegadores compatibles."
       }
     },
     "credentials": {
       "title": "Métodos avanzados",
-      "description": "Utiliza métodos como autenticación básica, tokens bearer, encabezados, contraseña de video, etc.",
+      "description": "Usa métodos como autenticación básica, tokens bearer, encabezados, contraseña de video, etc.",
       "labels": {
-        "username": "Nombre de usuario",
+        "username": "Usuario",
         "password": "Contraseña",
         "token": "Token",
         "headers": "Encabezados"
@@ -109,24 +109,24 @@
         "legendLabel": "Usado para sitios con autenticación simple."
       },
       "videoPassword": {
-        "legend": "Contraseña del video",
+        "legend": "Contraseña de video",
         "legendLabel": "Proporciona una contraseña para acceder a videos protegidos."
       },
       "bearerToken": {
         "legend": "Token Bearer",
-        "legendLabel": "Proporciona un token de portador para acceder a recursos privados."
+        "legendLabel": "Proporciona un token bearer para acceder a recursos privados."
       },
       "customHeaders": {
         "legend": "Encabezados personalizados",
         "legendBadge": "Avanzado",
-        "legendLabel": "Una por línea: CAMPO:VALOR",
+        "legendLabel": "Uno por línea: CAMPO:VALOR",
         "placeholder": "X-Api-Key:…"
       }
     },
     "init": {
       "title": "Almacén de secretos no habilitado",
-      "description": "Para utilizar métodos de autenticación avanzados, es necesario habilitar el almacén de secretos.",
-      "hint": "El almacén de secretos utiliza el llavero (keyring) de tu sistema; esto podría requerir una contraseña.",
+      "description": "Para usar métodos de autenticación avanzados, es necesario habilitar el almacén de secretos.",
+      "hint": "El almacén de secretos utiliza el llavero de tu sistema; esto podría requerir una contraseña.",
       "error": {
         "title": "No se pudo habilitar el almacén de secretos",
         "description": "Ocurrió un error al habilitar el almacén de secretos, por favor inténtalo de nuevo.",
@@ -138,8 +138,8 @@
       }
     },
     "toasts": {
-      "error": "No se pudo guardar la configuración de autenticación. {error}",
-      "saved": "¡Configuración de autenticación guardada!"
+      "error": "No se pudieron guardar los ajustes de autenticación. {error}",
+      "saved": "¡Ajustes de autenticación guardados!"
     }
   },
   "media": {
@@ -148,7 +148,7 @@
         "metadata": "Metadatos",
         "logs": "Registros (Logs)"
       },
-      "thumbnailAlt": "Miniatura para {title}",
+      "thumbnailAlt": "Miniatura de {title}",
       "metadata": {
         "uploader": "Subido por:",
         "extractor": "Extractor:",
@@ -162,7 +162,7 @@
         "likes": "Me gusta",
         "dislikes": "No me gusta",
         "comments": "Comentarios",
-        "rating": "Valoración",
+        "rating": "Valoracion",
         "duration": "Duración"
       },
       "logs": {
@@ -190,32 +190,32 @@
         "override": "Sobrescrito"
       },
       "labels": {
-        "quality": "Elige las preferencias de formato, códec y pistas.",
-        "network": "Configura el proxy, la suplantación y los encabezados de la solicitud. Sobrescribe los ajustes predeterminados de la app para esta descarga.",
-        "output": "Configura el contenedor, la conversión y las plantillas de nombre de archivo. Sobrescribe los ajustes predeterminados de la app para esta descarga.",
-        "headersOverride": "Una por línea: CAMPO:VALOR. Sustituye los encabezados globales para esta descarga.",
-        "subtitles": "Elige los subtítulos para esta descarga."
-      },
-      "hints": {
-        "format": "Elige la calidad de video o audio. Una mayor calidad suele significar archivos más grandes y descargas más largas.",
-        "encodings": "Elige los códecs preferidos. Útil para mejorar la compatibilidad de reproducción o conservar la calidad original.",
-        "tracks": "Elige variantes de idioma o canales cuando estén disponibles, por ejemplo, audio doblado."
-      },
-      "tabs": {
-        "quality": "Calidad",
-        "network": "Red",
-        "subtitles": "Subtítulos"
+        "quality": "Elige preferencias de formato, códec y pista.",
+        "network": "Configura proxy, suplantación, ajustes del extractor y encabezados de solicitud. Anula los valores predeterminados de la app para esta descarga.",
+        "output": "Configura el contenedor, la conversión y plantillas de nombre de archivo. Anula los valores predeterminados de la app para esta descarga.",
+        "subtitles": "Elige los subtítulos para esta descarga.",
+        "headersOverride": "Uno por línea: CAMPO:VALOR. Reemplaza los encabezados globales para esta descarga."
       },
       "subtitles": {
         "empty": "No se encontraron subtítulos para esta descarga.",
         "languages": {
           "legend": "Idiomas disponibles",
-          "hint": "Solo se pueden descargar estos subtítulos para este elemento.",
-          "manual": "Aportados por el creador",
+          "hint": "Solo estos subtítulos pueden descargarse para este elemento.",
+          "manual": "Proporcionados por el creador",
           "auto": "Generados automáticamente",
           "noneManual": "No se encontraron subtítulos del creador.",
           "noneAuto": "No se encontraron subtítulos automáticos."
         }
+      },
+      "hints": {
+        "format": "Elige la calidad de video o audio. Una calidad más alta suele significar archivos más grandes y descargas más largas.",
+        "encodings": "Elige los códecs preferidos. Útil para compatibilidad de reproducción o para mantener la calidad original.",
+        "tracks": "Elige variantes de idioma o canal cuando estén disponibles, por ejemplo, audio doblado."
+      },
+      "tabs": {
+        "quality": "Calidad",
+        "subtitles": "Subtítulos",
+        "network": "Red"
       }
     },
     "steps": {
@@ -236,12 +236,12 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "Sin códecs de audio",
+            "noFormats": "Sin codificaciones de audio",
             "placeholder": "Códec de audio",
             "screenReader": "Seleccionar códec de audio"
           },
           "videoSelect": {
-            "noFormats": "Sin códecs de video",
+            "noFormats": "Sin codificaciones de video",
             "placeholder": "Códec de video",
             "screenReader": "Seleccionar códec de video"
           }
@@ -283,15 +283,15 @@
           "subtitles": "subtítulos",
           "thumbnail": "miniatura",
           "metadata": "metadatos",
-          "other": "otro"
+          "other": "otros"
         },
         "status": {
           "initializing": "Inicializando",
           "downloading": "Descargando",
-          "merging": "Combinando",
-          "remuxing": "Remuxando",
+          "merging": "Fusionando",
+          "remuxing": "Remuxing",
           "reencoding": "Recodificando",
-          "finalizing": "Finalizando"
+          "finalizing": "Limpiando"
         },
         "metadata": {
           "eta": "Tiempo restante: {eta}",
@@ -304,7 +304,7 @@
         "indeterminate": "Descarga pausada",
         "metadata": {
           "eta": "Restante: {eta}",
-          "etaItems": "Restante: {n} elemento | Restantes: {n} elementos"
+          "etaItems": "Restante: {n} elemento | Restante: {n} elementos"
         }
       },
       "done": {
@@ -312,12 +312,12 @@
         "showFolder": "Mostrar en carpeta",
         "open": "Abrir archivo",
         "openFirst": "Abrir primer archivo",
-        "undeterminedLocation": "No se pudo determinar la ubicación de descarga para este elemento."
+        "undeterminedLocation": "No se pudo determinar la carpeta de descargas para este elemento."
       },
       "error": {
         "errorPrefix": "Error - {message}",
-        "report": "Informar",
-        "showFull": "Ver registros (logs)",
+        "report": "Reportar",
+        "showFull": "Ver registros",
         "signIn": "Iniciar sesión"
       }
     },
@@ -340,25 +340,29 @@
   },
   "subtitles": {
     "title": "Subtítulos",
+    "defaults": {
+      "legend": "Valores predeterminados de subtítulos",
+      "hint": "Se usan cuando un video tiene subtítulos."
+    },
     "options": {
       "enable": {
         "legend": "Descargas de subtítulos",
-        "legendLabel": "Elige la configuración predeterminada de subtítulos.",
+        "legendLabel": "Elige los ajustes predeterminados de los subtítulos.",
         "label": "Habilitar subtítulos",
         "hint": "Descargar subtítulos cuando estén disponibles."
       },
       "autoGenerated": {
         "label": "Descargar subtítulos generados automáticamente",
-        "hint": "Descargar también subtítulos automáticos cuando estén disponibles."
+        "hint": "También descargar subtítulos automáticos cuando estén disponibles."
       },
       "format": {
         "legend": "Formato preferido",
-        "legendLabel": "Selecciona tu formato de subtítulos preferido. Si no está disponible, se usará el siguiente mejor formato.",
+        "legendLabel": "Selecciona tu formato de subtítulos preferido. Si el formato no está disponible, se usará el siguiente mejor formato.",
         "label": "Formato"
       },
       "embed": {
-        "label": "Añadir pista de subtítulos:",
-        "hint": "Incrustar subtítulos en el archivo de video; funciona para formatos mp4, mkv y webm."
+        "label": "Agregar pista de subtítulos:",
+        "hint": "Agregar subtítulos al archivo de video; esto funciona para formatos MP4, MKV y WEBM."
       },
       "languages": {
         "legend": "Idiomas",
@@ -366,14 +370,14 @@
         "downloadAll": "Descargar todos los subtítulos disponibles.",
         "search": "Buscar idiomas",
         "searchPlaceholder": "Buscar por nombre de idioma",
-        "noResult": "Ningún idioma coincide con \"{query}\".",
+        "noResult": "No hay idiomas que coincidan con \"{query}\".",
         "selected": "Seleccionados:",
         "allSelected": "Todos los subtítulos disponibles"
       }
     },
     "toasts": {
-      "saved": "¡Configuración de subtítulos guardada!",
-      "error": "No se pudo guardar la configuración de subtítulos. {error}"
+      "saved": "¡Ajustes de subtítulos guardados!",
+      "error": "No se pudieron guardar los ajustes de subtítulos. {error}"
     },
     "formats": {
       "srt": "SubRip (.srt)",
@@ -381,28 +385,24 @@
       "ass": "Advanced SubStation Alpha (.ass)",
       "ttml": "Timed Text Markup (.ttml)",
       "json3": "JSON (.json)"
-    },
-    "defaults": {
-      "legend": "Subtítulos predeterminados",
-      "hint": "Se usa cuando un video tiene subtítulos."
     }
   },
   "location": {
-    "title": "Ubicación de descarga",
+    "title": "Carpeta de descargas",
     "downloadDir": {
-      "label": "Ubicación de descarga",
+      "label": "Carpeta de descargas",
       "hint": "Haz clic en el cuadro para seleccionar dónde se descargarán los videos."
     },
     "directory": {
       "legend": "Organizar por",
       "legendLabel": "Selecciona cómo se organizan las descargas en carpetas.",
       "videoDir": {
-        "label": "Ubicación de descarga (Video):",
-        "hint": "Sobrescribir la ubicación global al descargar videos."
+        "label": "Ruta de guardado:",
+        "hint": "Anular la carpeta de descargas global al descargar videos."
       },
       "audioDir": {
-        "label": "Ubicación de descarga (Audio):",
-        "hint": "Sobrescribir la ubicación global al descargar audio."
+        "label": "Ruta de guardado:",
+        "hint": "Anular la carpeta de descargas global al descargar audio."
       },
       "directoryPreset": {
         "label": "Organizar descargas por:",
@@ -425,18 +425,18 @@
         }
       },
       "outputFormat": {
-        "label": "Formato del directorio:"
+        "label": "Formato de directorio:"
       }
     },
     "filename": {
       "legend": "Formato de nombre de archivo",
       "legendLabel": "Selecciona el nombre que tendrán las descargas.",
       "reversePlaylistNumbering": {
-        "label": "Numeración de lista invertida:",
-        "hint": "Numera los elementos de la lista desde el final en lugar del principio."
+        "label": "Invertir numeración de lista:",
+        "hint": "Numerar los elementos de la lista desde el final en lugar del principio."
       },
       "formatPreset": {
-        "label": "Preajuste de nombre:",
+        "label": "Preajuste de nombre de archivo:",
         "exampleLabel": "Ejemplo de salida:",
         "options": {
           "titleQuality": "Título + calidad",
@@ -458,7 +458,7 @@
         },
         "restrictFilenames": {
           "label": "Restringir nombres de archivo:",
-          "hint": "Reemplaza espacios con guiones bajos y elimina caracteres especiales como \"&\" de los nombres de archivo."
+          "hint": "Reemplaza los espacios con guiones bajos y elimina caracteres especiales como \"&\" de los nombres de archivo."
         }
       },
       "outputFormat": {
@@ -466,19 +466,19 @@
       }
     },
     "toasts": {
-      "saved": "¡Ubicaciones guardadas!",
-      "error": "No se pudieron guardar las ubicaciones."
+      "saved": "¡Rutas de guardado guardadas!",
+      "error": "No se pudieron guardar las rutas de guardado."
     }
   },
   "settings": {
-    "title": "Ajustes",
+    "title": "Configuración",
     "reset": {
       "label": "Restablecer",
       "confirm": "Haz clic de nuevo para restablecer"
     },
     "tabs": {
       "downloads": "Descargas",
-      "app": "Aplicación",
+      "app": "App",
       "network": "Red",
       "system": "Sistema",
       "about": "Acerca de"
@@ -490,7 +490,7 @@
         "label": "Máximo de tareas simultáneas:"
       },
       "splitPlaylistThreshold": {
-        "label": "Dividir listas en videos separados cuando:",
+        "label": "Dividir listas de reproducción en videos separados cuando:",
         "options": {
           "never": "Nunca dividir",
           "lessThan": "Menos de {number} videos"
@@ -502,18 +502,18 @@
     },
     "input": {
       "legend": "Entrada",
-      "legendLabel": "Elige cómo empezar a descargar con OVD.",
+      "legendLabel": "Elige cómo comenzar a descargar con OVD.",
       "autoFillClipboard": {
-        "label": "Pegar enlaces del portapapeles automáticamente:",
-        "hint": "Detecta enlaces que copias para que puedas descargarlos con un clic."
+        "label": "Completar enlaces copiados automáticamente:",
+        "hint": "Detecta los enlaces que copiaste para que puedas descargarlos con un solo clic."
       },
       "preferVideoInMixedLinks": {
-        "label": "Preferir video individual en enlaces de listas de reproducción:",
-        "hint": "Cuando un enlace contiene tanto un video como una lista, descargar solo el video en lugar de la lista completa."
+        "label": "Preferir video único para enlaces de listas:",
+        "hint": "Cuando un enlace contiene tanto un video como una lista de reproducción, descarga solo el video en lugar de la lista completa."
       },
       "globalShortcuts": {
-        "label": "Habilitar atajos de teclado:",
-        "add_hint": "Añadir videos a la cola con:",
+        "label": "Habilitar atajos:",
+        "add_hint": "Agregar videos a la cola con:",
         "download_hint": "Descargar la cola con:"
       },
       "authentication": {
@@ -525,74 +525,74 @@
       "legend": "Salida",
       "legendLabel": "Configura qué tipo de archivos se descargan.",
       "addThumbnail": {
-        "label": "Añadir imagen de portada:",
-        "hint": "Incrustar la miniatura dentro del archivo para que los reproductores muestren la carátula."
+        "label": "Agregar imagen de portada:",
+        "hint": "Incrusta la miniatura dentro del archivo para que los reproductores de medios puedan mostrar el arte."
       },
       "saveThumbnail": {
         "label": "Guardar archivo de miniatura:",
-        "hint": "Descarga la mejor miniatura disponible junto al archivo multimedia."
+        "hint": "Descarga la mejor miniatura disponible junto al archivo de medios."
       },
       "addMetadata": {
-        "label": "Añadir metadatos (título, artista...):",
-        "hint": "Guardar metadatos como título, uploader/artista y descripción dentro del archivo."
+        "label": "Agregar info de título y artista:",
+        "hint": "Guarda metadatos como título, subidor/artista y descripción dentro del archivo."
       },
       "preciseCuts": {
         "label": "Corte preciso:",
-        "hint": "Corta en fotogramas exactos en lugar de los fotogramas clave cercanos. Muy lento.\nHabilítalo solo si los cortes normales son incorrectos, están dañados o tienen segmentos negros/faltantes."
+        "hint": "Corta en fotogramas exactos en lugar de fotogramas clave cercanos. Muy lento.\nHabilítalo solo si los cortes normales son incorrectos, distorsionados o tienen segmentos negros/faltantes."
       },
       "partialDownload": {
         "legend": "Descarga parcial",
-        "hint": "Set timestamps or chapters to download only some parts.",
+        "hint": "Establece marcas de tiempo o capítulos para descargar solo algunas partes.",
         "use": "Usar",
         "useTimes": "Marcas de tiempo",
         "useChapter": "Capítulos",
         "chapter": "Capítulo",
-        "startAt": "Desde",
-        "stopAt": "Hasta",
-        "invalidHint": "Las marcas no válidas se ignorarán.",
+        "startAt": "Comenzar en",
+        "stopAt": "Terminar en",
+        "invalidHint": "Las marcas de tiempo inválidas serán ignoradas.",
         "allChapters": "Todos los capítulos",
         "errors": {
-          "invalid": "Introduce una hora válida.",
-          "beforeStart": "La hora final debe ser posterior a la inicial.",
-          "exceedsDuration": "La marca no puede superar la duración del video."
+          "invalid": "Ingresa un tiempo válido.",
+          "beforeStart": "El tiempo de finalización debe ser posterior al de inicio.",
+          "exceedsDuration": "La marca de tiempo no puede exceder la duración del video."
         }
       },
       "location": {
-        "label": "Ubicación de descarga y nombres de archivo:",
-        "link": "Configurar ubicaciones de descarga"
+        "label": "Carpeta de descargas y nombres de archivo:",
+        "link": "Configurar carpeta de descargas"
       },
       "subtitles": {
-        "label": "Añadir subtítulos:",
+        "label": "Agregar subtítulos:",
         "link": "Configurar subtítulos"
       },
       "keepOriginalStreams": {
         "label": "Mantener flujos originales",
-        "hint": "Evita cambios de contenedor y recodificación salvo que un posprocesado lo exija."
+        "hint": "Evita la conversión de contenedor y la recodificación a menos que un paso de post-procesamiento seleccionado lo requiera."
       },
       "postprocess": {
-        "label": "Posprocesado de video:",
-        "hint": "El posprocesado se ejecuta al terminar la descarga.",
-        "reencodeWarning": "Esta opción recodifica el video, lo cual es pesado y puede tardar bastante.",
-        "keepOriginalStreamsConflict": "Esta opción requiere volver a codificar. Desactiva «Mantener flujos originales» para usarla.",
-        "mp42RequiresMp4": "Esta opción requiere salida en formato MP4.",
+        "label": "Post-procesamiento de video:",
+        "hint": "El post-procesamiento se ejecuta después de que termina la descarga.",
+        "reencodeWarning": "Esta opción recodificará el archivo, lo cual es pesado y puede tomar mucho tiempo.",
+        "keepOriginalStreamsConflict": "Esta opción requiere recodificación. Deshabilita 'Mantener flujos originales' para usarla.",
+        "mp42RequiresMp4": "Esta opción requiere salida MP4.",
         "options": {
           "none": "Ninguno",
           "fps30": "Recodificar a 30 fps",
-          "mp42": "Establecer marca MP4 en mp42",
+          "mp42": "Establecer marca MP4 a mp42",
           "custom": "Personalizado"
         }
       },
       "postprocessMode": {
-        "label": "Modo de posprocesado personalizado:",
-        "hint": "Elige si los argumentos personalizados de ffmpeg se ejecutan durante el remux o la recodificación.",
+        "label": "Modo de post-procesamiento personalizado:",
+        "hint": "Elige si los argumentos personalizados de FFmpeg se ejecutan durante el remuxing o la recodificación.",
         "options": {
-          "remux": "Ejecutar durante el remux",
-          "reencode": "Ejecutar durante la recodificación"
+          "remux": "Ejecutar durante remux",
+          "reencode": "Ejecutar durante recodificación"
         }
       },
       "postprocessArgs": {
-        "label": "Argumentos avanzados de ffmpeg:",
-        "hint": "Solo para usuarios avanzados. Separa los argumentos con espacios; las comillas se conservan."
+        "label": "Argumentos avanzados de FFmpeg:",
+        "hint": "Solo para usuarios avanzados. Separa los argumentos con espacios; los valores entre comillas se conservan."
       },
       "tabs": {
         "audio": {
@@ -612,7 +612,7 @@
             }
           },
           "postprocess": {
-            "label": "Posprocesado de audio:",
+            "label": "Post-procesamiento de audio:",
             "options": {
               "none": "Ninguno",
               "custom": "Personalizado"
@@ -652,7 +652,7 @@
       },
       "expandedOptions": {
         "label": "Selector adicional:",
-        "hint": "Elige qué selector adicional se muestra antes de descargar.",
+        "hint": "Elige qué selector extra se muestra antes de descargar.",
         "options": {
           "none": "Ninguno",
           "encodings": "Codificaciones",
@@ -671,7 +671,7 @@
       },
       "impersonate": {
         "label": "Suplantación:",
-        "hint": "Suplantar un SO o navegador específico para evitar huellas digitales (fingerprinting).",
+        "hint": "Suplanta un sistema operativo o navegador específico para evitar el rastreo (fingerprinting).",
         "options": {
           "none": "No suplantar",
           "any": "Suplantar un cliente aleatorio"
@@ -681,7 +681,7 @@
         "label": "Argumentos del extractor:",
         "hint": "Personaliza los argumentos del extractor para yt-dlp. Un argumento por línea.",
         "placeholder": "youtube:player_js_variant=main",
-        "flagWarning": "Introduce solo el valor. La aplicación añade --extractor-args automáticamente."
+        "flagWarning": "Ingresa solo el valor. La app agrega --extractor-args automáticamente."
       }
     },
     "sponsorBlock": {
@@ -700,16 +700,16 @@
       },
       "preciseCuts": {
         "label": "Corte preciso:",
-        "hint": "Hace que las eliminaciones de SponsorBlock y las descargas parciales se corten en fotogramas exactos. Muy lento.\nHabilítalo solo si los cortes normales son incorrectos, están dañados o tienen segmentos negros/faltantes."
+        "hint": "Hace que las eliminaciones de SponsorBlock y las descargas parciales corten en fotogramas exactos. Muy lento.\nHabilítalo solo si los cortes normales son incorrectos, distorsionados o tienen segmentos negros/faltantes."
       },
       "parts": {
         "sponsor": {
           "label": "Patrocinador",
-          "description": "Promoción de producto o servicio pagada por el creador o un tercero."
+          "description": "Promoción de producto o servicio pagado por el creador o un tercero."
         },
         "selfpromo": {
           "label": "Autopromoción / No pagado",
-          "description": "Promoción propia del creador sobre mercancía, servicios o canales (no pagado)."
+          "description": "Promoción del creador de su propio merchandising, servicios o canales (no pagado)."
         },
         "interaction": {
           "label": "Recordatorio de interacción",
@@ -720,20 +720,20 @@
           "description": "Animación de introducción, intermedio o pausa sin contenido al inicio."
         },
         "outro": {
-          "label": "Outro / Créditos",
-          "description": "Tarjetas finales, créditos o segmento de cierre cerca del final."
+          "label": "Outro / Pantallas finales / Créditos",
+          "description": "Pantallas finales, créditos o segmento de cierre cerca del final."
         },
         "hook": {
           "label": "Gancho / Saludos",
-          "description": "Avances narrados para el próximo video, saludos y despedidas."
+          "description": "Tráilers narrados del próximo video, saludos y despedidas."
         },
         "music_offtopic": {
           "label": "Sección no musical",
-          "description": "Fragmentos de charla o distracciones en videos musicales."
+          "description": "Partes de charla o distracciones en videos con música."
         },
         "preview": {
-          "label": "Avance / Resumen",
-          "description": "Avance de contenido próximo o resumen de segmentos anteriores."
+          "label": "Vista previa / Resumen",
+          "description": "Vista previa del contenido próximo o resumen de segmentos anteriores."
         },
         "filler": {
           "label": "Relleno / Tangentes",
@@ -741,19 +741,19 @@
         },
         "chapter": {
           "label": "Capítulo",
-          "description": "Marca un capítulo/sección del video (usado con el tipo de acción capítulo)."
+          "description": "Marca un capítulo/sección del video (usado con el tipo de acción de capítulo)."
         }
       }
     },
     "update": {
       "legend": "Actualizaciones",
-      "legendLabel": "Elige qué partes de la aplicación deben actualizarse automáticamente.",
+      "legendLabel": "Elige qué partes de la app deben actualizarse automáticamente.",
       "updateBinaries": {
         "label": "Actualizar herramientas automáticamente:",
-        "hint": "OVD usa herramientas como yt-dlp y ffmpeg para descargar videos. Habilita esto para mantenerlas actualizadas."
+        "hint": "OVD usa herramientas como yt-dlp y FFmpeg para descargar videos. Habilita esto para mantenerlas actualizadas."
       },
       "updateApp": {
-        "label": "Actualizar la aplicación automáticamente:",
+        "label": "Actualizar la app automáticamente:",
         "hint": "Activa esto para recibir nuevas funciones y correcciones de errores tan pronto como se lance una nueva versión."
       }
     },
@@ -762,56 +762,56 @@
       "legendLabel": "Configura cómo se integra esta aplicación con el sistema.",
       "trayEnabled": {
         "label": {
-          "mac": "Mostrar icono en barra de menú",
+          "mac": "Mostrar icono en la barra de menú",
           "generic": "Mostrar icono en la bandeja del sistema"
         },
         "hint": {
-          "mac": "Muestra un icono en la barra de menús para acceso rápido.",
+          "mac": "Muestra un icono en la barra de menú para acceso rápido.",
           "generic": "Muestra un icono en la bandeja del sistema para acceso rápido."
         }
       },
       "minimiseToTray": {
         "label": "Minimizar a la bandeja al cerrar",
-        "hint": "Cerrar la ventana oculta la aplicación en la bandeja del sistema en lugar de salir."
+        "hint": "Cerrar la ventana oculta la app en la bandeja del sistema en lugar de cerrarla por completo."
       },
       "autoStart": {
-        "label": "Iniciar al arrancar",
-        "hint": "Lanzar Open Video Downloader automáticamente cuando inicies sesión."
+        "label": "Iniciar al iniciar sesión",
+        "hint": "Lanza Open Video Downloader automáticamente cuando inicies sesión."
       },
       "autoStartMinimised": {
         "label": {
-          "mac": "Iniciar oculto al arrancar",
-          "windows": "Iniciar minimizado en la bandeja",
-          "generic": "Iniciar oculto al arrancar (no recomendado)"
+          "mac": "Iniciar oculto al iniciar sesión",
+          "windows": "Iniciar minimizado en la bandeja al iniciar sesión",
+          "generic": "Iniciar oculto al iniciar sesión (no recomendado)"
         },
         "hint": {
-          "mac": "Cuando la aplicación inicia al arrancar, no abrirá una ventana. Usa el icono de la barra de menú o Dock para abrirla.",
-          "windows": "Cuando la aplicación inicia al arrancar, comenzará en la bandeja del sistema sin abrir una ventana.",
-          "generic": "Cuando la aplicación inicia al arrancar, no abrirá una ventana."
+          "mac": "Cuando la app inicia sesión, no abrirá una ventana. Usa la barra de menú o el icono del Dock para abrirla.",
+          "windows": "Cuando la app inicia sesión, comenzará en la bandeja del sistema sin abrir una ventana.",
+          "generic": "Cuando la app inicia sesión, no abrirá una ventana."
         }
       }
     },
     "notifications": {
       "legend": "Notificaciones",
-      "legendLabel": "Configura cuándo se envían notificaciones.",
+      "legendLabel": "Configura cuándo se envían las notificaciones.",
       "behavior": {
         "label": "Mostrar notificaciones:",
         "options": {
           "always": "Siempre",
-          "onBackground": "Cuando está en segundo plano",
+          "onBackground": "Cuando esté en segundo plano",
           "never": "Nunca"
         },
-        "hint": "Consejo: las notificaciones pueden ser útiles al usar la aplicación con atajos."
+        "hint": "Tip: las notificaciones pueden ser útiles al usar la app con atajos."
       },
       "disabled": {
         "label": "Habilitar/deshabilitar notificaciones específicas",
         "disabledScreenReader": "Esta opción está deshabilitada.",
         "kinds": {
-          "queueAdded": "Cola añadida",
+          "queueAdded": "Cola agregada",
           "queueDownloading": "Cola descargando",
-          "queueFinished": "Cola finalizada",
-          "videoFinished": "Video finalizado",
-          "playlistFinished": "Lista de reproducción finalizada",
+          "queueFinished": "Cola terminada",
+          "videoFinished": "Video terminado",
+          "playlistFinished": "Lista de reproducción terminada",
           "downloadFailed": "Descarga fallida",
           "videoReady": "Video listo",
           "playlistReady": "Lista de reproducción lista"
@@ -833,13 +833,13 @@
   },
   "install": {
     "title": {
-      "installing": "Instalando herramientas necesarias…",
-      "failed": "Error al instalar algunas herramientas necesarias.",
-      "installed": "Herramientas necesarias instaladas."
+      "installing": "Instalando herramientas requeridas…",
+      "failed": "Error al instalar algunas herramientas requeridas.",
+      "installed": "Herramientas requeridas instaladas."
     },
     "subtitle": {
-      "installing": "Estamos preparándolo todo.",
-      "failed": "Es posible que la aplicación no funcione correctamente, por favor informa sobre este error.",
+      "installing": "Estamos preparando todo.",
+      "failed": "Es posible que la app no funcione como se espera; por favor, repórtalo.",
       "installed": "¡Listo para descargar!"
     }
   },
@@ -847,41 +847,41 @@
     "base": {
       "emptyState": {
         "title": "Tu cola está vacía",
-        "subtitle": "Añade algunos videos para empezar."
+        "subtitle": "Agrega algunos videos para comenzar."
       },
       "dragState": {
-        "title": "Suelta para añadir a la cola",
-        "subtitle": "Añade videos a la cola arrastrándolos."
+        "title": "Suelta para agregar a la cola",
+        "subtitle": "Agrega a la cola arrastrando videos."
       },
       "fileInput": {
         "select": "Seleccionar archivo",
-        "placeholder": "Selecciona un archivo…",
-        "invalid": "Archivo no válido.",
-        "clear": "Quitar archivo",
+        "placeholder": "Seleccionar un archivo…",
+        "invalid": "Archivo inválido.",
+        "clear": "Limpiar archivo",
         "recents": {
-          "clear": "Borrar archivos recientes",
+          "clear": "Limpiar archivos recientes",
           "open": "Abrir selecciones recientes",
-          "empty": "Sin selecciones recientes"
+          "empty": "No hay selecciones recientes"
         }
       },
       "folderInput": {
         "select": "Seleccionar carpeta",
-        "placeholder": "Selecciona una carpeta…",
-        "invalid": "Carpeta no válida.",
-        "clear": "Quitar carpeta",
+        "placeholder": "Seleccionar una carpeta…",
+        "invalid": "Carpeta inválida.",
+        "clear": "Limpiar carpeta",
         "recents": {
-          "clear": "Borrar carpetas recientes",
+          "clear": "Limpiar carpetas recientes",
           "open": "Abrir selecciones recientes",
-          "empty": "Sin selecciones recientes"
+          "empty": "No hay selecciones recientes"
         }
       },
       "secretInput": {
         "hide": "Ocultar",
         "show": "Mostrar",
-        "clear": "Borrar {label}"
+        "clear": "Limpiar {label}"
       },
       "toolCard": {
-        "failed": "Error al instalar esta herramienta. Haz clic para más información."
+        "failed": "Error al instalar esta herramienta. Expandir para más información."
       }
     }
   },
@@ -892,12 +892,12 @@
         "message": "Ocurrió un error interno al procesar este elemento."
       },
       "signInRequired": {
-        "shortMessage": "Inicio de sesión requerido",
+        "shortMessage": "Requiere inicio de sesión",
         "message": "Necesitas iniciar sesión para ver este contenido."
       },
       "membersOnly": {
-        "shortMessage": "Solo miembros",
-        "message": "Este video solo está disponible para miembros del canal."
+        "shortMessage": "Solo para miembros",
+        "message": "Este video solo está disponible para los miembros del canal."
       },
       "geoBlocked": {
         "shortMessage": "Bloqueo regional",
@@ -909,15 +909,15 @@
       },
       "notFound404": {
         "shortMessage": "No encontrado",
-        "message": "No se pudo encontrar el video o la lista de reproducción solicitados (HTTP 404)."
+        "message": "No se pudo encontrar el video o la lista de reproducción solicitada (HTTP 404)."
       },
       "server5xx": {
         "shortMessage": "Error del servidor",
         "message": "Ocurrió un problema temporal en el servidor. Inténtalo más tarde."
       },
       "rateLimited429": {
-        "shortMessage": "Límite de velocidad excedido",
-        "message": "Se enviaron demasiadas solicitudes. Por favor espera e inténtalo de nuevo."
+        "shortMessage": "Límite de solicitudes",
+        "message": "Se enviaron demasiadas solicitudes. Por favor, espera y reintenta."
       },
       "requestedFormatUnavailable": {
         "shortMessage": "Formato no disponible",
@@ -925,23 +925,23 @@
       },
       "unableToExtractInitialData": {
         "shortMessage": "Error de extracción de datos",
-        "message": "No se pudieron extraer los datos iniciales necesarios del video."
+        "message": "No se pudieron extraer los datos iniciales requeridos del video."
       },
       "unableToExtractIdOrInfo": {
         "shortMessage": "Error de metadatos",
-        "message": "Error al extraer información del video o del autor."
+        "message": "Error al extraer la información del video o del subidor."
       },
       "nsigExtractionFailed": {
         "shortMessage": "Fallo de firma",
         "message": "Error al extraer o decodificar la firma del video."
       },
       "embedOnly": {
-        "shortMessage": "Video solo incrustado",
-        "message": "Este video solo puede verse a través de un reproductor incrustado."
+        "shortMessage": "Video solo embebido",
+        "message": "Este video solo se puede acceder a través de un reproductor embebido."
       },
       "urlUnsupported": {
-        "shortMessage": "URL no válida",
-        "message": "El enlace proporcionado no es compatible o no se reconoce."
+        "shortMessage": "URL inválida",
+        "message": "El enlace proporcionado no es compatible o no fue reconocido."
       },
       "unknownUrlType": {
         "shortMessage": "Tipo de URL desconocido",
@@ -949,15 +949,15 @@
       },
       "networkNameResolutionFailed": {
         "shortMessage": "Error de red",
-        "message": "No se pudo resolver el nombre de host. Verifica tu conexión a Internet."
+        "message": "No se pudo resolver el nombre del host. Verifica tu conexión a internet."
       },
       "unableToConnectToProxy": {
         "shortMessage": "Error de conexión al proxy",
-        "message": "No se pudo conectar al proxy. Revisa la configuración del proxy."
+        "message": "No se pudo conectar al proxy. Verifica tus ajustes de proxy."
       },
       "signInRequiredForBotDetection": {
-        "shortMessage": "Inicio de sesión requerido",
-        "message": "Inicia sesión para confirmar que no eres un robot."
+        "shortMessage": "Requiere inicio de sesión",
+        "message": "Inicia sesión para confirmar que no eres un bot."
       },
       "playlistPrivateOrMissing": {
         "shortMessage": "Lista no disponible",
@@ -965,18 +965,18 @@
       },
       "videoNotFoundOrPrivate": {
         "shortMessage": "Video no disponible",
-        "message": "Este video fue eliminado o es privado."
+        "message": "Este video fue eliminado o configurado como privado."
       },
       "channelUnavailable": {
         "shortMessage": "Canal no disponible",
         "message": "El canal que aloja este contenido ya no es accesible."
       },
       "ffmpegNotFound": {
-        "shortMessage": "ffmpeg no encontrado",
-        "message": "La conversión a mp3 o mp4 requiere ffmpeg."
+        "shortMessage": "FFmpeg no encontrado",
+        "message": "La transcodificación a MP3 o MP4 requiere FFmpeg."
       },
       "ffmpegFailed": {
-        "shortMessage": "ffmpeg falló",
+        "shortMessage": "Error de FFmpeg",
         "message": "FFmpeg encontró un error durante el procesamiento."
       },
       "cannotAllocateMemory": {
@@ -985,23 +985,23 @@
       },
       "permissionDenied": {
         "shortMessage": "Permiso denegado",
-        "message": "La aplicación no tiene permiso para acceder a este archivo o carpeta."
+        "message": "La app no tiene permiso para acceder a este archivo o carpeta."
       },
       "noWritePermission": {
         "shortMessage": "No se puede escribir",
         "message": "La ruta de destino no permite la escritura."
       },
       "windowsFileMissing": {
-        "shortMessage": "Archivo no encontrado",
+        "shortMessage": "Archivo faltante",
         "message": "No se pudo encontrar el archivo referenciado (WinError 2)."
       },
       "blockedGeneric": {
         "shortMessage": "Video bloqueado",
-        "message": "Este video está bloqueado y no se puede descargar."
+        "message": "Este video está bloqueado y no puede ser descargado."
       },
       "copyrightClaimed": {
-        "shortMessage": "Bloqueo por derechos de autor",
-        "message": "El video fue bloqueado debido a una reclamación de derechos de autor."
+        "shortMessage": "Bloqueo de copyright",
+        "message": "El video fue bloqueado debido a un reclamo de derechos de autor."
       },
       "notPremieredYet": {
         "shortMessage": "Aún no se ha estrenado",
@@ -1012,12 +1012,12 @@
         "message": "La transmisión en vivo aún no ha comenzado. Por favor, vuelve más tarde."
       },
       "sslVerifyFailed": {
-        "shortMessage": "Error SSL",
-        "message": "No se pudo verificar la conexión segura. Revisa tus certificados o la fecha y hora del sistema."
+        "shortMessage": "Error de SSL",
+        "message": "No se pudo verificar la conexión segura. Verifica tus certificados o la fecha/hora."
       },
       "sponsorBlockUnreachable": {
         "shortMessage": "SponsorBlock fuera de línea",
-        "message": "No se pudo conectar a la API de SponsorBlock para obtener datos de los segmentos."
+        "message": "No se pudo conectar a la API de SponsorBlock para obtener datos de segmentos."
       },
       "downloadRetryingFragment": {
         "shortMessage": "Reintentando fragmento",
@@ -1038,7 +1038,7 @@
     "links": {
       "github": "GitHub",
       "wiki": "Wiki",
-      "reportABug": "Informar un error (bug)"
+      "reportABug": "Reportar un error (bug)"
     }
   }
 }
