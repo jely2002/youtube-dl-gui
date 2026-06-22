@@ -82,7 +82,7 @@
     "cookies": {
       "legend": "Cookies",
       "legendBadge": "Recomendado",
-      "legendLabel": "Usa sesiones iniciadas desde un archivo de cookies o impórtalas desde tu navegador.",
+      "legendLabel": "Utiliza sesiones iniciadas desde un archivo de cookies o impórtalas desde tu navegador.",
       "file": {
         "label": "Cargar cookies desde un archivo cookies.txt",
         "hint": "Para exportar tus cookies a un archivo {link}",
@@ -97,9 +97,9 @@
     },
     "credentials": {
       "title": "Métodos avanzados",
-      "description": "Usa métodos como autenticación básica, tokens bearer, encabezados, contraseña de video, etc.",
+      "description": "Utiliza métodos como autenticación básica, tokens bearer, encabezados, contraseña de video, etc.",
       "labels": {
-        "username": "Usuario",
+        "username": "Nombre de usuario",
         "password": "Contraseña",
         "token": "Token",
         "headers": "Encabezados"
@@ -109,7 +109,7 @@
         "legendLabel": "Usado para sitios con autenticación simple."
       },
       "videoPassword": {
-        "legend": "Contraseña de video",
+        "legend": "Contraseña del video",
         "legendLabel": "Proporciona una contraseña para acceder a videos protegidos."
       },
       "bearerToken": {
@@ -126,7 +126,7 @@
     "init": {
       "title": "Almacén de secretos no habilitado",
       "description": "Para usar métodos de autenticación avanzados, es necesario habilitar el almacén de secretos.",
-      "hint": "El almacén de secretos utiliza el llavero de tu sistema; esto podría requerir una contraseña.",
+      "hint": "El almacén de secretos utiliza el llavero (keyring) de tu sistema; esto podría requerir una contraseña.",
       "error": {
         "title": "No se pudo habilitar el almacén de secretos",
         "description": "Ocurrió un error al habilitar el almacén de secretos, por favor inténtalo de nuevo.",
@@ -138,7 +138,7 @@
       }
     },
     "toasts": {
-      "error": "No se pudieron guardar los ajustes de autenticación. {error}",
+      "error": "No se pudo guardar los ajustes de autenticación. {error}",
       "saved": "¡Ajustes de autenticación guardados!"
     }
   },
@@ -236,12 +236,12 @@
         },
         "encodings": {
           "audioSelect": {
-            "noFormats": "Sin codificaciones de audio",
+            "noFormats": "Sin códecs de audio",
             "placeholder": "Códec de audio",
             "screenReader": "Seleccionar códec de audio"
           },
           "videoSelect": {
-            "noFormats": "Sin codificaciones de video",
+            "noFormats": "Sin códecs de video",
             "placeholder": "Códec de video",
             "screenReader": "Seleccionar códec de video"
           }
@@ -304,7 +304,7 @@
         "indeterminate": "Descarga pausada",
         "metadata": {
           "eta": "Restante: {eta}",
-          "etaItems": "Restante: {n} elemento | Restante: {n} elementos"
+          "etaItems": "Restante: {n} elemento | Restantes: {n} elementos"
         }
       },
       "done": {
@@ -317,7 +317,7 @@
       "error": {
         "errorPrefix": "Error - {message}",
         "report": "Reportar",
-        "showFull": "Ver registros",
+        "showFull": "Ver registros (logs)",
         "signIn": "Iniciar sesión"
       }
     },
