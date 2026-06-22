@@ -128,7 +128,7 @@
       "description": "Para usar métodos de autenticación avanzados, es necesario habilitar el almacén de secretos.",
       "hint": "El almacén de secretos utiliza el llavero (keyring) de tu sistema; esto podría requerir una contraseña.",
       "error": {
-        "title": "No se pudo habilitar el almacén de secretos",
+        "title": "No fue posible habilitar el almacén de secretos",
         "description": "Ocurrió un error al habilitar el almacén de secretos, por favor inténtalo de nuevo.",
         "hint": "Error: {error}",
         "unknown": "Error desconocido"
@@ -138,7 +138,7 @@
       }
     },
     "toasts": {
-      "error": "No se pudo guardar los ajustes de autenticación. {error}",
+      "error": "No se pudieron guardar los ajustes de autenticación. {error}",
       "saved": "¡Ajustes de autenticación guardados!"
     }
   },
@@ -458,7 +458,7 @@
         },
         "restrictFilenames": {
           "label": "Restringir nombres de archivo:",
-          "hint": "Reemplaza los espacios con guiones bajos y elimina caracteres especiales como \"&\" de los nombres de archivo."
+          "hint": "Reemplaza espacios por guiones bajos y elimina caracteres especiales como \"&\" de los nombres de archivo."
         }
       },
       "outputFormat": {
@@ -534,7 +534,7 @@
       },
       "addMetadata": {
         "label": "Agregar info de título y artista:",
-        "hint": "Guarda metadatos como título, subidor/artista y descripción dentro del archivo."
+        "hint": "Guarda metadatos como título, creador/artista y descripción dentro del archivo."
       },
       "preciseCuts": {
         "label": "Corte preciso:",
@@ -689,18 +689,18 @@
       "legendLabel": "Elimina o marca partes de un video.",
       "removeParts": {
         "label": "Partes a eliminar:",
-        "placeholder": "Selecciona 1 o más partes para eliminar del video."
+        "placeholder": "Selecciona una o más partes para eliminar del video."
       },
       "markParts": {
         "label": "Partes a marcar:",
-        "placeholder": "Selecciona 1 o más partes para marcar con un capítulo."
+        "placeholder": "Selecciona una o más partes para marcar con un capítulo."
       },
       "apiUrl": {
         "label": "URL de la API:"
       },
       "preciseCuts": {
         "label": "Corte preciso:",
-        "hint": "Hace que las eliminaciones de SponsorBlock y las descargas parciales corten en fotogramas exactos. Muy lento.\nHabilítalo solo si los cortes normales son incorrectos, distorsionados o tienen segmentos negros/faltantes."
+        "hint": "Permite que las eliminaciones de SponsorBlock y las descargas parciales se realicen en fotogramas exactos, aunque el proceso es mucho más lento.\nHabilítalo solo si los cortes normales son incorrectos, distorsionados o contienen segmentos negros o faltantes."
       },
       "parts": {
         "sponsor": {
@@ -709,11 +709,11 @@
         },
         "selfpromo": {
           "label": "Autopromoción / No pagado",
-          "description": "Promoción del creador de su propio merchandising, servicios o canales (no pagado)."
+          "description": "Promoción que hace el creador de sus propios productos, servicios o canales (sin pago de por medio)."
         },
         "interaction": {
           "label": "Recordatorio de interacción",
-          "description": "Recordatorios para dar me gusta/suscribirse/seguir o interactuar con el creador."
+          "description": "Recordatorios para dar me gusta, suscribirse, seguir o interactuar con el creador."
         },
         "intro": {
           "label": "Intro / Intermedio",
@@ -725,19 +725,19 @@
         },
         "hook": {
           "label": "Gancho / Saludos",
-          "description": "Tráilers narrados del próximo video, saludos y despedidas."
+          "description": "Avances rápidos al inicio del video para enganchar al espectador, saludos o introducciones."
         },
         "music_offtopic": {
           "label": "Sección no musical",
-          "description": "Partes de charla o distracciones en videos con música."
+          "description": "Secciones con diálogos, bromas o escenas que no forman parte de la canción en videos musicales."
         },
         "preview": {
           "label": "Vista previa / Resumen",
           "description": "Vista previa del contenido próximo o resumen de segmentos anteriores."
         },
         "filler": {
-          "label": "Relleno / Tangentes",
-          "description": "Tangentes, chistes o escenas de relleno no necesarias para entender el contenido principal."
+          "label": "Contenido de relleno / Desvíos",
+          "description": "Chistes, anécdotas secundarias o escenas de relleno innecesarias para entender el contenido principal."
         },
         "chapter": {
           "label": "Capítulo",
@@ -750,11 +750,11 @@
       "legendLabel": "Elige qué partes de la app deben actualizarse automáticamente.",
       "updateBinaries": {
         "label": "Actualizar herramientas automáticamente:",
-        "hint": "OVD usa herramientas como yt-dlp y FFmpeg para descargar videos. Habilita esto para mantenerlas actualizadas."
+        "hint": "La aplicación usa herramientas como yt-dlp y FFmpeg para descargar videos; habilita esto para mantenerlas actualizadas."
       },
       "updateApp": {
         "label": "Actualizar la app automáticamente:",
-        "hint": "Activa esto para recibir nuevas funciones y correcciones de errores tan pronto como se lance una nueva versión."
+        "hint": "Activa esto para recibir nuevas funciones y correcciones de errores en cuanto se lance una nueva versión."
       }
     },
     "system": {
@@ -762,20 +762,20 @@
       "legendLabel": "Configura cómo se integra esta aplicación con el sistema.",
       "trayEnabled": {
         "label": {
-          "mac": "Mostrar icono en la barra de menú",
-          "generic": "Mostrar icono en la bandeja del sistema"
+          "mac": "Mostrar ícono en la barra de menús",
+          "generic": "Mostrar ícono en la bandeja del sistema"
         },
         "hint": {
-          "mac": "Muestra un icono en la barra de menú para acceso rápido.",
-          "generic": "Muestra un icono en la bandeja del sistema para acceso rápido."
+          "mac": "Muestra un ícono en la barra de menús para acceso rápido.",
+          "generic": "Muestra un ícono en la bandeja del sistema para acceso rápido."
         }
       },
       "minimiseToTray": {
-        "label": "Minimizar a la bandeja al cerrar",
+        "label": "Minimizar en la bandeja del sistema al cerrar",
         "hint": "Cerrar la ventana oculta la app en la bandeja del sistema en lugar de cerrarla por completo."
       },
       "autoStart": {
-        "label": "Iniciar al iniciar sesión",
+        "label": "Ejecutar al iniciar sesión",
         "hint": "Lanza Open Video Downloader automáticamente cuando inicies sesión."
       },
       "autoStartMinimised": {
@@ -785,9 +785,9 @@
           "generic": "Iniciar oculto al iniciar sesión (no recomendado)"
         },
         "hint": {
-          "mac": "Cuando la app inicia sesión, no abrirá una ventana. Usa la barra de menú o el icono del Dock para abrirla.",
-          "windows": "Cuando la app inicia sesión, comenzará en la bandeja del sistema sin abrir una ventana.",
-          "generic": "Cuando la app inicia sesión, no abrirá una ventana."
+          "mac": "Al iniciar sesión, la app no abrirá una ventana. Usa la barra de menú o el icono del Dock para abrirla.",
+          "windows": "Al iniciar sesión, la app se ejecutará en la bandeja del sistema sin abrir una ventana.",
+          "generic": "Al iniciar sesión, la app se ejecutará de fondo sin abrir una ventana."
         }
       }
     },
@@ -801,26 +801,26 @@
           "onBackground": "Cuando esté en segundo plano",
           "never": "Nunca"
         },
-        "hint": "Tip: las notificaciones pueden ser útiles al usar la app con atajos."
+        "hint": "Consejo: las notificaciones pueden ser útiles al usar la app con atajos."
       },
       "disabled": {
-        "label": "Habilitar/deshabilitar notificaciones específicas",
+        "label": "Configurar notificaciones específicas",
         "disabledScreenReader": "Esta opción está deshabilitada.",
         "kinds": {
-          "queueAdded": "Cola agregada",
-          "queueDownloading": "Cola descargando",
-          "queueFinished": "Cola terminada",
-          "videoFinished": "Video terminado",
-          "playlistFinished": "Lista de reproducción terminada",
+          "queueAdded": "Nueva cola agregada",
+          "queueDownloading": "Inicio de descarga de la cola",
+          "queueFinished": "Cola completada",
+          "videoFinished": "Video descargado",
+          "playlistFinished": "Lista de reproducción completada",
           "downloadFailed": "Descarga fallida",
-          "videoReady": "Video listo",
-          "playlistReady": "Lista de reproducción lista"
+          "videoReady": "Video listo para descargar",
+          "playlistReady": "Lista de reproducción lista para descargar"
         }
       }
     },
     "toasts": {
       "saved": "¡Ajustes guardados!",
-      "reset": "Ajustes restablecidos a los valores predeterminados."
+      "reset": "Se restablecieron los ajustes predeterminados."
     }
   },
   "updater": {
@@ -835,11 +835,11 @@
     "title": {
       "installing": "Instalando herramientas requeridas…",
       "failed": "Error al instalar algunas herramientas requeridas.",
-      "installed": "Herramientas requeridas instaladas."
+      "installed": "Se instalaron las herramientas requeridas."
     },
     "subtitle": {
-      "installing": "Estamos preparando todo.",
-      "failed": "Es posible que la app no funcione como se espera; por favor, repórtalo.",
+      "installing": "Preparando todo para comenzar...",
+      "failed": "Es posible que la app no funcione correctamente. Por favor, reporta este problema.",
       "installed": "¡Listo para descargar!"
     }
   },
@@ -850,28 +850,28 @@
         "subtitle": "Agrega algunos videos para comenzar."
       },
       "dragState": {
-        "title": "Suelta para agregar a la cola",
-        "subtitle": "Agrega a la cola arrastrando videos."
+        "title": "Suelta para agregar los videos",
+        "subtitle": "Arrastra los elementos aquí para ponerlos en cola."
       },
       "fileInput": {
         "select": "Seleccionar archivo",
-        "placeholder": "Seleccionar un archivo…",
+        "placeholder": "Seleccionar archivo…",
         "invalid": "Archivo inválido.",
         "clear": "Limpiar archivo",
         "recents": {
           "clear": "Limpiar archivos recientes",
-          "open": "Abrir selecciones recientes",
+          "open": "Abrir archivos recientes",
           "empty": "No hay selecciones recientes"
         }
       },
       "folderInput": {
         "select": "Seleccionar carpeta",
-        "placeholder": "Seleccionar una carpeta…",
+        "placeholder": "Seleccionar carpeta…",
         "invalid": "Carpeta inválida.",
         "clear": "Limpiar carpeta",
         "recents": {
           "clear": "Limpiar carpetas recientes",
-          "open": "Abrir selecciones recientes",
+          "open": "Abrir carpetas recientes",
           "empty": "No hay selecciones recientes"
         }
       },
@@ -881,7 +881,7 @@
         "clear": "Limpiar {label}"
       },
       "toolCard": {
-        "failed": "Error al instalar esta herramienta. Expandir para más información."
+        "failed": "Error al instalar esta herramienta. Expandir para ver más información."
       }
     }
   },
@@ -909,7 +909,7 @@
       },
       "notFound404": {
         "shortMessage": "No encontrado",
-        "message": "No se pudo encontrar el video o la lista de reproducción solicitada (HTTP 404)."
+        "message": "No se pudieron encontrar el video o la lista de reproducción solicitada (HTTP 404)."
       },
       "server5xx": {
         "shortMessage": "Error del servidor",
@@ -929,7 +929,7 @@
       },
       "unableToExtractIdOrInfo": {
         "shortMessage": "Error de metadatos",
-        "message": "Error al extraer la información del video o del subidor."
+        "message": "Error al extraer la información del video o del creador."
       },
       "nsigExtractionFailed": {
         "shortMessage": "Fallo de firma",
@@ -937,7 +937,7 @@
       },
       "embedOnly": {
         "shortMessage": "Video solo embebido",
-        "message": "Este video solo se puede acceder a través de un reproductor embebido."
+        "message": "Este video solo se puede ver a través de un reproductor embebido."
       },
       "urlUnsupported": {
         "shortMessage": "URL inválida",
@@ -945,15 +945,15 @@
       },
       "unknownUrlType": {
         "shortMessage": "Tipo de URL desconocido",
-        "message": "La URL proporcionada utiliza un protocolo no compatible."
+        "message": "La URL proporcionada corresponde a un tipo de enlace o protocolo desconocido."
       },
       "networkNameResolutionFailed": {
         "shortMessage": "Error de red",
-        "message": "No se pudo resolver el nombre del host. Verifica tu conexión a internet."
+        "message": "No se pudo resolver el host. Verifica tu conexión a Internet."
       },
       "unableToConnectToProxy": {
         "shortMessage": "Error de conexión al proxy",
-        "message": "No se pudo conectar al proxy. Verifica tus ajustes de proxy."
+        "message": "No se pudo conectar al proxy. Verifica tu configuración."
       },
       "signInRequiredForBotDetection": {
         "shortMessage": "Requiere inicio de sesión",
@@ -993,7 +993,7 @@
       },
       "windowsFileMissing": {
         "shortMessage": "Archivo faltante",
-        "message": "No se pudo encontrar el archivo referenciado (WinError 2)."
+        "message": "No se pudo encontrar el archivo especificado (WinError 2)."
       },
       "blockedGeneric": {
         "shortMessage": "Video bloqueado",
@@ -1013,7 +1013,7 @@
       },
       "sslVerifyFailed": {
         "shortMessage": "Error de SSL",
-        "message": "No se pudo verificar la conexión segura. Verifica tus certificados o la fecha/hora."
+        "message": "No se pudo establecer la conexión segura. Verifica tus certificados o la fecha y hora."
       },
       "sponsorBlockUnreachable": {
         "shortMessage": "SponsorBlock fuera de línea",
