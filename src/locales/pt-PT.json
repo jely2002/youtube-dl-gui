@@ -193,7 +193,19 @@
         "quality": "Escolhe as preferências de formato, codec e faixas.",
         "network": "Configura proxy, mascaramento de cliente e cabeçalhos de pedido. Substitui as predefinições da aplicação para esta transferência.",
         "output": "Configura contentor, conversão e modelos de nome de ficheiro. Substitui as predefinições da aplicação para esta transferência.",
+        "subtitles": "Escolhe as legendas para esta transferência.",
         "headersOverride": "Um por linha: CAMPO:VALOR. Substitui os cabeçalhos globais para esta transferência."
+      },
+      "subtitles": {
+        "empty": "Nenhuma legenda encontrada para esta transferência.",
+        "languages": {
+          "legend": "Idiomas disponíveis",
+          "hint": "Só estas legendas podem ser transferidas para este item.",
+          "manual": "Fornecidas pelo criador",
+          "auto": "Geradas automaticamente",
+          "noneManual": "Nenhuma legenda do criador encontrada.",
+          "noneAuto": "Nenhuma legenda automática encontrada."
+        }
       },
       "hints": {
         "format": "Escolhe a qualidade de vídeo ou áudio. Normalmente, maior qualidade significa ficheiros maiores e transferências mais longas.",
@@ -202,6 +214,7 @@
       },
       "tabs": {
         "quality": "Qualidade",
+        "subtitles": "Legendas",
         "network": "Rede"
       }
     },
@@ -234,6 +247,8 @@
           }
         },
         "tracks": {
+          "availableInResolutions": "Disponível em",
+          "unavailableForSelectedResolution": "Indisponível para a resolução selecionada",
           "audioSelect": {
             "noFormats": "Sem faixas de áudio",
             "placeholder": "Faixa de áudio",
@@ -274,6 +289,8 @@
           "initializing": "A inicializar",
           "downloading": "A transferir",
           "merging": "A combinar",
+          "remuxing": "A remultiplexar",
+          "reencoding": "A recodificar",
           "finalizing": "A limpar"
         },
         "metadata": {
@@ -323,6 +340,10 @@
   },
   "subtitles": {
     "title": "Legendas",
+    "defaults": {
+      "legend": "Predefinições de legendas",
+      "hint": "Utilizadas quando um vídeo tem legendas."
+    },
     "options": {
       "enable": {
         "legend": "Transferência de legendas",
@@ -349,12 +370,9 @@
         "downloadAll": "Transferir todas as legendas disponíveis.",
         "search": "Pesquisar idiomas",
         "searchPlaceholder": "Pesquisar por nome do idioma",
-        "suggested": "Sugeridos para ti",
-        "all": "Todos os idiomas",
         "noResult": "Nenhum idioma corresponde a \"{query}\".",
         "selected": "Selecionados:",
-        "allSelected": "Todas as legendas disponíveis",
-        "searchHint": "Dica: utiliza a caixa de pesquisa para filtrar rapidamente a lista. Os idiomas selecionados mantêm-se destacados."
+        "allSelected": "Todas as legendas disponíveis"
       }
     },
     "toasts": {
@@ -413,6 +431,10 @@
     "filename": {
       "legend": "Formato do nome de ficheiro",
       "legendLabel": "Seleciona o nome que as transferências terão.",
+      "reversePlaylistNumbering": {
+        "label": "Inverter numeração da playlist:",
+        "hint": "Numera os itens da playlist a partir do fim em vez do início."
+      },
       "formatPreset": {
         "label": "Predefinição de nome de ficheiro:",
         "exampleLabel": "Exemplo de saída:",
@@ -453,6 +475,13 @@
     "reset": {
       "label": "Repor",
       "confirm": "Clica novamente para repor"
+    },
+    "tabs": {
+      "downloads": "Transferências",
+      "app": "Aplicação",
+      "network": "Rede",
+      "system": "Sistema",
+      "about": "Acerca"
     },
     "performance": {
       "legend": "Desempenho",
@@ -499,9 +528,17 @@
         "label": "Adicionar imagem de capa:",
         "hint": "Incorpora a miniatura no ficheiro para que os leitores multimédia possam mostrar a capa."
       },
+      "saveThumbnail": {
+        "label": "Guardar ficheiro de miniatura:",
+        "hint": "Transfere a melhor miniatura disponível junto ao ficheiro multimédia."
+      },
       "addMetadata": {
         "label": "Adicionar título e informação do artista:",
         "hint": "Guarda metadados como título, autor/artista e descrição dentro do ficheiro."
+      },
+      "preciseCuts": {
+        "label": "Corte preciso:",
+        "hint": "Corta nos fotogramas exatos em vez de perto dos fotogramas-chave. Muito lento.\nAtiva apenas se os cortes normais estiverem errados, distorcidos ou tiverem segmentos pretos/em falta."
       },
       "partialDownload": {
         "legend": "Transferência parcial",
@@ -528,14 +565,34 @@
         "label": "Adicionar legendas:",
         "link": "Configurar legendas"
       },
-      "policy": {
-        "label": "Modo de conversão:",
-        "hint": "Se o ficheiro transferido ainda não corresponder ao formato selecionado, poderá ser necessário convertê-lo. Ignorar conversão: mais rápido, pode ignorar o formato escolhido. Converter se possível: tenta alterar o contentor sem recodificar. Converter se necessário: utiliza sempre o formato selecionado, mas é mais lento e usa mais CPU.",
+      "keepOriginalStreams": {
+        "label": "Manter streams originais",
+        "hint": "Evita a conversão de contentor e a recodificação, exceto se um passo de pós-processamento selecionado o exigir."
+      },
+      "postprocess": {
+        "label": "Pós-processamento de vídeo:",
+        "hint": "O pós-processamento é executado depois de a transferência terminar.",
+        "reencodeWarning": "Esta opção irá recodificar; é pesada e pode demorar muito tempo.",
+        "keepOriginalStreamsConflict": "Esta opção requer recodificação. Desativa Manter streams originais para a utilizares.",
+        "mp42RequiresMp4": "Esta opção requer saída MP4.",
         "options": {
-          "never": "Ignorar conversão",
-          "remuxOnly": "Converter se possível (recomendado)",
-          "allowReencode": "Converter se necessário (mais lento)"
+          "none": "Nenhum",
+          "fps30": "Recodificar para 30 fps",
+          "mp42": "Definir marca MP4 como mp42",
+          "custom": "Personalizado"
         }
+      },
+      "postprocessMode": {
+        "label": "Modo de pós-processamento personalizado:",
+        "hint": "Escolhe se os argumentos ffmpeg personalizados são executados durante a remultiplexagem ou a recodificação.",
+        "options": {
+          "remux": "Executar durante a remultiplexagem",
+          "reencode": "Executar durante a recodificação"
+        }
+      },
+      "postprocessArgs": {
+        "label": "Argumentos avançados do ffmpeg:",
+        "hint": "Apenas para utilizadores avançados. Separa os argumentos com espaços; os valores entre aspas são preservados."
       },
       "tabs": {
         "audio": {
@@ -552,6 +609,13 @@
               "opus": "Opus",
               "wav": "WAV",
               "flac": "FLAC"
+            }
+          },
+          "postprocess": {
+            "label": "Pós-processamento de áudio:",
+            "options": {
+              "none": "Nenhum",
+              "custom": "Personalizado"
             }
           }
         },
@@ -612,6 +676,12 @@
           "none": "Não mascarar",
           "any": "Mascarar como cliente aleatório"
         }
+      },
+      "extractorArgs": {
+        "label": "Argumentos do extrator:",
+        "hint": "Personaliza os argumentos do extrator para o yt-dlp. Um argumento por linha.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Introduz apenas o valor. A aplicação adiciona --extractor-args automaticamente."
       }
     },
     "sponsorBlock": {
@@ -627,6 +697,10 @@
       },
       "apiUrl": {
         "label": "URL da API"
+      },
+      "preciseCuts": {
+        "label": "Corte preciso:",
+        "hint": "Faz com que as remoções do SponsorBlock e as transferências parciais cortem nos fotogramas exatos. Muito lento.\nAtiva apenas se os cortes normais estiverem errados, distorcidos ou tiverem segmentos pretos/em falta."
       },
       "parts": {
         "sponsor": {
