@@ -44,10 +44,11 @@ export function getSubtitleLanguageLabel(code: string): string {
     return code;
   }
 
-  const normalized = normalizeLocale(trimmed);
+  const normalized = trimmed.replace(/_/g, '-');
   const lower = normalized.toLowerCase();
   const isOrig = lower.endsWith('-orig');
-  const base = isOrig ? normalized.slice(0, -5) : normalized;
+  const baseRaw = isOrig ? normalized.slice(0, -5) : normalized;
+  const base = normalizeLocale(baseRaw);
 
   const exact = languageOptionsLookup.get(base)
     || languageOptionsLookup.get(base.toLowerCase());
