@@ -11,7 +11,7 @@
     "continue": "Continuar",
     "retry": "Reintentar",
     "enable": "Habilitar",
-    "pleaseWait": "Por favor, espere…",
+    "pleaseWait": "Por favor, espera…",
     "loading": "Cargando",
     "emptySearch": "No se encontraron resultados.",
     "parenthesis": "({content})",
@@ -66,14 +66,14 @@
         }
       },
       "queue": {
-        "empty": "Cola vacía",
+        "empty": "Vaciar cola",
         "resume": "Reanudar todo",
         "pause": "Pausar todo",
         "clearSuccessful": "Limpiar completados",
         "clearErrored": "Limpiar errores",
         "clearPending": "Limpiar pendientes",
         "cancelDownloading": "Cancelar descarga",
-        "more": "Más acciones de cola"
+        "more": "Más acciones"
       }
     }
   },
@@ -162,7 +162,7 @@
         "likes": "Me gusta",
         "dislikes": "No me gusta",
         "comments": "Comentarios",
-        "rating": "Valoracion",
+        "rating": "Valoración",
         "duration": "Duración"
       },
       "logs": {
@@ -327,7 +327,7 @@
         "externalUrl": "Abrir enlace externo",
         "retry": "Reintentar descarga",
         "download": "Descargar",
-        "preferences": "Configuración de descarga",
+        "preferences": "Ajustes de descarga",
         "pause": "Pausar descarga",
         "resume": "Reanudar descarga",
         "metadata": "Mostrar metadatos"
@@ -391,7 +391,7 @@
     "title": "Carpeta de descargas",
     "downloadDir": {
       "label": "Carpeta de descargas",
-      "hint": "Hacer clic en el cuadro para seleccionar dónde se descargarán los videos."
+      "hint": "Haz clic para seleccionar dónde se guardarán los videos."
     },
     "directory": {
       "legend": "Organizar por",
@@ -583,7 +583,7 @@
         }
       },
       "postprocessMode": {
-        "label": "Modo de post-procesamiento personalizado:",
+        "label": "Modo de posprocesamiento personalizado:",
         "hint": "Elige si los argumentos personalizados de FFmpeg se ejecutan durante el remuxing o la recodificación.",
         "options": {
           "remux": "Ejecutar durante el remuxeo",
@@ -671,7 +671,7 @@
       },
       "impersonate": {
         "label": "Simulación de cliente:",
-        "hint": "Simula un sistema operativo o navegador específico para evitar el rastreo de identidad digital (fingerprinting).",
+        "hint": "Simula un sistema operativo o navegador específico para evitar el rastreo de identidad digital.",
         "options": {
           "none": "No simular",
           "any": "Simular cliente aleatorio"
@@ -804,7 +804,7 @@
         "hint": "Consejo: las notificaciones pueden ser útiles al usar la app con atajos."
       },
       "disabled": {
-        "label": "Configurar notificaciones específicas",
+        "label": "Activar/desactivar notificaciones específicas",
         "disabledScreenReader": "Esta opción está deshabilitada.",
         "kinds": {
           "queueAdded": "Nueva cola agregada",
@@ -838,7 +838,7 @@
       "installed": "Se instalaron las herramientas requeridas."
     },
     "subtitle": {
-      "installing": "Preparando todo para comenzar...",
+      "installing": "Preparando todo para comenzar…",
       "failed": "Es posible que la app no funcione correctamente. Por favor, reporta este problema.",
       "installed": "¡Listo para descargar!"
     }
@@ -857,7 +857,7 @@
         "select": "Seleccionar archivo",
         "placeholder": "Seleccionar archivo…",
         "invalid": "Archivo inválido.",
-        "clear": "Limpiar archivo",
+        "clear": "Quitar archivo",
         "recents": {
           "clear": "Limpiar archivos recientes",
           "open": "Abrir archivos recientes",
@@ -868,7 +868,7 @@
         "select": "Seleccionar carpeta",
         "placeholder": "Seleccionar carpeta…",
         "invalid": "Carpeta inválida.",
-        "clear": "Limpiar carpeta",
+        "clear": "Quitar carpeta",
         "recents": {
           "clear": "Limpiar carpetas recientes",
           "open": "Abrir carpetas recientes",
@@ -936,7 +936,7 @@
         "message": "Error al extraer o decodificar la firma del video."
       },
       "embedOnly": {
-        "shortMessage": "Video solo embebido",
+        "shortMessage": "Solo en reproductor integrado",
         "message": "Este video solo se puede ver a través de un reproductor embebido."
       },
       "urlUnsupported": {
