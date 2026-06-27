@@ -41,7 +41,7 @@ export const useSettingsStore = defineStore('settings', () => {
         ? getDefaultLocale()
         : cfg.appearance.language as Locale;
 
-      i18n.global.locale = currentLocale;
+      i18n.global.locale.value = currentLocale;
       document.documentElement.setAttribute('lang', currentLocale);
     }
   }
