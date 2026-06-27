@@ -36,6 +36,11 @@ impl YtdlpProgressParser {
       evts.push(evt);
     }
 
+    if let Some(evt) = self.try_postprocess_stage(line) {
+      evts.push(evt);
+      return evts;
+    }
+
     if let Some(evt) = self.try_download_stage(line) {
       evts.push(evt);
       return evts;
@@ -47,7 +52,7 @@ impl YtdlpProgressParser {
     }
 
     if let Some(progress) = self.try_ffmpeg_progress_update(line) {
-      if self.current_stage != ProgressStage::Downloading {
+      if self.current_stage == ProgressStage::Initializing {
         self.current_stage = ProgressStage::Downloading;
         evts.push(ProgressEvent::StageChange(MediaProgressStage {
           id: self.id.clone(),
@@ -345,6 +350,27 @@ impl YtdlpProgressParser {
     None
   }
 
+  fn try_postprocess_stage(&mut self, line: &str) -> Option<ProgressEvent> {
+    let stage = if line.starts_with("[VideoRemuxer]") {
+      ProgressStage::Remuxing
+    } else if line.starts_with("[VideoConvertor]") {
+      ProgressStage::Reencoding
+    } else {
+      return None;
+    };
+
+    if self.current_stage != stage {
+      self.current_stage = stage.clone();
+      return Some(ProgressEvent::StageChange(MediaProgressStage {
+        id: self.id.clone(),
+        group_id: self.group_id.clone(),
+        stage,
+      }));
+    }
+
+    None
+  }
+
   fn try_finalizing_stage(&mut self, line: &str) -> Option<ProgressEvent> {
     let triggers = ["[ffmpeg]", "[Fixup]", "Deleting original file"];
     if triggers
@@ -426,7 +452,7 @@ fn parse_clock_to_secs(value: &str) -> Option<f64> {
 #[cfg(test)]
 mod tests {
   use super::{progress_category_for_track_type, YtdlpProgressParser};
-  use crate::models::{ProgressCategory, ProgressEvent, TrackType};
+  use crate::models::{ProgressCategory, ProgressEvent, ProgressStage, TrackType};
 
   #[test]
   fn parses_ffmpeg_progress_for_partial_downloads() {
@@ -477,5 +503,27 @@ mod tests {
       progress_category_for_track_type(&TrackType::Both),
       ProgressCategory::Video
     );
+  }
+
+  #[test]
+  fn detects_reencoding_stage_from_video_convertor_logs() {
+    let mut parser = YtdlpProgressParser::new("item", "group", ProgressCategory::Video, None);
+    let events = parser.parse_line(r#"[VideoConvertor] Destination: "/tmp/out.mp4""#);
+
+    assert!(events.iter().any(|event| matches!(
+      event,
+      ProgressEvent::StageChange(stage) if stage.stage == ProgressStage::Reencoding
+    )));
+  }
+
+  #[test]
+  fn detects_remuxing_stage_from_video_remuxer_logs() {
+    let mut parser = YtdlpProgressParser::new("item", "group", ProgressCategory::Video, None);
+    let events = parser.parse_line(r#"[VideoRemuxer] Destination: "/tmp/out.mp4""#);
+
+    assert!(events.iter().any(|event| matches!(
+      event,
+      ProgressEvent::StageChange(stage) if stage.stage == ProgressStage::Remuxing
+    )));
   }
 }

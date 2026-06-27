@@ -20,6 +20,7 @@
         v-for="option in audioOptions"
         :key="option.value"
         :value="option.value"
+        :disabled="option.disabled"
       >
         {{ option.label }}
       </option>
@@ -45,6 +46,7 @@
         v-for="option in videoOptions"
         :key="option.value"
         :value="option.value"
+        :disabled="option.disabled"
       >
         {{ option.label }}
       </option>
@@ -57,6 +59,7 @@ import { useI18n } from 'vue-i18n';
 import { computed, ComputedRef, PropType, ref, toRefs, useId, watch } from 'vue';
 import { TrackType } from '../../tauri/types/media.ts';
 import { SelectOption } from '../../helpers/forms.ts';
+import { resolveSelectableValue } from '../../helpers/resolutionSelection.ts';
 
 type DualSelectValue = {
   audio?: string;
@@ -141,7 +144,6 @@ watch(() => modelValue?.value, (val) => {
 watch(
   [audioOptions, videoOptions, isAudioDisabled, isVideoDisabled],
   () => {
-    if (!autoSelect.value) return;
     ensureValidSelections();
   },
   { immediate: true },
@@ -166,12 +168,18 @@ watch(
 
 function ensureValidSelections() {
   if (!isAudioDisabled.value) {
-    const audioValid = audioOptions.value.some(option => option.value === selectedAudio.value);
-    if (!audioValid) selectedAudio.value = audioOptions.value[0]?.value ?? '';
+    selectedAudio.value = resolveSelectableValue(
+      selectedAudio.value,
+      audioOptions.value,
+      autoSelect.value,
+    );
   }
   if (!isVideoDisabled.value) {
-    const videoValid = videoOptions.value.some(option => option.value === selectedVideo.value);
-    if (!videoValid) selectedVideo.value = videoOptions.value[0]?.value ?? '';
+    selectedVideo.value = resolveSelectableValue(
+      selectedVideo.value,
+      videoOptions.value,
+      autoSelect.value,
+    );
   }
 }
 

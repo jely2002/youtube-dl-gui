@@ -11,12 +11,22 @@ pub enum ParsedMedia {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct MediaCodec {
+  pub id: String,
+  pub label: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct MediaFormat {
   pub id: String,
   pub abr: Option<u64>,
   pub height: Option<u64>,
   pub fps: Option<u64>,
-  pub codecs: Vec<String>,
+  pub audio_codecs: Vec<MediaCodec>,
+  pub video_codecs: Vec<MediaCodec>,
+  pub audio_track_ids: Vec<String>,
+  pub video_track_ids: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -29,6 +39,13 @@ pub struct MediaTrack {
   pub format_note: Option<String>,
   pub format: Option<String>,
   pub audio_channels: Option<u64>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SubtitleInventory {
+  pub manual_languages: Vec<String>,
+  pub auto_languages: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -56,11 +73,12 @@ pub struct ParsedSingleVideo {
   pub duration: Option<f64>,
   pub rating: Option<f64>,
   pub extractor: Option<String>,
-  pub video_codecs: Vec<String>,
-  pub audio_codecs: Vec<String>,
+  pub video_codecs: Vec<MediaCodec>,
+  pub audio_codecs: Vec<MediaCodec>,
   pub video_tracks: Vec<MediaTrack>,
   pub audio_tracks: Vec<MediaTrack>,
   pub formats: Vec<MediaFormat>,
+  pub subtitle_inventory: SubtitleInventory,
   pub chapters: Vec<Chapter>,
   pub filesize: Option<u64>,
 }

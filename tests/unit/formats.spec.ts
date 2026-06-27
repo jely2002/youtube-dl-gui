@@ -26,10 +26,10 @@ describe('nearestBy', () => {
 
 describe('approxAudio', () => {
   const audioFormats: MediaFormat[] = [
-    { id: '64', videoCodecs: [], abr: 64 },
-    { id: '128', videoCodecs: [], abr: 128 },
-    { id: '192', videoCodecs: [], abr: 192 },
-    { id: '256', videoCodecs: [], abr: 256 },
+    { id: '64', audioCodecs: [], videoCodecs: [], abr: 64 },
+    { id: '128', audioCodecs: [], videoCodecs: [], abr: 128 },
+    { id: '192', audioCodecs: [], videoCodecs: [], abr: 192 },
+    { id: '256', audioCodecs: [], videoCodecs: [], abr: 256 },
   ];
 
   it('returns highest ABR when no target is given', () => {
@@ -49,8 +49,8 @@ describe('approxAudio', () => {
 
   it('breaks ties by choosing higher ABR', () => {
     const formats: MediaFormat[] = [
-      { id: '100', abr: 100, videoCodecs: [] },
-      { id: '120', abr: 120, videoCodecs: [] },
+      { id: '100', abr: 100, audioCodecs: [], videoCodecs: [] },
+      { id: '120', abr: 120, audioCodecs: [], videoCodecs: [] },
     ];
     const out = approxAudio(formats, 110);
     expect(out?.abr).toBe(120);
@@ -63,12 +63,12 @@ describe('approxAudio', () => {
 
 describe('approxVideo', () => {
   const videoFormats: MediaFormat[] = [
-    { id: '360p30', videoCodecs: [], height: 360, fps: 30 },
-    { id: '480p30', videoCodecs: [], height: 480, fps: 30 },
-    { id: '720p30', videoCodecs: [], height: 720, fps: 30 },
-    { id: '720p60', videoCodecs: [], height: 720, fps: 60 },
-    { id: '1080p30', videoCodecs: [], height: 1080, fps: 30 },
-    { id: '1080p60', videoCodecs: [], height: 1080, fps: 60 },
+    { id: '360p30', audioCodecs: [], videoCodecs: [], height: 360, fps: 30 },
+    { id: '480p30', audioCodecs: [], videoCodecs: [], height: 480, fps: 30 },
+    { id: '720p30', audioCodecs: [], videoCodecs: [], height: 720, fps: 30 },
+    { id: '720p60', audioCodecs: [], videoCodecs: [], height: 720, fps: 60 },
+    { id: '1080p30', audioCodecs: [], videoCodecs: [], height: 1080, fps: 30 },
+    { id: '1080p60', audioCodecs: [], videoCodecs: [], height: 1080, fps: 60 },
   ];
 
   it('returns highest quality (max height, max fps) when no target is given', () => {

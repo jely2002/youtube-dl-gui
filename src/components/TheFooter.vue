@@ -74,42 +74,38 @@
           <trash-icon class="w-5 h-5" />
         </template>
 
-        <template #caret>
-          <chevron-down-icon class="w-4 h-4" />
-        </template>
-
         <li>
-          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasSuccessfulGroups" @click="clearSuccessfulGroups">
+          <button class="gap-2 text-nowrap disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasSuccessfulGroups" @click="clearSuccessfulGroups">
             <broom-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.clearSuccessful') }}
           </button>
         </li>
         <li>
-          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasErroredGroups" @click="clearErroredGroups">
+          <button class="gap-2 text-nowrap disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasErroredGroups" @click="clearErroredGroups">
             <broom-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.clearErrored') }}
           </button>
         </li>
         <li>
-          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasPendingGroups" @click="clearPendingGroups">
+          <button class="gap-2 text-nowrap disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasPendingGroups" @click="clearPendingGroups">
             <broom-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.clearPending') }}
           </button>
         </li>
         <li>
-          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasDownloadingGroups" @click="cancelDownloadingGroups">
+          <button class="gap-2 text-nowrap disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasDownloadingGroups" @click="cancelDownloadingGroups">
             <x-mark-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.cancelDownloading') }}
           </button>
         </li>
         <li>
-          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasDownloadingGroups" @click="pauseAllGroups">
+          <button class="gap-2 text-nowrap disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasDownloadingGroups" @click="pauseAllGroups">
             <pause-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.pause') }}
           </button>
         </li>
         <li>
-          <button class="gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasPausedGroups" @click="resumeAllGroups">
+          <button class="gap-2 text-nowrap disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!hasPausedGroups" @click="resumeAllGroups">
             <play-icon class="w-4 h-4" />
             {{ t('layout.footer.queue.resume') }}
           </button>
@@ -127,7 +123,6 @@ import { FolderIcon, KeyIcon as KeyIconSolid, PauseIcon, PlayIcon, TrashIcon, XM
 import {
   ChatBubbleBottomCenterIcon,
   ChatBubbleBottomCenterTextIcon,
-  ChevronDownIcon,
   KeyIcon as KeyIconOutline,
 } from '@heroicons/vue/24/outline';
 import BaseProgress from './base/BaseProgress.vue';

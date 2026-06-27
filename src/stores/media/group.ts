@@ -3,8 +3,12 @@ import { computed, ref } from 'vue';
 import { invoke } from '@tauri-apps/api/core';
 import { v4 as uuidv4 } from 'uuid';
 import { Group } from '../../tauri/types/group';
-import { MediaFormat, MediaTrack } from '../../tauri/types/media';
+import { MediaCodec, MediaFormat, MediaTrack } from '../../tauri/types/media';
 import { firstKey, omit } from '../../helpers/groups';
+
+function codecId(codec: MediaCodec): string {
+  return typeof codec === 'string' ? codec : codec.id;
+}
 
 export const useMediaGroupStore = defineStore('media-group', () => {
   const groups = ref<Record<string, Group>>({});
@@ -133,16 +137,22 @@ export const useMediaGroupStore = defineStore('media-group', () => {
 
     leader.duration = items.reduce((sum, { duration }) => sum + (duration ?? 0), 0);
 
-    const audioCodecSet = new Set<string>();
-    const videoCodecSet = new Set<string>();
+    const audioCodecMap = new Map<string, MediaCodec>();
+    const videoCodecMap = new Map<string, MediaCodec>();
     for (const it of items) {
       const entry = leader.entries?.find(entry => entry.videoUrl === it.url);
       if (entry) it.playlistIndex = entry.index;
-      for (const codec of it.audioCodecs ?? []) audioCodecSet.add(codec);
-      for (const codec of it.videoCodecs ?? []) videoCodecSet.add(codec);
+      for (const codec of it.audioCodecs ?? []) {
+        const key = codecId(codec).trim().toLowerCase();
+        if (key && !audioCodecMap.has(key)) audioCodecMap.set(key, codec);
+      }
+      for (const codec of it.videoCodecs ?? []) {
+        const key = codecId(codec).trim().toLowerCase();
+        if (key && !videoCodecMap.has(key)) videoCodecMap.set(key, codec);
+      }
     }
-    leader.audioCodecs = [...audioCodecSet];
-    leader.videoCodecs = [...videoCodecSet];
+    leader.audioCodecs = [...audioCodecMap.values()];
+    leader.videoCodecs = [...videoCodecMap.values()];
 
     const audioTrackMap = new Map<string, MediaTrack>();
     const videoTrackMap = new Map<string, MediaTrack>();

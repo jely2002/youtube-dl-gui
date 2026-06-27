@@ -1,4 +1,4 @@
-import { Chapter, EntryItem, MediaFormat, MediaItem, MediaTrack } from './media';
+import { Chapter, EntryItem, MediaCodec, MediaFormat, MediaItem, MediaTrack } from './media';
 
 export type Group = {
   id: string;
@@ -20,8 +20,8 @@ export type Group = {
   dislikes?: number;
   rating?: number;
   duration?: number;
-  audioCodecs: string[];
-  videoCodecs?: string[];
+  audioCodecs: MediaCodec[];
+  videoCodecs?: MediaCodec[];
   audioTracks?: MediaTrack[];
   videoTracks?: MediaTrack[];
   formats: MediaFormat[];

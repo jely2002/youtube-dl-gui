@@ -15,8 +15,8 @@ describe('media options store', () => {
   it('applies global options to all groups', () => {
     const groupStore = useMediaGroupStore();
     const store = useMediaOptionsStore();
-    const fmt720: MediaFormat = { id: '720', height: 720, fps: 30, videoCodecs: [] };
-    const fmt480: MediaFormat = { id: '480', height: 480, fps: 30, videoCodecs: [] };
+    const fmt720: MediaFormat = { id: '720', height: 720, fps: 30, audioCodecs: [], videoCodecs: [] };
+    const fmt480: MediaFormat = { id: '480', height: 480, fps: 30, audioCodecs: [], videoCodecs: [] };
 
     groupStore.createGroup({
       id: 'g1',

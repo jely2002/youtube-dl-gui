@@ -1,4 +1,11 @@
-import { AudioFormat, TranscodePolicy, VideoContainer } from './media.ts';
+import {
+  AudioFormat,
+  AudioPostprocessPreset,
+  TranscodePolicy,
+  VideoContainer,
+  VideoPostprocessMode,
+  VideoPostprocessPreset,
+} from './media.ts';
 import { Locale } from 'vue-i18n';
 import { DEFAULT_SUBTITLE_FORMAT_ORDER } from '../../helpers/subtitles/sanitize.ts';
 import { NotificationKind } from './app';
@@ -22,16 +29,22 @@ export interface NetworkSettings {
   enableProxy: boolean | null;
   proxy: string | null;
   impersonate: string;
+  extractorArgs: string;
 }
 
 export interface VideoOutputSettings {
   policy: TranscodePolicy;
   container: VideoContainer;
+  postprocessPreset: VideoPostprocessPreset;
+  customPostprocessMode: VideoPostprocessMode;
+  postprocessArgs: string;
 }
 
 export interface AudioOutputSettings {
   policy: TranscodePolicy;
   format: AudioFormat;
+  postprocessPreset: AudioPostprocessPreset;
+  postprocessArgs: string;
 }
 
 export interface InputSettings {
@@ -62,6 +75,9 @@ export interface OutputSettings {
   audio: AudioOutputSettings;
   addMetadata: boolean;
   addThumbnail: boolean;
+  saveThumbnail: boolean;
+  preciseCuts: boolean;
+  reversePlaylistNumbering: boolean;
   downloadDir: string | null;
   fileNameTemplate: string;
   audioFileNameTemplate: string;
@@ -145,6 +161,7 @@ export const defaultNetworkSettings: NetworkSettings = {
   enableProxy: false,
   proxy: null,
   impersonate: 'none',
+  extractorArgs: '',
 };
 
 export const defaultInputSettings: InputSettings = {
@@ -155,15 +172,23 @@ export const defaultInputSettings: InputSettings = {
 
 export const defaultOutputSettings: OutputSettings = {
   video: {
-    policy: TranscodePolicy.remuxOnly,
+    policy: TranscodePolicy.allowReencode,
     container: VideoContainer.mp4,
+    postprocessPreset: VideoPostprocessPreset.none,
+    customPostprocessMode: VideoPostprocessMode.remux,
+    postprocessArgs: '',
   },
   audio: {
     policy: TranscodePolicy.allowReencode,
     format: AudioFormat.mp3,
+    postprocessPreset: AudioPostprocessPreset.none,
+    postprocessArgs: '',
   },
   addMetadata: true,
   addThumbnail: true,
+  saveThumbnail: false,
+  preciseCuts: false,
+  reversePlaylistNumbering: false,
   downloadDir: null,
   fileNameTemplate: '%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
   audioFileNameTemplate: '%(title).200s-(%(abr)dk).%(ext)s',

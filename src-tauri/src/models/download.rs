@@ -1,3 +1,4 @@
+use crate::models::SubtitleInventory;
 use crate::runners::template_context::TemplateContext;
 use serde::{Deserialize, Serialize};
 
@@ -14,6 +15,29 @@ pub enum TrackType {
 pub enum VideoContainer {
   Mp4,
   Mkv,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum VideoPostprocessPreset {
+  None,
+  Fps30,
+  Mp42,
+  Custom,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum VideoPostprocessMode {
+  Remux,
+  Reencode,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum AudioPostprocessPreset {
+  None,
+  Custom,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -51,7 +75,7 @@ impl AudioFormat {
 #[serde(rename_all = "camelCase")]
 pub enum TranscodePolicy {
   Never,
-  RemuxOnly,
+  #[serde(alias = "remuxOnly")]
   AllowReencode,
 }
 
@@ -61,6 +85,8 @@ pub struct DownloadItem {
   pub id: String,
   pub url: String,
   pub format: FormatOptions,
+  #[serde(default)]
+  pub subtitle_inventory: Option<SubtitleInventory>,
   #[serde(default)]
   pub overrides: Option<DownloadOverrides>,
   pub template_context: TemplateContext,
@@ -97,6 +123,9 @@ pub struct OutputOverrides {
   pub audio: Option<AudioOutputOverrides>,
   pub add_metadata: Option<bool>,
   pub add_thumbnail: Option<bool>,
+  pub save_thumbnail: Option<bool>,
+  pub precise_cuts: Option<bool>,
+  pub reverse_playlist_numbering: Option<bool>,
   pub file_name_template: Option<String>,
   pub audio_file_name_template: Option<String>,
   pub restrict_filenames: Option<bool>,
@@ -122,6 +151,9 @@ pub struct DownloadSection {
 pub struct VideoOutputOverrides {
   pub container: Option<VideoContainer>,
   pub policy: Option<TranscodePolicy>,
+  pub postprocess_preset: Option<VideoPostprocessPreset>,
+  pub custom_postprocess_mode: Option<VideoPostprocessMode>,
+  pub postprocess_args: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
@@ -129,6 +161,8 @@ pub struct VideoOutputOverrides {
 pub struct AudioOutputOverrides {
   pub format: Option<AudioFormat>,
   pub policy: Option<TranscodePolicy>,
+  pub postprocess_preset: Option<AudioPostprocessPreset>,
+  pub postprocess_args: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
@@ -149,6 +183,7 @@ pub struct NetworkOverrides {
   pub enable_proxy: Option<bool>,
   pub proxy: Option<String>,
   pub impersonate: Option<String>,
+  pub extractor_args: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
@@ -157,6 +192,8 @@ pub struct SubtitleOverrides {
   pub enabled: Option<bool>,
   pub include_auto_generated: Option<bool>,
   pub languages: Option<Vec<String>>,
+  pub manual_languages: Option<Vec<String>>,
+  pub auto_languages: Option<Vec<String>>,
   pub format_preference: Option<Vec<String>>,
   pub embed_subtitles: Option<bool>,
 }
@@ -173,4 +210,15 @@ pub struct SponsorBlockOverrides {
 #[serde(rename_all = "camelCase")]
 pub struct InputOverrides {
   pub prefer_video_in_mixed_links: Option<bool>,
+}
+
+#[cfg(test)]
+mod tests {
+  use super::TranscodePolicy;
+
+  #[test]
+  fn transcode_policy_deserializes_legacy_remux_only_as_allow_reencode() {
+    let policy: TranscodePolicy = serde_json::from_str(r#""remuxOnly""#).unwrap();
+    assert!(matches!(policy, TranscodePolicy::AllowReencode));
+  }
 }

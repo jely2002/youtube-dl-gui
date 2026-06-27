@@ -28,8 +28,8 @@ describe('media group store', () => {
       formats: [],
       filesize: 0,
       items: {
-        a: { ...createItem('a'), isLeader: true, audioCodecs: ['a1'], formats: [{ id: 'f1', height: 720, videoCodecs: [], fps: 30 }] },
-        b: { ...createItem('b'), audioCodecs: ['a2'], formats: [{ id: 'f2', height: 1080, videoCodecs: [], fps: 60 }] },
+        a: { ...createItem('a'), isLeader: true, audioCodecs: ['a1'], formats: [{ id: 'f1', height: 720, fps: 30, audioCodecs: [], videoCodecs: [] }] },
+        b: { ...createItem('b'), audioCodecs: ['a2'], formats: [{ id: 'f2', height: 1080, fps: 60, audioCodecs: [], videoCodecs: [] }] },
       },
     };
     store.createGroup(group);

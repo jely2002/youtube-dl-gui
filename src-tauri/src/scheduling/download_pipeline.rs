@@ -1,5 +1,6 @@
 use crate::models::download::{DownloadOverrides, FormatOptions};
 use crate::models::DownloadItem;
+use crate::models::SubtitleInventory;
 use crate::runners::template_context::TemplateContext;
 use crate::runners::ytdlp_download::{run_ytdlp_download, YtdlpDownloadError};
 use crate::scheduling::concurrency::DynamicSemaphore;
@@ -27,6 +28,7 @@ pub struct DownloadEntry {
   pub id: String,
   pub url: String,
   pub format: FormatOptions,
+  pub subtitle_inventory: Option<SubtitleInventory>,
   pub overrides: Option<DownloadOverrides>,
   pub template_context: TemplateContext,
 }
@@ -38,6 +40,7 @@ impl From<(DownloadItem, String)> for DownloadEntry {
       id: item.0.id,
       url: item.0.url,
       format: item.0.format,
+      subtitle_inventory: item.0.subtitle_inventory,
       overrides: item.0.overrides,
       template_context: item.0.template_context,
     }
