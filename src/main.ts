@@ -91,8 +91,8 @@ async function initStores(): Promise<void> {
     const currentLocale: Locale = settings.appearance.language === 'system'
       ? getDefaultLocale()
       : settings.appearance.language as Locale;
-
-    i18n.global.locale = currentLocale;
+    
+    i18n.global.locale.value = currentLocale;
     document.documentElement.setAttribute('lang', currentLocale);
   } catch (e) {
     console.error(`Unable to load settings: ${e}`);
