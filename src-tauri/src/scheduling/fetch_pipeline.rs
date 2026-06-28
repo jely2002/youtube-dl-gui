@@ -1,4 +1,4 @@
-use crate::models::download::FormatOptions;
+use crate::models::download::{DownloadOverrides, FormatOptions};
 use crate::models::payloads::MediaAddWithFormatPayload;
 use crate::models::{MediaAddPayload, MediaFatalPayload};
 use crate::runners::ytdlp_info::{run_ytdlp_info_fetch, YtdlpInfoFetchError};
@@ -23,10 +23,12 @@ pub enum FetchRequest {
     group_id: String,
     id: String,
     url: String,
+    overrides: Box<Option<DownloadOverrides>>,
   },
   Playlist {
     group_id: String,
     playlist: ParsedPlaylist,
+    overrides: Box<Option<DownloadOverrides>>,
   },
   Size {
     group_id: String,
@@ -48,6 +50,7 @@ pub struct FetchEntry {
   pub url: String,
   pub total: usize,
   pub format: Option<FormatOptions>,
+  pub overrides: Option<DownloadOverrides>,
 }
 
 impl DispatchEntry for FetchEntry {
@@ -79,16 +82,26 @@ pub fn setup_fetch_dispatcher(
 
 fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
   match req {
-    FetchRequest::Initial { group_id, id, url } => {
+    FetchRequest::Initial {
+      group_id,
+      id,
+      url,
+      overrides,
+    } => {
       vec![FetchEntry {
         group_id,
         id,
         url,
         total: 1,
         format: None,
+        overrides: *overrides,
       }]
     }
-    FetchRequest::Playlist { group_id, playlist } => {
+    FetchRequest::Playlist {
+      group_id,
+      playlist,
+      overrides,
+    } => {
       let total = playlist.entries.len();
       playlist
         .entries
@@ -99,6 +112,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
           url: e.video_url,
           total,
           format: None,
+          overrides: *overrides.clone(),
         })
         .collect()
     }
@@ -114,6 +128,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
         url,
         total: 1,
         format: Some(format),
+        overrides: None,
       }]
     }
     FetchRequest::SizePlaylist {
@@ -131,6 +146,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
           url: e.video_url,
           total,
           format: Some(format.clone()),
+          overrides: None,
         })
         .collect()
     }
@@ -148,9 +164,18 @@ async fn handle_fetch_entry(
     url,
     total,
     format,
+    overrides,
   } = entry.clone();
 
-  let result = run_ytdlp_info_fetch(&app, id.clone(), group_id.clone(), &url, format.clone()).await;
+  let result = run_ytdlp_info_fetch(
+    &app,
+    id.clone(),
+    group_id.clone(),
+    &url,
+    format.clone(),
+    overrides.clone(),
+  )
+  .await;
 
   let result = match result {
     Ok(v) => v,
@@ -216,6 +241,7 @@ async fn handle_fetch_entry(
         let _ = tx.send(DispatchRequest::Pipeline(FetchRequest::Playlist {
           group_id: group_id.clone(),
           playlist: pl.clone(),
+          overrides: Box::new(overrides.clone()),
         }));
         let payload = MediaAddPayload {
           group_id,

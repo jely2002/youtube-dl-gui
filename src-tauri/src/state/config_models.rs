@@ -78,6 +78,83 @@ impl Default for InputSettings {
   }
 }
 
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "UPPERCASE")]
+pub enum InputFilterSizeUnit {
+  #[default]
+  B,
+  KB,
+  MB,
+  GB,
+  TB,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct InputFilterSizeFilter {
+  pub value: Option<f64>,
+  pub unit: Option<InputFilterSizeUnit>,
+}
+
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub enum InputFilterDateMode {
+  #[default]
+  Exact,
+  Before,
+  After,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct InputFilterDateFilter {
+  pub mode: Option<InputFilterDateMode>,
+  pub value: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "camelCase")]
+pub enum InputFilterPlaylistRow {
+  Single {
+    id: String,
+    index: Option<i32>,
+  },
+  Range {
+    id: String,
+    start: Option<i32>,
+    end: Option<i32>,
+    step: Option<u32>,
+  },
+}
+
+impl Default for InputFilterPlaylistRow {
+  fn default() -> Self {
+    Self::Single {
+      id: String::new(),
+      index: None,
+    }
+  }
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct InputFilterPlaylistSelection {
+  pub rows: Vec<InputFilterPlaylistRow>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct InputFilterSettings {
+  pub playlist_selection: InputFilterPlaylistSelection,
+  pub min_size: InputFilterSizeFilter,
+  pub max_size: InputFilterSizeFilter,
+  pub date_filter: InputFilterDateFilter,
+  pub age_limit: Option<u32>,
+  pub max_downloads: Option<u32>,
+  pub match_filters: Option<String>,
+  pub break_match_filters: Option<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct VideoOutputSettings {
@@ -307,6 +384,7 @@ pub struct Config {
   pub auth: AuthSettings,
   pub network: NetworkSettings,
   pub input: InputSettings,
+  pub input_filters: InputFilterSettings,
   pub output: OutputSettings,
   pub performance: PerformanceSettings,
   pub sponsor_block: SponsorBlockSettings,

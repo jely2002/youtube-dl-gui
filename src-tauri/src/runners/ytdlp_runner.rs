@@ -1,10 +1,12 @@
-use crate::models::download::{DownloadOverrides, FormatOptions};
+use crate::models::download::{DownloadOverrides, FormatOptions, PlaylistMode};
 use crate::models::SubtitleInventory;
 use crate::models::TrackType;
 use crate::paths::PathsManager;
 use crate::runners::override_resolver::resolve_with_patch;
 use crate::runners::template_context::TemplateContext;
-use crate::runners::ytdlp_args::{build_format_args, build_location_args, build_output_args};
+use crate::runners::ytdlp_args::{
+  build_format_args, build_input_filter_args, build_location_args, build_output_args,
+};
 use crate::runners::ytdlp_process::{
   configure_command, kill_platform_process, platform_process_from_child, PlatformProcess,
 };
@@ -205,15 +207,32 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub fn with_input_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
-    let input = resolve_with_patch(
-      &self.cfg.input,
-      overrides.and_then(|value| value.input.as_ref()),
-    );
-    if input.prefer_video_in_mixed_links {
-      self.args.push("--no-playlist".into());
-    } else {
-      self.args.push("--yes-playlist".into());
+    let playlist_mode = overrides
+      .and_then(|value| value.input_filters.as_ref())
+      .and_then(|value| value.playlist_mode);
+
+    match playlist_mode {
+      Some(PlaylistMode::SingleVideo) => self.args.push("--no-playlist".into()),
+      Some(PlaylistMode::Playlist) => self.args.push("--yes-playlist".into()),
+      None => {
+        let input = resolve_with_patch(
+          &self.cfg.input,
+          overrides.and_then(|value| value.input.as_ref()),
+        );
+        if input.prefer_video_in_mixed_links {
+          self.args.push("--no-playlist".into());
+        } else {
+          self.args.push("--yes-playlist".into());
+        }
+      }
     }
+    self
+  }
+
+  pub fn with_input_filter_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
+    self.args.extend(build_input_filter_args(
+      overrides.and_then(|value| value.input_filters.as_ref()),
+    ));
     self
   }
 

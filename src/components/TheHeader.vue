@@ -1,5 +1,5 @@
 <template>
-  <header class="p-4 bg-base-300 flex gap-4 justify-center w-full shadow-lg">
+  <header class="relative z-20 p-4 bg-base-300 flex gap-4 justify-center w-full shadow-lg">
     <input
         ref="fileInput"
         type="file"
@@ -38,19 +38,33 @@
         <li>
           <button
               class="gap-2 text-nowrap"
-              :class="{ 'font-semibold text-primary': recordModeStore.isActive }"
+              :class="{ 'font-semibold text-primary': watchClipboardStore.isActive }"
               type="button"
-              :aria-pressed="recordModeStore.isActive"
-              @click="recordModeStore.toggle()"
+              :aria-pressed="watchClipboardStore.isActive"
+              @click="watchClipboardStore.toggle()"
           >
-            <check-circle-icon v-if="recordModeStore.isActive" class="w-4 h-4" />
-            <span v-else class="w-4 h-4 rounded-full border border-current"></span>
-            {{ t(recordModeStore.isActive ? 'layout.header.actions.recordStop' : 'layout.header.actions.recordStart') }}
+            <clipboard-document-check-icon v-if="watchClipboardStore.isActive" class="w-4 h-4" />
+            <clipboard-document-list-icon v-else class="w-4 h-4" />
+            {{ t(watchClipboardStore.isActive ? 'layout.header.actions.watchClipboardStop' : 'layout.header.actions.watchClipboardStart') }}
+          </button>
+        </li>
+        <li role="separator" class="my-1 border-t border-base-300"></li>
+        <li>
+          <button class="gap-2 text-nowrap" type="button" @click="handleImportClick">
+            <document-arrow-up-icon class="w-4 h-4" />
+            {{ t('layout.header.actions.importFile') }}
           </button>
         </li>
         <li>
-          <button class="gap-2 text-nowrap" type="button" @click="handleImportClick">
-            {{ t('layout.header.actions.importFile') }}
+          <button
+            class="gap-2 text-nowrap"
+            :class="{ 'font-semibold text-primary': hasActiveInputFilters }"
+            type="button"
+            @click="openInputFilters"
+          >
+            <funnel-icon v-if="!hasActiveInputFilters" class="w-4 h-4" />
+            <funnel-icon-solid v-else class="w-4 h-4" />
+            {{ t('layout.header.actions.inputFilters') }}
           </button>
         </li>
       </base-button-dropdown>
@@ -64,7 +78,14 @@
 
 <script setup lang="ts">
 
-import { CheckCircleIcon, Cog8ToothIcon } from '@heroicons/vue/24/outline';
+import {
+  ClipboardDocumentCheckIcon,
+  ClipboardDocumentListIcon,
+  Cog8ToothIcon,
+  DocumentArrowUpIcon,
+  FunnelIcon,
+} from '@heroicons/vue/24/outline';
+import { FunnelIcon as FunnelIconSolid } from '@heroicons/vue/24/solid';
 import { useMediaStore } from '../stores/media/media';
 import { ref, computed, onMounted, watch } from 'vue';
 import { useClipboard } from '../composables/useClipboard';
@@ -73,7 +94,7 @@ import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '../stores/settings';
 import { isValidUrl } from '../helpers/url.ts';
 import BaseButtonDropdown from './base/BaseButtonDropdown.vue';
-import { useRecordModeStore } from '../stores/recordMode.ts';
+import { useWatchClipboardStore } from '../stores/watchClipboard.ts';
 import { useToastStore } from '../stores/toast.ts';
 import {
   getUrlImportReadErrorToast,
@@ -82,6 +103,7 @@ import {
   parseUrlFileText,
   parseUrlInputText,
 } from '../helpers/urlImport.ts';
+import { isInputFiltersActive } from '../helpers/inputFilters.ts';
 
 const { t } = useI18n();
 const router = useRouter();
@@ -89,9 +111,10 @@ const mediaStore = useMediaStore();
 const toastStore = useToastStore();
 
 const settingsStore = useSettingsStore();
-const recordModeStore = useRecordModeStore();
+const watchClipboardStore = useWatchClipboardStore();
 
-const doPolling = computed(() => settingsStore.settings.input.autoFillClipboard || recordModeStore.isActive);
+const doPolling = computed(() => settingsStore.settings.input.autoFillClipboard || watchClipboardStore.isActive);
+const hasActiveInputFilters = computed(() => isInputFiltersActive(settingsStore.settings.inputFilters));
 
 const { content: clipboardContent, poll } = useClipboard({
   doPolling,
@@ -102,8 +125,8 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const fileImportImmediateDownload = ref(false);
 
 const inputPlaceholder = computed(() => {
-  if (recordModeStore.isActive) {
-    return t('layout.header.recordModePlaceholder');
+  if (watchClipboardStore.isActive) {
+    return t('layout.header.watchClipboardPlaceholder');
   }
   const defaultPlaceholder = t('layout.header.placeholder');
   if (clipboardHasValidUrl.value) {
@@ -122,11 +145,11 @@ const isInputDisabled = computed(() => {
 const url = ref('');
 
 async function addClipboardUrlToQueue(urlToRecord: string) {
-  if (!recordModeStore.isActive || !isValidUrl(urlToRecord) || recordModeStore.hasSeen(urlToRecord)) {
+  if (!watchClipboardStore.isActive || !isValidUrl(urlToRecord) || watchClipboardStore.hasSeen(urlToRecord)) {
     return;
   }
 
-  recordModeStore.markSeen(urlToRecord);
+  watchClipboardStore.markSeen(urlToRecord);
   await mediaStore.dispatchMediaInfoFetch(urlToRecord);
 }
 
@@ -167,6 +190,10 @@ function handleImportClick(event: MouseEvent) {
   fileInput.value?.click();
 }
 
+function openInputFilters() {
+  void router.push({ name: 'input-filters' });
+}
+
 async function handleFileSelection(event: Event) {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
@@ -198,7 +225,7 @@ watch(clipboardContent, (value) => {
   void addClipboardUrlToQueue(value);
 });
 
-watch(() => recordModeStore.isActive, (isActive) => {
+watch(() => watchClipboardStore.isActive, (isActive) => {
   if (!isActive) return;
   poll();
   const currentClipboard = clipboardContent.value;

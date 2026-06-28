@@ -114,6 +114,7 @@ pub struct DownloadOverrides {
   pub subtitles: Option<SubtitleOverrides>,
   pub sponsor_block: Option<SponsorBlockOverrides>,
   pub input: Option<InputOverrides>,
+  pub input_filters: Option<InputFilterOptions>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
@@ -210,6 +211,30 @@ pub struct SponsorBlockOverrides {
 #[serde(rename_all = "camelCase")]
 pub struct InputOverrides {
   pub prefer_video_in_mixed_links: Option<bool>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub enum PlaylistMode {
+  SingleVideo,
+  #[default]
+  Playlist,
+}
+
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InputFilterOptions {
+  pub playlist_items: Option<String>,
+  pub min_filesize: Option<String>,
+  pub max_filesize: Option<String>,
+  pub date: Option<String>,
+  pub datebefore: Option<String>,
+  pub dateafter: Option<String>,
+  pub age_limit: Option<u32>,
+  pub max_downloads: Option<u32>,
+  pub match_filters: Option<String>,
+  pub break_match_filters: Option<String>,
+  pub playlist_mode: Option<PlaylistMode>,
 }
 
 #[cfg(test)]

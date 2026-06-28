@@ -11,6 +11,7 @@ import LocationView from './views/app/LocationView.vue';
 import SettingsView from './views/app/SettingsView.vue';
 import AuthenticationView from './views/app/AuthenticationView.vue';
 import MediaPreferencesView from './views/app/MediaPreferencesView.vue';
+import InputFiltersView from './views/app/InputFiltersView.vue';
 import TheDownloadPreferences from './components/media-view/TheDownloadPreferences.vue';
 import TheNetworkPreferences from './components/media-view/TheNetworkPreferences.vue';
 import TheOutputPreferences from './components/media-view/TheOutputPreferences.vue';
@@ -100,6 +101,12 @@ const routes = [
         path: 'subtitles',
         name: 'subtitles',
         component: SubtitleView,
+        meta: { index: 1 },
+      },
+      {
+        path: 'input-filters',
+        name: 'input-filters',
+        component: InputFiltersView,
         meta: { index: 1 },
       },
       {

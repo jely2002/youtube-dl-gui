@@ -31,14 +31,16 @@
   "layout": {
     "header": {
       "placeholder": "Enter a video/playlist link to add to the queue",
-      "recordModePlaceholder": "Record mode on: copied links are added to the queue",
+      "watchClipboardPlaceholder": "Watching clipboard: copied links are added to the queue",
       "actions": {
         "more": "More add actions",
-        "recordStart": "Enable record mode",
-        "recordStop": "Disable record mode",
-        "importFile": "Import links from file"
+        "watchClipboardStart": "Watch clipboard",
+        "watchClipboardStop": "Stop watching clipboard",
+        "importFile": "Import links",
+        "inputFilters": "Filters"
       },
       "nav": {
+        "inputFilters": "Filters",
         "settings": "App Settings"
       }
     },
@@ -481,6 +483,108 @@
     "toasts": {
       "saved": "Locations saved!",
       "error": "Unable to save locations."
+    }
+  },
+  "inputFilters": {
+    "title": "Input Filters",
+    "defaults": {
+      "legend": "Queue defaults",
+      "hint": "These rules apply when you add new links. Items already in the queue stay as they are."
+    },
+    "filesize": {
+      "legend": "File size",
+      "hint": "Only keep items bigger or smaller than the size you choose."
+    },
+    "dates": {
+      "legend": "Upload dates",
+      "hint": "Keep only items uploaded on, before, or after a date."
+    },
+    "playlist": {
+      "legend": "Playlist entries",
+      "hint": "Choose which parts of a playlist to use. You can pick one item or a start-to-end range.",
+      "addSingle": "Add entry",
+      "addRange": "Add range",
+      "empty": "No playlist filter set. The full playlist will be used.",
+      "remove": "Remove",
+      "row": {
+        "single": "Single",
+        "range": "Range"
+      },
+      "fields": {
+        "index": "Entry index",
+        "indexPlaceholder": "1 or -1",
+        "start": "Start",
+        "startPlaceholder": "1",
+        "end": "End",
+        "endPlaceholder": "10",
+        "step": "Step",
+        "stepPlaceholder": "2"
+      },
+      "errors": {
+        "playlistIndex": "Use a whole number other than 0. Negative numbers count from the end.",
+        "playlistRangeBounds": "Set both range numbers. Negative numbers count from the end.",
+        "playlistRangeStep": "Step must be a whole number greater than zero."
+      }
+    },
+    "advanced": {
+      "legend": "Advanced filters",
+      "hint": "These are raw yt-dlp filters for advanced use."
+    },
+    "fields": {
+      "maxDownloads": {
+        "label": "Maximum downloads:",
+        "hint": "Stop after this many matching items."
+      },
+      "ageLimit": {
+        "label": "Age limit:",
+        "hint": "Only keep items marked suitable for this age."
+      },
+      "minSize": {
+        "label": "Minimum file size:"
+      },
+      "maxSize": {
+        "label": "Maximum file size:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "Unit"
+      },
+      "date": {
+        "modeLabel": "Match rule",
+        "clearMode": "Off",
+        "hint": "Pick the date rule, then choose the date.",
+        "mode": {
+          "exact": "On date",
+          "before": "On or before",
+          "after": "On or after"
+        },
+        "activeLabel": {
+          "exact": "Videos uploaded on this date",
+          "before": "Videos uploaded on or before this date",
+          "after": "Videos uploaded on or after this date"
+        },
+        "presetsLabel": "Quick presets",
+        "presets": {
+          "today": "Today",
+          "yesterday": "Yesterday",
+          "last7Days": "Last 7 days",
+          "last30Days": "Last 30 days"
+        }
+      },
+      "matchFilters": {
+        "label": "Match filters:",
+        "placeholder": "!is_live",
+        "hint": "Examples: !is_live, duration >? 600, like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "Break-match filters:",
+        "placeholder": "duration >? 3600",
+        "hint": "Stop checking the current link when an item fails this filter."
+      }
+    },
+    "toasts": {
+      "saved": "Input filters saved!",
+      "error": "Unable to save input filters. {error}"
     }
   },
   "settings": {

@@ -14,7 +14,8 @@ import { Group } from '../../tauri/types/group.ts';
 import { notify, notifyGroup } from '../../tauri/notifications';
 import { NotificationKind } from '../../tauri/types/app';
 import { resolvePlaylistIndex } from '../../helpers/playlistNumbering';
-import { useRecordModeStore } from '../recordMode.ts';
+import { useWatchClipboardStore } from '../watchClipboard.ts';
+import { settingsToInputFilterOverride } from '../../helpers/inputFilters.ts';
 
 type PendingReadyGroup = {
   resolve: (groupIds: string[]) => void;
@@ -30,7 +31,7 @@ export const useMediaStore = defineStore('media', () => {
   const sizeStore = useMediaSizeStore();
   const diagnosticsStore = useMediaDiagnosticsStore();
   const settingsStore = useSettingsStore();
-  const recordModeStore = useRecordModeStore();
+  const watchClipboardStore = useWatchClipboardStore();
   const pendingReadyGroups = new Map<string, PendingReadyGroup>();
 
   function resolvePendingReadyGroup(groupId: string, resolvedIds: string[]) {
@@ -49,8 +50,10 @@ export const useMediaStore = defineStore('media', () => {
 
   function finalizePlaylistGroup(group: Group) {
     const splitThreshold = settingsStore.settings.performance.splitPlaylistThreshold;
+    const overrides = optionsStore.getOverrides(group.id);
     if (group.total < splitThreshold) {
       const newGroups = groupStore.splitGroup(group);
+      migrateOverrides(group.id, newGroups.map(newGroup => newGroup.id), overrides);
       void notifyGroup(NotificationKind.PlaylistReady, group, {}, newGroups.length);
       resolvePendingReadyGroup(group.id, newGroups.map(newGroup => newGroup.id));
       if (newGroups.length === 0) {
@@ -142,9 +145,31 @@ export const useMediaStore = defineStore('media', () => {
     };
     groupStore.createGroup(newGroup);
 
-    await invoke('media_info', { url, id, groupId });
+    const inputFiltersOverride = settingsToInputFilterOverride(settingsStore.settings);
+    if (inputFiltersOverride) {
+      optionsStore.setOverrides(groupId, { inputFilters: inputFiltersOverride });
+    }
+
+    await invoke('media_info', {
+      url,
+      id,
+      groupId,
+      overrides: optionsStore.getOverrides(groupId),
+    });
     await notifyGroup(NotificationKind.QueueAdded, newGroup);
     return groupId;
+  }
+
+  function migrateOverrides(
+    previousGroupId: string,
+    nextGroupIds: string[],
+    overrides?: DownloadOverrides,
+  ) {
+    if (!overrides) return;
+    for (const nextGroupId of nextGroupIds) {
+      optionsStore.setOverrides(nextGroupId, structuredClone(overrides));
+    }
+    optionsStore.removeOverrides(previousGroupId);
   }
 
   function waitForGroupReady(groupId: string): Promise<string[]> {
@@ -192,7 +217,7 @@ export const useMediaStore = defineStore('media', () => {
     groupId: string,
     options: DownloadOptions,
   ) {
-    recordModeStore.disable();
+    watchClipboardStore.disable();
     const group = groupStore.findGroupById(groupId);
     if (!group) return;
 
@@ -282,7 +307,7 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   async function downloadAllGroups(fromShortcut: boolean = false) {
-    recordModeStore.disable();
+    watchClipboardStore.disable();
     const group_ids = groupStore.groupOrder
       .filter(gid => stateStore.getGroupState(gid) === MediaState.configure);
 

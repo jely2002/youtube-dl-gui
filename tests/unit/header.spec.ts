@@ -25,8 +25,8 @@ vi.mock('../../src/stores/toast', () => ({
   }),
 }));
 
-vi.mock('../../src/stores/recordMode', () => ({
-  useRecordModeStore: () => ({
+vi.mock('../../src/stores/watchClipboard', () => ({
+  useWatchClipboardStore: () => ({
     isActive: false,
     toggle: vi.fn(),
     hasSeen: vi.fn(() => false),
@@ -39,7 +39,9 @@ vi.mock('../../src/stores/settings', () => ({
     settings: {
       input: {
         autoFillClipboard: false,
+        preferVideoInMixedLinks: false,
       },
+      inputFilters: {},
     },
   }),
 }));
@@ -87,6 +89,7 @@ describe('TheHeader', () => {
       },
     });
 
-    expect(wrapper.getComponent(RouterLinkStub).props('to')).toEqual({ name: 'settings.downloads' });
+    const links = wrapper.findAllComponents(RouterLinkStub).map(link => link.props('to'));
+    expect(links).toContainEqual({ name: 'settings.downloads' });
   });
 });

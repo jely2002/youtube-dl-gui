@@ -53,6 +53,52 @@ export interface InputSettings {
   globalShortcuts: boolean;
 }
 
+export type InputFilterSizeUnit = 'B' | 'KB' | 'MB' | 'GB' | 'TB';
+export type InputFilterDateMode = 'exact' | 'before' | 'after';
+
+export interface InputFilterSizeFilter {
+  value: number | null;
+  unit: InputFilterSizeUnit | null;
+}
+
+export interface InputFilterDateFilter {
+  mode: InputFilterDateMode | null;
+  value: string | null;
+}
+
+export interface InputFilterPlaylistSingleRow {
+  id: string;
+  type: 'single';
+  index: number | null;
+}
+
+export interface InputFilterPlaylistRangeRow {
+  id: string;
+  type: 'range';
+  start: number | null;
+  end: number | null;
+  step: number | null;
+}
+
+export type InputFilterPlaylistRow
+  = | InputFilterPlaylistSingleRow
+    | InputFilterPlaylistRangeRow;
+
+export interface InputFilterPlaylistSelection {
+  rows: InputFilterPlaylistRow[];
+}
+
+export interface InputFilterSettings {
+  playlistSelection: InputFilterPlaylistSelection;
+  minSize: InputFilterSizeFilter;
+  maxSize: InputFilterSizeFilter;
+  dateFilter: InputFilterDateFilter;
+  ageLimit: number | null;
+  maxDownloads: number | null;
+  matchFilters: string | null;
+  breakMatchFilters: string | null;
+}
+
 export enum FormatPreset {
   TitleQuality = 'titleQuality',
   TitleOnly = 'titleOnly',
@@ -137,6 +183,7 @@ export interface Settings {
   auth: AuthSettings;
   network: NetworkSettings;
   input: InputSettings;
+  inputFilters: InputFilterSettings;
   output: OutputSettings;
   performance: PerformanceSettings;
   sponsorBlock: SponsorBlockSettings;
@@ -168,6 +215,35 @@ export const defaultInputSettings: InputSettings = {
   autoFillClipboard: true,
   preferVideoInMixedLinks: false,
   globalShortcuts: true,
+};
+
+export const defaultInputFilterSizeFilter: InputFilterSizeFilter = {
+  value: null,
+  unit: null,
+};
+
+export const defaultInputFilterDateFilter: InputFilterDateFilter = {
+  mode: null,
+  value: null,
+};
+
+export const defaultInputFilterSettings: InputFilterSettings = {
+  playlistSelection: {
+    rows: [],
+  },
+  minSize: {
+    ...defaultInputFilterSizeFilter,
+  },
+  maxSize: {
+    ...defaultInputFilterSizeFilter,
+  },
+  dateFilter: {
+    ...defaultInputFilterDateFilter,
+  },
+  ageLimit: null,
+  maxDownloads: null,
+  matchFilters: null,
+  breakMatchFilters: null,
 };
 
 export const defaultOutputSettings: OutputSettings = {
@@ -237,6 +313,13 @@ export const defaultSettings: Settings = {
   auth: defaultAuthSettings,
   network: defaultNetworkSettings,
   input: defaultInputSettings,
+  inputFilters: {
+    ...defaultInputFilterSettings,
+    playlistSelection: { rows: [] },
+    minSize: { ...defaultInputFilterSettings.minSize },
+    maxSize: { ...defaultInputFilterSettings.maxSize },
+    dateFilter: { ...defaultInputFilterSettings.dateFilter },
+  },
   output: {
     ...defaultOutputSettings,
     video: { ...defaultOutputSettings.video },

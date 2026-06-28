@@ -1,5 +1,5 @@
 use crate::logging::LogStoreState;
-use crate::models::download::FormatOptions;
+use crate::models::download::{DownloadOverrides, FormatOptions};
 use crate::models::{MediaDiagnosticPayload, MediaFatalPayload, ParsedMedia, TrackType};
 use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_info::parse_ytdlp_info;
@@ -35,6 +35,7 @@ pub async fn run_ytdlp_info_fetch(
   group_id: String,
   url: &str,
   format: Option<FormatOptions>,
+  overrides: Option<DownloadOverrides>,
 ) -> Result<Option<ParsedMedia>, YtdlpInfoFetchError> {
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
 
@@ -52,9 +53,10 @@ pub async fn run_ytdlp_info_fetch(
       }),
       None,
     )
-    .with_input_args(None)
-    .with_auth_args(None)
-    .with_network_args(None)
+    .with_input_args(overrides.as_ref())
+    .with_input_filter_args(overrides.as_ref())
+    .with_auth_args(overrides.as_ref())
+    .with_network_args(overrides.as_ref())
     .with_args(["-J", "--flat-playlist"])
     .with_url(url);
 

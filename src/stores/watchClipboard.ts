@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
-export const useRecordModeStore = defineStore('record-mode', () => {
+export const useWatchClipboardStore = defineStore('watch-clipboard', () => {
   const enabled = ref(false);
   const seenUrls = ref<Set<string>>(new Set());
 
