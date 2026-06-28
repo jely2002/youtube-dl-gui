@@ -1144,8 +1144,8 @@
       "advancedEmpty": "Es ist noch keine erweiterte Auswahl konfiguriert.",
       "addSingle": "Element hinzufügen",
       "addRange": "Bereich hinzufügen",
-      "applyFull": "Ganze Playlist verwenden",
-      "applySelection": "Ausgewählte Elemente verwenden",
+      "applyFull": "Alle Elemente herunterladen",
+      "applySelection": "Ausgewählte Elemente herunterladen",
       "useAdvanced": "Erweiterte Auswahl verwenden",
       "noMatches": "Dieser Bereich trifft auf keine Elemente in der Playlist zu.",
       "row": {

@@ -1141,8 +1141,8 @@
       "advancedEmpty": "Todavía no hay una selección avanzada configurada.",
       "addSingle": "Añadir elemento",
       "addRange": "Añadir rango",
-      "applyFull": "Usar la lista completa",
-      "applySelection": "Usar los elementos seleccionados",
+      "applyFull": "Descargar todos los elementos",
+      "applySelection": "Descargar los elementos seleccionados",
       "useAdvanced": "Usar selección avanzada",
       "noMatches": "Este rango no coincide con ningún elemento de la lista.",
       "row": {

@@ -565,8 +565,8 @@
       "advancedEmpty": "No advanced selection configured yet.",
       "addSingle": "Add item",
       "addRange": "Add range",
-      "applyFull": "Use full playlist",
-      "applySelection": "Use selected items",
+      "applyFull": "Download all items",
+      "applySelection": "Download selected items",
       "useAdvanced": "Use advanced selection",
       "noMatches": "This range does not match any items in the playlist.",
       "row": {

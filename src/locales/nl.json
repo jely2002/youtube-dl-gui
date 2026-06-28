@@ -1144,8 +1144,8 @@
       "advancedEmpty": "Er is nog geen geavanceerde selectie ingesteld.",
       "addSingle": "Item toevoegen",
       "addRange": "Bereik toevoegen",
-      "applyFull": "Hele afspeellijst gebruiken",
-      "applySelection": "Geselecteerde items gebruiken",
+      "applyFull": "Alle items downloaden",
+      "applySelection": "Geselecteerde items downloaden",
       "useAdvanced": "Geavanceerde selectie gebruiken",
       "noMatches": "Dit bereik komt met geen enkel item in de afspeellijst overeen.",
       "row": {

@@ -1141,8 +1141,8 @@
       "advancedEmpty": "Nessuna selezione avanzata configurata.",
       "addSingle": "Aggiungi elemento",
       "addRange": "Aggiungi intervallo",
-      "applyFull": "Usa l’intera playlist",
-      "applySelection": "Usa gli elementi selezionati",
+      "applyFull": "Scarica tutti gli elementi",
+      "applySelection": "Scarica gli elementi selezionati",
       "useAdvanced": "Usa selezione avanzata",
       "noMatches": "Questo intervallo non corrisponde a nessun elemento della playlist.",
       "row": {

@@ -1144,8 +1144,8 @@
       "advancedEmpty": "尚未設定任何進階選取。",
       "addSingle": "新增項目",
       "addRange": "新增範圍",
-      "applyFull": "使用完整播放清單",
-      "applySelection": "使用已選項目",
+      "applyFull": "下載所有項目",
+      "applySelection": "下載已選項目",
       "useAdvanced": "使用進階選取",
       "noMatches": "這個範圍在播放清單中沒有符合的項目。",
       "row": {

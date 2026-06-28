@@ -1144,8 +1144,8 @@
       "advancedEmpty": "Aucune sélection avancée n’est encore configurée.",
       "addSingle": "Ajouter un élément",
       "addRange": "Ajouter une plage",
-      "applyFull": "Utiliser toute la playlist",
-      "applySelection": "Utiliser les éléments sélectionnés",
+      "applyFull": "Télécharger tous les éléments",
+      "applySelection": "Télécharger les éléments sélectionnés",
       "useAdvanced": "Utiliser la sélection avancée",
       "noMatches": "Cette plage ne correspond à aucun élément de la playlist.",
       "row": {

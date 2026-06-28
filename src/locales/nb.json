@@ -1144,8 +1144,8 @@
       "advancedEmpty": "Ingen avansert utvalg er satt opp ennå.",
       "addSingle": "Legg til element",
       "addRange": "Legg til intervall",
-      "applyFull": "Bruk hele spillelisten",
-      "applySelection": "Bruk valgte elementer",
+      "applyFull": "Last ned alle elementer",
+      "applySelection": "Last ned valgte elementer",
       "useAdvanced": "Bruk avansert utvalg",
       "noMatches": "Dette intervallet samsvarer ikke med noen elementer i spillelisten.",
       "row": {

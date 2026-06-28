@@ -1144,8 +1144,8 @@
       "advancedEmpty": "Henüz gelişmiş seçim yapılandırılmadı.",
       "addSingle": "Öğe ekle",
       "addRange": "Aralık ekle",
-      "applyFull": "Tüm oynatma listesini kullan",
-      "applySelection": "Seçilen öğeleri kullan",
+      "applyFull": "Tüm öğeleri indir",
+      "applySelection": "Seçilen öğeleri indir",
       "useAdvanced": "Gelişmiş seçimi kullan",
       "noMatches": "Bu aralık oynatma listesinde hiçbir öğeyle eşleşmiyor.",
       "row": {
