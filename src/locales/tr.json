@@ -20,13 +20,28 @@
     "unknown": "bilinmiyor",
     "confirm": "Onayla",
     "best": "En iyi",
-    "resume": "Devam et"
+    "resume": "Devam et",
+    "urlImport": {
+      "added": "Bağlantı sıraya eklendi. | {n} bağlantı sıraya eklendi.",
+      "partial": "{added} bağlantı sıraya eklendi. {skipped} geçersiz girdi atlandı.",
+      "noneFound": "Girdi veya dosyada geçerli bağlantı bulunamadı.",
+      "readError": "Bu dosya okunamadı."
+    }
   },
   "layout": {
     "header": {
       "placeholder": "Sıraya eklemek için bir video/oynatma listesi URL'si ekleyin",
       "nav": {
-        "settings": "Uygulama Ayarları"
+        "settings": "Uygulama Ayarları",
+        "inputFilters": "Filtreler"
+      },
+      "watchClipboardPlaceholder": "Pano izleniyor: kopyalanan bağlantılar sıraya ekleniyor",
+      "actions": {
+        "more": "Daha fazla ekleme eylemi",
+        "watchClipboardStart": "Panoyu izle",
+        "watchClipboardStop": "Panoyu izlemeyi durdur",
+        "importFile": "Bağlantıları içe aktar",
+        "inputFilters": "Filtreler"
       }
     },
     "footer": {
@@ -182,6 +197,11 @@
         "toasts": {
           "reported": "Hatalar bildirildi.",
           "error": "Hata bildirilirken sorun oluştu."
+        },
+        "skipped": {
+          "count": "Atlanan öğeler ({count})",
+          "empty": "Filtreler nedeniyle hiçbir öğe atlanmadı.",
+          "items": "{count} öğe | {count} öğe"
         }
       }
     },
@@ -265,7 +285,9 @@
           "size": "Boyut: ",
           "sizeInfo": "İndirilecek olan verinin boyutu.\nDosyanın nihai boyutu değil.",
           "items": "İçerik: {amount} {failedCount}",
-          "failedCount": "({amount} başarısız oldu)"
+          "failedCount": "({amount} başarısız oldu)",
+          "skippedCount": "({amount} atlandı)",
+          "failedAndSkippedCount": "({failed} başarısız, {skipped} atlandı)"
         },
         "trackTypes": {
           "both": "Video + Ses",
@@ -318,7 +340,8 @@
         "errorPrefix": "Hata - {message}",
         "report": "Rapor",
         "showFull": "Kayıtlara bak",
-        "signIn": "Giriş yap"
+        "signIn": "Giriş yap",
+        "filters": "Filtreleri düzenle"
       }
     },
     "card": {
@@ -371,7 +394,8 @@
         "noResult": "Eşleşen dil yok\"{query}\".",
         "selected": "Seçilen(ler):",
         "allSelected": "Tüm mevcut altyazılar",
-        "searchHint": "İpucu: Listeyi hızlıca filtrelemek için arama kutusunu kullanın. Seçilen diller vurgulu olarak kalır."
+        "searchHint": "İpucu: Listeyi hızlıca filtrelemek için arama kutusunu kullanın. Seçilen diller vurgulu olarak kalır.",
+        "none": "Yok"
       }
     },
     "toasts": {
@@ -462,6 +486,10 @@
       },
       "outputFormat": {
         "label": "Dosya adı formatı:"
+      },
+      "reversePlaylistNumbering": {
+        "label": "Oynatma listesi numaralandırmasını ters çevir:",
+        "hint": "Oynatma listesi öğelerini baştan değil sondan numaralandır."
       }
     },
     "toasts": {
@@ -513,7 +541,8 @@
       "globalShortcuts": {
         "label": "Kısayolları etkinleştir:",
         "add_hint": "Sıraya videoları ekle:",
-        "download_hint": "Sırayı indir:"
+        "download_hint": "Sırayı indir:",
+        "instant_hint": "Hemen ekleyip indirmek için:"
       },
       "authentication": {
         "label": "Gizli videoları indirmek için oturum açın:",
@@ -626,6 +655,10 @@
             }
           }
         }
+      },
+      "preciseCuts": {
+        "label": "Hassas kesim:",
+        "hint": "Yakındaki ana kareler yerine tam karelerde keser. Çok yavaştır.\nYalnızca normal kesimler yanlışsa, bozuluyorsa veya siyah/eksik bölümler oluşturuyorsa etkinleştirin."
       }
     },
     "appearance": {
@@ -734,6 +767,10 @@
           "label": "Bölüm",
           "description": "Videonun bir kısmını/kesitini işaretler (bölüm eylem türüyle birlikte kullanılır)."
         }
+      },
+      "preciseCuts": {
+        "label": "Hassas kesim:",
+        "hint": "SponsorBlock kaldırmaları ve kısmi indirmelerin tam karelerde kesilmesini sağlar. Çok yavaştır.\nYalnızca normal kesimler yanlışsa, bozuluyorsa veya siyah/eksik bölümler oluşturuyorsa etkinleştirin."
       }
     },
     "update": {
@@ -1017,6 +1054,10 @@
       "unknown": {
         "shortMessage": "Bilinmeyen hata",
         "message": "Bu öğe işlenirken bilinmeyen bir hata oluştu."
+      },
+      "rejectedByFilter": {
+        "shortMessage": "Filtrelendi",
+        "message": "Bu öğe giriş filtreleriniz tarafından elendi."
       }
     }
   },
@@ -1030,6 +1071,106 @@
       "github": "GitHub",
       "wiki": "Wiki",
       "reportABug": "Hata bildir"
+    }
+  },
+  "inputFilters": {
+    "title": "Giriş filtreleri",
+    "filesize": {
+      "legend": "Dosya boyutu",
+      "hint": "Yalnızca seçtiğiniz boyuttan büyük veya küçük öğeleri tutun."
+    },
+    "dates": {
+      "legend": "Yükleme tarihleri",
+      "hint": "Yalnızca belirli bir tarihte, ondan önce veya sonra yüklenen öğeleri tutun."
+    },
+    "advanced": {
+      "legend": "Gelişmiş filtreler",
+      "hint": "Bunlar gelişmiş kullanım için ham yt-dlp filtreleridir."
+    },
+    "fields": {
+      "minSize": {
+        "label": "En küçük dosya boyutu:"
+      },
+      "maxSize": {
+        "label": "En büyük dosya boyutu:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "Birim"
+      },
+      "date": {
+        "modeLabel": "Eşleşme kuralı",
+        "clearMode": "Kapalı",
+        "hint": "Önce tarih kuralını, sonra tarihi seçin.",
+        "mode": {
+          "exact": "Tarihte",
+          "before": "Tarihinde veya önce",
+          "after": "Tarihinde veya sonra"
+        },
+        "activeLabel": {
+          "exact": "Bu tarihte yüklenen videolar",
+          "before": "Bu tarihte veya daha önce yüklenen videolar",
+          "after": "Bu tarihte veya daha sonra yüklenen videolar"
+        },
+        "presetsLabel": "Hızlı seçimler",
+        "presets": {
+          "today": "Bugün",
+          "yesterday": "Dün",
+          "last7Days": "Son 7 gün",
+          "last30Days": "Son 30 gün"
+        }
+      },
+      "matchFilters": {
+        "label": "Eşleşme filtreleri:",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "Örnekler: !is_live, duration >? 600, like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "Eşleşmeyi kesen filtreler:",
+        "placeholder": "duration >? 3600",
+        "hint": "Bir öğe bu filtreyi geçemezse mevcut bağlantıyı denetlemeyi durdurun."
+      }
+    },
+    "playlistSelection": {
+      "title": "Oynatma listesi öğelerini seç",
+      "description": "İndirilecek öğeleri seçin:",
+      "selectionSummary": "{total} öğeden {count} öğe seçildi | {total} öğeden {count} öğe seçildi",
+      "selectionSummaryAll": "Tüm öğeler seçildi | {count} öğenin tamamı seçildi",
+      "advancedButton": "Gelişmiş",
+      "simpleButton": "Sıfırla",
+      "advancedTitle": "Gelişmiş oynatma listesi seçimi",
+      "advancedHint": "Birden çok öğe, negatif sayılar ve birden fazla aralık seçin.",
+      "advancedDescription": "Geçerli seçim",
+      "advancedEmpty": "Henüz gelişmiş seçim yapılandırılmadı.",
+      "addSingle": "Öğe ekle",
+      "addRange": "Aralık ekle",
+      "applyFull": "Tüm oynatma listesini kullan",
+      "applySelection": "Seçilen öğeleri kullan",
+      "useAdvanced": "Gelişmiş seçimi kullan",
+      "noMatches": "Bu aralık oynatma listesinde hiçbir öğeyle eşleşmiyor.",
+      "row": {
+        "single": "Tekli",
+        "range": "Aralık"
+      },
+      "remove": "Kaldır",
+      "fields": {
+        "advancedLabel": "Gelişmiş:",
+        "index": "Öğe",
+        "indexPlaceholder": "1 veya -1",
+        "start": "Başlangıç",
+        "startPlaceholder": "1",
+        "end": "Bitiş",
+        "endPlaceholder": "10",
+        "input": "Öğeler"
+      },
+      "errors": {
+        "playlistIndex": "0 dışında bir tam sayı kullanın. Negatif sayılar sondan sayılır.",
+        "playlistRangeBounds": "Başlangıç ve bitişi girin. Negatif sayılar sondan sayılır."
+      }
+    },
+    "toasts": {
+      "saved": "Giriş filtreleri kaydedildi!",
+      "error": "Giriş filtreleri kaydedilemedi. {error}"
     }
   }
 }

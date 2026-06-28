@@ -20,13 +20,28 @@
     "unknown": "desconhecido",
     "confirm": "Confirmar",
     "best": "Melhor",
-    "resume": "Retomar"
+    "resume": "Retomar",
+    "urlImport": {
+      "added": "Link adicionado à fila. | {n} links adicionados à fila.",
+      "partial": "{added} links adicionados à fila. {skipped} entradas inválidas ignoradas.",
+      "noneFound": "Nenhum link válido encontrado na entrada ou no arquivo.",
+      "readError": "Não foi possível ler esse arquivo."
+    }
   },
   "layout": {
     "header": {
       "placeholder": "Insira o URL de um vídeo/playlist para adicionar à fila.",
       "nav": {
-        "settings": "Configurações do aplicativo"
+        "settings": "Configurações do aplicativo",
+        "inputFilters": "Filtros"
+      },
+      "watchClipboardPlaceholder": "Monitorando a área de transferência: links copiados são adicionados à fila",
+      "actions": {
+        "more": "Mais ações para adicionar",
+        "watchClipboardStart": "Monitorar área de transferência",
+        "watchClipboardStop": "Parar de monitorar a área de transferência",
+        "importFile": "Importar links",
+        "inputFilters": "Filtros"
       }
     },
     "footer": {
@@ -182,6 +197,11 @@
         "toasts": {
           "reported": "Foi relatado um erro.",
           "error": "Não foi possível relatar o erro."
+        },
+        "skipped": {
+          "count": "Itens ignorados ({count})",
+          "empty": "Nenhum item foi ignorado pelos filtros.",
+          "items": "{count} item | {count} itens"
         }
       }
     },
@@ -265,7 +285,9 @@
           "size": "Tamanho: ",
           "sizeInfo": "A quantidade de dados que será baixada.\nNão é o tamanho final do arquivo.",
           "items": "Itens: {amount} {failedCount}",
-          "failedCount": "({amount} falhas)"
+          "failedCount": "({amount} falhas)",
+          "skippedCount": "({amount} ignorados)",
+          "failedAndSkippedCount": "({failed} com falha, {skipped} ignorados)"
         },
         "trackTypes": {
           "both": "Vídeo + Áudio",
@@ -318,7 +340,8 @@
         "errorPrefix": "Erro - {message}",
         "report": "Relatar",
         "showFull": "Ver logs",
-        "signIn": "Entrar"
+        "signIn": "Entrar",
+        "filters": "Editar filtros"
       }
     },
     "card": {
@@ -371,7 +394,8 @@
         "noResult": "Nenhum idioma corresponde a \"{query}\".",
         "selected": "Selecionado(s):",
         "allSelected": "Todas as legendas disponíveis",
-        "searchHint": "Dica: Use a caixa de pesquisa para filtrar a lista rapidamente. Os idiomas selecionados permanecem destacados."
+        "searchHint": "Dica: Use a caixa de pesquisa para filtrar a lista rapidamente. Os idiomas selecionados permanecem destacados.",
+        "none": "Nenhum"
       }
     },
     "toasts": {
@@ -462,6 +486,10 @@
       },
       "outputFormat": {
         "label": "Formato do nome do arquivo:"
+      },
+      "reversePlaylistNumbering": {
+        "label": "Inverter numeração da playlist:",
+        "hint": "Numere os itens da playlist a partir do fim em vez do começo."
       }
     },
     "toasts": {
@@ -513,7 +541,8 @@
       "globalShortcuts": {
         "label": "Ativar atalhos:",
         "add_hint": "Adicionar vídeos à fila com:",
-        "download_hint": "Baixar a fila com:"
+        "download_hint": "Baixar a fila com:",
+        "instant_hint": "Adicionar e baixar imediatamente com:"
       },
       "authentication": {
         "label": "Fazer login para baixar vídeos privados:",
@@ -626,6 +655,10 @@
             }
           }
         }
+      },
+      "preciseCuts": {
+        "label": "Corte preciso:",
+        "hint": "Corta em quadros exatos em vez de keyframes próximos. Muito lento.\nAtive somente se os cortes normais estiverem errados, corrompidos ou com trechos pretos/ausentes."
       }
     },
     "appearance": {
@@ -734,6 +767,10 @@
           "label": "Capítulo",
           "description": "Marca um capítulo/seção do vídeo (usado com o tipo de ação do capítulo)"
         }
+      },
+      "preciseCuts": {
+        "label": "Corte preciso:",
+        "hint": "Faz com que remoções do SponsorBlock e downloads parciais cortem em quadros exatos. Muito lento.\nAtive somente se os cortes normais estiverem errados, corrompidos ou com trechos pretos/ausentes."
       }
     },
     "update": {
@@ -1017,6 +1054,10 @@
       "unknown": {
         "shortMessage": "Erro desconhecido",
         "message": "Ocorreu um erro desconhecido durante o processamento deste item."
+      },
+      "rejectedByFilter": {
+        "shortMessage": "Filtrado",
+        "message": "Este item foi rejeitado pelos seus filtros de entrada."
       }
     }
   },
@@ -1030,6 +1071,106 @@
       "github": "GitHub",
       "wiki": "Wiki",
       "reportABug": "Relatar um erro"
+    }
+  },
+  "inputFilters": {
+    "title": "Filtros de entrada",
+    "filesize": {
+      "legend": "Tamanho do arquivo",
+      "hint": "Mantenha apenas itens maiores ou menores que o tamanho escolhido."
+    },
+    "dates": {
+      "legend": "Datas de envio",
+      "hint": "Mantenha apenas itens enviados em, antes ou depois de uma data."
+    },
+    "advanced": {
+      "legend": "Filtros avançados",
+      "hint": "Esses são filtros brutos do yt-dlp para uso avançado."
+    },
+    "fields": {
+      "minSize": {
+        "label": "Tamanho mínimo do arquivo:"
+      },
+      "maxSize": {
+        "label": "Tamanho máximo do arquivo:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "Unidade"
+      },
+      "date": {
+        "modeLabel": "Regra de correspondência",
+        "clearMode": "Desativado",
+        "hint": "Escolha a regra de data e depois a data.",
+        "mode": {
+          "exact": "Na data",
+          "before": "Na data ou antes",
+          "after": "Na data ou depois"
+        },
+        "activeLabel": {
+          "exact": "Vídeos enviados nesta data",
+          "before": "Vídeos enviados nesta data ou antes",
+          "after": "Vídeos enviados nesta data ou depois"
+        },
+        "presetsLabel": "Atalhos",
+        "presets": {
+          "today": "Hoje",
+          "yesterday": "Ontem",
+          "last7Days": "Últimos 7 dias",
+          "last30Days": "Últimos 30 dias"
+        }
+      },
+      "matchFilters": {
+        "label": "Filtros de correspondência:",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "Exemplos: !is_live, duration >? 600, like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "Filtros de interrupção:",
+        "placeholder": "duration >? 3600",
+        "hint": "Pare de verificar o link atual quando um item não passar neste filtro."
+      }
+    },
+    "playlistSelection": {
+      "title": "Escolher itens da playlist",
+      "description": "Selecione quais itens baixar:",
+      "selectionSummary": "{count} de {total} item selecionado | {count} de {total} itens selecionados",
+      "selectionSummaryAll": "Todos os itens selecionados | Todos os {count} itens selecionados",
+      "advancedButton": "Avançado",
+      "simpleButton": "Redefinir",
+      "advancedTitle": "Seleção avançada de playlist",
+      "advancedHint": "Selecione vários itens, números negativos e vários intervalos.",
+      "advancedDescription": "Seleção atual",
+      "advancedEmpty": "Ainda não há uma seleção avançada configurada.",
+      "addSingle": "Adicionar item",
+      "addRange": "Adicionar intervalo",
+      "applyFull": "Usar playlist completa",
+      "applySelection": "Usar itens selecionados",
+      "useAdvanced": "Usar seleção avançada",
+      "noMatches": "Este intervalo não corresponde a nenhum item da playlist.",
+      "row": {
+        "single": "Único",
+        "range": "Intervalo"
+      },
+      "remove": "Remover",
+      "fields": {
+        "advancedLabel": "Avançado:",
+        "index": "Item",
+        "indexPlaceholder": "1 ou -1",
+        "start": "Início",
+        "startPlaceholder": "1",
+        "end": "Fim",
+        "endPlaceholder": "10",
+        "input": "Itens"
+      },
+      "errors": {
+        "playlistIndex": "Use um número inteiro diferente de 0. Números negativos contam a partir do fim.",
+        "playlistRangeBounds": "Defina início e fim. Números negativos contam a partir do fim."
+      }
+    },
+    "toasts": {
+      "saved": "Filtros de entrada salvos!",
+      "error": "Não foi possível salvar os filtros de entrada. {error}"
     }
   }
 }

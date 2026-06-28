@@ -20,13 +20,28 @@
     "unknown": "onbekend",
     "confirm": "Bevestigen",
     "best": "Beste",
-    "resume": "Hervatten"
+    "resume": "Hervatten",
+    "urlImport": {
+      "added": "Link aan de wachtrij toegevoegd. | {n} links aan de wachtrij toegevoegd.",
+      "partial": "{added} links aan de wachtrij toegevoegd. {skipped} ongeldige invoer overgeslagen.",
+      "noneFound": "Geen geldige links gevonden in de invoer of het bestand.",
+      "readError": "Dat bestand kon niet worden gelezen."
+    }
   },
   "layout": {
     "header": {
       "placeholder": "Voer een video- of afspeellijst-URL in om toe te voegen aan de wachtrij",
       "nav": {
-        "settings": "App-instellingen"
+        "settings": "App-instellingen",
+        "inputFilters": "Filters"
+      },
+      "watchClipboardPlaceholder": "Klembord wordt gevolgd: gekopieerde links worden aan de wachtrij toegevoegd",
+      "actions": {
+        "more": "Meer toevoegacties",
+        "watchClipboardStart": "Klembord volgen",
+        "watchClipboardStop": "Stop met klembord volgen",
+        "importFile": "Links importeren",
+        "inputFilters": "Filters"
       }
     },
     "footer": {
@@ -182,6 +197,11 @@
         "toasts": {
           "reported": "Foutmelding gerapporteerd.",
           "error": "De foutmelding kon niet worden gerapporteerd."
+        },
+        "skipped": {
+          "count": "Overgeslagen items ({count})",
+          "empty": "Er zijn geen items door filters overgeslagen.",
+          "items": "{count} item | {count} items"
         }
       }
     },
@@ -265,7 +285,9 @@
           "size": "Grootte: ",
           "sizeInfo": "De hoeveelheid data die wordt gedownload.\nNiet de uiteindelijke bestandsgrootte.",
           "items": "Items: {amount} {failedCount}",
-          "failedCount": "({amount} mislukt)"
+          "failedCount": "({amount} mislukt)",
+          "skippedCount": "({amount} overgeslagen)",
+          "failedAndSkippedCount": "({failed} mislukt, {skipped} overgeslagen)"
         },
         "trackTypes": {
           "both": "Video + Audio",
@@ -281,7 +303,7 @@
           "video": "video",
           "audio": "audio",
           "subtitles": "ondertiteling",
-          "thumbnail": "thumbnail",
+          "thumbnail": "miniatuur",
           "metadata": "metadata",
           "other": "overig"
         },
@@ -318,7 +340,8 @@
         "errorPrefix": "Fout – {message}",
         "report": "Rapporteren",
         "showFull": "Bekijk log",
-        "signIn": "Inloggen"
+        "signIn": "Inloggen",
+        "filters": "Filters bewerken"
       }
     },
     "card": {
@@ -371,7 +394,8 @@
         "noResult": "Geen talen gevonden voor \"{query}\".",
         "selected": "Geselecteerd:",
         "allSelected": "Alle beschikbare ondertitels",
-        "searchHint": "Tip: gebruik het zoekveld om de lijst te filteren. Geselecteerde talen blijven gemarkeerd."
+        "searchHint": "Tip: gebruik het zoekveld om de lijst te filteren. Geselecteerde talen blijven gemarkeerd.",
+        "none": "Geen"
       }
     },
     "toasts": {
@@ -462,6 +486,10 @@
       },
       "outputFormat": {
         "label": "Bestandsnaam-formaat:"
+      },
+      "reversePlaylistNumbering": {
+        "label": "Omgekeerde afspeellijstnummering:",
+        "hint": "Nummer afspeellijstitems vanaf het einde in plaats van vanaf het begin."
       }
     },
     "toasts": {
@@ -513,7 +541,8 @@
       "globalShortcuts": {
         "label": "Sneltoetsen inschakelen:",
         "add_hint": "Voeg video’s toe aan de wachtrij met:",
-        "download_hint": "Download de wachtrij met:"
+        "download_hint": "Download de wachtrij met:",
+        "instant_hint": "Direct toevoegen en downloaden met:"
       },
       "authentication": {
         "label": "Log in om privévideo’s te downloaden:",
@@ -626,6 +655,10 @@
             }
           }
         }
+      },
+      "preciseCuts": {
+        "label": "Nauwkeurig knippen:",
+        "hint": "Knipt op exacte frames in plaats van op nabije keyframes. Erg traag.\nAlleen inschakelen als normale knipbewerkingen fout gaan, beschadigd zijn of zwarte/ontbrekende segmenten geven."
       }
     },
     "appearance": {
@@ -734,6 +767,10 @@
           "label": "Hoofdstuk",
           "description": "Markeert een sectie van de video."
         }
+      },
+      "preciseCuts": {
+        "label": "Nauwkeurig knippen:",
+        "hint": "Laat SponsorBlock-verwijderingen en gedeeltelijke downloads op exacte frames knippen. Erg traag.\nAlleen inschakelen als normale knipbewerkingen fout gaan, beschadigd zijn of zwarte/ontbrekende segmenten geven."
       }
     },
     "update": {
@@ -1017,6 +1054,10 @@
       "unknown": {
         "shortMessage": "Onbekende fout",
         "message": "Er is een onbekende fout opgetreden tijdens het verwerken van dit item."
+      },
+      "rejectedByFilter": {
+        "shortMessage": "Weggefilterd",
+        "message": "Dit item is door je invoerfilters afgewezen."
       }
     }
   },
@@ -1030,6 +1071,106 @@
       "github": "GitHub",
       "wiki": "Wiki",
       "reportABug": "Meld een bug"
+    }
+  },
+  "inputFilters": {
+    "title": "Invoerfilters",
+    "filesize": {
+      "legend": "Bestandsgrootte",
+      "hint": "Behoud alleen items die groter of kleiner zijn dan de gekozen grootte."
+    },
+    "dates": {
+      "legend": "Uploaddatums",
+      "hint": "Behoud alleen items die op, voor of na een datum zijn geüpload."
+    },
+    "advanced": {
+      "legend": "Geavanceerde filters",
+      "hint": "Dit zijn ruwe yt-dlp-filters voor gevorderd gebruik."
+    },
+    "fields": {
+      "minSize": {
+        "label": "Minimale bestandsgrootte:"
+      },
+      "maxSize": {
+        "label": "Maximale bestandsgrootte:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "Eenheid"
+      },
+      "date": {
+        "modeLabel": "Matchregel",
+        "clearMode": "Uit",
+        "hint": "Kies eerst de datumregel en daarna de datum.",
+        "mode": {
+          "exact": "Op datum",
+          "before": "Op of voor",
+          "after": "Op of na"
+        },
+        "activeLabel": {
+          "exact": "Video’s die op deze datum zijn geüpload",
+          "before": "Video’s die op of vóór deze datum zijn geüpload",
+          "after": "Video’s die op of na deze datum zijn geüpload"
+        },
+        "presetsLabel": "Snelle keuzes",
+        "presets": {
+          "today": "Vandaag",
+          "yesterday": "Gisteren",
+          "last7Days": "Afgelopen 7 dagen",
+          "last30Days": "Afgelopen 30 dagen"
+        }
+      },
+      "matchFilters": {
+        "label": "Matchfilters:",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "Voorbeelden: !is_live, duration >? 600, like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "Break-matchfilters:",
+        "placeholder": "duration >? 3600",
+        "hint": "Stop met het controleren van de huidige link wanneer een item niet aan dit filter voldoet."
+      }
+    },
+    "playlistSelection": {
+      "title": "Afspeellijstitems kiezen",
+      "description": "Selecteer welke items je wilt downloaden:",
+      "selectionSummary": "{count} van {total} item geselecteerd | {count} van {total} items geselecteerd",
+      "selectionSummaryAll": "Alle items geselecteerd | Alle {count} items geselecteerd",
+      "advancedButton": "Geavanceerd",
+      "simpleButton": "Resetten",
+      "advancedTitle": "Geavanceerde afspeellijstselectie",
+      "advancedHint": "Selecteer meerdere items, negatieve getallen en meerdere bereiken.",
+      "advancedDescription": "Huidige selectie",
+      "advancedEmpty": "Er is nog geen geavanceerde selectie ingesteld.",
+      "addSingle": "Item toevoegen",
+      "addRange": "Bereik toevoegen",
+      "applyFull": "Hele afspeellijst gebruiken",
+      "applySelection": "Geselecteerde items gebruiken",
+      "useAdvanced": "Geavanceerde selectie gebruiken",
+      "noMatches": "Dit bereik komt met geen enkel item in de afspeellijst overeen.",
+      "row": {
+        "single": "Enkel",
+        "range": "Bereik"
+      },
+      "remove": "Verwijderen",
+      "fields": {
+        "advancedLabel": "Geavanceerd:",
+        "index": "Item",
+        "indexPlaceholder": "1 of -1",
+        "start": "Start",
+        "startPlaceholder": "1",
+        "end": "Einde",
+        "endPlaceholder": "10",
+        "input": "Items"
+      },
+      "errors": {
+        "playlistIndex": "Gebruik een geheel getal anders dan 0. Negatieve getallen tellen vanaf het einde.",
+        "playlistRangeBounds": "Vul zowel begin als einde in. Negatieve getallen tellen vanaf het einde."
+      }
+    },
+    "toasts": {
+      "saved": "Invoerfilters opgeslagen!",
+      "error": "Invoerfilters konden niet worden opgeslagen. {error}"
     }
   }
 }

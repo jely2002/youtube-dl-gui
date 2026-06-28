@@ -20,13 +20,28 @@
     "unknown": "未知",
     "confirm": "確認",
     "best": "最佳",
-    "resume": "繼續"
+    "resume": "繼續",
+    "urlImport": {
+      "added": "已將連結加入佇列。 | 已將 {n} 個連結加入佇列。",
+      "partial": "已將 {added} 個連結加入佇列，並略過 {skipped} 個無效項目。",
+      "noneFound": "在輸入內容或檔案中找不到有效連結。",
+      "readError": "無法讀取該檔案。"
+    }
   },
   "layout": {
     "header": {
       "placeholder": "輸入影片/播放清單 URL 以加入佇列",
       "nav": {
-        "settings": "應用程式設定"
+        "settings": "應用程式設定",
+        "inputFilters": "篩選條件"
+      },
+      "watchClipboardPlaceholder": "正在監看剪貼簿：複製的連結會加入佇列",
+      "actions": {
+        "more": "更多加入方式",
+        "watchClipboardStart": "監看剪貼簿",
+        "watchClipboardStop": "停止監看剪貼簿",
+        "importFile": "匯入連結",
+        "inputFilters": "篩選條件"
       }
     },
     "footer": {
@@ -182,6 +197,11 @@
         "toasts": {
           "reported": "錯誤已回報。",
           "error": "無法回報錯誤。"
+        },
+        "skipped": {
+          "count": "已略過項目 ({count})",
+          "empty": "沒有任何項目被篩選條件略過。",
+          "items": "{count} 個項目 | {count} 個項目"
         }
       }
     },
@@ -265,7 +285,9 @@
           "size": "大小: ",
           "sizeInfo": "即將下載的資料大小。\n非檔案最終大小。",
           "items": "項目: {amount} {failedCount}",
-          "failedCount": "({amount} 失敗)"
+          "failedCount": "({amount} 失敗)",
+          "skippedCount": "({amount} 個已略過)",
+          "failedAndSkippedCount": "({failed} 個失敗，{skipped} 個已略過)"
         },
         "trackTypes": {
           "both": "影片 + 音訊",
@@ -318,7 +340,8 @@
         "errorPrefix": "錯誤 - {message}",
         "report": "回報",
         "showFull": "查看記錄",
-        "signIn": "登入"
+        "signIn": "登入",
+        "filters": "編輯篩選條件"
       }
     },
     "card": {
@@ -371,7 +394,8 @@
         "noResult": "沒有語言符合「{query}」。",
         "selected": "已選取:",
         "allSelected": "所有可用字幕",
-        "searchHint": "提示：使用搜尋方塊可快速篩選清單。已選取的語言會保持反白。"
+        "searchHint": "提示：使用搜尋方塊可快速篩選清單。已選取的語言會保持反白。",
+        "none": "無"
       }
     },
     "toasts": {
@@ -441,7 +465,7 @@
           "titleQuality": "標題 + 畫質",
           "titleOnly": "僅標題",
           "titleQualityPlaylist": "播放清單 + 標題 + 畫質",
-          "custom": "Custom"
+          "custom": "自訂"
         },
         "examples": {
           "video": {
@@ -462,6 +486,10 @@
       },
       "outputFormat": {
         "label": "檔名格式:"
+      },
+      "reversePlaylistNumbering": {
+        "label": "反向播放清單編號:",
+        "hint": "從結尾而不是開頭為播放清單項目編號。"
       }
     },
     "toasts": {
@@ -513,7 +541,8 @@
       "globalShortcuts": {
         "label": "啟用快速鍵:",
         "add_hint": "使用以下方式將影片加入佇列:",
-        "download_hint": "使用以下方式下載佇列:"
+        "download_hint": "使用以下方式下載佇列:",
+        "instant_hint": "立即加入並下載:"
       },
       "authentication": {
         "label": "登入以下載私人影片:",
@@ -626,6 +655,10 @@
             }
           }
         }
+      },
+      "preciseCuts": {
+        "label": "精準裁切:",
+        "hint": "在精確影格處裁切，而不是在鄰近關鍵影格處裁切。速度非常慢。\n只有在一般裁切結果錯誤、損壞或出現黑畫面/缺失片段時才啟用。"
       }
     },
     "appearance": {
@@ -734,6 +767,10 @@
           "label": "章節",
           "description": "標記影片的章節/區段 (搭配章節動作類型)。"
         }
+      },
+      "preciseCuts": {
+        "label": "精準裁切:",
+        "hint": "讓 SponsorBlock 移除與部分下載在精確影格處裁切。速度非常慢。\n只有在一般裁切結果錯誤、損壞或出現黑畫面/缺失片段時才啟用。"
       }
     },
     "update": {
@@ -1017,6 +1054,10 @@
       "unknown": {
         "shortMessage": "未知錯誤",
         "message": "處理此項目時發生未知錯誤。"
+      },
+      "rejectedByFilter": {
+        "shortMessage": "已被篩掉",
+        "message": "這個項目已被你的輸入篩選條件排除。"
       }
     }
   },
@@ -1030,6 +1071,106 @@
       "github": "GitHub",
       "wiki": "Wiki",
       "reportABug": "回報錯誤"
+    }
+  },
+  "inputFilters": {
+    "title": "輸入篩選條件",
+    "filesize": {
+      "legend": "檔案大小",
+      "hint": "只保留大於或小於你所選大小的項目。"
+    },
+    "dates": {
+      "legend": "上傳日期",
+      "hint": "只保留在某日期當天、之前或之後上傳的項目。"
+    },
+    "advanced": {
+      "legend": "進階篩選條件",
+      "hint": "這些是供進階使用者使用的原始 yt-dlp 篩選條件。"
+    },
+    "fields": {
+      "minSize": {
+        "label": "最小檔案大小:"
+      },
+      "maxSize": {
+        "label": "最大檔案大小:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "單位"
+      },
+      "date": {
+        "modeLabel": "比對規則",
+        "clearMode": "關閉",
+        "hint": "先選擇日期規則，再選擇日期。",
+        "mode": {
+          "exact": "在該日期",
+          "before": "在該日期或之前",
+          "after": "在該日期或之後"
+        },
+        "activeLabel": {
+          "exact": "在這一天上傳的影片",
+          "before": "在這一天或之前上傳的影片",
+          "after": "在這一天或之後上傳的影片"
+        },
+        "presetsLabel": "快速選項",
+        "presets": {
+          "today": "今天",
+          "yesterday": "昨天",
+          "last7Days": "最近 7 天",
+          "last30Days": "最近 30 天"
+        }
+      },
+      "matchFilters": {
+        "label": "比對篩選條件:",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "範例：!is_live、duration >? 600、like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "中斷比對篩選條件:",
+        "placeholder": "duration >? 3600",
+        "hint": "若某個項目未通過此篩選條件，就停止檢查目前的連結。"
+      }
+    },
+    "playlistSelection": {
+      "title": "選擇播放清單項目",
+      "description": "選擇要下載的項目:",
+      "selectionSummary": "已選取 {count} / {total} 個項目 | 已選取 {count} / {total} 個項目",
+      "selectionSummaryAll": "已選取全部項目 | 已選取全部 {count} 個項目",
+      "advancedButton": "進階",
+      "simpleButton": "重設",
+      "advancedTitle": "進階播放清單選取",
+      "advancedHint": "可選擇多個項目、負數與多個範圍。",
+      "advancedDescription": "目前選取",
+      "advancedEmpty": "尚未設定任何進階選取。",
+      "addSingle": "新增項目",
+      "addRange": "新增範圍",
+      "applyFull": "使用完整播放清單",
+      "applySelection": "使用已選項目",
+      "useAdvanced": "使用進階選取",
+      "noMatches": "這個範圍在播放清單中沒有符合的項目。",
+      "row": {
+        "single": "單一",
+        "range": "範圍"
+      },
+      "remove": "移除",
+      "fields": {
+        "advancedLabel": "進階:",
+        "index": "項目",
+        "indexPlaceholder": "1 或 -1",
+        "start": "開始",
+        "startPlaceholder": "1",
+        "end": "結束",
+        "endPlaceholder": "10",
+        "input": "項目"
+      },
+      "errors": {
+        "playlistIndex": "請輸入不為 0 的整數。負數會從結尾開始計算。",
+        "playlistRangeBounds": "請同時設定開始與結束。負數會從結尾開始計算。"
+      }
+    },
+    "toasts": {
+      "saved": "輸入篩選條件已儲存！",
+      "error": "無法儲存輸入篩選條件。{error}"
     }
   }
 }

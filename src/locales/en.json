@@ -190,6 +190,11 @@
           "count": "Warnings ({count})",
           "empty": "No warnings found."
         },
+        "skipped": {
+          "count": "Skipped items ({count})",
+          "empty": "No items were skipped by filters.",
+          "items": "{count} item | {count} items"
+        },
         "all": {
           "title": "All logs",
           "empty": "No logs found."
@@ -279,8 +284,10 @@
           "duration": "Duration: {duration}",
           "size": "Size: ",
           "sizeInfo": "The amount of data that will be downloaded.\nNot the final size of the file.",
-          "items": "Items: {amount} {failedCount}",
-          "failedCount": "({amount} failed)"
+          "items": "Items: {amount} {details}",
+          "failedCount": "({amount} failed)",
+          "skippedCount": "({amount} skipped)",
+          "failedAndSkippedCount": "({failed} failed, {skipped} skipped)"
         },
         "trackTypes": {
           "both": "Video + Audio",
@@ -333,7 +340,8 @@
         "errorPrefix": "Error - {message}",
         "report": "Report",
         "showFull": "View logs",
-        "signIn": "Sign in"
+        "signIn": "Sign in",
+        "filters": "Edit filters"
       }
     },
     "card": {
@@ -387,6 +395,7 @@
         "searchPlaceholder": "Search by language name",
         "noResult": "No languages match \"{query}\".",
         "selected": "Selected:",
+        "none": "None",
         "allSelected": "All available subtitles"
       }
     },
@@ -487,10 +496,6 @@
   },
   "inputFilters": {
     "title": "Input Filters",
-    "defaults": {
-      "legend": "Queue defaults",
-      "hint": "These rules apply when you add new links. Items already in the queue stay as they are."
-    },
     "filesize": {
       "legend": "File size",
       "hint": "Only keep items bigger or smaller than the size you choose."
@@ -499,46 +504,11 @@
       "legend": "Upload dates",
       "hint": "Keep only items uploaded on, before, or after a date."
     },
-    "playlist": {
-      "legend": "Playlist entries",
-      "hint": "Choose which parts of a playlist to use. You can pick one item or a start-to-end range.",
-      "addSingle": "Add entry",
-      "addRange": "Add range",
-      "empty": "No playlist filter set. The full playlist will be used.",
-      "remove": "Remove",
-      "row": {
-        "single": "Single",
-        "range": "Range"
-      },
-      "fields": {
-        "index": "Entry index",
-        "indexPlaceholder": "1 or -1",
-        "start": "Start",
-        "startPlaceholder": "1",
-        "end": "End",
-        "endPlaceholder": "10",
-        "step": "Step",
-        "stepPlaceholder": "2"
-      },
-      "errors": {
-        "playlistIndex": "Use a whole number other than 0. Negative numbers count from the end.",
-        "playlistRangeBounds": "Set both range numbers. Negative numbers count from the end.",
-        "playlistRangeStep": "Step must be a whole number greater than zero."
-      }
-    },
     "advanced": {
       "legend": "Advanced filters",
       "hint": "These are raw yt-dlp filters for advanced use."
     },
     "fields": {
-      "maxDownloads": {
-        "label": "Maximum downloads:",
-        "hint": "Stop after this many matching items."
-      },
-      "ageLimit": {
-        "label": "Age limit:",
-        "hint": "Only keep items marked suitable for this age."
-      },
       "minSize": {
         "label": "Minimum file size:"
       },
@@ -573,13 +543,50 @@
       },
       "matchFilters": {
         "label": "Match filters:",
-        "placeholder": "!is_live",
+        "placeholder": "!is_live & view_count >=? 10000",
         "hint": "Examples: !is_live, duration >? 600, like_count >=? 100"
       },
       "breakMatchFilters": {
         "label": "Break-match filters:",
         "placeholder": "duration >? 3600",
         "hint": "Stop checking the current link when an item fails this filter."
+      }
+    },
+    "playlistSelection": {
+      "title": "Choose playlist items",
+      "description": "Select what items to download:",
+      "selectionSummary": "{count} of {total} item selected | {count} of {total} items selected",
+      "selectionSummaryAll": "All items selected | All {count} items selected",
+      "advancedButton": "Advanced",
+      "simpleButton": "Reset",
+      "advancedTitle": "Advanced playlist selection",
+      "advancedHint": "Select multiple items, negative numbers and multiple ranges.",
+      "advancedDescription": "Current selection",
+      "advancedEmpty": "No advanced selection configured yet.",
+      "addSingle": "Add item",
+      "addRange": "Add range",
+      "applyFull": "Use full playlist",
+      "applySelection": "Use selected items",
+      "useAdvanced": "Use advanced selection",
+      "noMatches": "This range does not match any items in the playlist.",
+      "row": {
+        "single": "Single",
+        "range": "Range"
+      },
+      "remove": "Remove",
+      "fields": {
+        "advancedLabel": "Advanced:",
+        "index": "Item",
+        "indexPlaceholder": "1 or -1",
+        "start": "Start",
+        "startPlaceholder": "1",
+        "end": "End",
+        "endPlaceholder": "10",
+        "input": "Items"
+      },
+      "errors": {
+        "playlistIndex": "Use a whole number other than 0. Negative numbers count from the end.",
+        "playlistRangeBounds": "Set start and end. Negatives count from the end."
       }
     },
     "toasts": {
@@ -1096,6 +1103,10 @@
       "ffmpegFailed": {
         "shortMessage": "ffmpeg failed",
         "message": "FFmpeg encountered an error during processing."
+      },
+      "rejectedByFilter": {
+        "shortMessage": "Filtered out",
+        "message": "This item was rejected by your input filters."
       },
       "cannotAllocateMemory": {
         "shortMessage": "Memory error",
