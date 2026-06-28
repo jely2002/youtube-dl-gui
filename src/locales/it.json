@@ -455,6 +455,10 @@
     "filename": {
       "legend": "Formato nome file",
       "legendLabel": "Seleziona il nome che avranno i file scaricati.",
+      "reversePlaylistNumbering": {
+        "label": "Numerazione inversa playlist:",
+        "hint": "Numera gli elementi della playlist in ordine inverso."
+      },
       "formatPreset": {
         "label": "Prefisso nome file:",
         "exampleLabel": "Esempio output:",
