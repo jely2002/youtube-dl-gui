@@ -26,16 +26,6 @@ pub fn build_input_filter_args(input_filters: Option<&InputFilterOptions>) -> Ve
   );
   push_value_arg(&mut args, "--dateafter", input_filters.dateafter.as_deref());
 
-  if let Some(age_limit) = input_filters.age_limit {
-    args.push("--age-limit".into());
-    args.push(age_limit.to_string());
-  }
-
-  if let Some(max_downloads) = input_filters.max_downloads {
-    args.push("--max-downloads".into());
-    args.push(max_downloads.to_string());
-  }
-
   push_value_arg(
     &mut args,
     "--match-filters",

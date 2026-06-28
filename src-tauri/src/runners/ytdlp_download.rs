@@ -134,6 +134,7 @@ pub async fn run_ytdlp_download(
             let line_str = String::from_utf8_lossy(&line);
             store_log_line(&line_str, &entry, log_state, &app);
             parse_progress_line(&line_str, &mut progress_parser, &app);
+            parse_error_line(&line_str, &error_parser, &app);
           }
           YtdlpCommandEvent::Stderr(line) => {
             let line_str = String::from_utf8_lossy(&line);

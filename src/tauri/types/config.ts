@@ -66,35 +66,10 @@ export interface InputFilterDateFilter {
   value: string | null;
 }
 
-export interface InputFilterPlaylistSingleRow {
-  id: string;
-  type: 'single';
-  index: number | null;
-}
-
-export interface InputFilterPlaylistRangeRow {
-  id: string;
-  type: 'range';
-  start: number | null;
-  end: number | null;
-  step: number | null;
-}
-
-export type InputFilterPlaylistRow
-  = | InputFilterPlaylistSingleRow
-    | InputFilterPlaylistRangeRow;
-
-export interface InputFilterPlaylistSelection {
-  rows: InputFilterPlaylistRow[];
-}
-
 export interface InputFilterSettings {
-  playlistSelection: InputFilterPlaylistSelection;
   minSize: InputFilterSizeFilter;
   maxSize: InputFilterSizeFilter;
   dateFilter: InputFilterDateFilter;
-  ageLimit: number | null;
-  maxDownloads: number | null;
   matchFilters: string | null;
   breakMatchFilters: string | null;
 }
@@ -219,7 +194,7 @@ export const defaultInputSettings: InputSettings = {
 
 export const defaultInputFilterSizeFilter: InputFilterSizeFilter = {
   value: null,
-  unit: null,
+  unit: 'MB',
 };
 
 export const defaultInputFilterDateFilter: InputFilterDateFilter = {
@@ -228,9 +203,6 @@ export const defaultInputFilterDateFilter: InputFilterDateFilter = {
 };
 
 export const defaultInputFilterSettings: InputFilterSettings = {
-  playlistSelection: {
-    rows: [],
-  },
   minSize: {
     ...defaultInputFilterSizeFilter,
   },
@@ -240,8 +212,6 @@ export const defaultInputFilterSettings: InputFilterSettings = {
   dateFilter: {
     ...defaultInputFilterDateFilter,
   },
-  ageLimit: null,
-  maxDownloads: null,
   matchFilters: null,
   breakMatchFilters: null,
 };
@@ -315,7 +285,6 @@ export const defaultSettings: Settings = {
   input: defaultInputSettings,
   inputFilters: {
     ...defaultInputFilterSettings,
-    playlistSelection: { rows: [] },
     minSize: { ...defaultInputFilterSettings.minSize },
     maxSize: { ...defaultInputFilterSettings.maxSize },
     dateFilter: { ...defaultInputFilterSettings.dateFilter },

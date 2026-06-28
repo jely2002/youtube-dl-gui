@@ -230,8 +230,6 @@ pub struct InputFilterOptions {
   pub date: Option<String>,
   pub datebefore: Option<String>,
   pub dateafter: Option<String>,
-  pub age_limit: Option<u32>,
-  pub max_downloads: Option<u32>,
   pub match_filters: Option<String>,
   pub break_match_filters: Option<String>,
   pub playlist_mode: Option<PlaylistMode>,

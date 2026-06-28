@@ -171,6 +171,7 @@ const clearPendingGroups = (): void => {
   mediaStore.deleteGroupsByState([
     MediaState.fetching,
     MediaState.fetchingList,
+    MediaState.playlistSelection,
     MediaState.configure,
     MediaState.paused,
     MediaState.pausedList,
@@ -232,6 +233,7 @@ const hasErroredGroups = computed(() => mediaStateStore.hasGroupWithState(MediaS
 const hasPendingGroups = computed(() => mediaStateStore.hasGroupWithState(
   MediaState.fetching,
   MediaState.fetchingList,
+  MediaState.playlistSelection,
   MediaState.configure,
   MediaState.paused,
   MediaState.pausedList,

@@ -1,6 +1,7 @@
 const allowedCommands: Set<string> = new Set([
     'app_ready',
     'media_info',
+    'media_playlist_expand',
     'media_size',
     'media_download',
     'media_fatal',

@@ -61,6 +61,7 @@ const props = withDefaults(
     mainType?: string;
     mainLoading?: boolean;
     mainDisabled?: boolean;
+    flushLeft?: boolean;
     caretAriaLabel?: string;
     closeOnItemClick?: boolean;
   }>(),
@@ -75,6 +76,7 @@ const props = withDefaults(
     mainTooltip: '',
     mainLoading: false,
     mainDisabled: false,
+    flushLeft: false,
     caretAriaLabel: '',
     closeOnItemClick: true,
   },
@@ -89,7 +91,10 @@ const dropdownClasses = computed(() => [
   props.align === 'end' ? 'dropdown-end' : 'dropdown-start',
 ]);
 
-const mainButtonClasses = computed(() => [props.btnClass]);
+const mainButtonClasses = computed(() => [
+  props.btnClass,
+  props.flushLeft ? '!rounded-l-none !border-l-0' : '',
+]);
 
 const caretButtonClasses = computed(() => {
   if (props.disabled || props.caretDisabled) {

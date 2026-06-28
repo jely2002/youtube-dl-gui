@@ -5,8 +5,6 @@ import {
   type Settings,
   type InputFilterDateFilter,
   type InputFilterDateMode,
-  type InputFilterPlaylistRow,
-  type InputFilterPlaylistSelection,
   type InputFilterSettings,
   type InputFilterSizeFilter,
   type InputFilterSizeUnit,
@@ -19,6 +17,7 @@ import {
 export const INPUT_FILTER_SIZE_UNITS: InputFilterSizeUnit[] = ['B', 'KB', 'MB', 'GB', 'TB'];
 export const INPUT_FILTER_DATE_MODES: InputFilterDateMode[] = ['exact', 'before', 'after'];
 export const INPUT_FILTER_DATE_PRESETS = ['today', 'yesterday', 'last7Days', 'last30Days'] as const;
+const DEFAULT_INPUT_FILTER_SIZE_UNIT: InputFilterSizeUnit = 'MB';
 
 export type InputFilterDatePreset = typeof INPUT_FILTER_DATE_PRESETS[number];
 
@@ -26,12 +25,9 @@ export function cloneInputFilterSettings(
   value: InputFilterSettings,
 ): InputFilterSettings {
   return {
-    playlistSelection: clonePlaylistSelection(value.playlistSelection),
     minSize: cloneSizeFilter(value.minSize),
     maxSize: cloneSizeFilter(value.maxSize),
     dateFilter: cloneDateFilter(value.dateFilter),
-    ageLimit: value.ageLimit ?? null,
-    maxDownloads: value.maxDownloads ?? null,
     matchFilters: value.matchFilters ?? null,
     breakMatchFilters: value.breakMatchFilters ?? null,
   };
@@ -40,7 +36,6 @@ export function cloneInputFilterSettings(
 export function createDefaultInputFilterSettings(): InputFilterSettings {
   return {
     ...defaultInputFilterSettings,
-    playlistSelection: clonePlaylistSelection(defaultInputFilterSettings.playlistSelection),
     minSize: cloneSizeFilter(defaultInputFilterSizeFilter),
     maxSize: cloneSizeFilter(defaultInputFilterSizeFilter),
     dateFilter: cloneDateFilter(defaultInputFilterDateFilter),
@@ -51,12 +46,9 @@ export function normalizeInputFilterSettings(
   value: InputFilterSettings | undefined,
 ): InputFilterSettings {
   return {
-    playlistSelection: normalizePlaylistSelection(value?.playlistSelection),
     minSize: normalizeSizeFilter(value?.minSize),
     maxSize: normalizeSizeFilter(value?.maxSize),
     dateFilter: normalizeDateFilter(value?.dateFilter),
-    ageLimit: normalizeWholeNumber(value?.ageLimit ?? null, { min: 0 }),
-    maxDownloads: normalizeWholeNumber(value?.maxDownloads ?? null, { min: 1 }),
     matchFilters: normalizeString(value?.matchFilters ?? null),
     breakMatchFilters: normalizeString(value?.breakMatchFilters ?? null),
   };
@@ -65,13 +57,10 @@ export function normalizeInputFilterSettings(
 export function isInputFiltersActive(value: InputFilterSettings): boolean {
   const normalized = normalizeInputFilterSettings(value);
   return (
-    normalized.playlistSelection.rows.length > 0
-    || normalized.minSize.value !== null
+    normalized.minSize.value !== null
     || normalized.maxSize.value !== null
     || normalized.dateFilter.mode !== null
     || normalized.dateFilter.value !== null
-    || normalized.ageLimit !== null
-    || normalized.maxDownloads !== null
     || normalized.matchFilters !== null
     || normalized.breakMatchFilters !== null
   );
@@ -84,50 +73,16 @@ export function settingsToInputFilterOverride(
   const dateArgs = buildDateArgs(normalized.dateFilter);
 
   const result: InputFilterOptions = {
-    playlistItems: buildPlaylistItemsSpec(normalized.playlistSelection) ?? undefined,
     minFilesize: serializeSizeFilter(normalized.minSize) ?? undefined,
     maxFilesize: serializeSizeFilter(normalized.maxSize) ?? undefined,
     date: dateArgs.date,
     datebefore: dateArgs.datebefore,
     dateafter: dateArgs.dateafter,
-    ageLimit: normalized.ageLimit ?? undefined,
-    maxDownloads: normalized.maxDownloads ?? undefined,
     matchFilters: normalized.matchFilters ?? undefined,
     breakMatchFilters: normalized.breakMatchFilters ?? undefined,
   };
 
   return Object.values(result).some(value => value !== undefined) ? result : undefined;
-}
-
-export function createPlaylistSelectionRow(type: InputFilterPlaylistRow['type']): InputFilterPlaylistRow {
-  const id = createRowId();
-  return type === 'single'
-    ? { id, type, index: null }
-    : { id, type, start: null, end: null, step: null };
-}
-
-export function getPlaylistSelectionRowError(row: InputFilterPlaylistRow): string | null {
-  if (isPlaylistRowEmpty(row)) {
-    return null;
-  }
-
-  if (row.type === 'single') {
-    return isValidPlaylistIndex(row.index) ? null : 'playlistIndex';
-  }
-
-  if (!isValidPlaylistIndex(row.start) || !isValidPlaylistIndex(row.end)) {
-    return 'playlistRangeBounds';
-  }
-
-  return null;
-}
-
-export function buildPlaylistItemsSpec(selection: InputFilterPlaylistSelection): string | null {
-  const specs = normalizePlaylistSelection(selection).rows
-    .map(row => buildPlaylistRowSpec(row))
-    .filter((value): value is string => value !== null);
-
-  return specs.length > 0 ? specs.join(',') : null;
 }
 
 export function applyDatePreset(
@@ -147,16 +102,12 @@ export function applyDatePreset(
   }
 }
 
-function clonePlaylistSelection(value: InputFilterPlaylistSelection | undefined): InputFilterPlaylistSelection {
-  return {
-    rows: (value?.rows ?? []).map(row => ({ ...row })),
-  };
-}
-
 function cloneSizeFilter(value: InputFilterSizeFilter | undefined): InputFilterSizeFilter {
   return {
     value: value?.value ?? null,
-    unit: value?.unit ?? null,
+    unit: INPUT_FILTER_SIZE_UNITS.includes(value?.unit as InputFilterSizeUnit)
+      ? value?.unit ?? DEFAULT_INPUT_FILTER_SIZE_UNIT
+      : DEFAULT_INPUT_FILTER_SIZE_UNIT,
   };
 }
 
@@ -167,45 +118,15 @@ function cloneDateFilter(value: InputFilterDateFilter | undefined): InputFilterD
   };
 }
 
-function normalizePlaylistSelection(
-  value: InputFilterPlaylistSelection | undefined,
-): InputFilterPlaylistSelection {
-  return {
-    rows: (value?.rows ?? [])
-      .map(row => normalizePlaylistRow(row))
-      .filter((row): row is InputFilterPlaylistRow => row !== null && !isPlaylistRowEmpty(row)),
-  };
-}
-
-function normalizePlaylistRow(row: InputFilterPlaylistRow | undefined): InputFilterPlaylistRow | null {
-  if (!row) return null;
-
-  if (row.type === 'single') {
-    return {
-      id: row.id || createRowId(),
-      type: 'single',
-      index: normalizePlaylistIndex(row.index),
-    };
-  }
-
-  return {
-    id: row.id || createRowId(),
-    type: 'range',
-    start: normalizePlaylistIndex(row.start),
-    end: normalizePlaylistIndex(row.end),
-    step: null,
-  };
-}
-
 function normalizeSizeFilter(value: InputFilterSizeFilter | undefined): InputFilterSizeFilter {
   const normalizedValue = normalizePositiveNumber(value?.value ?? null);
   const normalizedUnit = INPUT_FILTER_SIZE_UNITS.includes(value?.unit as InputFilterSizeUnit)
-    ? value?.unit ?? null
-    : null;
+    ? value?.unit ?? DEFAULT_INPUT_FILTER_SIZE_UNIT
+    : DEFAULT_INPUT_FILTER_SIZE_UNIT;
 
   return {
     value: normalizedValue,
-    unit: normalizedValue === null ? null : normalizedUnit,
+    unit: normalizedUnit,
   };
 }
 
@@ -246,53 +167,8 @@ function serializeSizeFilter(filter: InputFilterSizeFilter): string | null {
   return `${formatNumber(filter.value)}${sizeUnitSuffix(filter.unit)}`;
 }
 
-function buildPlaylistRowSpec(row: InputFilterPlaylistRow): string | null {
-  if (getPlaylistSelectionRowError(row)) {
-    return null;
-  }
-
-  if (row.type === 'single') {
-    return `${row.index}`;
-  }
-
-  return `${row.start}:${row.end}`;
-}
-
-function isPlaylistRowEmpty(row: InputFilterPlaylistRow): boolean {
-  if (row.type === 'single') {
-    return row.index == null;
-  }
-
-  return row.start == null && row.end == null && row.step == null;
-}
-
 function normalizePositiveNumber(value: number | null): number | null {
   return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : null;
-}
-
-function normalizeWholeNumber(
-  value: number | null,
-  options: { min: number },
-): number | null {
-  return typeof value === 'number'
-    && Number.isFinite(value)
-    && Number.isInteger(value)
-    && value >= options.min
-    ? value
-    : null;
-}
-
-function normalizePlaylistIndex(value: number | null): number | null {
-  return typeof value === 'number'
-    && Number.isFinite(value)
-    && Number.isInteger(value)
-    && value !== 0
-    ? value
-    : null;
-}
-
-function isValidPlaylistIndex(value: number | null): boolean {
-  return normalizePlaylistIndex(value) !== null;
 }
 
 function normalizeString(value: string | null): string | null {
@@ -341,8 +217,4 @@ function formatDateInput(date: Date): string {
     `${date.getUTCMonth() + 1}`.padStart(2, '0'),
     `${date.getUTCDate()}`.padStart(2, '0'),
   ].join('-');
-}
-
-function createRowId(): string {
-  return globalThis.crypto?.randomUUID?.() ?? `row-${Math.random().toString(36).slice(2, 10)}`;
 }

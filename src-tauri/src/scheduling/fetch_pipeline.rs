@@ -1,6 +1,6 @@
 use crate::models::download::{DownloadOverrides, FormatOptions};
 use crate::models::payloads::MediaAddWithFormatPayload;
-use crate::models::{MediaAddPayload, MediaFatalPayload};
+use crate::models::{MediaAddPayload, MediaFatalPayload, PlaylistEntry};
 use crate::runners::ytdlp_info::{run_ytdlp_info_fetch, YtdlpInfoFetchError};
 use crate::{
   models::{ParsedMedia, ParsedPlaylist},
@@ -27,7 +27,7 @@ pub enum FetchRequest {
   },
   Playlist {
     group_id: String,
-    playlist: ParsedPlaylist,
+    entries: Vec<PlaylistEntry>,
     overrides: Box<Option<DownloadOverrides>>,
   },
   Size {
@@ -99,12 +99,15 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
     }
     FetchRequest::Playlist {
       group_id,
-      playlist,
+      entries,
       overrides,
     } => {
-      let total = playlist.entries.len();
-      playlist
-        .entries
+      let total = entries.len();
+      GROUP_COUNTERS
+        .lock()
+        .unwrap()
+        .insert(group_id.clone(), total);
+      entries
         .into_iter()
         .map(|e| FetchEntry {
           group_id: group_id.clone(),
@@ -226,11 +229,6 @@ async fn handle_fetch_entry(
       }
     }
     Some(ParsedMedia::Playlist(pl)) => {
-      GROUP_COUNTERS
-        .lock()
-        .unwrap()
-        .insert(group_id.clone(), pl.entries.len());
-
       if let Some(format) = format {
         let _ = tx.send(DispatchRequest::Pipeline(FetchRequest::SizePlaylist {
           group_id: group_id.clone(),
@@ -238,11 +236,6 @@ async fn handle_fetch_entry(
           format,
         }));
       } else {
-        let _ = tx.send(DispatchRequest::Pipeline(FetchRequest::Playlist {
-          group_id: group_id.clone(),
-          playlist: pl.clone(),
-          overrides: Box::new(overrides.clone()),
-        }));
         let payload = MediaAddPayload {
           group_id,
           total: pl.entries.len(),

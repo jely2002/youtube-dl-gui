@@ -278,7 +278,7 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub async fn output(self) -> Result<YtdlpOutput, String> {
-    tracing::info!("Running command: yt-dlp {}", self.args.join(" "));
+    tracing::debug!("Running command: yt-dlp {}", self.args.join(" "));
     let mut command = self.build_command();
 
     configure_command(&mut command).map_err(|e| format!("yt-dlp spawn setup failed: {e}"))?;
@@ -298,7 +298,7 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub fn spawn(self) -> Result<(UnboundedReceiver<YtdlpCommandEvent>, YtdlpChild), String> {
-    tracing::info!("Running command: yt-dlp {}", self.args.join(" "));
+    tracing::debug!("Running command: yt-dlp {}", self.args.join(" "));
     let mut command = self.build_command();
     command
       .stdin(Stdio::piped())

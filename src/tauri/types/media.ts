@@ -163,8 +163,6 @@ export type InputFilterOptions = {
   date?: string;
   datebefore?: string;
   dateafter?: string;
-  ageLimit?: number;
-  maxDownloads?: number;
   matchFilters?: string;
   breakMatchFilters?: string;
   playlistMode?: PlaylistMode;

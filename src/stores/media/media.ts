@@ -16,11 +16,21 @@ import { NotificationKind } from '../../tauri/types/app';
 import { resolvePlaylistIndex } from '../../helpers/playlistNumbering';
 import { useWatchClipboardStore } from '../watchClipboard.ts';
 import { settingsToInputFilterOverride } from '../../helpers/inputFilters.ts';
+import {
+  applyPlaylistSelectionToEntries,
+  buildPlaylistItemsSpec,
+  type PlaylistSelection,
+} from '../../helpers/playlistSelection.ts';
 
 type PendingReadyGroup = {
   resolve: (groupIds: string[]) => void;
   reject: (reason?: unknown) => void;
 };
+
+function cloneDownloadOverrides(overrides?: DownloadOverrides): DownloadOverrides | undefined {
+  if (!overrides) return undefined;
+  return structuredClone(overrides);
+}
 
 export const useMediaStore = defineStore('media', () => {
   const groupStore = useMediaGroupStore();
@@ -78,7 +88,35 @@ export const useMediaStore = defineStore('media', () => {
     const group = groupStore.findGroupById(groupId);
     if (!group) throw new Error('Orphaned media item found.');
 
-    const isFirst = group.total === 1;
+    if (item.entries) {
+      const existingId = Object.keys(group.items)[0];
+      if (existingId && existingId !== item.id) {
+        delete group.items[existingId];
+      }
+
+      item.isLeader = true;
+      group.items[item.id] = item;
+      const { id, groupId: gid, isLeader, ...meta } = item;
+      void id;
+      void gid;
+      void isLeader;
+      Object.assign(group, meta);
+      group.total = total;
+      group.processed = 0;
+      if (group.skipPlaylistSelection) {
+        void expandPlaylistGroup(groupId, { rows: [] }).catch((error) => {
+          console.error(error);
+          stateStore.setState(item.id, MediaState.playlistSelection);
+        });
+      } else {
+        stateStore.setState(item.id, MediaState.playlistSelection);
+      }
+      return;
+    }
+
+    const leader = groupStore.findGroupLeader(groupId);
+    const hasPlaylistLeader = !!leader?.entries;
+    const isFirst = group.total === 1 && !hasPlaylistLeader;
     if (isFirst) {
       const existingId = Object.keys(group.items)[0];
       if (existingId) delete group.items[existingId];
@@ -99,7 +137,7 @@ export const useMediaStore = defineStore('media', () => {
 
     if (group.processed === total) {
       finalizePlaylistGroup(group);
-    } else if (group.total === 1) {
+    } else if (group.total === 1 && !hasPlaylistLeader) {
       void notifyGroup(NotificationKind.VideoReady, group);
       resolvePendingReadyGroup(group.id, [group.id]);
     }
@@ -110,7 +148,58 @@ export const useMediaStore = defineStore('media', () => {
     stateStore.setState(item.id, next);
   }
 
-  async function dispatchMediaInfoFetch(url: string, fromShortcut: boolean = false) {
+  async function expandPlaylistGroup(groupId: string, selection: PlaylistSelection) {
+    const group = groupStore.findGroupById(groupId);
+    const leader = groupStore.findGroupLeader(groupId);
+    const entries = group?.entries;
+    if (!group || !leader?.entries || !entries) {
+      throw new Error(`Playlist group ${groupId} is missing entry metadata.`);
+    }
+
+    const selectedEntries = applyPlaylistSelectionToEntries(entries, selection);
+    if (selectedEntries.length === 0) {
+      throw new Error('No playlist entries match the selected range.');
+    }
+    const spec = buildPlaylistItemsSpec(selection);
+    const previousOverrides = optionsStore.getOverrides(groupId);
+    const nextOverrides = cloneDownloadOverrides(previousOverrides) ?? {};
+
+    if (spec) {
+      nextOverrides.inputFilters = {
+        ...(nextOverrides.inputFilters ?? {}),
+        playlistItems: spec,
+      };
+    } else if (nextOverrides.inputFilters) {
+      delete nextOverrides.inputFilters.playlistItems;
+      if (Object.keys(nextOverrides.inputFilters).length === 0) {
+        delete nextOverrides.inputFilters;
+      }
+    }
+
+    if (Object.keys(nextOverrides).length > 0) {
+      optionsStore.setOverrides(groupId, nextOverrides);
+    } else {
+      optionsStore.removeOverrides(groupId);
+    }
+
+    group.entries = [...selectedEntries];
+    leader.entries = [...selectedEntries];
+    group.total = selectedEntries.length;
+    group.processed = 0;
+    stateStore.setGroupState(groupId, MediaState.fetchingList);
+
+    await invoke<string>('media_playlist_expand', {
+      groupId,
+      entries: selectedEntries,
+      overrides: cloneDownloadOverrides(optionsStore.getOverrides(groupId)),
+    });
+  }
+
+  async function dispatchMediaInfoFetch(
+    url: string,
+    fromShortcut: boolean = false,
+    skipPlaylistSelection: boolean = false,
+  ) {
     const id = uuidv4();
     const groupId = uuidv4();
 
@@ -129,6 +218,7 @@ export const useMediaStore = defineStore('media', () => {
       formats: [],
       filesize: 0,
       fromShortcut,
+      skipPlaylistSelection,
       items: {
         [id]: {
           id,
@@ -167,7 +257,10 @@ export const useMediaStore = defineStore('media', () => {
   ) {
     if (!overrides) return;
     for (const nextGroupId of nextGroupIds) {
-      optionsStore.setOverrides(nextGroupId, structuredClone(overrides));
+      const clonedOverrides = cloneDownloadOverrides(overrides);
+      if (clonedOverrides) {
+        optionsStore.setOverrides(nextGroupId, clonedOverrides);
+      }
     }
     optionsStore.removeOverrides(previousGroupId);
   }
@@ -190,17 +283,25 @@ export const useMediaStore = defineStore('media', () => {
   }
 
   async function addAndDownload(url: string, fromShortcut: boolean = false) {
-    await addUrlBatchAndDownload([url], fromShortcut);
+    await addUrlBatchAndDownload([url], fromShortcut, true);
   }
 
-  async function addUrlBatch(urls: string[], fromShortcut: boolean = false): Promise<string[]> {
+  async function addUrlBatch(
+    urls: string[],
+    fromShortcut: boolean = false,
+    skipPlaylistSelection: boolean = false,
+  ): Promise<string[]> {
     return await Promise.all(
-      urls.map(url => dispatchMediaInfoFetch(url, fromShortcut)),
+      urls.map(url => dispatchMediaInfoFetch(url, fromShortcut, skipPlaylistSelection)),
     );
   }
 
-  async function addUrlBatchAndDownload(urls: string[], fromShortcut: boolean = false): Promise<string[]> {
-    const initialGroupIds = await addUrlBatch(urls, fromShortcut);
+  async function addUrlBatchAndDownload(
+    urls: string[],
+    fromShortcut: boolean = false,
+    skipPlaylistSelection: boolean = false,
+  ): Promise<string[]> {
+    const initialGroupIds = await addUrlBatch(urls, fromShortcut, skipPlaylistSelection);
     const readyGroupIds = [...new Set(
       (await Promise.all(initialGroupIds.map(groupId => waitForGroupReady(groupId)))).flat(),
     )];
@@ -374,6 +475,7 @@ export const useMediaStore = defineStore('media', () => {
     processMediaAddPayload,
     finalizePlaylistGroup,
     dispatchMediaInfoFetch,
+    expandPlaylistGroup,
     rejectPendingReadyGroup,
     addAndDownload,
     addUrlBatch,

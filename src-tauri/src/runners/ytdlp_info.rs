@@ -124,6 +124,9 @@ pub async fn run_ytdlp_info_fetch(
 
   let status_code: i32 = output.status.code().unwrap_or(1);
   if status_code != 0 {
+    let parsed_events =
+      error_parser.parse_lines(stderr_text.lines().chain(stdout_text.lines()).collect());
+
     // Truncate very large stderr payloads.
     let stderr_snippet: Cow<str> = if stderr_text.len() > 8_192 {
       Cow::Owned(format!(
@@ -131,6 +134,12 @@ pub async fn run_ytdlp_info_fetch(
         &stderr_text[..8_192],
         stderr_text.len()
       ))
+    } else if stderr_text.is_empty() {
+      if let Some(last_event) = parsed_events.last() {
+        Cow::Owned(last_event.raw.clone())
+      } else {
+        Cow::Owned(format!("yt-dlp exited with code {status_code}"))
+      }
     } else {
       stderr_text.clone()
     };

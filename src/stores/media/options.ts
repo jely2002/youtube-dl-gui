@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { markRaw, ref, toRaw } from 'vue';
 import { DownloadOptions, DownloadOverrides, EncodingOptions, TrackOptions } from '../../tauri/types/media';
 import { useMediaGroupStore } from './group';
 import { Group } from '../../tauri/types/group';
@@ -50,7 +50,10 @@ export const useMediaOptionsStore = defineStore('media-options', () => {
   const getTracks = (groupId: string): TrackOptions | undefined => getGroupValue(groupTracks, groupId);
   const getGlobalTracks = (): TrackOptions | undefined => globalTracks.value;
 
-  const setOverrides = (groupId: string, overrides: DownloadOverrides) => setGroupValue(groupOverrides, groupId, overrides);
+  const setOverrides = (groupId: string, overrides: DownloadOverrides) => {
+    const clonedOverrides = structuredClone(toRaw(overrides));
+    setGroupValue(groupOverrides, groupId, markRaw(clonedOverrides));
+  };
   const getOverrides = (groupId: string): DownloadOverrides | undefined => getGroupValue(groupOverrides, groupId);
 
   const removeOptions = (groupId: string) => {

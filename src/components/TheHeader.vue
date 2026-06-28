@@ -27,6 +27,7 @@
           placement="bottom"
           align="end"
           menuWidthClass="w-64"
+          flushLeft
           :main-disabled="isInputDisabled"
           :caretAriaLabel="t('layout.header.actions.more')"
           @mainClick="handleAddClick"
@@ -48,7 +49,6 @@
             {{ t(watchClipboardStore.isActive ? 'layout.header.actions.watchClipboardStop' : 'layout.header.actions.watchClipboardStart') }}
           </button>
         </li>
-        <li role="separator" class="my-1 border-t border-base-300"></li>
         <li>
           <button class="gap-2 text-nowrap" type="button" @click="handleImportClick">
             <document-arrow-up-icon class="w-4 h-4" />
@@ -156,7 +156,7 @@ async function addClipboardUrlToQueue(urlToRecord: string) {
 function addFromInput(immediateDownload: boolean = false) {
   const urlToSubmit = url.value.length > 0 ? url.value : clipboardContent.value;
   if (!urlToSubmit) return;
-  void processParsedUrls(parseUrlInputText(urlToSubmit), immediateDownload);
+  void processParsedUrls(parseUrlInputText(urlToSubmit), immediateDownload, true);
   void router.push('/');
   url.value = '';
 }
@@ -164,17 +164,20 @@ function addFromInput(immediateDownload: boolean = false) {
 async function processParsedUrls(
   result: { urls: string[]; skipped: number },
   immediateDownload: boolean = false,
+  fromInput: boolean = false,
 ) {
   if (result.urls.length > 0) {
     if (immediateDownload) {
-      await mediaStore.addUrlBatchAndDownload(result.urls);
+      await mediaStore.addUrlBatchAndDownload(result.urls, false, true);
     } else {
       await mediaStore.addUrlBatch(result.urls);
     }
   }
 
-  const toast = getUrlImportToast(result);
-  toastStore.showToast(toast.message, { style: toast.style });
+  if (!fromInput || result.urls.length > 1) {
+    const toast = getUrlImportToast(result);
+    toastStore.showToast(toast.message, { style: toast.style });
+  }
 }
 
 function handleSubmit() {

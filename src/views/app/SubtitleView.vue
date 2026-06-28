@@ -89,6 +89,12 @@
             </template>
             <template v-else>
               <span
+                v-if="selectedLanguageBadges.length === 0"
+                class="badge badge-soft"
+              >
+                {{ t('subtitles.options.languages.none') }}
+              </span>
+              <span
                 v-for="label in selectedLanguageBadges"
                 :key="label"
                 class="badge badge-soft"

@@ -15,6 +15,25 @@
   </section>
   <section class="py-4 px-8">
     <h2 class="text-lg font-semibold mb-2">
+      {{ t('media.view.logs.skipped.count', { count: skippedCount }) }}
+    </h2>
+    <ul v-if="skippedGroups.length > 0" class="flex flex-col gap-4">
+      <li v-for="group in skippedGroups" :key="group.message">
+        <div class="alert alert-warning alert-soft flex items-center justify-between gap-4">
+          <span>{{ group.message }}</span>
+          <span class="badge badge-warning badge-soft">
+            {{ t('media.view.logs.skipped.items', { count: group.count }) }}
+          </span>
+        </div>
+      </li>
+    </ul>
+    <div v-else class="alert alert-success alert-soft">
+      <check-circle-icon class="h-5 w-5"/>
+      <span>{{ t('media.view.logs.skipped.empty') }}</span>
+    </div>
+  </section>
+  <section class="py-4 px-8">
+    <h2 class="text-lg font-semibold mb-2">
       {{ t('media.view.logs.warnings.count', { count: warnings.length }) }}
     </h2>
     <ul v-if="warnings.length > 0" class="flex flex-col gap-4">
@@ -55,6 +74,7 @@ import DiagnosticCard from './DiagnosticCard.vue';
 import { useI18n } from 'vue-i18n';
 import { useGroupLog } from '../../composables/useGroupLog';
 import { useLinkify } from '../../composables/useLinkify';
+import { groupSkippedDiagnostics, isSkippedDiagnostic } from '../../helpers/skippedDiagnostics.ts';
 
 const { t } = useI18n();
 const props = defineProps({
@@ -90,7 +110,14 @@ const errors = computed((): MediaDiagnostic[] => {
 
 const warnings = computed(() => {
   const diagnostics = diagnosticsStore.findDiagnosticsByGroupId(groupId.value);
-  return diagnostics.filter(diagnostic => diagnostic.level === 'warning');
+  return diagnostics.filter(diagnostic => diagnostic.level === 'warning' && !isSkippedDiagnostic(diagnostic));
 });
+
+const skippedGroups = computed(() => {
+  const diagnostics = diagnosticsStore.findDiagnosticsByGroupId(groupId.value);
+  return groupSkippedDiagnostics(diagnostics);
+});
+
+const skippedCount = computed(() => skippedGroups.value.reduce((sum, group) => sum + group.count, 0));
 
 </script>

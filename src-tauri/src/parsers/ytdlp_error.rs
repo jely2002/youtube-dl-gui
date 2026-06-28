@@ -3,6 +3,8 @@ use regex::Regex;
 use std::borrow::Cow;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+const INPUT_FILTER_SKIPPED_CODE: &str = "input_filter_skipped";
+
 struct LoadedPattern {
   kind: PatternKind,
   value_lower: Option<String>,
@@ -133,6 +135,10 @@ impl YtdlpErrorParser {
   pub fn parse_line(&self, line: &str) -> Option<DiagnosticEvent> {
     let trimmed = line.trim_end();
 
+    if let Some(event) = self.parse_skip_line(trimmed) {
+      return Some(event);
+    }
+
     let (level, rest) = if let Some(msg) = trimmed.strip_prefix("ERROR:") {
       (DiagnosticLevel::Error, msg.trim())
     } else if let Some(msg) = trimmed.strip_prefix("WARNING:") {
@@ -163,6 +169,72 @@ impl YtdlpErrorParser {
         .unwrap_or(0),
     })
   }
+
+  fn parse_skip_line(&self, line: &str) -> Option<DiagnosticEvent> {
+    let message = normalize_skip_message(line)?;
+
+    Some(DiagnosticEvent {
+      id: self.id.clone(),
+      group_id: self.group_id.clone(),
+      level: DiagnosticLevel::Warning,
+      code: INPUT_FILTER_SKIPPED_CODE.to_string(),
+      component: Some("download".to_string()),
+      message,
+      raw: line.to_string(),
+      timestamp: SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_millis())
+        .unwrap_or(0),
+    })
+  }
+}
+
+fn normalize_skip_message(line: &str) -> Option<String> {
+  let trimmed = line.trim();
+  let lower = trimmed.to_ascii_lowercase();
+
+  if lower.contains("upload date is not in range") {
+    return Some("Skipped by upload date filter".to_string());
+  }
+
+  if lower.contains("file is larger than max-filesize") {
+    return Some("Skipped by maximum filesize filter".to_string());
+  }
+
+  if lower.contains("file is smaller than min-filesize") {
+    return Some("Skipped by minimum filesize filter".to_string());
+  }
+
+  if lower.contains("does not pass filter") {
+    if lower.contains("break-match") {
+      return Some("Skipped by break-match filter".to_string());
+    }
+    return Some("Skipped by advanced input filter".to_string());
+  }
+
+  if lower.contains("maximum number of downloads reached")
+    || lower.contains("max downloads reached")
+  {
+    return Some("Skipped by maximum downloads filter".to_string());
+  }
+
+  if lower.contains("skipping") && lower.contains("age limit") || lower.contains("age restricted") {
+    return Some("Skipped by age limit filter".to_string());
+  }
+
+  if lower.contains("skipping") && lower.contains("filter") {
+    return Some("Skipped by input filter".to_string());
+  }
+
+  if lower.contains(" is not in range ") {
+    return Some("Skipped by input filter".to_string());
+  }
+
+  if !lower.starts_with("[download] ") && !lower.contains("skipping") {
+    return None;
+  }
+
+  None
 }
 
 fn split_component(s: &'_ str) -> (Option<String>, Cow<'_, str>) {
@@ -196,4 +268,64 @@ fn is_probable_id(s: &str) -> bool {
     && s
       .chars()
       .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  fn parser() -> YtdlpErrorParser {
+    YtdlpErrorParser::new(
+      "item-id",
+      "group-id",
+      DiagnosticMatcher::from_json(r#"{"rules":[],"fallbackCode":"unknown"}"#).unwrap(),
+    )
+  }
+
+  #[test]
+  fn parses_upload_date_skip_lines_as_warnings() {
+    let event = parser()
+      .parse_line("[download] 2022-01-05 upload date is not in range 2026-06-18 to 9999-12-31")
+      .unwrap();
+
+    assert!(matches!(event.level, DiagnosticLevel::Warning));
+    assert_eq!(event.code, INPUT_FILTER_SKIPPED_CODE);
+    assert_eq!(event.message, "Skipped by upload date filter");
+    assert_eq!(event.component.as_deref(), Some("download"));
+  }
+
+  #[test]
+  fn normalizes_advanced_filter_skip_lines() {
+    let event = parser()
+      .parse_line("[download] Video does not pass filter (!is_live), skipping ..")
+      .unwrap();
+
+    assert_eq!(event.message, "Skipped by advanced input filter");
+  }
+
+  #[test]
+  fn normalizes_filesize_skip_lines() {
+    let event = parser()
+      .parse_line("[download] File is larger than max-filesize (123 > 100), skipping")
+      .unwrap();
+
+    assert_eq!(event.message, "Skipped by maximum filesize filter");
+  }
+
+  #[test]
+  fn ignores_non_skip_download_lines() {
+    assert!(parser()
+      .parse_line("[download] Destination: /tmp/video.mp4")
+      .is_none());
+  }
+
+  #[test]
+  fn normalizes_plain_break_match_filter_rejection_lines() {
+    let event = parser()
+      .parse_line("Some title does not pass filter (duration <? 1), skipping ..")
+      .unwrap();
+
+    assert_eq!(event.code, INPUT_FILTER_SKIPPED_CODE);
+    assert_eq!(event.message, "Skipped by advanced input filter");
+  }
 }
