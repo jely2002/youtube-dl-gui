@@ -32,7 +32,7 @@ export const languageOptionsLookup = new Map(
 
 function normalizeLocale(candidate: string): string {
   const parts = candidate.replace(/_/g, '-').split('-');
-  const language = parts[0]?.toLowerCase();
+  const language = parts[0]?.toLowerCase() ?? '';
   const region = parts[1]?.toUpperCase();
 
   return region ? `${language}-${region}` : language;
@@ -87,14 +87,19 @@ export function getPreferredAutoSubtitleLanguages(codes: string[]): string[] {
 }
 
 export function detectBrowserLanguageCodes(): string[] {
-  let candidates = navigator?.languages ?? [];
-  if (candidates.length === 0 && navigator?.language) {
-    candidates = [navigator.language];
+  let candidates: readonly string[] = [];
+
+  if (typeof navigator !== 'undefined') {
+    candidates = navigator.languages?.length
+      ? navigator.languages
+      : navigator.language
+        ? [navigator.language]
+        : [];
   }
 
   const normalized = new Set<string>();
 
-  for (const candidate of candidates ?? []) {
+  for (const candidate of candidates) {
     if (!candidate) continue;
 
     const locale = normalizeLocale(candidate);
