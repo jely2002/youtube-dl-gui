@@ -37,7 +37,7 @@
         "watchClipboardStart": "Monitorear portapapeles",
         "watchClipboardStop": "Dejar de monitorear portapapeles",
         "importFile": "Importar enlaces",
-        "inputFilters": "Filtros",
+        "inputFilters": "Filtros"
       },
       "nav": {
         "inputFilters": "Filtros",
