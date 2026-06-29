@@ -70,6 +70,7 @@ export type DownloadOverrides = {
   subtitles?: SubtitleOverrides;
   sponsorBlock?: SponsorBlockOverrides;
   input?: InputOverrides;
+  inputFilters?: InputFilterOptions;
 };
 
 export type OutputOverrides = {
@@ -148,6 +149,23 @@ export type SponsorBlockOverrides = {
 
 export type InputOverrides = {
   preferVideoInMixedLinks?: boolean;
+};
+
+export enum PlaylistMode {
+  singleVideo = 'singleVideo',
+  playlist = 'playlist',
+}
+
+export type InputFilterOptions = {
+  playlistItems?: string;
+  minFilesize?: string;
+  maxFilesize?: string;
+  date?: string;
+  datebefore?: string;
+  dateafter?: string;
+  matchFilters?: string;
+  breakMatchFilters?: string;
+  playlistMode?: PlaylistMode;
 };
 
 export type EncodingOptions = {

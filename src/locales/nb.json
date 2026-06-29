@@ -19,14 +19,29 @@
     "video": "video",
     "unknown": "ukjent",
     "confirm": "Bekreft",
-    "best": "Best",
-    "resume": "Fortsett"
+    "best": "Beste",
+    "resume": "Fortsett",
+    "urlImport": {
+      "added": "Lenke lagt til i køen. | {n} lenker lagt til i køen.",
+      "partial": "La til {added} lenker i køen. Hoppet over {skipped} ugyldige oppføringer.",
+      "noneFound": "Fant ingen gyldige lenker i inndataene eller filen.",
+      "readError": "Kunne ikke lese den filen."
+    }
   },
   "layout": {
     "header": {
       "placeholder": "Skriv inn en video-/spilleliste-URL for å legge til i køen",
       "nav": {
-        "settings": "App-innstillinger"
+        "settings": "App-innstillinger",
+        "inputFilters": "Filtre"
+      },
+      "watchClipboardPlaceholder": "Overvåker utklippstavlen: kopierte lenker legges til i køen",
+      "actions": {
+        "more": "Flere handlinger for å legge til",
+        "watchClipboardStart": "Overvåk utklippstavlen",
+        "watchClipboardStop": "Slutt å overvåke utklippstavlen",
+        "importFile": "Importer lenker",
+        "inputFilters": "Filtre"
       }
     },
     "footer": {
@@ -182,6 +197,11 @@
         "toasts": {
           "reported": "Feil har blitt rapportert.",
           "error": "Kan ikke rapportere feil."
+        },
+        "skipped": {
+          "count": "Hoppede over elementer ({count})",
+          "empty": "Ingen elementer ble hoppet over av filtrene.",
+          "items": "{count} element | {count} elementer"
         }
       }
     },
@@ -265,7 +285,9 @@
           "size": "Størrelse: ",
           "sizeInfo": "Mengden data som vil bli lastet ned.\nIkke den endelige filstørrelsen.",
           "items": "Elementer: {amount} {failedCount}",
-          "failedCount": "({amount} mislyktes)"
+          "failedCount": "({amount} mislyktes)",
+          "skippedCount": "({amount} hoppet over)",
+          "failedAndSkippedCount": "({failed} mislyktes, {skipped} hoppet over)"
         },
         "trackTypes": {
           "both": "Video + Lyd",
@@ -318,7 +340,8 @@
         "errorPrefix": "Feil - {message}",
         "report": "Rapporter",
         "showFull": "Se logger",
-        "signIn": "Logg inn"
+        "signIn": "Logg inn",
+        "filters": "Rediger filtre"
       }
     },
     "card": {
@@ -371,7 +394,8 @@
         "noResult": "Ingen språk samsvarer med \"{query}\".",
         "selected": "Valgt:",
         "allSelected": "Alle tilgjengelige undertekster",
-        "searchHint": "Tips: Bruk søkeboksen for å raskt filtrere listen. Valgte språk forblir uthevet."
+        "searchHint": "Tips: Bruk søkeboksen for å raskt filtrere listen. Valgte språk forblir uthevet.",
+        "none": "Ingen"
       }
     },
     "toasts": {
@@ -462,6 +486,10 @@
       },
       "outputFormat": {
         "label": "Filnavnformat:"
+      },
+      "reversePlaylistNumbering": {
+        "label": "Omvendt spillelistenummerering:",
+        "hint": "Nummerer spillelisteelementer fra slutten i stedet for begynnelsen."
       }
     },
     "toasts": {
@@ -513,7 +541,8 @@
       "globalShortcuts": {
         "label": "Aktiver hurtigtaster:",
         "add_hint": "Legg til videoer i køen med:",
-        "download_hint": "Last ned køen med:"
+        "download_hint": "Last ned køen med:",
+        "instant_hint": "Legg til og last ned med en gang med:"
       },
       "authentication": {
         "label": "Logg inn for å laste ned private videoer:",
@@ -626,6 +655,10 @@
             }
           }
         }
+      },
+      "preciseCuts": {
+        "label": "Presist klipp:",
+        "hint": "Klipper på nøyaktige bilder i stedet for nærliggende nøkkelbilder. Veldig tregt.\nAktiver bare hvis vanlige klipp blir feil, forvrengt eller får svarte/manglende segmenter."
       }
     },
     "appearance": {
@@ -734,6 +767,10 @@
           "label": "Kapittel",
           "description": "Markerer et kapittel/avsnitt i videoen (brukes med kapittel-handlingstype)."
         }
+      },
+      "preciseCuts": {
+        "label": "Presist klipp:",
+        "hint": "Gjør at SponsorBlock-fjerning og delvise nedlastinger klipper på nøyaktige bilder. Veldig tregt.\nAktiver bare hvis vanlige klipp blir feil, forvrengt eller får svarte/manglende segmenter."
       }
     },
     "update": {
@@ -1017,6 +1054,10 @@
       "unknown": {
         "shortMessage": "Ukjent feil",
         "message": "En ukjent feil oppstod under behandlingen av dette elementet."
+      },
+      "rejectedByFilter": {
+        "shortMessage": "Filtrert bort",
+        "message": "Dette elementet ble filtrert bort av inndatafiltrene dine."
       }
     }
   },
@@ -1030,6 +1071,106 @@
       "github": "GitHub",
       "wiki": "Wiki",
       "reportABug": "Rapporter en feil"
+    }
+  },
+  "inputFilters": {
+    "title": "Inndatafiltre",
+    "filesize": {
+      "legend": "Filstørrelse",
+      "hint": "Behold bare elementer som er større eller mindre enn størrelsen du velger."
+    },
+    "dates": {
+      "legend": "Opplastingsdatoer",
+      "hint": "Behold bare elementer som ble lastet opp på, før eller etter en dato."
+    },
+    "advanced": {
+      "legend": "Avanserte filtre",
+      "hint": "Dette er rå yt-dlp-filtre for avansert bruk."
+    },
+    "fields": {
+      "minSize": {
+        "label": "Minste filstørrelse:"
+      },
+      "maxSize": {
+        "label": "Største filstørrelse:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "Enhet"
+      },
+      "date": {
+        "modeLabel": "Matchregel",
+        "clearMode": "Av",
+        "hint": "Velg datoregel først, og deretter datoen.",
+        "mode": {
+          "exact": "På datoen",
+          "before": "På eller før",
+          "after": "På eller etter"
+        },
+        "activeLabel": {
+          "exact": "Videoer lastet opp på denne datoen",
+          "before": "Videoer lastet opp på eller før denne datoen",
+          "after": "Videoer lastet opp på eller etter denne datoen"
+        },
+        "presetsLabel": "Hurtigvalg",
+        "presets": {
+          "today": "I dag",
+          "yesterday": "I går",
+          "last7Days": "Siste 7 dager",
+          "last30Days": "Siste 30 dager"
+        }
+      },
+      "matchFilters": {
+        "label": "Matchfiltre:",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "Eksempler: !is_live, duration >? 600, like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "Avbryt-matchfiltre:",
+        "placeholder": "duration >? 3600",
+        "hint": "Slutt å sjekke den gjeldende lenken når et element ikke består dette filteret."
+      }
+    },
+    "playlistSelection": {
+      "title": "Velg spillelisteelementer",
+      "description": "Velg hvilke elementer som skal lastes ned:",
+      "selectionSummary": "{count} av {total} element valgt | {count} av {total} elementer valgt",
+      "selectionSummaryAll": "Alle elementer valgt | Alle {count} elementer valgt",
+      "advancedButton": "Avansert",
+      "simpleButton": "Tilbakestill",
+      "advancedTitle": "Avansert spillelistevalg",
+      "advancedHint": "Velg flere elementer, negative tall og flere intervaller.",
+      "advancedDescription": "Gjeldende utvalg",
+      "advancedEmpty": "Ingen avansert utvalg er satt opp ennå.",
+      "addSingle": "Legg til element",
+      "addRange": "Legg til intervall",
+      "applyFull": "Last ned alle elementer",
+      "applySelection": "Last ned valgte elementer",
+      "useAdvanced": "Bruk avansert utvalg",
+      "noMatches": "Dette intervallet samsvarer ikke med noen elementer i spillelisten.",
+      "row": {
+        "single": "Enkelt",
+        "range": "Intervall"
+      },
+      "remove": "Fjern",
+      "fields": {
+        "advancedLabel": "Avansert:",
+        "index": "Element",
+        "indexPlaceholder": "1 eller -1",
+        "start": "Start",
+        "startPlaceholder": "1",
+        "end": "Slutt",
+        "endPlaceholder": "10",
+        "input": "Elementer"
+      },
+      "errors": {
+        "playlistIndex": "Bruk et heltall annet enn 0. Negative tall teller fra slutten.",
+        "playlistRangeBounds": "Angi både start og slutt. Negative tall teller fra slutten."
+      }
+    },
+    "toasts": {
+      "saved": "Inndatafiltre lagret!",
+      "error": "Kunne ikke lagre inndatafiltre. {error}"
     }
   }
 }

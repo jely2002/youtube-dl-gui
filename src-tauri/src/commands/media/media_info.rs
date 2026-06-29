@@ -1,3 +1,4 @@
+use crate::models::download::DownloadOverrides;
 use crate::scheduling::dispatcher::DispatchRequest;
 use crate::scheduling::fetch_pipeline::FetchRequest;
 use crate::scheduling::group_state::ensure_group_running;
@@ -9,6 +10,7 @@ pub fn media_info(
   url: String,
   id: String,
   group_id: String,
+  overrides: Option<DownloadOverrides>,
   pipeline: State<'_, FetchSender>,
 ) -> Result<String, String> {
   ensure_group_running(&group_id);
@@ -19,6 +21,7 @@ pub fn media_info(
       group_id: group_id.clone(),
       url,
       id,
+      overrides: Box::new(overrides),
     }))
     .map_err(|e| e.to_string())?;
 

@@ -50,7 +50,7 @@
       <span v-else class="loading loading-spinner loading-xs"></span>
     </p>
     <p v-else class="flex items-center">
-      {{ t('media.steps.configure.metadata.items', { amount: group.total, failedCount: failedItemDisplay }) }}
+      {{ t('media.steps.configure.metadata.items', { amount: group.total, details: itemOutcomeDisplay }) }}
     </p>
   </div>
 </template>
@@ -70,6 +70,8 @@ import MediaDownloadOptions from '../MediaDownloadOptions.vue';
 import MediaEncodingOptions from '../MediaEncodingOptions.vue';
 import MediaTrackOptions from '../MediaTrackOptions.vue';
 import { InformationCircleIcon } from '@heroicons/vue/24/outline';
+import { countSkippedDiagnostics } from '../../../helpers/skippedDiagnostics.ts';
+import { useMediaDiagnosticsStore } from '../../../stores/media/diagnostics.ts';
 
 const i18n = useI18n();
 const t = i18n.t;
@@ -83,6 +85,7 @@ const { group } = defineProps({
 
 const sizeStore = useMediaSizeStore();
 const settingsStore = useSettingsStore();
+const diagnosticsStore = useMediaDiagnosticsStore();
 const isSizeLoading = ref(false);
 const optionsStore = useMediaOptionsStore();
 const expandedOptionsType = computed(() => settingsStore.settings.appearance.expandedOptions);
@@ -90,8 +93,25 @@ const showExpandedOptions = computed(() => expandedOptionsType.value === 'encodi
 const unavailableTrackSuffix = computed(() => t('media.steps.configure.tracks.unavailableForSelectedResolution'));
 const availableTrackPrefix = computed(() => t('media.steps.configure.tracks.availableInResolutions'));
 
-const failedItemDisplay = computed(() => {
-  return group?.errored > 0 ? t('media.steps.configure.metadata.failedCount', { amount: group?.errored }) : '';
+const skippedCount = computed(() => countSkippedDiagnostics(diagnosticsStore.findDiagnosticsByGroupId(group.id)));
+
+const itemOutcomeDisplay = computed(() => {
+  if (group.errored > 0 && skippedCount.value > 0) {
+    return t('media.steps.configure.metadata.failedAndSkippedCount', {
+      failed: group.errored,
+      skipped: skippedCount.value,
+    });
+  }
+
+  if (group.errored > 0) {
+    return t('media.steps.configure.metadata.failedCount', { amount: group.errored });
+  }
+
+  if (skippedCount.value > 0) {
+    return t('media.steps.configure.metadata.skippedCount', { amount: skippedCount.value });
+  }
+
+  return '';
 });
 
 const selectedOptions = computed({

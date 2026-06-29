@@ -27,7 +27,7 @@
         </template>
       </button>
       <router-link :to="{ name: 'group.logs', params: { groupId: group.id } }" class="btn btn-subtle">{{ t('media.steps.error.showFull') }}</router-link>
-      <router-link v-if="signInRequired" :to="{ name: 'authentication' }" class="btn btn-subtle">{{ t('media.steps.error.signIn') }}</router-link>
+      <router-link v-if="errorAction" :to="errorAction.to" class="btn btn-subtle">{{ errorAction.label }}</router-link>
     </div>
   </div>
 </template>
@@ -81,6 +81,14 @@ const error = computed(() => {
       diagnostic.timestamp = lastFatal.value.timestamp;
     } else if (lastDiagnostic.value) {
       diagnostic = lastDiagnostic.value;
+    } else if (lastFatal.value.exitCode === 101) {
+      diagnostic.id = lastFatal.value.id;
+      diagnostic.message = lastFatal.value.message;
+      diagnostic.code = 'rejectedByFilter';
+      diagnostic.component = 'runner';
+      diagnostic.raw = lastFatal.value.details ?? '';
+      diagnostic.level = 'error';
+      diagnostic.timestamp = lastFatal.value.timestamp;
     }
   }
 
@@ -88,6 +96,22 @@ const error = computed(() => {
 });
 
 const { diagnosticDisplay, report, isReportable, isReporting, hasReported } = useDiagnostic(error, true);
-const signInRequired = computed(() => error.value.code.includes('signIn'));
+const errorAction = computed(() => {
+  if (error.value.code.includes('signIn')) {
+    return {
+      label: t('media.steps.error.signIn'),
+      to: { name: 'authentication' as const },
+    };
+  }
+
+  if (error.value.code === 'rejectedByFilter') {
+    return {
+      label: t('media.steps.error.filters'),
+      to: { name: 'input-filters' as const },
+    };
+  }
+
+  return null;
+});
 
 </script>

@@ -1,8 +1,8 @@
 <template>
-  <div class="join divide-x-2">
+  <div class="join relative z-0 divide-x-2 focus-within:z-30">
     <base-button
-        class="join-item"
-        :class="btnClasses"
+        class="join-item !rounded-r-none"
+        :class="mainButtonClasses"
         :tooltip="mainTooltip"
         :disabled="disabled || mainDisabled ? true : undefined"
         :type="mainType ?? 'button'"
@@ -12,10 +12,10 @@
       <slot name="main" />
     </base-button>
 
-    <div class="dropdown" :class="dropdownClasses">
+    <div class="dropdown relative" :class="dropdownClasses">
       <button
-          class="btn btn-subtle join-item px-1"
-          :class="btnClasses"
+          class="btn btn-subtle join-item px-1 !rounded-l-none"
+          :class="caretButtonClasses"
           type="button"
           tabindex="0"
           :disabled="disabled || caretDisabled ? true : undefined"
@@ -28,7 +28,7 @@
       </button>
 
       <ul
-          class="dropdown-content menu w-fit bg-base-100 rounded-box shadow z-1 border border-base-300"
+          class="dropdown-content menu w-fit bg-base-100 rounded-box shadow z-50 border border-base-300"
           :class="menuClasses"
           tabindex="0"
           role="menu"
@@ -61,6 +61,7 @@ const props = withDefaults(
     mainType?: string;
     mainLoading?: boolean;
     mainDisabled?: boolean;
+    flushLeft?: boolean;
     caretAriaLabel?: string;
     closeOnItemClick?: boolean;
   }>(),
@@ -75,13 +76,14 @@ const props = withDefaults(
     mainTooltip: '',
     mainLoading: false,
     mainDisabled: false,
+    flushLeft: false,
     caretAriaLabel: '',
     closeOnItemClick: true,
   },
 );
 
 const emit = defineEmits<{
-  mainClick: [];
+  mainClick: [event: MouseEvent];
 }>();
 
 const dropdownClasses = computed(() => [
@@ -89,15 +91,30 @@ const dropdownClasses = computed(() => [
   props.align === 'end' ? 'dropdown-end' : 'dropdown-start',
 ]);
 
-const btnClasses = computed(() => [props.btnClass]);
+const mainButtonClasses = computed(() => [
+  props.btnClass,
+  props.flushLeft ? '!rounded-l-none !border-l-0' : '',
+]);
+
+const caretButtonClasses = computed(() => {
+  if (props.disabled || props.caretDisabled) {
+    return [props.btnClass];
+  }
+
+  if (props.mainDisabled) {
+    return ['btn-soft'];
+  }
+
+  return [props.btnClass];
+});
 
 const menuClasses = computed(() => [
   props.menuSize === 'sm' ? 'menu-sm' : 'menu-md',
   props.menuWidthClass,
 ]);
 
-function onMainClick() {
-  emit('mainClick');
+function onMainClick(event: MouseEvent) {
+  emit('mainClick', event);
 }
 
 function blurFromEvent(event: Event) {

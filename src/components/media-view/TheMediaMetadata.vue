@@ -28,7 +28,7 @@
     </div>
   </section>
   <section class="flex flex-col gap-4 pb-4 pt-0 px-8">
-    <div class="overflow-x-scroll">
+    <div class="media-stats-scroll overflow-x-auto overflow-y-hidden pb-2">
       <base-media-stats v-if="group" :item="group" />
     </div>
     <div class="rounded-box p-4 bg-base-100" v-if="group?.description">
@@ -94,3 +94,26 @@ const setPlaceholderImage = (event: Event): void => {
   }
 };
 </script>
+
+<style scoped>
+.media-stats-scroll {
+  scrollbar-color: color-mix(in oklab, var(--color-base-content) 28%, transparent) transparent;
+}
+
+.media-stats-scroll::-webkit-scrollbar {
+  height: 10px;
+}
+
+.media-stats-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.media-stats-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-base-content) 28%, transparent);
+  border-radius: 9999px;
+}
+
+.media-stats-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--color-base-content) 40%, transparent);
+}
+</style>

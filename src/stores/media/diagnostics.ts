@@ -22,8 +22,12 @@ export const useMediaDiagnosticsStore = defineStore('media-diagnostics', () => {
   function processMediaFatalPayload(payload: MediaFatal) {
     fatals.value[payload.id] = payload;
     const { groupId } = payload;
+    const currentState = stateStore.getGroupState(groupId);
     const group = groupStore.findGroupById(groupId);
     if (!group) throw new Error('Orphaned media item found during error handling.');
+    if (currentState === MediaState.fetching || currentState === MediaState.fetchingList) {
+      mediaStore.rejectPendingReadyGroup(groupId, payload.message);
+    }
     group.processed++;
     group.errored++;
     const leader = groupStore.findGroupLeader(groupId);

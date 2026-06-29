@@ -3,7 +3,7 @@ import { test } from './utils/fixtures';
 
 async function addUrl(page: Page, url: string) {
   await page.fill('input[type="text"]', url);
-  await page.click('button[type="submit"]');
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
 }
 
 async function openQueueMenu(page: Page) {

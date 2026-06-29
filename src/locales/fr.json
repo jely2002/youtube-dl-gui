@@ -20,13 +20,28 @@
     "unknown": "inconnu",
     "confirm": "Confirmer",
     "best": "Meilleure",
-    "resume": "Reprendre"
+    "resume": "Reprendre",
+    "urlImport": {
+      "added": "Lien ajouté à la file d’attente. | {n} liens ajoutés à la file d’attente.",
+      "partial": "{added} liens ajoutés à la file d’attente. {skipped} entrées invalides ignorées.",
+      "noneFound": "Aucun lien valide trouvé dans l’entrée ou le fichier.",
+      "readError": "Impossible de lire ce fichier."
+    }
   },
   "layout": {
     "header": {
       "placeholder": "Entrez l'URL d'une vidéo/playlist pour l'ajouter à la file d'attente",
       "nav": {
-        "settings": "Paramètres de l'application"
+        "settings": "Paramètres de l'application",
+        "inputFilters": "Filtres"
+      },
+      "watchClipboardPlaceholder": "Surveillance du presse-papiers : les liens copiés sont ajoutés à la file d’attente",
+      "actions": {
+        "more": "Plus d’actions d’ajout",
+        "watchClipboardStart": "Surveiller le presse-papiers",
+        "watchClipboardStop": "Arrêter la surveillance du presse-papiers",
+        "importFile": "Importer des liens",
+        "inputFilters": "Filtres"
       }
     },
     "footer": {
@@ -102,7 +117,7 @@
         "username": "Nom d'utilisateur",
         "password": "Mot de passe",
         "token": "Token",
-        "headers": "Headers"
+        "headers": "En-têtes"
       },
       "basicAuth": {
         "legend": "Authentification basique",
@@ -182,6 +197,11 @@
         "toasts": {
           "reported": "Erreur signalée.",
           "error": "Impossible de signaler l'erreur."
+        },
+        "skipped": {
+          "count": "Éléments ignorés ({count})",
+          "empty": "Aucun élément n’a été ignoré par les filtres.",
+          "items": "{count} élément | {count} éléments"
         }
       }
     },
@@ -265,7 +285,9 @@
           "size": "Taille : ",
           "sizeInfo": "La quantité de données qui sera téléchargée.\nCe n’est pas la taille finale du fichier.",
           "items": "Éléments : {amount} {failedCount}",
-          "failedCount": "({amount} échoués)"
+          "failedCount": "({amount} échoués)",
+          "skippedCount": "({amount} ignorés)",
+          "failedAndSkippedCount": "({failed} en échec, {skipped} ignorés)"
         },
         "trackTypes": {
           "both": "Vidéo + Audio",
@@ -318,7 +340,8 @@
         "errorPrefix": "Erreur - {message}",
         "report": "Signaler",
         "showFull": "Voir logs",
-        "signIn": "Se connecter"
+        "signIn": "Se connecter",
+        "filters": "Modifier les filtres"
       }
     },
     "card": {
@@ -371,7 +394,8 @@
         "noResult": "Aucune langue ne correspond à \"{query}\".",
         "selected": "Sélectionné :",
         "allSelected": "Tous les sous-titres disponibles",
-        "searchHint": "Astuce : utilisez la recherche pour filtrer rapidement. Les langues sélectionnées restent surlignées."
+        "searchHint": "Astuce : utilisez la recherche pour filtrer rapidement. Les langues sélectionnées restent surlignées.",
+        "none": "Aucune"
       }
     },
     "toasts": {
@@ -462,6 +486,10 @@
       },
       "outputFormat": {
         "label": "Format du nom de fichier :"
+      },
+      "reversePlaylistNumbering": {
+        "label": "Numérotation inversée de la playlist :",
+        "hint": "Numérote les éléments de la playlist depuis la fin plutôt que depuis le début."
       }
     },
     "toasts": {
@@ -513,7 +541,8 @@
       "globalShortcuts": {
         "label": "Activer les raccourcis :",
         "add_hint": "Ajouter des vidéos à la file d’attente avec :",
-        "download_hint": "Télécharger la file d’attente avec :"
+        "download_hint": "Télécharger la file d’attente avec :",
+        "instant_hint": "Ajouter et télécharger immédiatement avec :"
       },
       "authentication": {
         "label": "Se connecter pour télécharger les vidéos privées :",
@@ -626,6 +655,10 @@
             }
           }
         }
+      },
+      "preciseCuts": {
+        "label": "Découpe précise :",
+        "hint": "Découpe à des images exactes plutôt qu’aux images clés voisines. Très lent.\nÀ activer uniquement si les découpes normales sont incorrectes, corrompues ou produisent des segments noirs/manquants."
       }
     },
     "appearance": {
@@ -734,6 +767,10 @@
           "label": "Chapitre",
           "description": "Marque un chapitre/section de la vidéo (utilisé avec type d’action chapitre)."
         }
+      },
+      "preciseCuts": {
+        "label": "Découpe précise :",
+        "hint": "Force SponsorBlock et les téléchargements partiels à découper sur des images exactes. Très lent.\nÀ activer uniquement si les découpes normales sont incorrectes, corrompues ou produisent des segments noirs/manquants."
       }
     },
     "update": {
@@ -1017,6 +1054,10 @@
       "unknown": {
         "shortMessage": "Erreur inconnue",
         "message": "Une erreur inconnue est survenue lors du traitement."
+      },
+      "rejectedByFilter": {
+        "shortMessage": "Filtré",
+        "message": "Cet élément a été rejeté par vos filtres d’entrée."
       }
     }
   },
@@ -1030,6 +1071,106 @@
       "github": "GitHub",
       "wiki": "Wiki",
       "reportABug": "Signaler un bug"
+    }
+  },
+  "inputFilters": {
+    "title": "Filtres d’entrée",
+    "filesize": {
+      "legend": "Taille du fichier",
+      "hint": "Conserver uniquement les éléments plus grands ou plus petits que la taille choisie."
+    },
+    "dates": {
+      "legend": "Dates d’envoi",
+      "hint": "Conserver uniquement les éléments envoyés à, avant ou après une date."
+    },
+    "advanced": {
+      "legend": "Filtres avancés",
+      "hint": "Ce sont des filtres yt-dlp bruts destinés à un usage avancé."
+    },
+    "fields": {
+      "minSize": {
+        "label": "Taille minimale du fichier :"
+      },
+      "maxSize": {
+        "label": "Taille maximale du fichier :"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "Unité"
+      },
+      "date": {
+        "modeLabel": "Règle de correspondance",
+        "clearMode": "Désactivé",
+        "hint": "Choisissez d’abord la règle de date, puis la date.",
+        "mode": {
+          "exact": "À la date",
+          "before": "Le ou avant le",
+          "after": "Le ou après le"
+        },
+        "activeLabel": {
+          "exact": "Vidéos mises en ligne à cette date",
+          "before": "Vidéos mises en ligne à cette date ou avant",
+          "after": "Vidéos mises en ligne à cette date ou après"
+        },
+        "presetsLabel": "Raccourcis",
+        "presets": {
+          "today": "Aujourd’hui",
+          "yesterday": "Hier",
+          "last7Days": "7 derniers jours",
+          "last30Days": "30 derniers jours"
+        }
+      },
+      "matchFilters": {
+        "label": "Filtres de correspondance :",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "Exemples : !is_live, duration >? 600, like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "Filtres d’arrêt :",
+        "placeholder": "duration >? 3600",
+        "hint": "Arrêter l’analyse du lien actuel lorsqu’un élément ne correspond pas à ce filtre."
+      }
+    },
+    "playlistSelection": {
+      "title": "Choisir les éléments de la playlist",
+      "description": "Sélectionnez les éléments à télécharger :",
+      "selectionSummary": "{count} élément sélectionné sur {total} | {count} éléments sélectionnés sur {total}",
+      "selectionSummaryAll": "Tous les éléments sont sélectionnés | Les {count} éléments sont sélectionnés",
+      "advancedButton": "Avancé",
+      "simpleButton": "Réinitialiser",
+      "advancedTitle": "Sélection avancée de playlist",
+      "advancedHint": "Sélectionnez plusieurs éléments, des nombres négatifs et plusieurs plages.",
+      "advancedDescription": "Sélection actuelle",
+      "advancedEmpty": "Aucune sélection avancée n’est encore configurée.",
+      "addSingle": "Ajouter un élément",
+      "addRange": "Ajouter une plage",
+      "applyFull": "Télécharger tous les éléments",
+      "applySelection": "Télécharger les éléments sélectionnés",
+      "useAdvanced": "Utiliser la sélection avancée",
+      "noMatches": "Cette plage ne correspond à aucun élément de la playlist.",
+      "row": {
+        "single": "Unique",
+        "range": "Plage"
+      },
+      "remove": "Supprimer",
+      "fields": {
+        "advancedLabel": "Avancé :",
+        "index": "Élément",
+        "indexPlaceholder": "1 ou -1",
+        "start": "Début",
+        "startPlaceholder": "1",
+        "end": "Fin",
+        "endPlaceholder": "10",
+        "input": "Éléments"
+      },
+      "errors": {
+        "playlistIndex": "Utilisez un nombre entier autre que 0. Les nombres négatifs comptent depuis la fin.",
+        "playlistRangeBounds": "Renseignez le début et la fin. Les nombres négatifs comptent depuis la fin."
+      }
+    },
+    "toasts": {
+      "saved": "Filtres d’entrée enregistrés !",
+      "error": "Impossible d’enregistrer les filtres d’entrée. {error}"
     }
   }
 }

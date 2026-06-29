@@ -3,13 +3,17 @@ import { useDragDropStore } from '../stores/dragDrop.ts';
 
 function hasUrlData(dataTransfer: DataTransfer | null): boolean {
   if (!dataTransfer) return false;
-  return dataTransfer.types.includes('text/uri-list') || dataTransfer.types.includes('text/plain');
+  return dataTransfer.types.includes('text/uri-list')
+    || dataTransfer.types.includes('text/plain')
+    || dataTransfer.types.includes('Files')
+    || dataTransfer.files.length > 0;
 }
 
-function extractUrls(dataTransfer: DataTransfer | null): string[] {
-  if (!dataTransfer) return [];
+function extractDropPayload(dataTransfer: DataTransfer | null): { urls: string[]; files: File[] } {
+  if (!dataTransfer) return { urls: [], files: [] };
 
   const urls: string[] = [];
+  const files = Array.from(dataTransfer.files ?? []);
 
   if (dataTransfer.types.includes('text/uri-list')) {
     const uriList = dataTransfer.getData('text/uri-list');
@@ -26,7 +30,7 @@ function extractUrls(dataTransfer: DataTransfer | null): string[] {
     urls.push(text);
   }
 
-  return urls;
+  return { urls, files };
 }
 
 export function useDragDrop() {
@@ -71,12 +75,12 @@ export function useDragDrop() {
 
     if (!hasUrlData(event.dataTransfer)) return;
 
-    const urls = extractUrls(event.dataTransfer);
+    const payload = extractDropPayload(event.dataTransfer);
     dragDepth = 0;
     store.reset();
 
-    if (urls.length > 0) {
-      await store.handleDrop(urls);
+    if (payload.urls.length > 0 || payload.files.length > 0) {
+      await store.handleDrop(payload);
     }
   };
 

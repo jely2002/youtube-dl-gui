@@ -48,6 +48,7 @@ pub async fn run_ytdlp_download(
     .with_subtitle_args(entry.overrides.as_ref(), entry.subtitle_inventory.as_ref())
     .with_sponsorblock_args(entry.overrides.as_ref())
     .with_format_args(&entry.format, entry.overrides.as_ref())
+    .with_input_filter_args(entry.overrides.as_ref())
     .with_input_args(entry.overrides.as_ref());
   let output_args = match runner.output_args(&entry.format, entry.overrides.as_ref()) {
     Ok(args) => args,
@@ -133,6 +134,7 @@ pub async fn run_ytdlp_download(
             let line_str = String::from_utf8_lossy(&line);
             store_log_line(&line_str, &entry, log_state, &app);
             parse_progress_line(&line_str, &mut progress_parser, &app);
+            parse_error_line(&line_str, &error_parser, &app);
           }
           YtdlpCommandEvent::Stderr(line) => {
             let line_str = String::from_utf8_lossy(&line);

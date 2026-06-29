@@ -4,7 +4,7 @@ import { test } from './utils/fixtures';
 test('it uses global track and format options for new items', async ({ page }) => {
   await page.goto('/');
   await page.fill('input[type="text"]', 'https://example.com/video1');
-  await page.click('button[type="submit"]');
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
 
   const trackSelect = page.getByLabel('Select track for all videos');
   await expect(trackSelect).toHaveValue('both');
@@ -15,7 +15,7 @@ test('it uses global track and format options for new items', async ({ page }) =
   await formatSelect.selectOption({ label: '720p30' });
 
   await page.fill('input[type="text"]', 'https://example.com/video1');
-  await page.click('button[type="submit"]');
+  await page.getByRole('button', { name: 'Add', exact: true }).click();
 
   const cardTrack = page.locator('select[id$="-track"]').nth(1);
   const cardFormat = page.locator('select[id$="-format"]').nth(1);

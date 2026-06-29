@@ -1,5 +1,5 @@
 use crate::logging::LogStoreState;
-use crate::models::download::FormatOptions;
+use crate::models::download::{DownloadOverrides, FormatOptions};
 use crate::models::{MediaDiagnosticPayload, MediaFatalPayload, ParsedMedia, TrackType};
 use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
 use crate::parsers::ytdlp_info::parse_ytdlp_info;
@@ -35,6 +35,7 @@ pub async fn run_ytdlp_info_fetch(
   group_id: String,
   url: &str,
   format: Option<FormatOptions>,
+  overrides: Option<DownloadOverrides>,
 ) -> Result<Option<ParsedMedia>, YtdlpInfoFetchError> {
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
 
@@ -52,9 +53,10 @@ pub async fn run_ytdlp_info_fetch(
       }),
       None,
     )
-    .with_input_args(None)
-    .with_auth_args(None)
-    .with_network_args(None)
+    .with_input_args(overrides.as_ref())
+    .with_input_filter_args(overrides.as_ref())
+    .with_auth_args(overrides.as_ref())
+    .with_network_args(overrides.as_ref())
     .with_args(["-J", "--flat-playlist"])
     .with_url(url);
 
@@ -122,6 +124,9 @@ pub async fn run_ytdlp_info_fetch(
 
   let status_code: i32 = output.status.code().unwrap_or(1);
   if status_code != 0 {
+    let parsed_events =
+      error_parser.parse_lines(stderr_text.lines().chain(stdout_text.lines()).collect());
+
     // Truncate very large stderr payloads.
     let stderr_snippet: Cow<str> = if stderr_text.len() > 8_192 {
       Cow::Owned(format!(
@@ -129,6 +134,12 @@ pub async fn run_ytdlp_info_fetch(
         &stderr_text[..8_192],
         stderr_text.len()
       ))
+    } else if stderr_text.is_empty() {
+      if let Some(last_event) = parsed_events.last() {
+        Cow::Owned(last_event.raw.clone())
+      } else {
+        Cow::Owned(format!("yt-dlp exited with code {status_code}"))
+      }
     } else {
       stderr_text.clone()
     };

@@ -65,6 +65,17 @@
             <kbd class="kbd">alt</kbd>+<kbd class="kbd">shift</kbd>+<kbd class="kbd">Enter</kbd>
           </template>
         </p>
+        <p class="label">
+          {{ t('settings.input.globalShortcuts.instant_hint') }}
+          <template v-if="isMac">
+            <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
+            <kbd class="kbd">ctrl</kbd>+<kbd class="kbd">shift</kbd>+<kbd class="kbd">D</kbd>
+          </template>
+          <template v-else>
+            <!-- eslint-disable-next-line @intlify/vue-i18n/no-raw-text -->
+            <kbd class="kbd">alt</kbd>+<kbd class="kbd">shift</kbd>+<kbd class="kbd">D</kbd>
+          </template>
+        </p>
       </div>
     </section>
   </base-fieldset>

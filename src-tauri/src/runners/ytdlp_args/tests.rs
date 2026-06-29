@@ -1,7 +1,8 @@
-use super::{build_format_args, build_location_args, build_output_args};
+use super::{build_format_args, build_input_filter_args, build_location_args, build_output_args};
 use crate::models::download::{
-  AudioFormat, AudioPostprocessPreset, DownloadSection, FormatOptions, PartialDownloadOverride,
-  TranscodePolicy, VideoContainer, VideoPostprocessMode, VideoPostprocessPreset,
+  AudioFormat, AudioPostprocessPreset, DownloadSection, FormatOptions, InputFilterOptions,
+  PartialDownloadOverride, PlaylistMode, TranscodePolicy, VideoContainer, VideoPostprocessMode,
+  VideoPostprocessPreset,
 };
 use crate::models::TrackType;
 use crate::runners::template_context::TemplateContext;
@@ -47,6 +48,64 @@ fn make_both_format_options(height: Option<u32>, fps: Option<u32>) -> FormatOpti
     audio_track: None,
     video_track: None,
   }
+}
+
+#[test]
+fn input_filter_args_include_supported_filters() {
+  let args = build_input_filter_args(Some(&InputFilterOptions {
+    playlist_items: Some("1:3".into()),
+    min_filesize: Some("10M".into()),
+    max_filesize: Some("250M".into()),
+    date: Some("today-2weeks".into()),
+    datebefore: Some("20250101".into()),
+    dateafter: Some("20240101".into()),
+    match_filters: Some("!is_live".into()),
+    break_match_filters: Some("duration >? 3600".into()),
+    playlist_mode: Some(PlaylistMode::SingleVideo),
+  }));
+
+  assert_eq!(
+    args,
+    vec![
+      "-I",
+      "1:3",
+      "--min-filesize",
+      "10M",
+      "--max-filesize",
+      "250M",
+      "--date",
+      "today-2weeks",
+      "--datebefore",
+      "20250101",
+      "--dateafter",
+      "20240101",
+      "--match-filters",
+      "!is_live",
+      "--break-match-filters",
+      "duration >? 3600",
+      "--no-playlist",
+    ]
+    .into_iter()
+    .map(String::from)
+    .collect::<Vec<_>>()
+  );
+}
+
+#[test]
+fn input_filter_args_omit_empty_values() {
+  let args = build_input_filter_args(Some(&InputFilterOptions {
+    playlist_items: Some("   ".into()),
+    min_filesize: None,
+    max_filesize: None,
+    date: None,
+    datebefore: None,
+    dateafter: None,
+    match_filters: Some("   ".into()),
+    break_match_filters: None,
+    playlist_mode: Some(PlaylistMode::Playlist),
+  }));
+
+  assert_eq!(args, vec!["--yes-playlist".to_string()]);
 }
 
 #[test]

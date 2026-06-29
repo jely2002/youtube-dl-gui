@@ -78,6 +78,59 @@ impl Default for InputSettings {
   }
 }
 
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "UPPERCASE")]
+pub enum InputFilterSizeUnit {
+  #[default]
+  B,
+  KB,
+  MB,
+  GB,
+  TB,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct InputFilterSizeFilter {
+  pub value: Option<f64>,
+  pub unit: Option<InputFilterSizeUnit>,
+}
+
+impl Default for InputFilterSizeFilter {
+  fn default() -> Self {
+    Self {
+      value: None,
+      unit: Some(InputFilterSizeUnit::MB),
+    }
+  }
+}
+
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub enum InputFilterDateMode {
+  #[default]
+  Exact,
+  Before,
+  After,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct InputFilterDateFilter {
+  pub mode: Option<InputFilterDateMode>,
+  pub value: Option<String>,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(default, rename_all = "camelCase")]
+pub struct InputFilterSettings {
+  pub min_size: InputFilterSizeFilter,
+  pub max_size: InputFilterSizeFilter,
+  pub date_filter: InputFilterDateFilter,
+  pub match_filters: Option<String>,
+  pub break_match_filters: Option<String>,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct VideoOutputSettings {
@@ -307,6 +360,7 @@ pub struct Config {
   pub auth: AuthSettings,
   pub network: NetworkSettings,
   pub input: InputSettings,
+  pub input_filters: InputFilterSettings,
   pub output: OutputSettings,
   pub performance: PerformanceSettings,
   pub sponsor_block: SponsorBlockSettings,

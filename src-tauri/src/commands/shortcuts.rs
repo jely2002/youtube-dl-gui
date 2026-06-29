@@ -19,42 +19,60 @@ pub fn register_shortcuts(app_handle: &AppHandle) {
   }
 
   let add_shortcut = Shortcut::new(Some(shortcut_mods()), Code::KeyV);
+  let add_and_download_shortcut = Shortcut::new(Some(shortcut_mods()), Code::KeyD);
   let download_all_shortcut = Shortcut::new(Some(shortcut_mods()), Code::Enter);
 
   let gs = app_handle.global_shortcut();
 
-  if gs.is_registered(add_shortcut) {
-    return;
+  if !gs.is_registered(add_shortcut) {
+    if let Err(e) = gs.on_shortcut(add_shortcut, move |app, _s, e| {
+      if e.state() != ShortcutState::Pressed {
+        return;
+      }
+
+      let _ = app.emit(
+        "shortcut_action",
+        ShortcutPayload {
+          action: "media_add",
+        },
+      );
+    }) {
+      tracing::warn!(error = %e, "Failed to register global shortcut: add-to-queue");
+    }
   }
 
-  if let Err(e) = gs.on_shortcut(add_shortcut, move |app, _s, e| {
-    if e.state() != ShortcutState::Pressed {
-      return;
-    }
+  if !gs.is_registered(add_and_download_shortcut) {
+    if let Err(e) = gs.on_shortcut(add_and_download_shortcut, move |app, _s, e| {
+      if e.state() != ShortcutState::Pressed {
+        return;
+      }
 
-    let _ = app.emit(
-      "shortcut_action",
-      ShortcutPayload {
-        action: "media_add",
-      },
-    );
-  }) {
-    tracing::warn!(error = %e, "Failed to register global shortcut: add-to-queue");
+      let _ = app.emit(
+        "shortcut_action",
+        ShortcutPayload {
+          action: "media_add_and_download",
+        },
+      );
+    }) {
+      tracing::warn!(error = %e, "Failed to register global shortcut: add-and-download");
+    }
   }
 
-  if let Err(e) = gs.on_shortcut(download_all_shortcut, move |app, _s, e| {
-    if e.state() != ShortcutState::Pressed {
-      return;
-    }
+  if !gs.is_registered(download_all_shortcut) {
+    if let Err(e) = gs.on_shortcut(download_all_shortcut, move |app, _s, e| {
+      if e.state() != ShortcutState::Pressed {
+        return;
+      }
 
-    let _ = app.emit(
-      "shortcut_action",
-      ShortcutPayload {
-        action: "download_all",
-      },
-    );
-  }) {
-    tracing::warn!(error = %e, "Failed to register global shortcut: download-all");
+      let _ = app.emit(
+        "shortcut_action",
+        ShortcutPayload {
+          action: "download_all",
+        },
+      );
+    }) {
+      tracing::warn!(error = %e, "Failed to register global shortcut: download-all");
+    }
   }
 }
 

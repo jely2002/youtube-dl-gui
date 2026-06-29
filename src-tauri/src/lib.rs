@@ -164,6 +164,7 @@ pub fn run() {
       app_ready,
       media_size,
       media_info,
+      media_playlist_expand,
       media_download,
       group_cancel,
       logging_subscribe,

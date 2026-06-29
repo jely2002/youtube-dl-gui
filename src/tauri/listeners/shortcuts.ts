@@ -17,6 +17,14 @@ export function registerShortcutListeners() {
         await mediaStore.dispatchMediaInfoFetch(url, true);
         break;
       }
+      case 'media_add_and_download': {
+        const url = await readText();
+        if (!isValidUrl(url)) {
+          return;
+        }
+        await mediaStore.addAndDownload(url, true);
+        break;
+      }
       case 'download_all': {
         await mediaStore.downloadAllGroups(true);
         break;

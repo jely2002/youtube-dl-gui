@@ -53,6 +53,27 @@ export interface InputSettings {
   globalShortcuts: boolean;
 }
 
+export type InputFilterSizeUnit = 'B' | 'KB' | 'MB' | 'GB' | 'TB';
+export type InputFilterDateMode = 'exact' | 'before' | 'after';
+
+export interface InputFilterSizeFilter {
+  value: number | null;
+  unit: InputFilterSizeUnit | null;
+}
+
+export interface InputFilterDateFilter {
+  mode: InputFilterDateMode | null;
+  value: string | null;
+}
+
+export interface InputFilterSettings {
+  minSize: InputFilterSizeFilter;
+  maxSize: InputFilterSizeFilter;
+  dateFilter: InputFilterDateFilter;
+  matchFilters: string | null;
+  breakMatchFilters: string | null;
+}
+
 export enum FormatPreset {
   TitleQuality = 'titleQuality',
   TitleOnly = 'titleOnly',
@@ -137,6 +158,7 @@ export interface Settings {
   auth: AuthSettings;
   network: NetworkSettings;
   input: InputSettings;
+  inputFilters: InputFilterSettings;
   output: OutputSettings;
   performance: PerformanceSettings;
   sponsorBlock: SponsorBlockSettings;
@@ -168,6 +190,30 @@ export const defaultInputSettings: InputSettings = {
   autoFillClipboard: true,
   preferVideoInMixedLinks: false,
   globalShortcuts: true,
+};
+
+export const defaultInputFilterSizeFilter: InputFilterSizeFilter = {
+  value: null,
+  unit: 'MB',
+};
+
+export const defaultInputFilterDateFilter: InputFilterDateFilter = {
+  mode: null,
+  value: null,
+};
+
+export const defaultInputFilterSettings: InputFilterSettings = {
+  minSize: {
+    ...defaultInputFilterSizeFilter,
+  },
+  maxSize: {
+    ...defaultInputFilterSizeFilter,
+  },
+  dateFilter: {
+    ...defaultInputFilterDateFilter,
+  },
+  matchFilters: null,
+  breakMatchFilters: null,
 };
 
 export const defaultOutputSettings: OutputSettings = {
@@ -237,6 +283,12 @@ export const defaultSettings: Settings = {
   auth: defaultAuthSettings,
   network: defaultNetworkSettings,
   input: defaultInputSettings,
+  inputFilters: {
+    ...defaultInputFilterSettings,
+    minSize: { ...defaultInputFilterSettings.minSize },
+    maxSize: { ...defaultInputFilterSettings.maxSize },
+    dateFilter: { ...defaultInputFilterSettings.dateFilter },
+  },
   output: {
     ...defaultOutputSettings,
     video: { ...defaultOutputSettings.video },
