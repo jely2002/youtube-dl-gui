@@ -14,15 +14,15 @@ import zhTWRaw from './locales/zh-TW.json';
 import { detectBrowserLanguageCodes } from './helpers/subtitles/languages.ts';
 
 export const availableLocales = {
-  en: true,
-  es: true,
-  nl: true,
-  it: true,
-  fr: true,
-  de: true,
-  nb: true,
-  ru: true,
-  tr: true,
+  'en': true,
+  'es': true,
+  'nl': true,
+  'it': true,
+  'fr': true,
+  'de': true,
+  'nb': true,
+  'ru': true,
+  'tr': true,
   'pt-PT': true,
   'pt-BR': true,
   'zh-TW': true,
@@ -44,13 +44,13 @@ const ptBR = ptBRRaw as unknown as MessageSchema;
 const zhTW = zhTWRaw as unknown as MessageSchema;
 
 const localeAliases: Record<string, Locale> = {
-  pt: 'pt-PT',
+  'pt': 'pt-PT',
   'pt-PT': 'pt-PT',
   'pt-BR': 'pt-BR',
-  zh: 'zh-TW',
+  'zh': 'zh-TW',
   'zh-Hant': 'zh-TW',
   'zh-TW': 'zh-TW',
-  no: 'nb',
+  'no': 'nb',
   'nb-NO': 'nb',
 };
 
