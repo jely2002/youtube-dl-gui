@@ -14,18 +14,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, PropType, toRefs } from 'vue';
+import { PropType } from 'vue';
 import { EncodingOptions, TrackType } from '../../tauri/types/media.ts';
 import { SelectOption } from '../../helpers/forms.ts';
 import MediaDualSelectOptions from './MediaDualSelectOptions.vue';
 
-const props = defineProps({
-  audioCodecs: {
-    type: Array as PropType<string[]>,
+defineProps({
+  audioOptions: {
+    type: Array as PropType<SelectOption[]>,
     default: () => [],
   },
-  videoCodecs: {
-    type: Array as PropType<string[]>,
+  videoOptions: {
+    type: Array as PropType<SelectOption[]>,
     default: () => [],
   },
   defaultValue: {
@@ -61,26 +61,4 @@ const emit = defineEmits<{
 defineOptions({
   inheritAttrs: false,
 });
-
-const {
-  audioCodecs,
-  videoCodecs,
-} = toRefs(props);
-
-const audioOptions = computed<SelectOption[]>(() =>
-  toSelectOptions(audioCodecs.value),
-);
-
-const videoOptions = computed<SelectOption[]>(() =>
-  toSelectOptions(videoCodecs.value),
-);
-
-function toSelectOptions(list: string[] | undefined): SelectOption[] {
-  const deduped = [...new Set((list ?? []).filter(Boolean))];
-  deduped.sort((a, b) => a.localeCompare(b));
-  return deduped.map(value => ({
-    value,
-    label: value,
-  }));
-}
 </script>

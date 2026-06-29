@@ -20,12 +20,27 @@
     "unknown": "unknown",
     "confirm": "Confirm",
     "best": "Best",
-    "resume": "Resume"
+    "resume": "Resume",
+    "urlImport": {
+      "added": "Link added to queue. | {n} links added to queue.",
+      "partial": "Added {added} links to queue. Skipped {skipped} invalid entries.",
+      "noneFound": "No valid links found in the input/file.",
+      "readError": "Could not read that file."
+    }
   },
   "layout": {
     "header": {
-      "placeholder": "Enter a video/playlist URL to add to the queue",
+      "placeholder": "Enter a video/playlist link to add to the queue",
+      "watchClipboardPlaceholder": "Watching clipboard: copied links are added to the queue",
+      "actions": {
+        "more": "More add actions",
+        "watchClipboardStart": "Watch clipboard",
+        "watchClipboardStop": "Stop watching clipboard",
+        "importFile": "Import links",
+        "inputFilters": "Filters"
+      },
       "nav": {
+        "inputFilters": "Filters",
         "settings": "App Settings"
       }
     },
@@ -175,6 +190,11 @@
           "count": "Warnings ({count})",
           "empty": "No warnings found."
         },
+        "skipped": {
+          "count": "Skipped items ({count})",
+          "empty": "No items were skipped by filters.",
+          "items": "{count} item | {count} items"
+        },
         "all": {
           "title": "All logs",
           "empty": "No logs found."
@@ -191,9 +211,21 @@
       },
       "labels": {
         "quality": "Choose format, codec, and track preferences.",
-        "network": "Configure proxy, impersonation, and request headers. Overrides app defaults for this download.",
+        "network": "Configure proxy, impersonation, extractor settings, and request headers. Overrides app defaults for this download.",
         "output": "Configure container, conversion, and filename templates. Overrides app defaults for this download.",
+        "subtitles": "Choose subtitles for this download.",
         "headersOverride": "One per line: FIELD:VALUE. Replaces global headers for this download."
+      },
+      "subtitles": {
+        "empty": "No subtitles found for this download.",
+        "languages": {
+          "legend": "Available languages",
+          "hint": "Only these subtitles can be downloaded for this item.",
+          "manual": "Creator-provided",
+          "auto": "Auto-generated",
+          "noneManual": "No creator subtitles found.",
+          "noneAuto": "No auto subtitles found."
+        }
       },
       "hints": {
         "format": "Pick video or audio quality. Higher quality usually means larger files and longer downloads.",
@@ -202,6 +234,7 @@
       },
       "tabs": {
         "quality": "Quality",
+        "subtitles": "Subtitles",
         "network": "Network"
       }
     },
@@ -234,6 +267,8 @@
           }
         },
         "tracks": {
+          "availableInResolutions": "Available in",
+          "unavailableForSelectedResolution": "Unavailable for selected resolution",
           "audioSelect": {
             "noFormats": "No audio tracks",
             "placeholder": "Audio track",
@@ -249,8 +284,10 @@
           "duration": "Duration: {duration}",
           "size": "Size: ",
           "sizeInfo": "The amount of data that will be downloaded.\nNot the final size of the file.",
-          "items": "Items: {amount} {failedCount}",
-          "failedCount": "({amount} failed)"
+          "items": "Items: {amount} {details}",
+          "failedCount": "({amount} failed)",
+          "skippedCount": "({amount} skipped)",
+          "failedAndSkippedCount": "({failed} failed, {skipped} skipped)"
         },
         "trackTypes": {
           "both": "Video + Audio",
@@ -274,6 +311,8 @@
           "initializing": "Initializing",
           "downloading": "Downloading",
           "merging": "Merging",
+          "remuxing": "Remuxing",
+          "reencoding": "Re-encoding",
           "finalizing": "Cleaning up"
         },
         "metadata": {
@@ -301,13 +340,14 @@
         "errorPrefix": "Error - {message}",
         "report": "Report",
         "showFull": "View logs",
-        "signIn": "Sign in"
+        "signIn": "Sign in",
+        "filters": "Edit filters"
       }
     },
     "card": {
       "actions": {
         "remove": "Remove",
-        "externalUrl": "Visit on external URL",
+        "externalUrl": "Visit on external link",
         "retry": "Retry download",
         "download": "Download individually",
         "preferences": "Download preferences",
@@ -323,16 +363,20 @@
   },
   "subtitles": {
     "title": "Subtitles",
+    "defaults": {
+      "legend": "Subtitle defaults",
+      "hint": "Used when a video has subtitles."
+    },
     "options": {
       "enable": {
         "legend": "Subtitle downloads",
-        "legendLabel": "Choose how subtitles should be retrieved when downloading media.",
+        "legendLabel": "Choose default subtitle settings.",
         "label": "Enable subtitles",
-        "hint": "Download subtitle files alongside your media."
+        "hint": "Download subtitles when available."
       },
       "autoGenerated": {
-        "label": "Include auto-generated subtitles",
-        "hint": "Download automatically generated subtitles in addition to creator provided ones."
+        "label": "Download auto-generated subtitles",
+        "hint": "Also download auto subtitles when available."
       },
       "format": {
         "legend": "Preferred format",
@@ -345,16 +389,14 @@
       },
       "languages": {
         "legend": "Languages",
-        "legendLabel": "Pick the subtitle languages to download.",
+        "legendLabel": "Pick preferred subtitle languages.",
         "downloadAll": "Download all available subtitles.",
         "search": "Search languages",
         "searchPlaceholder": "Search by language name",
-        "suggested": "Suggested for you",
-        "all": "All languages",
         "noResult": "No languages match \"{query}\".",
         "selected": "Selected:",
-        "allSelected": "All available subtitles",
-        "searchHint": "Tip: Use the search box to quickly filter the list. Selected languages stay highlighted."
+        "none": "None",
+        "allSelected": "All available subtitles"
       }
     },
     "toasts": {
@@ -413,6 +455,10 @@
     "filename": {
       "legend": "Filename format",
       "legendLabel": "Select the filename that downloads will have.",
+      "reversePlaylistNumbering": {
+        "label": "Reverse playlist numbering:",
+        "hint": "Number playlist items from the end instead of the beginning."
+      },
       "formatPreset": {
         "label": "Filename preset:",
         "exampleLabel": "Example output:",
@@ -448,11 +494,118 @@
       "error": "Unable to save locations."
     }
   },
+  "inputFilters": {
+    "title": "Input Filters",
+    "filesize": {
+      "legend": "File size",
+      "hint": "Only keep items bigger or smaller than the size you choose."
+    },
+    "dates": {
+      "legend": "Upload dates",
+      "hint": "Keep only items uploaded on, before, or after a date."
+    },
+    "advanced": {
+      "legend": "Advanced filters",
+      "hint": "These are raw yt-dlp filters for advanced use."
+    },
+    "fields": {
+      "minSize": {
+        "label": "Minimum file size:"
+      },
+      "maxSize": {
+        "label": "Maximum file size:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "Unit"
+      },
+      "date": {
+        "modeLabel": "Match rule",
+        "clearMode": "Off",
+        "hint": "Pick the date rule, then choose the date.",
+        "mode": {
+          "exact": "On date",
+          "before": "On or before",
+          "after": "On or after"
+        },
+        "activeLabel": {
+          "exact": "Videos uploaded on this date",
+          "before": "Videos uploaded on or before this date",
+          "after": "Videos uploaded on or after this date"
+        },
+        "presetsLabel": "Quick presets",
+        "presets": {
+          "today": "Today",
+          "yesterday": "Yesterday",
+          "last7Days": "Last 7 days",
+          "last30Days": "Last 30 days"
+        }
+      },
+      "matchFilters": {
+        "label": "Match filters:",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "Examples: !is_live, duration >? 600, like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "Break-match filters:",
+        "placeholder": "duration >? 3600",
+        "hint": "Stop checking the current link when an item fails this filter."
+      }
+    },
+    "playlistSelection": {
+      "title": "Choose playlist items",
+      "description": "Select what items to download:",
+      "selectionSummary": "{count} of {total} item selected | {count} of {total} items selected",
+      "selectionSummaryAll": "All items selected | All {count} items selected",
+      "advancedButton": "Advanced",
+      "simpleButton": "Reset",
+      "advancedTitle": "Advanced playlist selection",
+      "advancedHint": "Select multiple items, negative numbers and multiple ranges.",
+      "advancedDescription": "Current selection",
+      "advancedEmpty": "No advanced selection configured yet.",
+      "addSingle": "Add item",
+      "addRange": "Add range",
+      "applyFull": "Download all items",
+      "applySelection": "Download selected items",
+      "useAdvanced": "Use advanced selection",
+      "noMatches": "This range does not match any items in the playlist.",
+      "row": {
+        "single": "Single",
+        "range": "Range"
+      },
+      "remove": "Remove",
+      "fields": {
+        "advancedLabel": "Advanced:",
+        "index": "Item",
+        "indexPlaceholder": "1 or -1",
+        "start": "Start",
+        "startPlaceholder": "1",
+        "end": "End",
+        "endPlaceholder": "10",
+        "input": "Items"
+      },
+      "errors": {
+        "playlistIndex": "Use a whole number other than 0. Negative numbers count from the end.",
+        "playlistRangeBounds": "Set start and end. Negatives count from the end."
+      }
+    },
+    "toasts": {
+      "saved": "Input filters saved!",
+      "error": "Unable to save input filters. {error}"
+    }
+  },
   "settings": {
     "title": "Settings",
     "reset": {
       "label": "Reset",
       "confirm": "Click again to reset"
+    },
+    "tabs": {
+      "downloads": "Downloads",
+      "app": "App",
+      "network": "Network",
+      "system": "System",
+      "about": "About"
     },
     "performance": {
       "legend": "Performance",
@@ -485,7 +638,8 @@
       "globalShortcuts": {
         "label": "Enable shortcuts:",
         "add_hint": "Add videos to the queue with:",
-        "download_hint": "Download the queue with:"
+        "download_hint": "Download the queue with:",
+        "instant_hint": "Add and download immediately with:"
       },
       "authentication": {
         "label": "Log in to download private videos:",
@@ -499,9 +653,17 @@
         "label": "Add cover image:",
         "hint": "Embed the thumbnail inside the file so media players can display artwork."
       },
+      "saveThumbnail": {
+        "label": "Save thumbnail file:",
+        "hint": "Download the best available thumbnail next to the media file."
+      },
       "addMetadata": {
         "label": "Add title & artist info:",
         "hint": "Save metadata such as title, uploader/artist and description inside the file."
+      },
+      "preciseCuts": {
+        "label": "Precise cut:",
+        "hint": "Cuts at exact frames instead of nearby keyframes. Very slow.\nEnable only if normal cuts are wrong, garbled, or have black/missing segments."
       },
       "partialDownload": {
         "legend": "Partial download",
@@ -528,14 +690,34 @@
         "label": "Add subtitles:",
         "link": "Configure subtitles"
       },
-      "policy": {
-        "label": "Conversion mode:",
-        "hint": "If the downloaded file doesn't already match your selected format, it may need to be converted. Skip conversion: fastest, may ignore your chosen format. Convert if possible: tries to change the container without re-encoding. Convert if needed: always uses the selected format, but is slower and uses more CPU.",
+      "keepOriginalStreams": {
+        "label": "Keep original streams",
+        "hint": "Avoid container conversion and re-encoding unless a selected post-processing step requires it."
+      },
+      "postprocess": {
+        "label": "Video post-processing:",
+        "hint": "Post-processing runs after the download finishes.",
+        "reencodeWarning": "This option will re-encode, this is heavy and can take a long time.",
+        "keepOriginalStreamsConflict": "This option requires re-encoding. Disable Keep original streams to use it.",
+        "mp42RequiresMp4": "This option requires mp4 output.",
         "options": {
-          "never": "Skip conversion",
-          "remuxOnly": "Convert if possible (recommended)",
-          "allowReencode": "Convert if needed (slower)"
+          "none": "None",
+          "fps30": "Re-encode to 30 fps",
+          "mp42": "Set mp4 brand to mp42",
+          "custom": "Custom"
         }
+      },
+      "postprocessMode": {
+        "label": "Custom post-processing mode:",
+        "hint": "Choose whether custom ffmpeg args run during remuxing or re-encoding.",
+        "options": {
+          "remux": "Run during remux",
+          "reencode": "Run during re-encode"
+        }
+      },
+      "postprocessArgs": {
+        "label": "Advanced ffmpeg args:",
+        "hint": "Advanced users only. Separate arguments with spaces; quoted values are preserved."
       },
       "tabs": {
         "audio": {
@@ -543,7 +725,7 @@
           "label": "Audio",
           "format": {
             "label": "Audio format:",
-            "hint": "Choose the preferred audio format. Conversion mode decides whether the file will actually be converted.",
+            "hint": "Choose the preferred audio format.",
             "options": {
               "mp3": "MP3 (recommended)",
               "m4a": "M4A",
@@ -553,6 +735,13 @@
               "wav": "WAV",
               "flac": "FLAC"
             }
+          },
+          "postprocess": {
+            "label": "Audio post-processing:",
+            "options": {
+              "none": "None",
+              "custom": "Custom"
+            }
           }
         },
         "video": {
@@ -560,7 +749,7 @@
           "label": "Video",
           "container": {
             "label": "Video format:",
-            "hint": "Choose the preferred video format. Conversion mode decides whether the file will actually be converted.",
+            "hint": "Choose the preferred video container.",
             "options": {
               "mp4": "MP4",
               "mkv": "MKV"
@@ -612,21 +801,31 @@
           "none": "Do not impersonate",
           "any": "Impersonate a random client"
         }
+      },
+      "extractorArgs": {
+        "label": "Extractor arguments:",
+        "hint": "Customise the extractor arguments for yt-dlp. One argument per line.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Enter only the value. The app adds --extractor-args automatically."
       }
     },
     "sponsorBlock": {
       "legend": "SponsorBlock",
       "legendLabel": "Remove or mark parts of a video.",
       "removeParts": {
-        "label": "Parts to remove",
+        "label": "Parts to remove:",
         "placeholder": "Select 1 or more parts to remove from the video."
       },
       "markParts": {
-        "label": "Parts to mark",
+        "label": "Parts to mark:",
         "placeholder": "Select 1 or more parts to mark with a chapter."
       },
       "apiUrl": {
-        "label": "API URL"
+        "label": "API URL:"
+      },
+      "preciseCuts": {
+        "label": "Precise cut:",
+        "hint": "Makes SponsorBlock removals and partial downloads cut at exact frames. Very slow.\nEnable only if normal cuts are wrong, garbled, or have black/missing segments."
       },
       "parts": {
         "sponsor": {
@@ -777,7 +976,7 @@
       },
       "dragState": {
         "title": "Drop to add to queue",
-        "subtitle": "Add to the queue by dragging videos."
+        "subtitle": "Add to the queue by dragging videos or files with links."
       },
       "fileInput": {
         "select": "Select file",
@@ -866,12 +1065,12 @@
         "message": "This video can only be accessed through an embedded player."
       },
       "urlUnsupported": {
-        "shortMessage": "Invalid URL",
+        "shortMessage": "Invalid link",
         "message": "The provided link isn’t supported or recognized."
       },
       "unknownUrlType": {
-        "shortMessage": "Unknown URL type",
-        "message": "The provided URL uses an unsupported protocol."
+        "shortMessage": "Unknown link type",
+        "message": "The provided link uses an unsupported protocol."
       },
       "networkNameResolutionFailed": {
         "shortMessage": "Network error",
@@ -904,6 +1103,10 @@
       "ffmpegFailed": {
         "shortMessage": "ffmpeg failed",
         "message": "FFmpeg encountered an error during processing."
+      },
+      "rejectedByFilter": {
+        "shortMessage": "Filtered out",
+        "message": "This item was rejected by your input filters."
       },
       "cannotAllocateMemory": {
         "shortMessage": "Memory error",

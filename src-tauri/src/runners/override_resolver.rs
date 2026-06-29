@@ -52,6 +52,9 @@ impl ApplyPatch<VideoOutputSettings> for VideoOutputOverrides {
   fn apply_to(&self, target: &mut VideoOutputSettings) {
     apply_copy_patch!(self, target, container);
     apply_copy_patch!(self, target, policy);
+    apply_copy_patch!(self, target, postprocess_preset);
+    apply_copy_patch!(self, target, custom_postprocess_mode);
+    apply_clone_patch!(self, target, postprocess_args);
   }
 }
 
@@ -59,6 +62,8 @@ impl ApplyPatch<AudioOutputSettings> for AudioOutputOverrides {
   fn apply_to(&self, target: &mut AudioOutputSettings) {
     apply_copy_patch!(self, target, format);
     apply_copy_patch!(self, target, policy);
+    apply_copy_patch!(self, target, postprocess_preset);
+    apply_clone_patch!(self, target, postprocess_args);
   }
 }
 
@@ -68,6 +73,8 @@ impl ApplyPatch<OutputSettings> for OutputOverrides {
     apply_nested_patch!(self, target, audio);
     apply_copy_patch!(self, target, add_metadata);
     apply_copy_patch!(self, target, add_thumbnail);
+    apply_copy_patch!(self, target, save_thumbnail);
+    apply_copy_patch!(self, target, precise_cuts);
     apply_clone_patch!(self, target, file_name_template);
     apply_clone_patch!(self, target, audio_file_name_template);
     apply_copy_patch!(self, target, restrict_filenames);
@@ -83,6 +90,7 @@ impl ApplyPatch<NetworkSettings> for NetworkOverrides {
       target.proxy = Some(proxy.clone());
     }
     apply_clone_patch!(self, target, impersonate);
+    apply_clone_patch!(self, target, extractor_args);
   }
 }
 
@@ -143,9 +151,12 @@ impl ApplyPatch<AuthSecrets> for AuthOverrides {
 mod tests {
   use super::resolve_with_patch;
   use crate::models::download::{
-    AuthOverrides, OutputOverrides, SubtitleOverrides, VideoOutputOverrides,
+    AudioOutputOverrides, AuthOverrides, OutputOverrides, SubtitleOverrides, VideoOutputOverrides,
   };
-  use crate::models::download::{TranscodePolicy, VideoContainer};
+  use crate::models::download::{
+    AudioPostprocessPreset, TranscodePolicy, VideoContainer, VideoPostprocessMode,
+    VideoPostprocessPreset,
+  };
   use crate::state::config_models::{AuthSettings, OutputSettings, SubtitleSettings};
   use crate::stronghold::stronghold_state::AuthSecrets;
 
@@ -156,15 +167,29 @@ mod tests {
       video: Some(VideoOutputOverrides {
         container: Some(VideoContainer::Mkv),
         policy: Some(TranscodePolicy::Never),
+        postprocess_preset: Some(VideoPostprocessPreset::Fps30),
+        custom_postprocess_mode: Some(VideoPostprocessMode::Reencode),
+        postprocess_args: Some("-vf fps=30".into()),
       }),
       add_thumbnail: Some(false),
+      save_thumbnail: Some(true),
       ..Default::default()
     };
 
     let resolved = resolve_with_patch(&base, Some(&patch));
     assert!(matches!(resolved.video.container, VideoContainer::Mkv));
     assert!(matches!(resolved.video.policy, TranscodePolicy::Never));
+    assert!(matches!(
+      resolved.video.postprocess_preset,
+      VideoPostprocessPreset::Fps30
+    ));
+    assert!(matches!(
+      resolved.video.custom_postprocess_mode,
+      VideoPostprocessMode::Reencode
+    ));
+    assert_eq!(resolved.video.postprocess_args, "-vf fps=30");
     assert!(!resolved.add_thumbnail);
+    assert!(resolved.save_thumbnail);
     assert_eq!(resolved.add_metadata, base.add_metadata);
   }
 
@@ -175,7 +200,57 @@ mod tests {
       resolve_with_patch::<OutputSettings, OutputOverrides>(&base, None);
     assert_eq!(resolved.add_metadata, base.add_metadata);
     assert_eq!(resolved.add_thumbnail, base.add_thumbnail);
+    assert_eq!(resolved.save_thumbnail, base.save_thumbnail);
     assert!(matches!(resolved.video.container, VideoContainer::Mp4));
+    assert!(matches!(
+      resolved.video.postprocess_preset,
+      VideoPostprocessPreset::None
+    ));
+    assert_eq!(resolved.video.postprocess_args, "");
+  }
+
+  #[test]
+  fn resolve_output_applies_custom_postprocess_args_patch() {
+    let base = OutputSettings::default();
+    let patch = OutputOverrides {
+      video: Some(VideoOutputOverrides {
+        custom_postprocess_mode: Some(VideoPostprocessMode::Reencode),
+        postprocess_args: Some("-brand mp42".into()),
+        ..Default::default()
+      }),
+      ..Default::default()
+    };
+
+    let resolved = resolve_with_patch(&base, Some(&patch));
+    assert!(matches!(
+      resolved.video.custom_postprocess_mode,
+      VideoPostprocessMode::Reencode
+    ));
+    assert_eq!(resolved.video.postprocess_args, "-brand mp42");
+    assert!(matches!(
+      resolved.video.postprocess_preset,
+      VideoPostprocessPreset::None
+    ));
+  }
+
+  #[test]
+  fn resolve_output_applies_audio_postprocess_patch() {
+    let base = OutputSettings::default();
+    let patch = OutputOverrides {
+      audio: Some(AudioOutputOverrides {
+        postprocess_preset: Some(AudioPostprocessPreset::Custom),
+        postprocess_args: Some("-metadata artist=Example".into()),
+        ..Default::default()
+      }),
+      ..Default::default()
+    };
+
+    let resolved = resolve_with_patch(&base, Some(&patch));
+    assert!(matches!(
+      resolved.audio.postprocess_preset,
+      AudioPostprocessPreset::Custom
+    ));
+    assert_eq!(resolved.audio.postprocess_args, "-metadata artist=Example");
   }
 
   #[test]

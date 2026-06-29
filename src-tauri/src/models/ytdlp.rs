@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use std::collections::HashMap;
 
 #[derive(Debug, Deserialize)]
 pub struct YtdlpInfo {
@@ -17,6 +18,8 @@ pub struct YtdlpInfo {
   pub thumbnail: Option<String>,
   pub thumbnails: Option<Vec<YtdlpThumbnail>>,
   pub formats: Option<Vec<YtdlpFormat>>,
+  pub subtitles: Option<HashMap<String, Vec<YtdlpSubtitle>>>,
+  pub automatic_captions: Option<HashMap<String, Vec<YtdlpSubtitle>>>,
   #[serde(rename = "type_")]
   pub type_: Option<String>,
   pub is_live: Option<bool>,
@@ -55,6 +58,11 @@ pub struct YtdlpFormat {
   pub ext: Option<String>,
   pub vcodec: Option<String>,
   pub acodec: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct YtdlpSubtitle {
+  pub ext: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]

@@ -14,7 +14,7 @@
       </slot>
       <slot v-else />
     </router-link>
-    <button v-else @click="emit('click')" v-bind="$attrs" class="btn btn-subtle" :disabled="disabled ? true : undefined">
+    <button v-else @click="emit('click', $event)" v-bind="$attrs" class="btn btn-subtle" :disabled="disabled ? true : undefined">
       <slot v-if="loading" name="loader">
         <span class="sr-only">{{ t('common.loading') }}</span>
         <span class="loading loading-spinner loading-sm"></span>
@@ -75,7 +75,7 @@ const tooltipLocationClass = computed(() => {
 });
 
 const emit = defineEmits<{
-  (e: 'click'): void;
+  (e: 'click', event: MouseEvent): void;
 }>();
 
 </script>

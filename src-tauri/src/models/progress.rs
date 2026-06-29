@@ -65,5 +65,7 @@ pub enum ProgressStage {
   Initializing,
   Downloading,
   Merging,
+  Remuxing,
+  Reencoding,
   Finalizing,
 }

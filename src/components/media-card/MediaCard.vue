@@ -1,5 +1,5 @@
 <template>
-  <article class="card card-side p-4 w-175 h-48 bg-base-300 shadow-md" :class="[statusOutline]">
+  <article class="card card-side w-full max-w-175 h-48 bg-base-300 p-4 shadow-md" :class="[statusOutline]">
     <figure class="shrink-0 w-64 aspect-video rounded-md overflow-hidden bg-base-100">
       <img
           :src="group.thumbnail ?? placeholderUrl"
@@ -39,6 +39,7 @@ import MediaDoneStep from './steps/MediaDoneStep.vue';
 import MediaErrorStep from './steps/MediaErrorStep.vue';
 import MediaCardActions from './actions/MediaCardActions.vue';
 import MediaDownloadListStep from './steps/MediaDownloadListStep.vue';
+import PlaylistSelectionStep from './steps/PlaylistSelectionStep.vue';
 import { useToastStore } from '../../stores/toast';
 import { Group } from '../../tauri/types/group';
 import { useI18n } from 'vue-i18n';
@@ -48,6 +49,7 @@ import MediaPausedListStep from './steps/MediaPausedListStep.vue';
 const stepMap = {
   [MediaState.fetching]: FetchStep,
   [MediaState.fetchingList]: FetchListStep,
+  [MediaState.playlistSelection]: PlaylistSelectionStep,
   [MediaState.configure]: MediaConfigureStep,
   [MediaState.downloading]: MediaDownloadStep,
   [MediaState.downloadingList]: MediaDownloadListStep,

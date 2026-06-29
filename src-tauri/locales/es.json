@@ -41,7 +41,7 @@
       "body": "{title} | {title} ({n} elemento) | {title} ({n} elementos)"
     },
     "downloadFailed": {
-      "title": "Falló la descarga",
+      "title": "Error en la descarga",
       "body": "{title}\n{message}"
     }
   }

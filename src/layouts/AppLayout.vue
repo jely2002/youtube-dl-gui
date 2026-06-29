@@ -1,6 +1,6 @@
 <template>
   <the-header/>
-  <main class="flex‑grow overflow-auto h-full relative bg-base-200">
+  <main class="flex-grow min-w-0 overflow-y-auto overflow-x-hidden h-full relative bg-base-200">
     <router-view :key="$route.fullPath"/>
     <the-updater/>
   </main>
@@ -48,7 +48,6 @@ watchEffect(() => {
   }
 });
 </script>
-
 <style>
 #app {
   @apply flex;

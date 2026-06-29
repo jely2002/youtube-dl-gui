@@ -5,7 +5,7 @@
 
     <div
         v-else
-        class="flex gap-4 px-6 py-4 max-[1432px]:justify-center content-start flex-wrap"
+        class="flex gap-4 px-3 py-4 sm:px-6 max-[1432px]:justify-center content-start flex-wrap"
     >
       <media-card
           v-for="group in groupStore.orderedGroups"

@@ -1,4 +1,4 @@
-import { createApp, Ref } from 'vue';
+import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
 import './app.css';
@@ -14,7 +14,7 @@ import { binaryHandlers } from '../tests/utils/mocks/binaryHandlers';
 import { updateHandlers } from '../tests/utils/mocks/updateHandlers';
 import { invoke } from '@tauri-apps/api/core';
 import { strongholdHandlers } from '../tests/utils/mocks/strongholdHandlers';
-import { getDefaultLocale, i18n } from './i18n';
+import { getDefaultLocale, i18n, type Locale } from './i18n';
 import { createSentryPiniaPlugin } from '@sentry/vue';
 import { createSentry } from './sentry.ts';
 import { startWindowWatcher } from './tauri/window.ts';
@@ -24,6 +24,18 @@ import { useMediaStore } from './stores/media/media.ts';
 const pinia = createPinia();
 pinia.use(createSentryPiniaPlugin());
 const app = createApp(App);
+
+if (import.meta.env.DEV) {
+  (globalThis as typeof globalThis & {
+    __OVD_DEBUG__?: {
+      pinia: typeof pinia;
+      getStore: (id: string) => unknown;
+    };
+  }).__OVD_DEBUG__ = {
+    pinia,
+    getStore: (id: string) => (pinia as typeof pinia & { _s: Map<string, unknown> })._s.get(id),
+  };
+}
 
 createSentry(app);
 
@@ -75,11 +87,13 @@ async function initStores(): Promise<void> {
     if (settings.appearance.theme !== 'system') {
       applyTheme(settings.appearance.theme);
     }
-    const locale = i18n.global.locale as Ref<string>;
-    locale.value = settings.appearance.language === 'system'
+
+    const currentLocale: Locale = settings.appearance.language === 'system'
       ? getDefaultLocale()
-      : settings.appearance.language;
-    document.documentElement.setAttribute('lang', locale.value);
+      : settings.appearance.language as Locale;
+
+    i18n.global.locale.value = currentLocale;
+    document.documentElement.setAttribute('lang', currentLocale);
   } catch (e) {
     console.error(`Unable to load settings: ${e}`);
   }

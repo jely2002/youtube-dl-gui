@@ -1,7 +1,6 @@
 import { defineConfig, UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
-import vueDevTools from 'vite-plugin-vue-devtools';
 
 const host = process.env.TAURI_DEV_HOST;
 
@@ -11,9 +10,6 @@ const isDev = process.env.DEV === 'true';
 export default defineConfig((): UserConfig => ({
   plugins: [
     vue(),
-    isDev && !isE2E && vueDevTools({
-      launchEditor: 'idea',
-    }),
     tailwindcss(),
   ],
   define: {

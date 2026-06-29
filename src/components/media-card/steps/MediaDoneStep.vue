@@ -8,6 +8,12 @@
     >
       {{ t('media.steps.done.complete') }}
     </base-progress>
+    <p v-if="singleSkippedReason" class="text-sm">
+      {{ singleSkippedReason }}
+    </p>
+    <p v-else-if="itemOutcomeDisplay" class="text-sm">
+      {{ t('media.steps.configure.metadata.items', { amount: group.total, details: itemOutcomeDisplay }) }}
+    </p>
     <div class="w-full flex gap-4">
       <div
           class="tooltip-bottom"
@@ -39,10 +45,13 @@ import { useOpener } from '../../../composables/useOpener';
 import { useMediaDestinationStore } from '../../../stores/media/destination';
 import { Group } from '../../../tauri/types/group';
 import { useI18n } from 'vue-i18n';
+import { countSkippedDiagnostics, groupSkippedDiagnostics } from '../../../helpers/skippedDiagnostics.ts';
+import { useMediaDiagnosticsStore } from '../../../stores/media/diagnostics.ts';
 
 const { t } = useI18n();
 const { openPath, revealPath } = useOpener();
 const destinationStore = useMediaDestinationStore();
+const diagnosticsStore = useMediaDiagnosticsStore();
 
 const { group } = defineProps({
   group: {
@@ -54,6 +63,36 @@ const { group } = defineProps({
 const groupDestination = computed(() => {
   const destination = destinationStore.getPrimaryDestination(group.id);
   return destination?.path;
+});
+
+const skippedCount = computed(() => countSkippedDiagnostics(diagnosticsStore.findDiagnosticsByGroupId(group.id)));
+const skippedGroups = computed(() => groupSkippedDiagnostics(diagnosticsStore.findDiagnosticsByGroupId(group.id)));
+
+const singleSkippedReason = computed(() => {
+  if (group.isCombined || group.errored > 0 || skippedGroups.value.length === 0) {
+    return '';
+  }
+
+  return skippedGroups.value[0]?.message ?? '';
+});
+
+const itemOutcomeDisplay = computed(() => {
+  if (group.errored > 0 && skippedCount.value > 0) {
+    return t('media.steps.configure.metadata.failedAndSkippedCount', {
+      failed: group.errored,
+      skipped: skippedCount.value,
+    });
+  }
+
+  if (group.errored > 0) {
+    return t('media.steps.configure.metadata.failedCount', { amount: group.errored });
+  }
+
+  if (skippedCount.value > 0) {
+    return t('media.steps.configure.metadata.skippedCount', { amount: skippedCount.value });
+  }
+
+  return '';
 });
 
 const openFile = async () => {

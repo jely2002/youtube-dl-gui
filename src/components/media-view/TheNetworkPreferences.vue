@@ -6,47 +6,9 @@
         :badge="t('media.preferences.badges.override')"
         :label="t('media.preferences.labels.network')"
       >
-        <label class="font-semibold mt-2" for="override-enable-proxy">
-          {{ t('settings.network.enableProxy.label') }}
-        </label>
-        <input
-          id="override-enable-proxy"
-          type="checkbox"
-          v-model="enableProxy"
-          class="toggle toggle-primary"
-        />
-
-        <label class="font-semibold mt-2" for="override-proxy">
-          {{ t('settings.network.proxy.label') }}
-        </label>
-        <input
-          id="override-proxy"
-          type="text"
-          class="input mb-2"
-          :disabled="enableProxy !== true"
-          v-model="proxy"
-          placeholder="socks5://user:pass@127.0.0.1:1080/"
-        />
-
-        <label class="font-semibold mt-2" for="override-impersonate">
-          {{ t('settings.network.impersonate.label') }}
-        </label>
-        <select
-          id="override-impersonate"
-          v-model="impersonate"
-          class="select select-bordered"
-        >
-          <option
-            v-for="preset in impersonatePresets"
-            :key="preset.value"
-            :value="preset.value"
-          >
-            {{ preset.label }}
-          </option>
-        </select>
-        <span class="label">{{ t('settings.network.impersonate.hint') }}</span>
+        <network-settings-editor v-model="networkState" id-prefix="override" />
       </base-fieldset>
-      <div class="divider my-2" />
+      <div class="divider mt-0 mb-2" />
       <base-fieldset
         :legend="t('auth.credentials.customHeaders.legend')"
         :badge="t('auth.credentials.customHeaders.legendBadge')"
@@ -68,12 +30,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import BaseFieldset from '../base/BaseFieldset.vue';
-import { buildImpersonatePresets } from '../../helpers/network.ts';
+import NetworkSettingsEditor from '../network/NetworkSettingsEditor.vue';
 import { useMediaOptionsStore } from '../../stores/media/options.ts';
 import { DownloadOverrides } from '../../tauri/types/media.ts';
+import { defaultNetworkSettings, type NetworkSettings } from '../../tauri/types/config.ts';
 import { useSettingsStore } from '../../stores/settings.ts';
 
 const props = defineProps({
@@ -87,12 +50,10 @@ const { t } = useI18n();
 const optionsStore = useMediaOptionsStore();
 const settingsStore = useSettingsStore();
 
-const enableProxy = ref(false);
-const proxy = ref('');
-const impersonate = ref('none');
+const networkState = ref<NetworkSettings>({
+  ...defaultNetworkSettings,
+});
 const headersText = ref('');
-
-const impersonatePresets = computed(() => buildImpersonatePresets(t));
 
 const parseHeaders = (value: string): string[] =>
   value
@@ -102,28 +63,37 @@ const parseHeaders = (value: string): string[] =>
 
 const syncFromStore = () => {
   const current = optionsStore.getOverrides(props.groupId);
-  enableProxy.value = current?.network?.enableProxy ?? false;
-  proxy.value = current?.network?.proxy ?? '';
-  impersonate.value = current?.network?.impersonate ?? 'none';
+  networkState.value = {
+    enableProxy: current?.network?.enableProxy ?? false,
+    proxy: current?.network?.proxy ?? '',
+    impersonate: current?.network?.impersonate ?? 'none',
+    extractorArgs: current?.network?.extractorArgs ?? '',
+  };
   headersText.value = (current?.auth?.headers ?? []).join('\n');
 };
 
 watch(() => props.groupId, syncFromStore, { immediate: true });
 
-watch([enableProxy, proxy, impersonate, headersText], () => {
-  const trimmedProxy = proxy.value.trim();
+watch([networkState, headersText], () => {
+  const trimmedProxy = networkState.value.proxy?.trim() ?? '';
   const headers = parseHeaders(headersText.value);
   const globalNetwork = settingsStore.settings.network;
+  const extractorArgs = networkState.value.extractorArgs.trim();
+  const globalExtractorArgs = settingsStore.settings.network.extractorArgs.trim();
 
   const networkPayload = {
-    enableProxy: enableProxy.value,
+    enableProxy: networkState.value.enableProxy ?? false,
     proxy: trimmedProxy || undefined,
-    impersonate: impersonate.value !== 'none' ? impersonate.value : undefined,
+    impersonate: networkState.value.impersonate !== 'none'
+      ? networkState.value.impersonate
+      : undefined,
+    extractorArgs: extractorArgs || undefined,
   };
   const hasNetwork
-    = (globalNetwork.enableProxy ?? false) !== enableProxy.value
+    = (globalNetwork.enableProxy ?? false) !== (networkState.value.enableProxy ?? false)
       || (globalNetwork.proxy ?? '') !== trimmedProxy
-      || (globalNetwork.impersonate ?? 'none') !== impersonate.value;
+      || (globalNetwork.impersonate ?? 'none') !== networkState.value.impersonate
+      || globalExtractorArgs !== extractorArgs;
   const hasAuth = headers.length > 0;
 
   const existing = optionsStore.getOverrides(props.groupId);
@@ -148,5 +118,5 @@ watch([enableProxy, proxy, impersonate, headersText], () => {
   } else {
     optionsStore.removeOverrides(props.groupId);
   }
-});
+}, { deep: true });
 </script>

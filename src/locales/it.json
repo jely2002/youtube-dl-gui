@@ -20,13 +20,28 @@
     "unknown": "sconosciuto",
     "confirm": "Conferma",
     "best": "Migliore",
-    "resume": "Riprendi"
+    "resume": "Riprendi",
+    "urlImport": {
+      "added": "Link aggiunto alla coda. | {n} link aggiunti alla coda.",
+      "partial": "Aggiunti {added} link alla coda. Ignorate {skipped} voci non valide.",
+      "noneFound": "Nessun link valido trovato nell’input o nel file.",
+      "readError": "Impossibile leggere quel file."
+    }
   },
   "layout": {
     "header": {
       "placeholder": "Inserisci l'URL di un video/playlist da aggiungere alla coda",
       "nav": {
-        "settings": "Impostazioni app"
+        "settings": "Impostazioni app",
+        "inputFilters": "Filtri"
+      },
+      "watchClipboardPlaceholder": "Monitoraggio degli appunti: i link copiati vengono aggiunti alla coda",
+      "actions": {
+        "more": "Altre azioni di aggiunta",
+        "watchClipboardStart": "Monitora appunti",
+        "watchClipboardStop": "Interrompi monitoraggio appunti",
+        "importFile": "Importa link",
+        "inputFilters": "Filtri"
       }
     },
     "footer": {
@@ -182,6 +197,11 @@
         "toasts": {
           "reported": "È stato segnalato un errore.",
           "error": "Impossibile segnalare l'errore."
+        },
+        "skipped": {
+          "count": "Elementi ignorati ({count})",
+          "empty": "Nessun elemento è stato escluso dai filtri.",
+          "items": "{count} elemento | {count} elementi"
         }
       }
     },
@@ -191,9 +211,21 @@
       },
       "labels": {
         "quality": "Scegli le preferenze per formato, codec e tracce.",
-        "network": "Configura proxy, impersonazione e intestazioni della richiesta. Sovrascrive le impostazioni predefinite dell'app per questo download.",
+        "network": "Configura proxy, impersonazione, impostazioni estrazione e intestazioni della richiesta. Sovrascrive le impostazioni predefinite dell'app per questo download.",
         "output": "Configura contenitore, conversione e modelli per il nome file. Sovrascrive le impostazioni predefinite dell'app per questo download.",
+        "subtitles": "Scegli i sottotitoli per questo download.",
         "headersOverride": "Una voce per riga: CAMPO:VALORE. Sostituisce le intestazioni globali per questo download."
+      },
+      "subtitles": {
+        "empty": "Nessun sottotitolo trovato per questo download.",
+        "languages": {
+          "legend": "Lingue disponibili",
+          "hint": "Per questo elemento è possibile scaricare solo questi sottotitoli.",
+          "manual": "Fornito dall'autore",
+          "auto": "Generato automaticamente",
+          "noneManual": "Nessun sottotitolo dell'autore trovato.",
+          "noneAuto": "Nessun sottotitolo automatico trovato."
+        }
       },
       "hints": {
         "format": "Scegli la qualità video o audio. Una qualità più alta significa di solito file più grandi e download più lunghi.",
@@ -202,6 +234,7 @@
       },
       "tabs": {
         "quality": "Qualità",
+        "subtitles": "Sottotitoli",
         "network": "Rete"
       }
     },
@@ -234,6 +267,8 @@
           }
         },
         "tracks": {
+          "availableInResolutions": "Disponibile in",
+          "unavailableForSelectedResolution": "Non disponibile per la risoluzione selezionata",
           "audioSelect": {
             "noFormats": "Nessuna traccia audio",
             "placeholder": "Traccia audio",
@@ -250,7 +285,9 @@
           "size": "Dimensione: ",
           "sizeInfo": "La quantità di dati che verrà scaricata.\nNon è la dimensione finale del file.",
           "items": "Elementi: {amount} {failedCount}",
-          "failedCount": "({amount} falliti)"
+          "failedCount": "({amount} falliti)",
+          "skippedCount": "({amount} ignorati)",
+          "failedAndSkippedCount": "({failed} non riusciti, {skipped} ignorati)"
         },
         "trackTypes": {
           "both": "Video + audio",
@@ -274,6 +311,8 @@
           "initializing": "Inizializzazione",
           "downloading": "Download",
           "merging": "Unione",
+          "remuxing": "Remuxing",
+          "reencoding": "Ri-codifica",
           "finalizing": "Pulizia"
         },
         "metadata": {
@@ -301,7 +340,8 @@
         "errorPrefix": "Errore - {message}",
         "report": "Rapporto",
         "showFull": "Visualizza registro",
-        "signIn": "Accedi"
+        "signIn": "Accedi",
+        "filters": "Modifica filtri"
       }
     },
     "card": {
@@ -311,9 +351,9 @@
         "retry": "Riprova download",
         "download": "Download individuale",
         "preferences": "Preferenze di download",
-        "metadata": "Visualizza metadati",
         "pause": "Metti in pausa download",
-        "resume": "Riprendi download"
+        "resume": "Riprendi download",
+        "metadata": "Visualizza metadati"
       },
       "toasts": {
         "retry": "Nuovo tentativo download.",
@@ -323,16 +363,20 @@
   },
   "subtitles": {
     "title": "Sottotitoli",
+    "defaults": {
+      "legend": "Predefiniti sottotitoli",
+      "hint": "Usati quando il video ha i sottotitoli."
+    },
     "options": {
       "enable": {
         "legend": "Download sottotitoli",
-        "legendLabel": "Scegli come recuperare i sottotitoli durante il download dei contenuti multimediali.",
+        "legendLabel": "Scegli impostazioni predefinite sottotitoli.",
         "label": "Abilita sottotitoli",
-        "hint": "Scarica i file dei sottotitoli insieme ai contenuti multimediali."
+        "hint": "Scarica sottotitoli quando sono disponibili."
       },
       "autoGenerated": {
         "label": "Includi sottotitoli generati automaticamente",
-        "hint": "Scarica i sottotitoli generati automaticamente oltre a quelli forniti dal creatore."
+        "hint": "Scarica anche i sottotitoli automatici quando sono disponibili."
       },
       "format": {
         "legend": "Formato preferito",
@@ -344,17 +388,15 @@
         "hint": "Aggiungi i sottotitoli al file video. Funziona con i formati MP4, MKV e WEBM."
       },
       "languages": {
-        "legend": "Lingua",
-        "legendLabel": "Scegli le lingue sottotitoli da scaricare.",
+        "legend": "Lingue",
+        "legendLabel": "Scegli le lingue preferite per i sottotitoli.",
         "downloadAll": "Scarica tutti i sottotitoli disponibili.",
         "search": "Cerca lingue",
         "searchPlaceholder": "Cerca per nome lingua",
-        "suggested": "Suggerite per te",
-        "all": "Tutte le lingue",
         "noResult": "Nessuna lingua corrispondente a '{query}'.",
         "selected": "Selezionate:",
         "allSelected": "Tutti i sottotitoli disponibili",
-        "searchHint": "Suggerimento: usa la casella di ricerca per filtrare rapidamente l'elenco. Le lingue selezionate rimarranno evidenziate."
+        "none": "Nessuna"
       }
     },
     "toasts": {
@@ -413,6 +455,10 @@
     "filename": {
       "legend": "Formato nome file",
       "legendLabel": "Seleziona il nome che avranno i file scaricati.",
+      "reversePlaylistNumbering": {
+        "label": "Numerazione inversa playlist:",
+        "hint": "Numera gli elementi della playlist in ordine inverso."
+      },
       "formatPreset": {
         "label": "Prefisso nome file:",
         "exampleLabel": "Esempio output:",
@@ -441,6 +487,10 @@
       },
       "outputFormat": {
         "label": "Formato nome file:"
+      },
+      "reversePlaylistNumbering": {
+        "label": "Numerazione playlist inversa:",
+        "hint": "Numera gli elementi della playlist dalla fine invece che dall’inizio."
       }
     },
     "toasts": {
@@ -453,6 +503,13 @@
     "reset": {
       "label": "Ripristina",
       "confirm": "Clic di nuovo"
+    },
+    "tabs": {
+      "downloads": "Download",
+      "app": "App",
+      "network": "Rete",
+      "system": "Sistema",
+      "about": "Info programma"
     },
     "performance": {
       "legend": "Prestazioni",
@@ -485,7 +542,8 @@
       "globalShortcuts": {
         "label": "Abilita tasti rapidi:",
         "add_hint": "Aggiungi video alla coda con:",
-        "download_hint": "Scarica la coda con:"
+        "download_hint": "Scarica la coda con:",
+        "instant_hint": "Aggiungi e scarica subito con:"
       },
       "authentication": {
         "label": "Accedi per scaricare video privati:",
@@ -499,9 +557,17 @@
         "label": "Aggiungi immagine copertina:",
         "hint": "Incorpora la miniatura all'interno del file in modo che i lettori multimediali possano visualizzare la grafica."
       },
+      "saveThumbnail": {
+        "label": "Salva file miniatura:",
+        "hint": "Scarica la migliore miniatura disponibile accanto al file multimediale."
+      },
       "addMetadata": {
         "label": "Aggiungi info su titolo e artista:",
         "hint": "Salva metadati all'interno del file (titolo, utente che ha caricato/artista e descrizione)."
+      },
+      "preciseCuts": {
+        "label": "Taglio preciso:",
+        "hint": "Taglia i fotogrammi esatti invece che i fotogrammi chiave vicini. Molto lento.\nAbilita solo se i tagli normali sono sbagliati, confusi o presentano segmenti neri/mancanti."
       },
       "partialDownload": {
         "legend": "Download parziale",
@@ -528,14 +594,34 @@
         "label": "Aggiungi sottotitoli:",
         "link": "Configura sottotitoli"
       },
-      "policy": {
-        "label": "Modo conversione:",
-        "hint": "Se il file scaricato non corrisponde già al formato selezionato, potrebbe essere necessario convertirlo. Salta conversione: più veloce, potrebbe ignorare il formato scelto. Converti se possibile: tenta di cambiare il contenitore senza ricodificare. Converti se necessario: usa sempre il formato selezionato, ma è più lento e usa più risorse CPU.",
+      "keepOriginalStreams": {
+        "label": "Mantieni stream originali",
+        "hint": "Evita la conversione e la ricodifica del contenitore a meno che non sia richiesto da una fase di post-elaborazione selezionata."
+      },
+      "postprocess": {
+        "label": "Post elaborazione video:",
+        "hint": "La post-elaborazione viene eseguita a download.",
+        "reencodeWarning": "Questa opzione verrà ricodificata, è pesante e può richiedere molto tempo.",
+        "keepOriginalStreamsConflict": "Questa opzione richiede la ricodifica. Per usarla disabilita 'Mantieni stream originali'.",
+        "mp42RequiresMp4": "Questa opzione richiede un output mp4.",
         "options": {
-          "never": "Salta conversione",
-          "remuxOnly": "Converti se possibile (suggerito)",
-          "allowReencode": "Converti se necessario (più lento)"
+          "none": "Nessuna",
+          "fps30": "R-codifica  30 fps",
+          "mp42": "Imposta marca mp4 a mp42",
+          "custom": "Personalizzato"
         }
+      },
+      "postprocessMode": {
+        "label": "Modalità di post-elaborazione personalizzata:",
+        "hint": "Scegli se gli argomenti ffmpeg personalizzati verranno eseguiti durante il remux o la ricodifica.",
+        "options": {
+          "remux": "Esegui durante remux",
+          "reencode": "Esegui durante ri-codifica"
+        }
+      },
+      "postprocessArgs": {
+        "label": "Argomenti avanzati ffmpeg:",
+        "hint": "Solo per utenti avanzati. Separa gli argomenti con spazi; i valori tra virgolette vengono conservati."
       },
       "tabs": {
         "audio": {
@@ -543,7 +629,7 @@
           "label": "Audio",
           "format": {
             "label": "Formato audio:",
-            "hint": "Scegli il formato audio preferito. La modalità di conversione definisce se il file verrà effettivamente convertito.",
+            "hint": "Scegli il formato audio preferito.",
             "options": {
               "mp3": "MP3 (suggerito)",
               "m4a": "M4A",
@@ -553,6 +639,13 @@
               "wav": "WAV",
               "flac": "FLAC"
             }
+          },
+          "postprocess": {
+            "label": "Post elaborazione audio:",
+            "options": {
+              "none": "Nessuna",
+              "custom": "Personalizzata"
+            }
           }
         },
         "video": {
@@ -560,7 +653,7 @@
           "label": "Video",
           "container": {
             "label": "Formato video:",
-            "hint": "Scegli il formato video preferito. La modalità di conversione definisce se il file verrà effettivamente convertito.",
+            "hint": "Scegli il contenitore video preferito.",
             "options": {
               "mp4": "MP4",
               "mkv": "MKV"
@@ -612,21 +705,31 @@
           "none": "Non simulare s.o.",
           "any": "Simula un client casuale"
         }
+      },
+      "extractorArgs": {
+        "label": "Argomenti estrazione:",
+        "hint": "Personalizza gli argomenti dell'estrattore per yt-dlp. Un argomento per riga.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Inserisci solo il valore. L'app aggiunge automaticamente --extractor-args."
       }
     },
     "sponsorBlock": {
       "legend": "SponsorBlock",
       "legendLabel": "Rimuovi o contrassegna parti di un video.",
       "removeParts": {
-        "label": "Parti da rimuovere",
+        "label": "Parti da rimuovere:",
         "placeholder": "Seleziona una o più parti del video da rimuovere."
       },
       "markParts": {
-        "label": "Parti da segnare",
+        "label": "Parti da segnare:",
         "placeholder": "Seleziona una o più parti con un capitolo."
       },
       "apiUrl": {
-        "label": "URL API"
+        "label": "URL API:"
+      },
+      "preciseCuts": {
+        "label": "Taglio preciso:",
+        "hint": "Le rimozioni di SponsorBlock e i download parziali vengono tagliati a fotogrammi esatti. Molto lento.\nAbilita solo se i tagli normali sono sbagliati, confusi o presentano segmenti neri/mancanti."
       },
       "parts": {
         "sponsor": {
@@ -689,7 +792,7 @@
       "trayEnabled": {
         "label": {
           "mac": "Visualizza icona nella barra dei menu",
-          "generic": "Visualiza icona nella barra di sistema"
+          "generic": "Visualizza icona nella barra di sistema"
         },
         "hint": {
           "mac": "Visualizza un'icona nella barra dei menu per un accesso rapido.",
@@ -697,12 +800,12 @@
         }
       },
       "minimiseToTray": {
-        "label": "Alla chiusura mninimizza nella barra sistema",
+        "label": "Alla chiusura minimizza nella barra sistema",
         "hint": "Chiudendo la finestra, l'app viene nascosta nella barra di sistema invece di essere chiusa."
       },
       "autoStart": {
         "label": "Avvio automatico",
-        "hint": "Esegui automaticamente Open Video Downloader all'avviuo sistema."
+        "hint": "Esegui automaticamente Open Video Downloader all'avvio sistema."
       },
       "autoStartMinimised": {
         "label": {
@@ -952,6 +1055,10 @@
       "unknown": {
         "shortMessage": "Errore sconosciuto",
         "message": "Durante l'elaborazione di questo elemento si è verificato un errore sconosciuto."
+      },
+      "rejectedByFilter": {
+        "shortMessage": "Escluso dal filtro",
+        "message": "Questo elemento è stato escluso dai filtri di input."
       }
     }
   },
@@ -965,6 +1072,106 @@
       "github": "GitHub",
       "wiki": "Wiki",
       "reportABug": "Segnala bug"
+    }
+  },
+  "inputFilters": {
+    "title": "Filtri di input",
+    "filesize": {
+      "legend": "Dimensione del file",
+      "hint": "Mantieni solo gli elementi più grandi o più piccoli della dimensione scelta."
+    },
+    "dates": {
+      "legend": "Date di caricamento",
+      "hint": "Mantieni solo gli elementi caricati in, prima o dopo una data."
+    },
+    "advanced": {
+      "legend": "Filtri avanzati",
+      "hint": "Questi sono filtri yt-dlp grezzi per uso avanzato."
+    },
+    "fields": {
+      "minSize": {
+        "label": "Dimensione minima del file:"
+      },
+      "maxSize": {
+        "label": "Dimensione massima del file:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "Unità"
+      },
+      "date": {
+        "modeLabel": "Regola di corrispondenza",
+        "clearMode": "Disattivato",
+        "hint": "Scegli prima la regola della data, poi la data.",
+        "mode": {
+          "exact": "Nella data",
+          "before": "Nella data o prima",
+          "after": "Nella data o dopo"
+        },
+        "activeLabel": {
+          "exact": "Video caricati in questa data",
+          "before": "Video caricati in questa data o prima",
+          "after": "Video caricati in questa data o dopo"
+        },
+        "presetsLabel": "Preset rapidi",
+        "presets": {
+          "today": "Oggi",
+          "yesterday": "Ieri",
+          "last7Days": "Ultimi 7 giorni",
+          "last30Days": "Ultimi 30 giorni"
+        }
+      },
+      "matchFilters": {
+        "label": "Filtri di corrispondenza:",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "Esempi: !is_live, duration >? 600, like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "Filtri di interruzione:",
+        "placeholder": "duration >? 3600",
+        "hint": "Interrompi il controllo del link corrente quando un elemento non soddisfa questo filtro."
+      }
+    },
+    "playlistSelection": {
+      "title": "Scegli gli elementi della playlist",
+      "description": "Seleziona quali elementi scaricare:",
+      "selectionSummary": "{count} elemento selezionato su {total} | {count} elementi selezionati su {total}",
+      "selectionSummaryAll": "Tutti gli elementi selezionati | Tutti i {count} elementi selezionati",
+      "advancedButton": "Avanzate",
+      "simpleButton": "Reimposta",
+      "advancedTitle": "Selezione avanzata della playlist",
+      "advancedHint": "Seleziona più elementi, numeri negativi e più intervalli.",
+      "advancedDescription": "Selezione attuale",
+      "advancedEmpty": "Nessuna selezione avanzata configurata.",
+      "addSingle": "Aggiungi elemento",
+      "addRange": "Aggiungi intervallo",
+      "applyFull": "Scarica tutti gli elementi",
+      "applySelection": "Scarica gli elementi selezionati",
+      "useAdvanced": "Usa selezione avanzata",
+      "noMatches": "Questo intervallo non corrisponde a nessun elemento della playlist.",
+      "row": {
+        "single": "Singolo",
+        "range": "Intervallo"
+      },
+      "remove": "Rimuovi",
+      "fields": {
+        "advancedLabel": "Avanzate:",
+        "index": "Elemento",
+        "indexPlaceholder": "1 o -1",
+        "start": "Inizio",
+        "startPlaceholder": "1",
+        "end": "Fine",
+        "endPlaceholder": "10",
+        "input": "Elementi"
+      },
+      "errors": {
+        "playlistIndex": "Usa un numero intero diverso da 0. I numeri negativi contano dalla fine.",
+        "playlistRangeBounds": "Imposta inizio e fine. I numeri negativi contano dalla fine."
+      }
+    },
+    "toasts": {
+      "saved": "Filtri di input salvati!",
+      "error": "Impossibile salvare i filtri di input. {error}"
     }
   }
 }

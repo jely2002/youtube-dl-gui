@@ -5,6 +5,7 @@ import { useMediaGroupStore } from './group';
 export const enum MediaState {
   fetching = 'fetching',
   fetchingList = 'fetchingList',
+  playlistSelection = 'playlistSelection',
   configure = 'configure',
   downloading = 'downloading',
   downloadingList = 'downloadingList',

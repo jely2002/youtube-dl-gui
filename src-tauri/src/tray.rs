@@ -85,8 +85,27 @@ pub fn create_tray(app: &AppHandle) {
     }
   };
 
+  let add_and_download_i = match MenuItem::with_id(
+    app,
+    "add_and_download",
+    i18n_handle.t("tray.addAndDownload"),
+    true,
+    Some(if cfg!(target_os = "macos") {
+      i18n_handle.t("tray.shortcuts.ctrlShiftD")
+    } else {
+      i18n_handle.t("tray.shortcuts.altShiftD")
+    }),
+  ) {
+    Ok(i) => i,
+    Err(e) => {
+      tracing::warn!("Failed to create add_and_download menu item: {e}");
+      return;
+    }
+  };
+
   let menu = match MenuBuilder::new(app)
     .item(&add_to_queue_i)
+    .item(&add_and_download_i)
     .item(&download_i)
     .separator()
     .item(&hide_toggle_i)
@@ -131,6 +150,15 @@ pub fn create_tray(app: &AppHandle) {
           "shortcut_action",
           ShortcutPayload {
             action: "download_all",
+          },
+        );
+      }
+
+      "add_and_download" => {
+        let _ = app.emit(
+          "shortcut_action",
+          ShortcutPayload {
+            action: "media_add_and_download",
           },
         );
       }

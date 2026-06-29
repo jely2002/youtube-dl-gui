@@ -3,11 +3,14 @@
     "quit": "Quit",
     "showOrHide": "Show/Hide Window",
     "addToQueue": "Add from clipboard",
+    "addAndDownload": "Add and download from clipboard",
     "downloadQueue": "Download queue",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftD": "Ctrl + Shift + D",
       "ctrlShiftEnter": "Ctrl + Shift + Enter",
       "altShiftV": "Alt + Shift + V",
+      "altShiftD": "Alt + Shift + D",
       "altShiftEnter": "Alt + Shift + Enter"
     }
   },

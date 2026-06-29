@@ -93,7 +93,7 @@ const canDownload = computed(() => groupState.value === MediaState.configure);
 const canPause = computed(() => groupState.value === MediaState.downloading || groupState.value === MediaState.downloadingList);
 const canResume = computed(() => groupState.value === MediaState.paused || groupState.value === MediaState.pausedList);
 const canRetry = computed(() => groupState.value === MediaState.done || groupState.value === MediaState.error);
-const canViewInfo = computed(() => groupState.value !== MediaState.fetching);
+const canViewInfo = computed(() => groupState.value !== MediaState.fetching && groupState.value !== MediaState.playlistSelection);
 const canSetPreferences = computed(() => groupState.value === MediaState.configure);
 
 const isValidExternalUrl = computed(() => {

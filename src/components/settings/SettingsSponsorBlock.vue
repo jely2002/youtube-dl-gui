@@ -54,6 +54,20 @@
         v-model="settings.sponsorBlock.apiUrl"
         placeholder="https://sponsor.ajay.app"
     />
+    <div class="mt-4 flex flex-col gap-1">
+      <label class="font-semibold" for="sponsorblockPreciseCuts">
+        {{ t('settings.sponsorBlock.preciseCuts.label') }}
+      </label>
+      <input
+          id="sponsorblockPreciseCuts"
+          v-model="settings.output.preciseCuts"
+          type="checkbox"
+          class="toggle toggle-primary my-1"
+      />
+      <p class="label whitespace-pre-line">
+        {{ t('settings.sponsorBlock.preciseCuts.hint') }}
+      </p>
+    </div>
   </base-fieldset>
 </template>
 
