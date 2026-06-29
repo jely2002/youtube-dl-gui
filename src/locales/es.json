@@ -556,7 +556,7 @@
       "title": "Elegir elementos de la lista",
       "description": "Selecciona los elementos que deseas descargar:",
       "selectionSummary": "{count} de {total} elemento seleccionado | {count} de {total} elementos seleccionados",
-      "selectionSummaryAll": "Todos los elementos seleccionados | Los {count} elementos seleccionados",
+      "selectionSummaryAll": "Todos los elementos seleccionados | Todos los {count} elementos seleccionados",
       "advancedButton": "Avanzado",
       "simpleButton": "Restablecer",
       "advancedTitle": "Selección avanzada de lista",
