@@ -497,7 +497,7 @@
   "inputFilters": {
     "title": "Filtros de entrada",
     "filesize": {
-      "legend": "Tamaño de archivo",
+      "legend": "Tamaño del archivo",
       "hint": "Conserva solo los elementos más grandes o más pequeños que el tamaño elegido."
     },
     "dates": {
@@ -553,7 +553,7 @@
       }
     },
     "playlistSelection": {
-      "title": "Eelegir elementos de la lista",
+      "title": "Elegir elementos de la lista",
       "description": "Selecciona los elementos que deseas descargar:",
       "selectionSummary": "{count} de {total} elemento seleccionado | {count} de {total} elementos seleccionados",
       "selectionSummaryAll": "Todos los elementos seleccionados | Los {count} elementos seleccionados",
@@ -586,7 +586,7 @@
       },
       "errors": {
         "playlistIndex": "Usa un número entero distinto de 0. Los números negativos cuentan desde el final.",
-        "playlistRangeBounds": "Define un inicio y un fin. Los negativos cuentan desde el final."
+        "playlistRangeBounds": "Define el inicio y el final. Los negativos cuentan desde el final."
       }
     },
     "toasts": {
