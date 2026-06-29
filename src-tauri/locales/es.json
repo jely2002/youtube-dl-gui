@@ -2,12 +2,15 @@
   "tray": {
     "quit": "Salir",
     "showOrHide": "Mostrar/Ocultar ventana",
-    "addToQueue": "Añadir desde el portapapeles",
+    "addToQueue": "Agregar desde el portapapeles",
+    "addAndDownload": "Agregar y descargar del portapapeles",
     "downloadQueue": "Descargar cola",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftD": "Ctrl + Shift + D",
       "ctrlShiftEnter": "Ctrl + Shift + Enter",
       "altShiftV": "Alt + Shift + V",
+      "altShiftD": "Alt + Shift + D",
       "altShiftEnter": "Alt + Shift + Enter"
     }
   },
