@@ -278,7 +278,10 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub async fn output(self) -> Result<YtdlpOutput, String> {
-    tracing::debug!("Running command: yt-dlp {}", sanitize_args_for_log(&self.args));
+    tracing::debug!(
+      "Running command: yt-dlp {}",
+      sanitize_args_for_log(&self.args)
+    );
     let mut command = self.build_command();
 
     configure_command(&mut command).map_err(|e| format!("yt-dlp spawn setup failed: {e}"))?;
@@ -298,7 +301,10 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub fn spawn(self) -> Result<(UnboundedReceiver<YtdlpCommandEvent>, YtdlpChild), String> {
-    tracing::debug!("Running command: yt-dlp {}", sanitize_args_for_log(&self.args));
+    tracing::debug!(
+      "Running command: yt-dlp {}",
+      sanitize_args_for_log(&self.args)
+    );
     let mut command = self.build_command();
     command
       .stdin(Stdio::piped())
@@ -386,8 +392,14 @@ impl<'a> YtdlpRunner<'a> {
 
 fn sanitize_args_for_log(args: &[String]) -> String {
   let sensitive_flags = [
-    "--proxy", "--username", "--password", "--video-password",
-    "--add-header", "--cookies", "--extractor-args", "--sponsorblock-api",
+    "--proxy",
+    "--username",
+    "--password",
+    "--video-password",
+    "--add-header",
+    "--cookies",
+    "--extractor-args",
+    "--sponsorblock-api",
   ];
 
   let mut result = Vec::new();
@@ -845,7 +857,9 @@ fn subtitle_language_bases(languages: &[String]) -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
-  use super::{build_sponsorblock_args, build_subtitle_args, normalize_extractor_args, sanitize_args_for_log};
+  use super::{
+    build_sponsorblock_args, build_subtitle_args, normalize_extractor_args, sanitize_args_for_log,
+  };
   use crate::models::SubtitleInventory;
   use crate::state::config_models::{SponsorBlockSettings, SubtitleSettings};
 
@@ -1145,16 +1159,25 @@ mod tests {
   #[test]
   fn sanitize_args_redacts_sensitive_values() {
     let args = vec![
-      "--username".into(), "my_secure_user".into(),
-      "--password".into(), "secret_pass".into(),
-      "--video-password".into(), "video_key_123".into(),
-      "--proxy".into(), "http://user:pass@proxy.example.com:8080".into(),
-      "--add-header".into(), "Authorization:Bearer eyJhbGciOiJIUzI1NiIs...".into(),
-      "--cookies".into(), "/home/user/.config/cookies.txt".into(),
-      "--extractor-args".into(), "youtube:api_key=AIzaSy...".into(),
-      "--sponsorblock-api".into(), "https://api.sponsorblock.com?key=abc123".into(),
-      "--url".into(), "https://youtube.com/watch?v=dQw4w9WgXcQ".into(),
-      "--no-playlist".into(), // flag without value
+      "--username".into(),
+      "my_secure_user".into(),
+      "--password".into(),
+      "secret_pass".into(),
+      "--video-password".into(),
+      "video_key_123".into(),
+      "--proxy".into(),
+      "http://user:pass@proxy.example.com:8080".into(),
+      "--add-header".into(),
+      "Authorization:Bearer eyJhbGciOiJIUzI1NiIs...".into(),
+      "--cookies".into(),
+      "/home/user/.config/cookies.txt".into(),
+      "--extractor-args".into(),
+      "youtube:api_key=AIzaSy...".into(),
+      "--sponsorblock-api".into(),
+      "https://api.sponsorblock.com?key=abc123".into(),
+      "--url".into(),
+      "https://youtube.com/watch?v=dQw4w9WgXcQ".into(),
+      "--no-playlist".into(),  // flag without value
       "--yes-playlist".into(), // another flag without value
     ];
 
