@@ -278,7 +278,10 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub async fn output(self) -> Result<YtdlpOutput, String> {
-    tracing::debug!("Running command: yt-dlp {}", self.args.join(" "));
+    tracing::debug!(
+      "Running command: yt-dlp {}",
+      sanitize_args_for_log(&self.args)
+    );
     let mut command = self.build_command();
 
     configure_command(&mut command).map_err(|e| format!("yt-dlp spawn setup failed: {e}"))?;
@@ -298,7 +301,10 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub fn spawn(self) -> Result<(UnboundedReceiver<YtdlpCommandEvent>, YtdlpChild), String> {
-    tracing::debug!("Running command: yt-dlp {}", self.args.join(" "));
+    tracing::debug!(
+      "Running command: yt-dlp {}",
+      sanitize_args_for_log(&self.args)
+    );
     let mut command = self.build_command();
     command
       .stdin(Stdio::piped())
@@ -382,6 +388,45 @@ impl<'a> YtdlpRunner<'a> {
       self.args.push(h);
     }
   }
+}
+
+fn sanitize_args_for_log(args: &[String]) -> String {
+  let sensitive_flags = [
+    "--proxy",
+    "--username",
+    "--password",
+    "--video-password",
+    "--add-header",
+    "--cookies",
+    "--extractor-args",
+    "--sponsorblock-api",
+  ];
+
+  let mut result = Vec::new();
+  let mut iter = args.iter().peekable();
+  while let Some(arg) = iter.next() {
+    if let Some((flag, _)) = arg.split_once('=') {
+      if sensitive_flags.contains(&flag) {
+        result.push(format!("{}={}", flag, "[REDACTED]"));
+      } else {
+        result.push(arg.clone());
+      }
+      continue;
+    }
+
+    if sensitive_flags.contains(&arg.as_str()) {
+      result.push(arg.clone());
+      if let Some(next) = iter.peek() {
+        if !next.starts_with('-') {
+          result.push("[REDACTED]".to_string());
+          iter.next();
+        }
+      }
+    } else {
+      result.push(arg.clone());
+    }
+  }
+  result.join(" ")
 }
 
 impl YtdlpChild {
@@ -812,7 +857,9 @@ fn subtitle_language_bases(languages: &[String]) -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
-  use super::{build_sponsorblock_args, build_subtitle_args, normalize_extractor_args};
+  use super::{
+    build_sponsorblock_args, build_subtitle_args, normalize_extractor_args, sanitize_args_for_log,
+  };
   use crate::models::SubtitleInventory;
   use crate::state::config_models::{SponsorBlockSettings, SubtitleSettings};
 
@@ -1107,5 +1154,58 @@ mod tests {
       build_sponsorblock_args(&settings, false),
       vec!["--sponsorblock-mark", "sponsor"]
     );
+  }
+
+  #[test]
+  fn sanitize_args_redacts_sensitive_values() {
+    let args = vec![
+      "--username".into(),
+      "my_secure_user".into(),
+      "--password".into(),
+      "secret_pass".into(),
+      "--video-password".into(),
+      "video_key_123".into(),
+      "--proxy".into(),
+      "http://user:pass@proxy.example.com:8080".into(),
+      "--add-header".into(),
+      "Authorization:Bearer eyJhbGciOiJIUzI1NiIs...".into(),
+      "--cookies".into(),
+      "/home/user/.config/cookies.txt".into(),
+      "--extractor-args".into(),
+      "youtube:api_key=AIzaSy...".into(),
+      "--sponsorblock-api".into(),
+      "https://api.sponsorblock.com?key=abc123".into(),
+      "--url".into(),
+      "https://youtube.com/watch?v=dQw4w9WgXcQ".into(),
+      "--no-playlist".into(),  // flag without value
+      "--yes-playlist".into(), // another flag without value
+    ];
+
+    let sanitized = sanitize_args_for_log(&args);
+
+    // Verify that the sensitive flags are replaced with [REDACTED]
+    assert!(sanitized.contains("--username [REDACTED]"));
+    assert!(sanitized.contains("--password [REDACTED]"));
+    assert!(sanitized.contains("--video-password [REDACTED]"));
+    assert!(sanitized.contains("--proxy [REDACTED]"));
+    assert!(sanitized.contains("--add-header [REDACTED]"));
+    assert!(sanitized.contains("--cookies [REDACTED]"));
+    assert!(sanitized.contains("--extractor-args [REDACTED]"));
+    assert!(sanitized.contains("--sponsorblock-api [REDACTED]"));
+
+    // Verify that the original values do NOT appear in the result
+    assert!(!sanitized.contains("my_secure_user"));
+    assert!(!sanitized.contains("secret_pass"));
+    assert!(!sanitized.contains("video_key_123"));
+    assert!(!sanitized.contains("user:pass"));
+    assert!(!sanitized.contains("eyJhbGciOiJIUzI1NiIs"));
+    assert!(!sanitized.contains("AIzaSy"));
+    assert!(!sanitized.contains("abc123"));
+
+    // Verify that the non-sensitive flags and their values (URLs) remain unchanged
+    assert!(sanitized.contains("--url"));
+    assert!(sanitized.contains("https://youtube.com/watch?v=dQw4w9WgXcQ"));
+    assert!(sanitized.contains("--no-playlist"));
+    assert!(sanitized.contains("--yes-playlist"));
   }
 }
