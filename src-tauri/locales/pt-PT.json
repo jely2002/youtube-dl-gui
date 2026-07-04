@@ -3,8 +3,8 @@
     "quit": "Sair",
     "showOrHide": "Mostrar/Ocultar janela",
     "addToQueue": "Adicionar da área de transferência",
-    "addAndDownload": "Adicionar e baixar da área de transferência",
-    "downloadQueue": "Baixar fila",
+    "addAndDownload": "Adicionar e transferir da área de transferência",
+    "downloadQueue": "Transferir fila",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Shift + V",
       "ctrlShiftD": "Ctrl + Shift + D",
@@ -20,15 +20,15 @@
       "body": "{title}"
     },
     "queueDownloading": {
-      "title": "Baixando fila",
-      "body": "Baixando {n} item | Baixando {n} itens"
+      "title": "A transferir a fila",
+      "body": "A transferir {n} item | A transferir {n} itens"
     },
     "queueFinished": {
       "title": "Fila concluída",
-      "body": "Download concluído de {n} item | Download concluído de {n} itens"
+      "body": "Transferência de {n} item concluída | Transferência de {n} itens concluída"
     },
     "videoFinished": {
-      "title": "Download concluído",
+      "title": "Transferência concluída",
       "body": "{title}"
     },
     "playlistFinished": {
@@ -36,15 +36,15 @@
       "body": "{title}"
     },
     "videoReady": {
-      "title": "Pronto para baixar",
+      "title": "Pronto a transferir",
       "body": "{title}"
     },
     "playlistReady": {
-      "title": "Playlist pronta para baixar",
+      "title": "Playlist pronta a transferir",
       "body": "{title} | {title} ({n} item) | {title} ({n} itens)"
     },
     "downloadFailed": {
-      "title": "Falha no download",
+      "title": "Falha na transferência",
       "body": "{title}\n{message}"
     }
   }

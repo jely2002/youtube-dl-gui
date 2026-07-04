@@ -3,11 +3,14 @@
     "quit": "Avslutt",
     "showOrHide": "Vis/skjul vindu",
     "addToQueue": "Legg til fra utklippstavle",
+    "addAndDownload": "Legg til og last ned fra utklippstavle",
     "downloadQueue": "Last ned kø",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftD": "Ctrl + Shift + D",
       "ctrlShiftEnter": "Ctrl + Shift + Enter",
       "altShiftV": "Alt + Shift + V",
+      "altShiftD": "Alt + Shift + D",
       "altShiftEnter": "Alt + Shift + Enter"
     }
   },

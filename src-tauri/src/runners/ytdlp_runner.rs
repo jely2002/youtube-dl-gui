@@ -278,6 +278,7 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub async fn output(self) -> Result<YtdlpOutput, String> {
+    log_run_summary(&self.args);
     tracing::debug!("Running command: yt-dlp {}", self.args.join(" "));
     let mut command = self.build_command();
 
@@ -298,6 +299,7 @@ impl<'a> YtdlpRunner<'a> {
   }
 
   pub fn spawn(self) -> Result<(UnboundedReceiver<YtdlpCommandEvent>, YtdlpChild), String> {
+    log_run_summary(&self.args);
     tracing::debug!("Running command: yt-dlp {}", self.args.join(" "));
     let mut command = self.build_command();
     command
@@ -382,6 +384,55 @@ impl<'a> YtdlpRunner<'a> {
       self.args.push(h);
     }
   }
+}
+
+/// Presence-only summary of a yt-dlp invocation, safe to log or send to
+/// Sentry at any log level. Unlike a redaction blacklist, an omission here
+/// can only under-report metadata — it can never leak a secret value,
+/// because no argument *values* are ever inspected or stored, only whether
+/// certain flags are present.
+struct RunLogSummary {
+  arg_count: usize,
+  has_proxy: bool,
+  has_cookies: bool,
+  has_browser_cookies: bool,
+  has_auth: bool,
+}
+
+fn summarize_args_for_log(args: &[String]) -> RunLogSummary {
+  RunLogSummary {
+    arg_count: args.len(),
+    has_proxy: args
+      .iter()
+      .any(|arg| arg == "--proxy" || arg.starts_with("--proxy=")),
+    has_cookies: args
+      .iter()
+      .any(|arg| arg == "--cookies" || arg.starts_with("--cookies=")),
+    has_browser_cookies: args
+      .iter()
+      .any(|arg| arg == "--cookies-from-browser" || arg.starts_with("--cookies-from-browser=")),
+    has_auth: args.iter().any(|arg| {
+      matches!(
+        arg.as_str(),
+        "--username" | "--password" | "--video-password" | "--add-header"
+      ) || arg.starts_with("--username=")
+        || arg.starts_with("--password=")
+        || arg.starts_with("--video-password=")
+        || arg.starts_with("--add-header=")
+    }),
+  }
+}
+
+fn log_run_summary(args: &[String]) {
+  let summary = summarize_args_for_log(args);
+  tracing::info!(
+    arg_count = summary.arg_count,
+    has_proxy = summary.has_proxy,
+    has_cookies = summary.has_cookies,
+    has_browser_cookies = summary.has_browser_cookies,
+    has_auth = summary.has_auth,
+    "Running yt-dlp command"
+  );
 }
 
 impl YtdlpChild {
@@ -812,7 +863,9 @@ fn subtitle_language_bases(languages: &[String]) -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
-  use super::{build_sponsorblock_args, build_subtitle_args, normalize_extractor_args};
+  use super::{
+    build_sponsorblock_args, build_subtitle_args, normalize_extractor_args, summarize_args_for_log,
+  };
   use crate::models::SubtitleInventory;
   use crate::state::config_models::{SponsorBlockSettings, SubtitleSettings};
 
@@ -1107,5 +1160,69 @@ mod tests {
       build_sponsorblock_args(&settings, false),
       vec!["--sponsorblock-mark", "sponsor"]
     );
+  }
+
+  #[test]
+  fn summary_flags_presence_regardless_of_value_shape() {
+    // Includes a secret value that itself starts with '-', which the old
+    // peek-based redaction logic could fail to redact (it assumed any
+    // token starting with '-' was the next flag, not a value). The
+    // presence-only approach never looks at the value at all, so this
+    // shape can no longer cause a leak.
+    let args = vec![
+      "--username".into(),
+      "my_secure_user".into(),
+      "--password".into(),
+      "-secret_starting_with_dash".into(),
+      "--proxy".into(),
+      "http://user:pass@proxy.example.com:8080".into(),
+      "--cookies-from-browser".into(),
+      "chrome".into(),
+      "--url".into(),
+      "https://youtube.com/watch?v=dQw4w9WgXcQ".into(),
+      "--no-playlist".into(),
+    ];
+
+    let summary = summarize_args_for_log(&args);
+
+    assert_eq!(summary.arg_count, args.len());
+    assert!(summary.has_auth);
+    assert!(summary.has_proxy);
+    assert!(summary.has_browser_cookies);
+    // No plain "--cookies" flag was passed (only "--cookies-from-browser").
+    assert!(!summary.has_cookies);
+  }
+
+  #[test]
+  fn summary_detects_equals_form_flags() {
+    let args = vec![
+      "--proxy=http://proxy.example.com:8080".into(),
+      "--cookies=/home/user/.config/cookies.txt".into(),
+      "--add-header=Authorization:Bearer eyJhbGciOiJIUzI1NiIs...".into(),
+    ];
+
+    let summary = summarize_args_for_log(&args);
+
+    assert!(summary.has_proxy);
+    assert!(summary.has_cookies);
+    assert!(summary.has_auth);
+    assert!(!summary.has_browser_cookies);
+  }
+
+  #[test]
+  fn summary_all_false_when_no_sensitive_flags_present() {
+    let args = vec![
+      "--url".into(),
+      "https://youtube.com/watch?v=dQw4w9WgXcQ".into(),
+      "--no-playlist".into(),
+    ];
+
+    let summary = summarize_args_for_log(&args);
+
+    assert_eq!(summary.arg_count, 3);
+    assert!(!summary.has_proxy);
+    assert!(!summary.has_cookies);
+    assert!(!summary.has_browser_cookies);
+    assert!(!summary.has_auth);
   }
 }

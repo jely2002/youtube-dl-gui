@@ -3,11 +3,14 @@
     "quit": "結束",
     "showOrHide": "顯示/隱藏視窗",
     "addToQueue": "從剪貼簿加入",
+    "addAndDownload": "從剪貼簿加入並下載",
     "downloadQueue": "下載佇列中的項目",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftD": "Ctrl + Shift + D",
       "ctrlShiftEnter": "Ctrl + Shift + Enter",
       "altShiftV": "Alt + Shift + V",
+      "altShiftD": "Alt + Shift + D",
       "altShiftEnter": "Alt + Shift + Enter"
     }
   },

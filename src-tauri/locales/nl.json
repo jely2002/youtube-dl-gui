@@ -3,11 +3,14 @@
     "quit": "Afsluiten",
     "showOrHide": "Venster tonen/verbergen",
     "addToQueue": "Toevoegen vanuit klembord",
+    "addAndDownload": "Toevoegen en downloaden vanuit klembord",
     "downloadQueue": "Wachtrij downloaden",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftD": "Ctrl + Shift + D",
       "ctrlShiftEnter": "Ctrl + Shift + Enter",
       "altShiftV": "Alt + Shift + V",
+      "altShiftD": "Alt + Shift + D",
       "altShiftEnter": "Alt + Shift + Enter"
     }
   },

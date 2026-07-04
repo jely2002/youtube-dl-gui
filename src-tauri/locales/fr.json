@@ -3,11 +3,14 @@
     "quit": "Quitter",
     "showOrHide": "Afficher/Masquer la fenêtre",
     "addToQueue": "Ajouter depuis le presse-papiers",
+    "addAndDownload": "Ajouter et télécharger depuis le presse-papiers",
     "downloadQueue": "Télécharger la file",
     "shortcuts": {
       "ctrlShiftV": "Ctrl + Maj + V",
+      "ctrlShiftD": "Ctrl + Maj + D",
       "ctrlShiftEnter": "Ctrl + Maj + Entrée",
       "altShiftV": "Alt + Maj + V",
+      "altShiftD": "Alt + Maj + D",
       "altShiftEnter": "Alt + Maj + Entrée"
     }
   },
