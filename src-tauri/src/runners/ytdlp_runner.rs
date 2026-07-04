@@ -862,7 +862,7 @@ fn subtitle_language_bases(languages: &[String]) -> Vec<String> {
 #[cfg(test)]
 mod tests {
   use super::{
-    build_sponsorblock_args, build_subtitle_args, normalize_extractor_args, sanitize_args_for_log,
+    build_sponsorblock_args, build_subtitle_args, normalize_extractor_args, summarize_args_for_log,
   };
   use crate::models::SubtitleInventory;
   use crate::state::config_models::{SponsorBlockSettings, SubtitleSettings};
