@@ -406,9 +406,9 @@ fn summarize_args_for_log(args: &[String]) -> RunLogSummary {
     has_cookies: args
       .iter()
       .any(|arg| arg == "--cookies" || arg.starts_with("--cookies=")),
-    has_browser_cookies: args.iter().any(|arg| {
-      arg == "--cookies-from-browser" || arg.starts_with("--cookies-from-browser=")
-    }),
+    has_browser_cookies: args
+      .iter()
+      .any(|arg| arg == "--cookies-from-browser" || arg.starts_with("--cookies-from-browser=")),
     has_auth: args.iter().any(|arg| {
       matches!(
         arg.as_str(),
