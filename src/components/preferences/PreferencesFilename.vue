@@ -113,7 +113,7 @@ const videoFormatPresets: PresetDef[] = [
     label: t('location.filename.formatPreset.options.titleQuality'),
     example: t('location.filename.formatPreset.examples.video.titleQuality'),
     value: FormatPreset.TitleQuality,
-    format: '%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
+    format: '%(title).200s%(height&-{:.0f}p|)s%(fps&-{:.0f}fps|)s.%(ext)s',
   },
   {
     label: t('location.filename.formatPreset.options.titleOnly'),
@@ -125,7 +125,7 @@ const videoFormatPresets: PresetDef[] = [
     label: t('location.filename.formatPreset.options.titleQualityPlaylist'),
     example: t('location.filename.formatPreset.examples.video.titleQualityPlaylist'),
     value: FormatPreset.TitleQualityPlaylist,
-    format: '%(playlist_index)02d-%(title).200s-(%(height)sp%(fps).0d).%(ext)s',
+    format: '%(playlist_index)02d-%(title).200s%(height&-{:.0f}p|)s%(fps&-{:.0f}fps|)s.%(ext)s',
   },
   {
     label: t('location.filename.formatPreset.options.custom'),
@@ -139,7 +139,7 @@ const audioFormatPresets: PresetDef[] = [
     label: t('location.filename.formatPreset.options.titleQuality'),
     example: t('location.filename.formatPreset.examples.audio.titleQuality'),
     value: FormatPreset.TitleQuality,
-    format: '%(title).200s-(%(abr)dk).%(ext)s',
+    format: '%(title).200s%(abr&-{:.0f}k|)s.%(ext)s',
   },
   {
     label: t('location.filename.formatPreset.options.titleOnly'),
@@ -151,7 +151,7 @@ const audioFormatPresets: PresetDef[] = [
     label: t('location.filename.formatPreset.options.titleQualityPlaylist'),
     example: t('location.filename.formatPreset.examples.audio.titleQualityPlaylist'),
     value: FormatPreset.TitleQualityPlaylist,
-    format: '%(playlist_index)02d-%(title).200s-(%(abr)dk).%(ext)s',
+    format: '%(playlist_index)02d-%(title).200s%(abr&-{:.0f}k|)s.%(ext)s',
   },
   {
     label: t('location.filename.formatPreset.options.custom'),
