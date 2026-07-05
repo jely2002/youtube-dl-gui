@@ -28,6 +28,30 @@ impl JsonBackedState for Config {
         .unwrap_or_else(|_| std::env::current_dir().expect("couldn’t get current dir"));
       value.output.download_dir = Some(download_path.to_str().unwrap().to_string());
     }
+
+    let video_default_old = "%(title).200s-(%(height)sp%(fps).0d).%(ext)s";
+    let video_playlist_default_old =
+      "%(playlist_index)02d-%(title).200s-(%(height)sp%(fps).0d).%(ext)s";
+    let video_default_new = "%(title).200s%(height&-{:.0f}p|)s%(fps&-{:.0f}fps|)s.%(ext)s";
+    let video_playlist_default_new =
+      "%(playlist_index)02d-%(title).200s%(height&-{:.0f}p|)s%(fps&-{:.0f}fps|)s.%(ext)s";
+
+    if value.output.file_name_template == video_default_old {
+      value.output.file_name_template = video_default_new.into();
+    } else if value.output.file_name_template == video_playlist_default_old {
+      value.output.file_name_template = video_playlist_default_new.into();
+    }
+
+    let audio_default_old = "%(title).200s-(%(abr)dk).%(ext)s";
+    let audio_playlist_default_old = "%(playlist_index)02d-%(title).200s-(%(abr)dk).%(ext)s";
+    let audio_default_new = "%(title).200s%(abr&-{:.0f}k|)s.%(ext)s";
+    let audio_playlist_default_new = "%(playlist_index)02d-%(title).200s%(abr&-{:.0f}k|)s.%(ext)s";
+
+    if value.output.audio_file_name_template == audio_default_old {
+      value.output.audio_file_name_template = audio_default_new.into();
+    } else if value.output.audio_file_name_template == audio_playlist_default_old {
+      value.output.audio_file_name_template = audio_playlist_default_new.into();
+    }
   }
 
   fn on_updated(app: &AppHandle<Wry>, new_value: &Self) {
