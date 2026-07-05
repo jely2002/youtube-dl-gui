@@ -42,6 +42,25 @@ No command-line setup is required.
 | **Linux Fedora/RHEL (x64)**           | `Open.Video.Downloader_x.x.x-x_amd64.rpm`      |
 | **Linux Fedora/RHEL (aarch64)**       | `Open.Video.Downloader_x.x.x-x_aarch64.rpm`    |
 
+#### Download using the command line
+Open Video Downloader can be downloaded using command line tools like [Homebrew](https://brew.sh/) on Mac or [WinGet](https://github.com/microsoft/winget-cli) on Windows.
+
+```shell
+brew install --cask open-video-downloader
+```
+
+```shell
+winget install -e --id jely2002.youtube-dl-gui
+```
+
+#### Download from the Microsoft Store
+Open Video Downloader is available on the Microsoft Store, although we recommend using the GitHub releases download instead.
+This is due to updates taking longer to arrive and auto-updating yt-dlp is also not supported.
+
+<a href="https://apps.microsoft.com/detail/9p53s4t9znj5?referrer=appbadge&cid=gh-readme&mode=full" target="_blank"  rel="noopener noreferrer">
+	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" alt="OVD download badge for Microsoft Store"/>
+</a>
+
 ## How it works
 
 Open Video Downloader uses a front-end built with Vue 3 and a Rust backend powered by [Tauri](https://tauri.app/).  
