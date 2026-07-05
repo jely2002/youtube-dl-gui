@@ -200,8 +200,8 @@ impl Default for OutputSettings {
       precise_cuts: false,
       reverse_playlist_numbering: false,
       download_dir: None,
-      file_name_template: "%(title).200s-(%(height)sp%(fps).0d).%(ext)s".into(),
-      audio_file_name_template: "%(title).200s-(%(abr)dk).%(ext)s".into(),
+      file_name_template: "%(title).200s%(height&-{:.0f}p|)s%(fps&-{:.0f}fps|)s.%(ext)s".into(),
+      audio_file_name_template: "%(title).200s%(abr&-{:.0f}k|)s.%(ext)s".into(),
       restrict_filenames: false,
     }
   }
