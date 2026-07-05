@@ -6,8 +6,7 @@
   >
     <component
         :is="hasDetails ? 'summary' : 'div'"
-        style="display: flex;"
-        class="collapse-title text-sm flex-row items-center gap-2"
+        class="collapse-title text-sm flex flex-row items-center gap-2"
         :class="{ 'cursor-auto': !hasDetails }"
     >
       <span

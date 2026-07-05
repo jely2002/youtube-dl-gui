@@ -3,7 +3,7 @@
     <progress
         :id="composedId"
         class="progress w-full h-7 [&::-webkit-progress-value]:transition-all [&::-moz-progress-bar]:transition-all"
-        :class="[style]"
+        :class="progressClass"
         :max="max"
         :value="value"
     />
@@ -18,11 +18,18 @@
 
 <script setup lang="ts">
 import { computed, PropType } from 'vue';
-import { ProgressStyle } from '../../tauri/types/progress.ts';
+
+type ProgressVariant = 'primary' | 'warning' | 'error';
+
+const PROGRESS_VARIANT_CLASS: Record<ProgressVariant, string> = {
+  primary: 'progress-primary',
+  warning: 'progress-warning',
+  error: 'progress-error',
+};
 
 const composedId = computed(() => `${id}-progress`);
 
-const { id, max, value, style } = defineProps({
+const { id, max, value, variant } = defineProps({
   id: {
     type: String,
     required: true,
@@ -33,10 +40,12 @@ const { id, max, value, style } = defineProps({
   value: {
     type: Number,
   },
-  style: {
-    type: String as PropType<ProgressStyle>,
-    default: ProgressStyle.primary,
+  variant: {
+    type: String as PropType<ProgressVariant>,
+    default: 'primary',
   },
 });
+
+const progressClass = computed(() => PROGRESS_VARIANT_CLASS[variant]);
 
 </script>

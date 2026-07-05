@@ -11,7 +11,7 @@
         :id="`${group.id}-progress`"
         :max="100"
         :value="percent"
-        :style="ProgressStyle.warning"
+        variant="warning"
     >
       {{
         t('media.steps.paused.progressList', {
@@ -37,7 +37,6 @@ import BaseProgress from '../../base/BaseProgress.vue';
 import { computeGroupPercentage } from '../../../helpers/progress';
 import { Group } from '../../../tauri/types/group';
 import { useI18n } from 'vue-i18n';
-import { ProgressStyle } from '../../../tauri/types/progress.ts';
 
 const { t } = useI18n();
 const { group } = defineProps({

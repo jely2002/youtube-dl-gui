@@ -81,7 +81,7 @@
           <ul
               :id="listboxId"
               class="flex flex-col bg-base-100 border border-base-200 shadow-xl w-full rounded-box overflow-auto"
-              :style="{ maxHeight: computedMaxHeight }"
+              :class="maxHeightClass"
               role="listbox"
               aria-multiselectable="true"
           >
@@ -136,6 +136,15 @@
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { XMarkIcon, ChevronDownIcon, CheckIcon } from '@heroicons/vue/24/solid';
 
+type MultiSelectMaxHeight = 'sm' | 'md' | 'lg' | 'xl';
+
+const MAX_HEIGHT_CLASS: Record<MultiSelectMaxHeight, string> = {
+  sm: 'max-h-48',
+  md: 'max-h-64',
+  lg: 'max-h-80',
+  xl: 'max-h-96',
+};
+
 export interface MultiSelectOption {
   value: string;
   label: string;
@@ -149,7 +158,7 @@ const props = defineProps<{
   placeholder?: string;
   emptyText?: string;
   error?: string;
-  maxHeight?: string;
+  maxHeight?: MultiSelectMaxHeight;
   max?: number;
   disabled?: boolean;
 }>();
@@ -183,7 +192,7 @@ function getOptionId(index: number): string {
   return `${listboxId}-opt-${index}`;
 }
 
-const computedMaxHeight = computed<string>(() => props.maxHeight ?? '16rem');
+const maxHeightClass = computed<string>(() => MAX_HEIGHT_CLASS[props.maxHeight ?? 'md']);
 
 const filteredOptions = computed<MultiSelectOption[]>(() => {
   const normalizedQuery: string = filterQuery.value.trim().toLowerCase();

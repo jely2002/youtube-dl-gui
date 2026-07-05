@@ -58,9 +58,3 @@ export enum ProgressStage {
   reencoding = 'reencoding',
   finalizing = 'finalizing',
 }
-
-export enum ProgressStyle {
-  primary = 'progress-primary',
-  warning = 'progress-warning',
-  error = 'progress-error',
-}

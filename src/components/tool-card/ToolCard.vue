@@ -2,18 +2,38 @@
   <article class="card card-side w-full bg-base-300 shadow-lg">
     <div
         :key="tool.percent === 100 && !hasError ? 'done' : 'progress'"
-        class="radial-progress transition-colors m-5 shrink-0"
-        :class="{
-          'text-success': tool.percent === 100 && !hasError,
-          'text-error': hasError,
-        }"
+        class="relative m-5 h-20 w-20 shrink-0"
         role="progressbar"
-        :style="`--value:${tool.percent};--size:5rem;--thickness:.5rem;`"
-        :aria-valuenow="tool.percent"
+        :aria-valuemin="0"
+        :aria-valuemax="100"
+        :aria-valuenow="clampedPercent"
     >
-      <span v-if="tool.percent < 100">{{ t('common.percentage', { percent: tool.percent }) }}</span>
-      <span v-else-if="hasError"><x-mark-icon class="w-8 h-8 color-error-700"/></span>
-      <span v-else><check-icon class="w-8 h-8 color-primary-700"/></span>
+      <svg class="h-20 w-20 -rotate-90" viewBox="0 0 40 40" aria-hidden="true">
+        <circle
+            cx="20"
+            cy="20"
+            :r="radius"
+            class="stroke-base-content/15 fill-none"
+            :stroke-width="strokeWidth"
+        />
+        <circle
+            cx="20"
+            cy="20"
+            :r="radius"
+            fill="none"
+            :stroke-width="strokeWidth"
+            stroke-linecap="round"
+            :stroke-dasharray="circumference"
+            :stroke-dashoffset="dashOffset"
+            class="transition-all duration-300"
+            :class="progressRingClass"
+        />
+      </svg>
+      <span class="absolute inset-0 flex items-center justify-center text-sm font-medium">
+        <span v-if="tool.percent < 100">{{ t('common.percentage', { percent: tool.percent }) }}</span>
+        <span v-else-if="hasError"><x-mark-icon class="w-8 h-8 color-error-700"/></span>
+        <span v-else><check-icon class="w-8 h-8 color-primary-700"/></span>
+      </span>
     </div>
     <div class="card-body">
       <section class="flex w-full items-center gap-2 mb-2">
@@ -60,6 +80,16 @@ const { tool } = defineProps({
 });
 
 const hasError = computed(() => !!tool.error);
+const radius = 16;
+const strokeWidth = 4;
+const circumference = 2 * Math.PI * radius;
+const clampedPercent = computed(() => Math.min(Math.max(tool.percent, 0), 100));
+const dashOffset = computed(() => circumference * (1 - clampedPercent.value / 100));
+const progressRingClass = computed(() => ({
+  'stroke-success': tool.percent === 100 && !hasError.value,
+  'stroke-error': hasError.value,
+  'stroke-primary': tool.percent < 100 && !hasError.value,
+}));
 </script>
 
 <style scoped>

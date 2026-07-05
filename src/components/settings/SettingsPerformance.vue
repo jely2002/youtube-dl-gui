@@ -11,8 +11,7 @@
           :min="1"
           :max="32"
           id="maxConcurrency"
-          style="display: block;"
-          class="range range-primary"
+          class="range range-primary block"
       />
       <p class="w-4">
         {{ t('common.parenthesis', { content: settings.performance.maxConcurrency }) }}

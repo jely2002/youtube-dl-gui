@@ -10,7 +10,7 @@
     <base-progress
         v-if="isIndeterminate"
         :id="`${group.id}-progress`"
-        :style="ProgressStyle.warning"
+        variant="warning"
         :value="0"
         :max="100"
     >
@@ -21,7 +21,7 @@
         :id="`${group.id}-progress`"
         :max="100"
         :value="percent"
-        :style="ProgressStyle.warning"
+        variant="warning"
     >
       {{
         capitalizeFirstLetter(t('media.steps.paused.progress', {
@@ -44,7 +44,7 @@ import { useMediaProgressStore } from '../../../stores/media/progress';
 import BaseProgress from '../../base/BaseProgress.vue';
 import { capitalizeFirstLetter } from '../../../helpers/progress';
 import { formatDuration } from '../../../helpers/units';
-import { ProgressStage, ProgressStyle } from '../../../tauri/types/progress';
+import { ProgressStage } from '../../../tauri/types/progress';
 import { Group } from '../../../tauri/types/group';
 import { useI18n } from 'vue-i18n';
 
