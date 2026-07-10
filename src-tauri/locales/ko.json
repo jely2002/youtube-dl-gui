@@ -1,0 +1,51 @@
+{
+  "tray": {
+    "quit": "종료",
+    "showOrHide": "창 표시/숨기기",
+    "addToQueue": "클립보드에서 추가",
+    "addAndDownload": "클립보드에서 추가 및 다운로드",
+    "downloadQueue": "대기열 다운로드",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftD": "Ctrl + Shift + D",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftD": "Alt + Shift + D",
+      "altShiftEnter": "Alt + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "대기열에 추가됨",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "대기열 다운로드 중",
+      "body": "{n}개 항목 다운로드 중 | {n}개 항목 다운로드 중"
+    },
+    "queueFinished": {
+      "title": "대기열 완료",
+      "body": "{n}개 항목 다운로드 완료 | {n}개 항목 다운로드 완료"
+    },
+    "videoFinished": {
+      "title": "다운로드 완료",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "재생목록 완료",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "다운로드 준비 완료",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "재생목록 다운로드 준비 완료",
+      "body": "{title} | {title} ({n}개 항목) | {title} ({n}개 항목)"
+    },
+    "downloadFailed": {
+      "title": "다운로드 실패",
+      "body": "{title}\n{message}"
+    }
+  }
+}
