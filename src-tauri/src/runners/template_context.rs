@@ -1,6 +1,7 @@
 use regex::{Captures, Regex};
 use serde::Deserialize;
 use std::collections::HashMap;
+use std::sync::OnceLock;
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct TemplateContext {
@@ -79,7 +80,30 @@ impl TemplateContext {
 
         if from_primary {
           let mut out = if let Some(repl) = replacement_part {
-            repl.to_string()
+            static BRACE_RE: OnceLock<Regex> = OnceLock::new();
+            let brace_re =
+              BRACE_RE.get_or_init(|| Regex::new(r"\{(:[^}]*)?\}").expect("invalid regex"));
+            brace_re
+              .replace_all(repl, |b_caps: &Captures| {
+                let fmt_spec = b_caps.get(1).map(|m| m.as_str()).unwrap_or("");
+                let formatted = if fmt_spec == ":.0f" {
+                  val
+                    .trim()
+                    .parse::<f64>()
+                    .map(|n| format!("{:.0}", n.round()))
+                    .unwrap_or_else(|_| val.to_string())
+                } else if fmt_spec == ":.2f" {
+                  val
+                    .trim()
+                    .parse::<f64>()
+                    .map(|n| format!("{:.2}", n))
+                    .unwrap_or_else(|_| val.to_string())
+                } else {
+                  val.to_string()
+                };
+                Self::sanitize_template_value(formatted)
+              })
+              .to_string()
           } else {
             Self::sanitize_template_value(val)
           };
@@ -329,5 +353,26 @@ mod tests {
     let out = ctx.render_template(tpl);
 
     assert_eq!(out, "/downloads/.._.._malicious/video.mp4");
+  }
+
+  #[test]
+  fn replacement_with_auto_reference() {
+    let ctx = create_context(&[("height", "1080")]);
+    let out = ctx.render_template("%(height&{}p|)s");
+    assert_eq!(out, "1080p");
+  }
+
+  #[test]
+  fn replacement_with_float_formatting() {
+    let ctx = create_context(&[("fps", "29.97")]);
+    let out = ctx.render_template("%(fps&-{:.0f}fps|)s");
+    assert_eq!(out, "-30fps");
+  }
+
+  #[test]
+  fn replacement_with_multiple_references() {
+    let ctx = create_context(&[("abr", "128.5")]);
+    let out = ctx.render_template("%(abr&{:.0f}k - {}kbps|)s");
+    assert_eq!(out, "129k - 128.5kbps");
   }
 }
