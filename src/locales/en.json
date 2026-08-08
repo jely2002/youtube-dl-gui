@@ -657,6 +657,15 @@
         "label": "Save thumbnail file:",
         "hint": "Download the best available thumbnail next to the media file."
       },
+      "thumbnailFormat": {
+        "label": "Thumbnail format:",
+        "hint": "JPEG is recognised by the most media players and file managers. Applies to both the embedded cover image and saved thumbnail files.",
+        "options": {
+          "original": "Keep original",
+          "jpg": "JPEG",
+          "png": "PNG"
+        }
+      },
       "addMetadata": {
         "label": "Add title & artist info:",
         "hint": "Save metadata such as title, uploader/artist and description inside the file."

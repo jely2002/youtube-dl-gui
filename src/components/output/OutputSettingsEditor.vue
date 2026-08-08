@@ -164,6 +164,15 @@
       </p>
     </div>
 
+    <base-select
+        class="mb-4"
+        :label="t('settings.output.thumbnailFormat.label')"
+        :hint="t('settings.output.thumbnailFormat.hint')"
+        :options="ThumbnailFormat"
+        :locale-key="'settings.output.thumbnailFormat.options'"
+        v-model="outputState.thumbnailFormat"
+    />
+
     <div class="mb-4 flex flex-col gap-1">
       <label class="font-semibold" :for="fieldId('add-metadata')">
         {{ t('settings.output.addMetadata.label') }}
@@ -207,6 +216,7 @@ import type { OutputSettings } from '../../tauri/types/config.ts';
 import {
   AudioFormat,
   AudioPostprocessPreset,
+  ThumbnailFormat,
   VideoContainer,
   VideoPostprocessMode,
   VideoPostprocessPreset,

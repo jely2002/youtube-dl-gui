@@ -41,6 +41,12 @@ export enum AudioFormat {
   wav = 'wav',
 }
 
+export enum ThumbnailFormat {
+  original = 'original',
+  jpg = 'jpg',
+  png = 'png',
+}
+
 export type DownloadOptions = {
   trackType: TrackType;
   abr?: number;
@@ -90,6 +96,7 @@ export type OutputOverrides = {
   addMetadata?: boolean;
   addThumbnail?: boolean;
   saveThumbnail?: boolean;
+  thumbnailFormat?: ThumbnailFormat;
   preciseCuts?: boolean;
   reversePlaylistNumbering?: boolean;
   fileNameTemplate?: string;

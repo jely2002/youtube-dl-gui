@@ -1,6 +1,6 @@
 use crate::models::download::{
-  AudioFormat, AudioPostprocessPreset, FormatOptions, PartialDownloadOverride, TranscodePolicy,
-  VideoContainer, VideoPostprocessMode, VideoPostprocessPreset,
+  AudioFormat, AudioPostprocessPreset, FormatOptions, PartialDownloadOverride, ThumbnailFormat,
+  TranscodePolicy, VideoContainer, VideoPostprocessMode, VideoPostprocessPreset,
 };
 use crate::models::TrackType;
 use crate::state::config_models::{AudioOutputSettings, OutputSettings, VideoOutputSettings};
@@ -36,7 +36,7 @@ pub fn build_output_args(
   }
 
   args.extend(build_audio_ffmpeg_postprocess_args(&output_settings.audio)?);
-  push_common_output_flags(&mut args, output_settings, partial_download);
+  push_common_output_flags(&mut args, format_options, output_settings, partial_download);
 
   Ok(args)
 }
@@ -115,6 +115,7 @@ fn push_video_output_args(
 
 fn push_common_output_flags(
   args: &mut Vec<String>,
+  format_options: &FormatOptions,
   output_settings: &OutputSettings,
   partial_download: Option<&PartialDownloadOverride>,
 ) {
@@ -124,6 +125,11 @@ fn push_common_output_flags(
 
   if output_settings.save_thumbnail {
     args.push("--write-thumbnail".into());
+  }
+
+  if let Some(format) = thumbnail_conversion_format(format_options, output_settings) {
+    args.push("--convert-thumbnails".into());
+    args.push(format.into());
   }
 
   if output_settings.restrict_filenames {
@@ -140,6 +146,27 @@ fn push_common_output_flags(
     if output_settings.precise_cuts {
       args.push("--force-keyframes-at-cuts".into());
     }
+  }
+}
+
+fn thumbnail_conversion_format(
+  format_options: &FormatOptions,
+  output_settings: &OutputSettings,
+) -> Option<&'static str> {
+  let embeds = output_settings.add_thumbnail
+    && match format_options.track_type {
+      TrackType::Audio => output_settings.audio.format.supports_embedded_thumbnail(),
+      TrackType::Video | TrackType::Both => true,
+    };
+
+  if !embeds && !output_settings.save_thumbnail {
+    return None;
+  }
+
+  match output_settings.thumbnail_format {
+    ThumbnailFormat::Original => None,
+    ThumbnailFormat::Jpg => Some("jpg"),
+    ThumbnailFormat::Png => Some("png"),
   }
 }
 

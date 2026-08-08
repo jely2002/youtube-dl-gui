@@ -73,6 +73,14 @@ impl AudioFormat {
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub enum ThumbnailFormat {
+  Original,
+  Jpg,
+  Png,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub enum TranscodePolicy {
   Never,
   #[serde(alias = "remuxOnly")]
@@ -125,6 +133,7 @@ pub struct OutputOverrides {
   pub add_metadata: Option<bool>,
   pub add_thumbnail: Option<bool>,
   pub save_thumbnail: Option<bool>,
+  pub thumbnail_format: Option<ThumbnailFormat>,
   pub precise_cuts: Option<bool>,
   pub reverse_playlist_numbering: Option<bool>,
   pub file_name_template: Option<String>,
