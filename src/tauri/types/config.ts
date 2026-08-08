@@ -1,6 +1,7 @@
 import {
   AudioFormat,
   AudioPostprocessPreset,
+  ThumbnailFormat,
   TranscodePolicy,
   VideoContainer,
   VideoPostprocessMode,
@@ -97,6 +98,7 @@ export interface OutputSettings {
   addMetadata: boolean;
   addThumbnail: boolean;
   saveThumbnail: boolean;
+  thumbnailFormat: ThumbnailFormat;
   preciseCuts: boolean;
   reversePlaylistNumbering: boolean;
   downloadDir: string | null;
@@ -233,6 +235,7 @@ export const defaultOutputSettings: OutputSettings = {
   addMetadata: true,
   addThumbnail: true,
   saveThumbnail: false,
+  thumbnailFormat: ThumbnailFormat.jpg,
   preciseCuts: false,
   reversePlaylistNumbering: false,
   downloadDir: null,
