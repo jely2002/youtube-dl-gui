@@ -1,8 +1,8 @@
 use super::{build_format_args, build_input_filter_args, build_location_args, build_output_args};
 use crate::models::download::{
   AudioFormat, AudioPostprocessPreset, DownloadSection, FormatOptions, InputFilterOptions,
-  PartialDownloadOverride, PlaylistMode, TranscodePolicy, VideoContainer, VideoPostprocessMode,
-  VideoPostprocessPreset,
+  PartialDownloadOverride, PlaylistMode, ThumbnailFormat, TranscodePolicy, VideoContainer,
+  VideoPostprocessMode, VideoPostprocessPreset,
 };
 use crate::models::TrackType;
 use crate::runners::template_context::TemplateContext;
@@ -383,6 +383,8 @@ fn audio_output_args_never_policy_produces_no_flags() {
     "",
     "--embed-thumbnail",
     "--add-metadata",
+    "--convert-thumbnails",
+    "jpg",
   ]
   .into_iter()
   .map(String::from)
@@ -410,6 +412,8 @@ fn audio_output_args_allow_reencode_mp3_best() {
     "0",
     "--embed-thumbnail",
     "--add-metadata",
+    "--convert-thumbnails",
+    "jpg",
   ]
   .into_iter()
   .map(String::from)
@@ -437,6 +441,8 @@ fn audio_output_args_allow_reencode_ogg() {
     "160k",
     "--embed-thumbnail",
     "--add-metadata",
+    "--convert-thumbnails",
+    "jpg",
   ]
   .into_iter()
   .map(String::from)
@@ -491,6 +497,8 @@ fn video_output_args_never_policy_produces_no_flags() {
     "",
     "--embed-thumbnail",
     "--add-metadata",
+    "--convert-thumbnails",
+    "jpg",
   ]
   .into_iter()
   .map(String::from)
@@ -518,6 +526,8 @@ fn video_output_args_allow_reencode_remuxes_mp4() {
     "mp4",
     "--embed-thumbnail",
     "--add-metadata",
+    "--convert-thumbnails",
+    "jpg",
   ]
   .into_iter()
   .map(String::from)
@@ -545,6 +555,8 @@ fn video_output_args_allow_reencode_remuxes_mkv() {
     "mkv",
     "--embed-thumbnail",
     "--add-metadata",
+    "--convert-thumbnails",
+    "jpg",
   ]
   .into_iter()
   .map(String::from)
@@ -766,6 +778,8 @@ fn both_track_type_uses_video_policy_for_output() {
     "mp4",
     "--embed-thumbnail",
     "--add-metadata",
+    "--convert-thumbnails",
+    "jpg",
   ]
   .into_iter()
   .map(String::from)
@@ -902,4 +916,93 @@ fn location_args_use_track_specific_preferences() {
 
   assert_eq!(args[0], "-o");
   assert!(args[1].contains("/tmp/video"));
+}
+
+#[test]
+fn thumbnail_format_defaults_to_jpg_for_video() {
+  let format_options = make_video_format_options(Some(720), Some(60));
+  let settings = OutputSettings::default();
+
+  let args = build_output_args(&format_options, &settings, None).unwrap();
+
+  let index = args
+    .iter()
+    .position(|arg| arg == "--convert-thumbnails")
+    .expect("expected --convert-thumbnails to be present");
+  assert_eq!(args[index + 1], "jpg");
+}
+
+#[test]
+fn thumbnail_format_png_emits_png() {
+  let format_options = make_video_format_options(Some(720), Some(60));
+  let settings = OutputSettings {
+    thumbnail_format: ThumbnailFormat::Png,
+    ..OutputSettings::default()
+  };
+
+  let args = build_output_args(&format_options, &settings, None).unwrap();
+
+  let index = args
+    .iter()
+    .position(|arg| arg == "--convert-thumbnails")
+    .expect("expected --convert-thumbnails to be present");
+  assert_eq!(args[index + 1], "png");
+}
+
+#[test]
+fn thumbnail_format_original_emits_no_conversion_flag() {
+  let format_options = make_video_format_options(Some(720), Some(60));
+  let settings = OutputSettings {
+    thumbnail_format: ThumbnailFormat::Original,
+    ..OutputSettings::default()
+  };
+
+  let args = build_output_args(&format_options, &settings, None).unwrap();
+
+  assert!(!args.contains(&"--convert-thumbnails".to_string()));
+}
+
+#[test]
+fn thumbnail_format_is_omitted_when_no_thumbnail_is_requested() {
+  let format_options = make_video_format_options(Some(720), Some(60));
+  let settings = OutputSettings {
+    add_thumbnail: false,
+    save_thumbnail: false,
+    ..OutputSettings::default()
+  };
+
+  let args = build_output_args(&format_options, &settings, None).unwrap();
+
+  assert!(!args.contains(&"--convert-thumbnails".to_string()));
+}
+
+#[test]
+fn thumbnail_format_applies_to_saved_thumbnail_without_embedding() {
+  let format_options = make_video_format_options(Some(720), Some(60));
+  let settings = OutputSettings {
+    add_thumbnail: false,
+    save_thumbnail: true,
+    ..OutputSettings::default()
+  };
+
+  let args = build_output_args(&format_options, &settings, None).unwrap();
+
+  let index = args
+    .iter()
+    .position(|arg| arg == "--convert-thumbnails")
+    .expect("expected --convert-thumbnails to be present");
+  assert_eq!(args[index + 1], "jpg");
+}
+
+#[test]
+fn thumbnail_format_is_omitted_for_audio_without_embedded_thumbnail_support() {
+  let format_options = make_audio_format_options(None);
+  let mut settings = OutputSettings::default();
+  settings.audio.format = AudioFormat::Wav;
+  settings.save_thumbnail = false;
+
+  let args = build_output_args(&format_options, &settings, None).unwrap();
+
+  assert!(!args.contains(&"--embed-thumbnail".to_string()));
+  assert!(!args.contains(&"--convert-thumbnails".to_string()));
 }
