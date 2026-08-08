@@ -1,7 +1,7 @@
 use crate::commands::NotificationKind;
 use crate::models::download::{
-  AudioFormat, AudioPostprocessPreset, TranscodePolicy, VideoContainer, VideoPostprocessMode,
-  VideoPostprocessPreset,
+  AudioFormat, AudioPostprocessPreset, ThumbnailFormat, TranscodePolicy, VideoContainer,
+  VideoPostprocessMode, VideoPostprocessPreset,
 };
 use serde::{Deserialize, Serialize};
 use std::thread;
@@ -181,6 +181,7 @@ pub struct OutputSettings {
   pub add_metadata: bool,
   pub add_thumbnail: bool,
   pub save_thumbnail: bool,
+  pub thumbnail_format: ThumbnailFormat,
   pub precise_cuts: bool,
   pub reverse_playlist_numbering: bool,
   pub download_dir: Option<String>,
@@ -197,6 +198,7 @@ impl Default for OutputSettings {
       add_metadata: true,
       add_thumbnail: true,
       save_thumbnail: false,
+      thumbnail_format: ThumbnailFormat::Jpg,
       precise_cuts: false,
       reverse_playlist_numbering: false,
       download_dir: None,

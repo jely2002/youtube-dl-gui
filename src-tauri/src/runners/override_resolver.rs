@@ -74,6 +74,7 @@ impl ApplyPatch<OutputSettings> for OutputOverrides {
     apply_copy_patch!(self, target, add_metadata);
     apply_copy_patch!(self, target, add_thumbnail);
     apply_copy_patch!(self, target, save_thumbnail);
+    apply_copy_patch!(self, target, thumbnail_format);
     apply_copy_patch!(self, target, precise_cuts);
     apply_clone_patch!(self, target, file_name_template);
     apply_clone_patch!(self, target, audio_file_name_template);
@@ -154,7 +155,7 @@ mod tests {
     AudioOutputOverrides, AuthOverrides, OutputOverrides, SubtitleOverrides, VideoOutputOverrides,
   };
   use crate::models::download::{
-    AudioPostprocessPreset, TranscodePolicy, VideoContainer, VideoPostprocessMode,
+    AudioPostprocessPreset, ThumbnailFormat, TranscodePolicy, VideoContainer, VideoPostprocessMode,
     VideoPostprocessPreset,
   };
   use crate::state::config_models::{AuthSettings, OutputSettings, SubtitleSettings};
@@ -173,6 +174,7 @@ mod tests {
       }),
       add_thumbnail: Some(false),
       save_thumbnail: Some(true),
+      thumbnail_format: Some(ThumbnailFormat::Png),
       ..Default::default()
     };
 
@@ -190,6 +192,7 @@ mod tests {
     assert_eq!(resolved.video.postprocess_args, "-vf fps=30");
     assert!(!resolved.add_thumbnail);
     assert!(resolved.save_thumbnail);
+    assert!(matches!(resolved.thumbnail_format, ThumbnailFormat::Png));
     assert_eq!(resolved.add_metadata, base.add_metadata);
   }
 
@@ -201,6 +204,8 @@ mod tests {
     assert_eq!(resolved.add_metadata, base.add_metadata);
     assert_eq!(resolved.add_thumbnail, base.add_thumbnail);
     assert_eq!(resolved.save_thumbnail, base.save_thumbnail);
+    assert_eq!(resolved.thumbnail_format, base.thumbnail_format);
+    assert!(matches!(base.thumbnail_format, ThumbnailFormat::Jpg));
     assert!(matches!(resolved.video.container, VideoContainer::Mp4));
     assert!(matches!(
       resolved.video.postprocess_preset,
