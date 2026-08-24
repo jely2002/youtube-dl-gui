@@ -1,0 +1,1176 @@
+{
+  "common": {
+    "download": "下载",
+    "save": "保存",
+    "later": "稍后再说",
+    "load": "打开",
+    "install": "安装",
+    "percentage": "{percent}%",
+    "add": "新增",
+    "back": "返回",
+    "continue": "继续",
+    "retry": "重试",
+    "enable": "启用",
+    "pleaseWait": "请稍候…",
+    "loading": "正在加载",
+    "emptySearch": "找不到结果。",
+    "parenthesis": "({content})",
+    "divide": "{left} / {right}",
+    "video": "影片",
+    "unknown": "未知",
+    "confirm": "确认",
+    "best": "最佳",
+    "resume": "继续",
+    "urlImport": {
+      "added": "已将链接加入队列。 | 已将 {n} 个链接加入队列。",
+      "partial": "已将 {added} 个链接加入队列，并跳过 {skipped} 个无效项目。",
+      "noneFound": "在输入内容或文件中找不到有效链接。",
+      "readError": "无法读取该文件。"
+    }
+  },
+  "layout": {
+    "header": {
+      "placeholder": "输入影片/播放列表 URL 以加入队列",
+      "nav": {
+        "settings": "应用程序设置",
+        "inputFilters": "过滤条件"
+      },
+      "watchClipboardPlaceholder": "正在监听剪贴板：复制的链接会加入队列",
+      "actions": {
+        "more": "更多加入方式",
+        "watchClipboardStart": "监听剪贴板",
+        "watchClipboardStop": "停止监听剪贴板",
+        "importFile": "导入链接",
+        "inputFilters": "过滤条件"
+      }
+    },
+    "footer": {
+      "progress": {
+        "downloading": "正在下载队列 - 已完成 {done} / {total}。",
+        "completed": "下载完成 – 已下载 {n} 个项目。 | 下载完成 – 已下载 {n} 个项目。",
+        "ready": "准备就绪！已加入 {n} 个项目至队列。 | 准备就绪！已加入 {n} 个项目至队列。"
+      },
+      "nav": {
+        "downloadLocation": "位置",
+        "login": {
+          "screenReader": {
+            "on": "编辑登录 (目前已登录)",
+            "off": "编辑登录 (目前未登录)"
+          },
+          "tooltip": {
+            "on": "编辑登录",
+            "off": "登录"
+          }
+        },
+        "subtitles": {
+          "screenReader": {
+            "on": "编辑字幕 (目前已启用)",
+            "off": "编辑字幕 (目前已停用)"
+          },
+          "tooltip": "字幕"
+        }
+      },
+      "format": {
+        "trackSelect": {
+          "screenReader": "选择所有影片的音轨"
+        },
+        "formatSelect": {
+          "noFormats": "没有格式",
+          "placeholder": "选择格式",
+          "screenReader": "选择所有影片的格式"
+        }
+      },
+      "queue": {
+        "empty": "队列为空",
+        "resume": "全部继续",
+        "pause": "全部暂停",
+        "clearSuccessful": "清除成功项目",
+        "clearErrored": "清除失败项目",
+        "clearPending": "清除等候项目",
+        "cancelDownloading": "取消下载",
+        "more": "更多队列操作"
+      }
+    }
+  },
+  "auth": {
+    "title": "验证",
+    "cookies": {
+      "legend": "Cookie",
+      "legendBadge": "建议",
+      "legendLabel": "使用已登录工作阶段的 cookies 文件，或从浏览器导入。",
+      "file": {
+        "label": "从 cookies.txt 文件加载 Cookie",
+        "hint": "如需将 Cookie 导出为文件 {link}，",
+        "hintLink": "请参阅指南。"
+      },
+      "browser": {
+        "label": "自动从浏览器加载 Cookie:",
+        "placeholder": "不要从浏览器加载 Cookie",
+        "hint": "部分浏览器可能不支持加载 Cookie。请参阅{link}",
+        "hintLink": "兼容浏览器列表。"
+      }
+    },
+    "credentials": {
+      "title": "高级方法",
+      "description": "使用基本验证、Bearer 令牌、标头、影片密码等方法。",
+      "labels": {
+        "username": "用户名",
+        "password": "密码",
+        "token": "令牌",
+        "headers": "标头"
+      },
+      "basicAuth": {
+        "legend": "基本验证",
+        "legendLabel": "用于具备简易验证的网站。"
+      },
+      "videoPassword": {
+        "legend": "影片密码",
+        "legendLabel": "提供密码以存取受保护的影片。"
+      },
+      "bearerToken": {
+        "legend": "Bearer 令牌",
+        "legendLabel": "提供 Bearer 令牌以存取私人资源。"
+      },
+      "customHeaders": {
+        "legend": "自定义标头",
+        "legendBadge": "高级",
+        "legendLabel": "每行一项: FIELD:VALUE",
+        "placeholder": "X-Api-Key:…"
+      }
+    },
+    "init": {
+      "title": "未启用密钥库",
+      "description": "如需使用高级验证方法，必须启用密钥库。",
+      "hint": "密钥库会使用系统钥匙圈，可能需要输入密码。",
+      "error": {
+        "title": "无法启用密钥库",
+        "description": "启用密钥库时发生错误，请再试一次。",
+        "hint": "错误: {error}",
+        "unknown": "未知错误"
+      },
+      "toasts": {
+        "error": "无法初始化密钥库: {error}"
+      }
+    },
+    "toasts": {
+      "error": "无法保存验证设置。{error}",
+      "saved": "验证设置已保存！"
+    }
+  },
+  "media": {
+    "view": {
+      "tabs": {
+        "metadata": "中继数据",
+        "logs": "记录"
+      },
+      "thumbnailAlt": "{title} 的缩略图",
+      "metadata": {
+        "uploader": "上传者:",
+        "extractor": "提取器:",
+        "link": "链接:",
+        "chapters": "章节",
+        "description": "描述"
+      },
+      "stats": {
+        "title": "影片统计数据",
+        "views": "观看次数",
+        "likes": "喜欢",
+        "dislikes": "不喜欢",
+        "comments": "留言",
+        "rating": "评分",
+        "duration": "时长"
+      },
+      "logs": {
+        "failure": "失败",
+        "errors": {
+          "count": "错误 ({count})",
+          "empty": "找不到错误。"
+        },
+        "warnings": {
+          "count": "警告 ({count})",
+          "empty": "找不到警告。"
+        },
+        "all": {
+          "title": "所有记录",
+          "empty": "找不到记录。"
+        },
+        "toasts": {
+          "reported": "错误已报告。",
+          "error": "无法报告错误。"
+        },
+        "skipped": {
+          "count": "已跳过项目 ({count})",
+          "empty": "没有任何项目被过滤条件跳过。",
+          "items": "{count} 个项目 | {count} 个项目"
+        }
+      }
+    },
+    "preferences": {
+      "badges": {
+        "override": "覆写"
+      },
+      "labels": {
+        "quality": "选择格式、编码与轨道偏好。",
+        "network": "设置 Proxy、模拟身份与请求标头。这会覆写此下载的应用程序默认值。",
+        "output": "设置容器格式、转换方式与文件名范本。这会覆写此下载的应用程序默认值。",
+        "headersOverride": "每行一项：字段:值。这会取代此下载使用的全局标头。",
+        "subtitles": "选择此下载的字幕。"
+      },
+      "hints": {
+        "format": "选择影片或音频品质。品质越高，通常代表文件越大、下载时间越长。",
+        "encodings": "选择偏好的编码。适合用来提升播放兼容性，或保留原始品质。",
+        "tracks": "可用时可选择语言或声道版本，例如配音音轨。"
+      },
+      "tabs": {
+        "quality": "画质",
+        "network": "网络",
+        "subtitles": "字幕"
+      },
+      "subtitles": {
+        "empty": "此下载没有可用字幕。",
+        "languages": {
+          "legend": "可用语言",
+          "hint": "此项目只能下载这些字幕。",
+          "manual": "创作者提供",
+          "auto": "自动产生",
+          "noneManual": "找不到创作者提供的字幕。",
+          "noneAuto": "找不到自动字幕。"
+        }
+      }
+    },
+    "steps": {
+      "fetch": {
+        "progress": "{percentage}% — {done} / {total}",
+        "progressLabel": "正在提取中继数据…"
+      },
+      "configure": {
+        "format": {
+          "trackSelect": {
+            "screenReader": "选择要下载的音轨"
+          },
+          "formatSelect": {
+            "noFormats": "没有格式",
+            "placeholder": "选择格式",
+            "screenReader": "选择音轨的格式"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "没有音频编码",
+            "placeholder": "音频编码",
+            "screenReader": "选择音频编码"
+          },
+          "videoSelect": {
+            "noFormats": "没有视频编码",
+            "placeholder": "视频编码",
+            "screenReader": "选择视频编码"
+          }
+        },
+        "tracks": {
+          "availableInResolutions": "可用于",
+          "unavailableForSelectedResolution": "所选解析度无法使用",
+          "audioSelect": {
+            "noFormats": "没有音轨",
+            "placeholder": "音轨",
+            "screenReader": "选择音轨"
+          },
+          "videoSelect": {
+            "noFormats": "没有视频轨",
+            "placeholder": "视频轨",
+            "screenReader": "选择视频轨"
+          }
+        },
+        "metadata": {
+          "duration": "时长: {duration}",
+          "size": "大小: ",
+          "sizeInfo": "即将下载的数据大小。\n非文件最终大小。",
+          "items": "项目: {amount} {failedCount}",
+          "failedCount": "({amount} 失败)",
+          "skippedCount": "({amount} 个已跳过)",
+          "failedAndSkippedCount": "({failed} 个失败，{skipped} 个已跳过)"
+        },
+        "trackTypes": {
+          "both": "影片 + 音频",
+          "audio": "音频",
+          "video": "影片"
+        }
+      },
+      "download": {
+        "progress": "正在下载 {category}… — {percentage}%",
+        "progressList": "正在下载… {percentage}% — {done} / {total}",
+        "indeterminate": "{status}…",
+        "category": {
+          "video": "影片",
+          "audio": "音频",
+          "subtitles": "字幕",
+          "thumbnail": "缩略图",
+          "metadata": "中继数据",
+          "other": "其他"
+        },
+        "status": {
+          "initializing": "正在初始化",
+          "downloading": "正在下载",
+          "merging": "正在合并",
+          "remuxing": "正在重封装",
+          "reencoding": "正在重新编码",
+          "finalizing": "正在清理"
+        },
+        "metadata": {
+          "eta": "预估剩余时间: {eta}",
+          "speed": "速度: {speed}"
+        }
+      },
+      "paused": {
+        "progress": "下载已暂停 — {percentage}%",
+        "progressList": "下载已暂停 — {percentage}% — {done} / {total}",
+        "indeterminate": "下载已暂停",
+        "metadata": {
+          "eta": "剩余时间: {eta}",
+          "etaItems": "剩余: {n} 个项目 | 剩余: {n} 个项目"
+        }
+      },
+      "done": {
+        "complete": "下载完成 — 100%",
+        "showFolder": "在文件夹中显示",
+        "open": "开启文件",
+        "openFirst": "开启第一个文件",
+        "undeterminedLocation": "无法判断此项目的下载位置。"
+      },
+      "error": {
+        "errorPrefix": "错误 - {message}",
+        "report": "报告",
+        "showFull": "查看记录",
+        "signIn": "登录",
+        "filters": "编辑过滤条件"
+      }
+    },
+    "card": {
+      "actions": {
+        "remove": "移除",
+        "externalUrl": "在外部 URL 中开启",
+        "retry": "重试下载",
+        "download": "个别下载",
+        "preferences": "下载偏好设置",
+        "pause": "暂停下载",
+        "resume": "继续下载",
+        "metadata": "显示中继数据"
+      },
+      "toasts": {
+        "retry": "正在重试下载。",
+        "retryError": "无法重试下载。"
+      }
+    }
+  },
+  "subtitles": {
+    "title": "字幕",
+    "options": {
+      "enable": {
+        "legend": "字幕下载",
+        "legendLabel": "选择默认字幕设置。",
+        "label": "启用字幕",
+        "hint": "有字幕时就下载。"
+      },
+      "autoGenerated": {
+        "label": "包含自动产生的字幕",
+        "hint": "有自动字幕时也一并下载。"
+      },
+      "format": {
+        "legend": "偏好格式",
+        "legendLabel": "选择偏好的字幕格式。若无法使用，将使用次佳格式。",
+        "label": "格式"
+      },
+      "embed": {
+        "label": "加入字幕轨:",
+        "hint": "将字幕加入影片文件，适用于 mp4、mkv 与 webm 格式。"
+      },
+      "languages": {
+        "legend": "语言",
+        "legendLabel": "选择偏好的字幕语言。",
+        "downloadAll": "下载所有可用字幕。",
+        "search": "搜寻语言",
+        "searchPlaceholder": "依语言名称搜寻",
+        "suggested": "为您推荐",
+        "all": "所有语言",
+        "noResult": "没有语言符合「{query}」。",
+        "selected": "已选择:",
+        "allSelected": "所有可用字幕",
+        "searchHint": "提示：使用搜寻方块可快速过滤列表。已选择的语言会保持反白。",
+        "none": "无"
+      }
+    },
+    "toasts": {
+      "saved": "字幕设置已保存！",
+      "error": "无法保存字幕设置。{error}"
+    },
+    "formats": {
+      "srt": "SubRip (.srt)",
+      "vtt": "WebVTT (.vtt)",
+      "ass": "Advanced SubStation Alpha (.ass)",
+      "ttml": "Timed Text Markup (.ttml)",
+      "json3": "JSON (.json)"
+    },
+    "defaults": {
+      "legend": "默认字幕",
+      "hint": "当影片有字幕时使用。"
+    }
+  },
+  "location": {
+    "title": "下载位置",
+    "downloadDir": {
+      "label": "下载位置",
+      "hint": "按一下方块以选择影片下载位置。"
+    },
+    "directory": {
+      "legend": "分纳方式",
+      "legendLabel": "选择下载在文件夹中的分纳方式。",
+      "videoDir": {
+        "label": "下载位置:",
+        "hint": "下载影片时，取代全局下载位置设置。"
+      },
+      "audioDir": {
+        "label": "下载位置:",
+        "hint": "下载音频时，取代全局下载位置设置。"
+      },
+      "directoryPreset": {
+        "label": "下载分纳依照:",
+        "exampleLabel": "范例输出:",
+        "options": {
+          "none": "无子文件夹",
+          "playlist": "播放列表",
+          "channel": "频道",
+          "channelPlaylist": "频道 → 播放列表",
+          "yearMonth": "年 / 月",
+          "artistAlbum": "演出者 → 专辑",
+          "custom": "自定义"
+        },
+        "examples": {
+          "playlist": "我的播放列表/",
+          "channel": "我的频道/",
+          "channelPlaylist": "我的频道/我的播放列表/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "演出者名称/专辑名称/"
+        }
+      },
+      "outputFormat": {
+        "label": "目录格式:"
+      }
+    },
+    "filename": {
+      "legend": "文件名格式",
+      "legendLabel": "选择下载文件的文件名格式。",
+      "formatPreset": {
+        "label": "文件名默认:",
+        "exampleLabel": "范例输出:",
+        "options": {
+          "titleQuality": "标题 + 画质",
+          "titleOnly": "仅标题",
+          "titleQualityPlaylist": "播放列表 + 标题 + 画质",
+          "custom": "自定义"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "我的影片-(1080p30).mp4",
+            "titleOnly": "我的影片.mp4",
+            "titleQualityPlaylist": "03-我的影片-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "我的音频-(320k).mp3",
+            "titleOnly": "我的音频.mp3",
+            "titleQualityPlaylist": "03-我的音频-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "限制文件名:",
+          "hint": "以底线取代空白，并移除文件名中的特殊字元 (例如「&」)。"
+        }
+      },
+      "outputFormat": {
+        "label": "文件名格式:"
+      },
+      "reversePlaylistNumbering": {
+        "label": "反向播放列表编号:",
+        "hint": "从结尾而不是开头为播放列表项编号。"
+      }
+    },
+    "toasts": {
+      "saved": "位置已保存！",
+      "error": "无法保存位置。"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "reset": {
+      "label": "重设",
+      "confirm": "再按一次以重设"
+    },
+    "tabs": {
+      "downloads": "下载",
+      "app": "应用",
+      "network": "网络",
+      "system": "系统",
+      "about": "关于"
+    },
+    "performance": {
+      "legend": "效能",
+      "legendLabel": "设置系统资源的使用量。",
+      "maxConcurrency": {
+        "label": "最大同时工作数:"
+      },
+      "splitPlaylistThreshold": {
+        "label": "在以下情况将播放列表分区为个别影片:",
+        "options": {
+          "never": "永不分区",
+          "lessThan": "少于 {number} 部影片"
+        }
+      },
+      "autoLoadSize": {
+        "label": "自动加载影片大小:"
+      }
+    },
+    "input": {
+      "legend": "输入",
+      "legendLabel": "选择使用 OVD 开始下载的方式。",
+      "autoFillClipboard": {
+        "label": "自动填入已复制的链接:",
+        "hint": "侦测您复制的链接，一键即可下载。"
+      },
+      "preferVideoInMixedLinks": {
+        "label": "播放列表链接时偏好单一影片:",
+        "hint": "当链接同时包含影片与播放列表时，只下载影片而非整个播放列表。"
+      },
+      "globalShortcuts": {
+        "label": "启用快捷键:",
+        "add_hint": "使用以下方式将影片加入队列:",
+        "download_hint": "使用以下方式下载队列:",
+        "instant_hint": "立即加入并下载:"
+      },
+      "authentication": {
+        "label": "登录以下载私人影片:",
+        "link": "设置验证"
+      }
+    },
+    "output": {
+      "legend": "输出",
+      "legendLabel": "设置下载的文件类型。",
+      "addThumbnail": {
+        "label": "加入封面图片:",
+        "hint": "将缩略图嵌入文件，让媒体播放器显示封面。"
+      },
+      "saveThumbnail": {
+        "label": "保存缩略图文件:",
+        "hint": "在媒体文件旁下载可用的最佳缩略图。"
+      },
+      "addMetadata": {
+        "label": "加入标题与演出者资讯:",
+        "hint": "将标题、上传者/演出者与描述等中继数据保存至文件中。"
+      },
+      "partialDownload": {
+        "legend": "部分下载",
+        "hint": "用时间戳或章节，只下载部分内容。",
+        "use": "使用",
+        "useTimes": "时间戳",
+        "useChapter": "章节",
+        "chapter": "章节",
+        "startAt": "开始于",
+        "stopAt": "结束于",
+        "invalidHint": "无效的时间戳会被忽略。",
+        "allChapters": "所有章节",
+        "errors": {
+          "invalid": "请输入有效时间。",
+          "beforeStart": "结束时间必须晚于开始时间。",
+          "exceedsDuration": "时间戳不能超过影片长度。"
+        }
+      },
+      "location": {
+        "label": "下载位置与文件名:",
+        "link": "设置下载位置"
+      },
+      "subtitles": {
+        "label": "加入字幕:",
+        "link": "设置字幕"
+      },
+      "keepOriginalStreams": {
+        "label": "保留原始串流",
+        "hint": "除非所选后处理需要，否则避免更换容器或重新编码。"
+      },
+      "postprocess": {
+        "label": "影片后处理：",
+        "hint": "会在下载完成后执行。",
+        "reencodeWarning": "此选项会重新编码，可能需要较长时间。",
+        "keepOriginalStreamsConflict": "此选项需要重新编码。请停用「保留原始串流」后再使用。",
+        "mp42RequiresMp4": "此选项需要 MP4 输出。",
+        "options": {
+          "none": "无",
+          "fps30": "重新编码为 30 fps",
+          "mp42": "将 MP4 品牌设为 mp42",
+          "custom": "自定义"
+        }
+      },
+      "postprocessMode": {
+        "label": "自定义后处理模式：",
+        "hint": "选择自定义 ffmpeg 参数要在重封装或重新编码期间执行。",
+        "options": {
+          "remux": "于重封装期间执行",
+          "reencode": "于重新编码期间执行"
+        }
+      },
+      "postprocessArgs": {
+        "label": "高级 ffmpeg 参数：",
+        "hint": "仅限高级用户。请以空格分隔参数；引号会被保留。"
+      },
+      "tabs": {
+        "audio": {
+          "screenreader": "音频设置",
+          "label": "音频",
+          "format": {
+            "label": "音频格式:",
+            "hint": "选择偏好的音频格式。",
+            "options": {
+              "mp3": "MP3 (建议)",
+              "m4a": "M4A",
+              "ogg": "OGG",
+              "aac": "AAC",
+              "opus": "Opus",
+              "wav": "WAV",
+              "flac": "FLAC"
+            }
+          },
+          "postprocess": {
+            "label": "音频后处理：",
+            "options": {
+              "none": "无",
+              "custom": "自定义"
+            }
+          }
+        },
+        "video": {
+          "screenreader": "影片设置",
+          "label": "影片",
+          "container": {
+            "label": "影片格式:",
+            "hint": "选择偏好的影片容器格式。",
+            "options": {
+              "mp4": "MP4",
+              "mkv": "MKV"
+            }
+          }
+        }
+      },
+      "preciseCuts": {
+        "label": "精准裁切:",
+        "hint": "在精确影格处裁切，而不是在邻近关键影格处裁切。速度非常慢。\n只有在一般裁切结果错误、损坏或出现黑画面/缺失片段时才启用。"
+      }
+    },
+    "appearance": {
+      "legend": "外观",
+      "legendLabel": "设置应用程序的外观与操作体验。",
+      "theme": {
+        "label": "布景主题:",
+        "options": {
+          "system": "系统默认 ({theme})",
+          "light": "亮色",
+          "dark": "深色"
+        }
+      },
+      "language": {
+        "label": "语言",
+        "options": {
+          "system": "系统默认 ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "附加选择器：",
+        "hint": "选择下载前要显示哪一个额外选择器。",
+        "options": {
+          "none": "无",
+          "encodings": "编码",
+          "tracks": "轨道"
+        }
+      }
+    },
+    "network": {
+      "legend": "网络",
+      "legendLabel": "设置应用程序的网络连接方式。",
+      "enableProxy": {
+        "label": "透过 Proxy 连接:"
+      },
+      "proxy": {
+        "label": "Proxy 设置:"
+      },
+      "impersonate": {
+        "label": "模拟:",
+        "hint": "模拟特定 OS 或浏览器，以避免装置指纹辨识。",
+        "options": {
+          "none": "不模拟",
+          "any": "随机模拟用户端"
+        }
+      },
+      "extractorArgs": {
+        "label": "提取器参数:",
+        "hint": "自定义 yt-dlp 的提取器参数。每行一个参数。",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "只需输入值。应用程序会自动加入 --extractor-args。"
+      }
+    },
+    "sponsorBlock": {
+      "legend": "SponsorBlock",
+      "legendLabel": "移除或标记影片中的部分片段。",
+      "removeParts": {
+        "label": "要移除的片段",
+        "placeholder": "选择 1 个或多个要从影片中移除的片段。"
+      },
+      "markParts": {
+        "label": "要标记的片段",
+        "placeholder": "选择 1 个或多个要以章节标记的片段。"
+      },
+      "apiUrl": {
+        "label": "API URL"
+      },
+      "parts": {
+        "sponsor": {
+          "label": "赞助",
+          "description": "由创作者或第三方进行的付费产品或服务宣传。"
+        },
+        "selfpromo": {
+          "label": "自我宣传 / 非赞助",
+          "description": "创作者对商品、服务或频道的自我宣传 (非第三方付费)。"
+        },
+        "interaction": {
+          "label": "互动提醒",
+          "description": "提醒按赞、订阅、追踪或与创作者互动。"
+        },
+        "intro": {
+          "label": "片头 / 中场插播",
+          "description": "影片开头的片头动画、中场插播或非内容暂停。"
+        },
+        "outro": {
+          "label": "片尾 / 结尾卡 / 铭谢",
+          "description": "接近影片结尾的结尾卡、致谢或收尾片段。"
+        },
+        "hook": {
+          "label": "抢先一睹 / 问候",
+          "description": "用来吸引观众的开场段落、问候语或预告即将播放的内容。"
+        },
+        "music_offtopic": {
+          "label": "非音乐片段",
+          "description": "音乐影片中与主题无关的谈话或干扰内容。"
+        },
+        "preview": {
+          "label": "预览 / 回顾",
+          "description": "即将推出内容的预览或先前片段的回顾。"
+        },
+        "filler": {
+          "label": "闲聊 / 离题",
+          "description": "与主要内容无关、对理解影片没有帮助的闲聊或插入片段。"
+        },
+        "chapter": {
+          "label": "章节",
+          "description": "标记影片的章节/区段 (搭配章节动作类型)。"
+        }
+      },
+      "preciseCuts": {
+        "label": "精准裁切:",
+        "hint": "让 SponsorBlock 移除与部分下载在精确影格处裁切。速度非常慢。\n只有在一般裁切结果错误、损坏或出现黑画面/缺失片段时才启用。"
+      }
+    },
+    "update": {
+      "legend": "更新",
+      "legendLabel": "选择应用程序哪些部分要自动更新。",
+      "updateBinaries": {
+        "label": "自动更新工具:",
+        "hint": "OVD 会使用 yt-dlp 与 ffmpeg 等工具下载影片。启用此选项可维持于最新状态。"
+      },
+      "updateApp": {
+        "label": "自动更新应用程序:",
+        "hint": "开启此选项后，新版本发布时会立即取得新功能与错误修正。"
+      }
+    },
+    "system": {
+      "legend": "系统",
+      "legendLabel": "设置此应用程序与系统的整合方式。",
+      "trayEnabled": {
+        "label": {
+          "mac": "显示菜单列图标",
+          "generic": "显示系统托盘图标"
+        },
+        "hint": {
+          "mac": "显示菜单列图标以便快速存取。",
+          "generic": "在系统托盘中显示图标以便快速存取。"
+        }
+      },
+      "minimiseToTray": {
+        "label": "关闭时最小化至系统托盘",
+        "hint": "关闭窗口时，将应用程序隐藏在系统托盘而非结束工作。"
+      },
+      "autoStart": {
+        "label": "登录时启动",
+        "hint": "登录时自动启动 Open Video Downloader。"
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "登录时隐藏启动",
+          "windows": "登录时最小化至系统托盘启动",
+          "generic": "登录时隐藏启动 (不建议)"
+        },
+        "hint": {
+          "mac": "登录时启动应用程序但不开启窗口。使用菜单列或 Dock 图标开启。",
+          "windows": "登录时启动后会在系统托盘中执行，不会开启窗口。",
+          "generic": "登录时启动应用程序但不开启窗口。"
+        }
+      }
+    },
+    "notifications": {
+      "legend": "通知",
+      "legendLabel": "设置通知推播时机。",
+      "behavior": {
+        "label": "显示通知:",
+        "options": {
+          "always": "一律",
+          "onBackground": "在背景执行时",
+          "never": "永不"
+        },
+        "hint": "提示：搭配快捷键使用时，通知会很实用。"
+      },
+      "disabled": {
+        "label": "启用/停用特定通知",
+        "disabledScreenReader": "此选项已停用。",
+        "kinds": {
+          "queueAdded": "已加入队列",
+          "queueDownloading": "队列下载中",
+          "queueFinished": "队列完成",
+          "videoFinished": "影片完成",
+          "playlistFinished": "播放列表完成",
+          "downloadFailed": "下载失败",
+          "videoReady": "影片已就绪",
+          "playlistReady": "播放列表已就绪"
+        }
+      }
+    },
+    "toasts": {
+      "saved": "设置已保存！",
+      "reset": "设置已重设为默认值。"
+    }
+  },
+  "updater": {
+    "available": "有可用更新！",
+    "install": {
+      "title": "安装更新",
+      "subtitle": "这将重新启动应用程序。"
+    },
+    "downloading": "正在下载更新…"
+  },
+  "install": {
+    "title": {
+      "installing": "正在安装必要工具…",
+      "failed": "部分必要工具安装失败。",
+      "installed": "必要工具已安装。"
+    },
+    "subtitle": {
+      "installing": "请稍候片刻。",
+      "failed": "应用程序可能无法正常运作，请报告此问题。",
+      "installed": "准备就绪！"
+    }
+  },
+  "components": {
+    "base": {
+      "emptyState": {
+        "title": "队列为空",
+        "subtitle": "新增影片即可开始。"
+      },
+      "dragState": {
+        "title": "拖拽以新增影片",
+        "subtitle": "拖拽影片以加入队列。"
+      },
+      "fileInput": {
+        "select": "选择文件",
+        "placeholder": "选择文件…",
+        "invalid": "文件无效。",
+        "clear": "清除文件",
+        "recents": {
+          "clear": "清除最近的文件",
+          "open": "开启最近的选择项目",
+          "empty": "没有最近的选择项目"
+        }
+      },
+      "folderInput": {
+        "select": "选择文件夹",
+        "placeholder": "选择文件夹…",
+        "invalid": "文件夹无效。",
+        "clear": "清除文件夹",
+        "recents": {
+          "clear": "清除最近的文件夹",
+          "open": "开启最近的选择项目",
+          "empty": "没有最近的选择项目"
+        }
+      },
+      "secretInput": {
+        "hide": "隐藏",
+        "show": "显示",
+        "clear": "清除 {label}"
+      },
+      "toolCard": {
+        "failed": "安装此工具失败。展开以取得更多资讯。"
+      }
+    }
+  },
+  "errors": {
+    "runner": {
+      "internal": {
+        "shortMessage": "内部错误",
+        "message": "处理此项目时发生内部错误。"
+      },
+      "signInRequired": {
+        "shortMessage": "需要登录",
+        "message": "您需要登录才能查看此内容。"
+      },
+      "membersOnly": {
+        "shortMessage": "仅限会员",
+        "message": "此影片仅限频道会员观看。"
+      },
+      "geoBlocked": {
+        "shortMessage": "地区封锁",
+        "message": "此内容在您的地区无法使用。"
+      },
+      "accessForbidden403": {
+        "shortMessage": "存取被拒绝",
+        "message": "您没有权限存取此资源 (HTTP 403)。"
+      },
+      "notFound404": {
+        "shortMessage": "找不到",
+        "message": "找不到要求的影片或播放列表 (HTTP 404)。"
+      },
+      "server5xx": {
+        "shortMessage": "服务器错误",
+        "message": "发生暂时性的服务器问题，请稍后再试。"
+      },
+      "rateLimited429": {
+        "shortMessage": "已达请求上限",
+        "message": "已送出过多请求。请稍候再试。"
+      },
+      "requestedFormatUnavailable": {
+        "shortMessage": "格式不可用",
+        "message": "所选格式不适用于此影片。"
+      },
+      "unableToExtractInitialData": {
+        "shortMessage": "数据提取失败",
+        "message": "无法提取必要的初始影片数据。"
+      },
+      "unableToExtractIdOrInfo": {
+        "shortMessage": "中继数据错误",
+        "message": "无法提取影片或上传者资讯。"
+      },
+      "nsigExtractionFailed": {
+        "shortMessage": "签名失败",
+        "message": "无法提取或解码影片签名。"
+      },
+      "embedOnly": {
+        "shortMessage": "影片仅限嵌入",
+        "message": "此影片只能透过嵌入式播放器存取。"
+      },
+      "urlUnsupported": {
+        "shortMessage": "URL 无效",
+        "message": "提供的链接不受支持或无法辨识。"
+      },
+      "unknownUrlType": {
+        "shortMessage": "未知 URL 类型",
+        "message": "提供的 URL 使用不支持的通讯协定。"
+      },
+      "networkNameResolutionFailed": {
+        "shortMessage": "网络错误",
+        "message": "无法解析主机名称。请检查网际网络连接。"
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Proxy 连接失败",
+        "message": "无法连接至 Proxy。请检查 Proxy 设置。"
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "需要登录",
+        "message": "登录以确认您不是机器人。"
+      },
+      "playlistPrivateOrMissing": {
+        "shortMessage": "播放列表不可用",
+        "message": "此播放列表为私人或已不存在。"
+      },
+      "videoNotFoundOrPrivate": {
+        "shortMessage": "影片不可用",
+        "message": "此影片已移除或设为私人。"
+      },
+      "channelUnavailable": {
+        "shortMessage": "频道不可用",
+        "message": "提供此内容的频道已无法存取。"
+      },
+      "ffmpegNotFound": {
+        "shortMessage": "找不到 ffmpeg",
+        "message": "需要 ffmpeg 始得转码为 mp3 或 mp4。"
+      },
+      "ffmpegFailed": {
+        "shortMessage": "ffmpeg 失败",
+        "message": "FFmpeg 处理时发生错误。"
+      },
+      "cannotAllocateMemory": {
+        "shortMessage": "内存错误",
+        "message": "FFmpeg 处理影片时内存不足。"
+      },
+      "permissionDenied": {
+        "shortMessage": "权限不足",
+        "message": "应用程序没有存取此文件或文件夹的权限。"
+      },
+      "noWritePermission": {
+        "shortMessage": "无法写入",
+        "message": "目的地路径无法写入。"
+      },
+      "windowsFileMissing": {
+        "shortMessage": "找不到文件",
+        "message": "找不到参照的文件 (WinError 2)。"
+      },
+      "blockedGeneric": {
+        "shortMessage": "影片已封锁",
+        "message": "此影片已被封锁，无法下载。"
+      },
+      "copyrightClaimed": {
+        "shortMessage": "著作权封锁",
+        "message": "影片因著作权声明而遭封锁。"
+      },
+      "notPremieredYet": {
+        "shortMessage": "尚未首播",
+        "message": "此影片将在首播开始后才可使用。"
+      },
+      "livestreamNotStarted": {
+        "shortMessage": "直播尚未开始",
+        "message": "直播尚未开始，请稍后再查看。"
+      },
+      "sslVerifyFailed": {
+        "shortMessage": "SSL 验证失败",
+        "message": "无法验证安全连接。请检查凭证或日期/时间。"
+      },
+      "sponsorBlockUnreachable": {
+        "shortMessage": "SponsorBlock 无法连接",
+        "message": "无法连接至 SponsorBlock API 以取得片段数据。"
+      },
+      "downloadRetryingFragment": {
+        "shortMessage": "正在重试片段",
+        "message": "片段下载失败，将自动重试。"
+      },
+      "unknown": {
+        "shortMessage": "未知错误",
+        "message": "处理此项目时发生未知错误。"
+      },
+      "rejectedByFilter": {
+        "shortMessage": "已被过滤掉",
+        "message": "这个项目已被你的输入过滤条件排除。"
+      }
+    }
+  },
+  "about": {
+    "title": "关于",
+    "credit": "由 jely2002 与贡献者用 ❤ 制作",
+    "poweredBy": "采用开放原始码:",
+    "viewLicenses": "查看授权",
+    "version": "版本: {version}",
+    "links": {
+      "github": "GitHub",
+      "wiki": "Wiki",
+      "reportABug": "报告错误"
+    }
+  },
+  "inputFilters": {
+    "title": "输入过滤条件",
+    "filesize": {
+      "legend": "文件大小",
+      "hint": "只保留大于或小于你所选大小的项目。"
+    },
+    "dates": {
+      "legend": "上传日期",
+      "hint": "只保留在某日期当天、之前或之后上传的项目。"
+    },
+    "advanced": {
+      "legend": "高级过滤条件",
+      "hint": "这些是供高级用户使用的原始 yt-dlp 过滤条件。"
+    },
+    "fields": {
+      "minSize": {
+        "label": "最小文件大小:"
+      },
+      "maxSize": {
+        "label": "最大文件大小:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "单位"
+      },
+      "date": {
+        "modeLabel": "比对规则",
+        "clearMode": "关闭",
+        "hint": "先选择日期规则，再选择日期。",
+        "mode": {
+          "exact": "在该日期",
+          "before": "在该日期或之前",
+          "after": "在该日期或之后"
+        },
+        "activeLabel": {
+          "exact": "在这一天上传的影片",
+          "before": "在这一天或之前上传的影片",
+          "after": "在这一天或之后上传的影片"
+        },
+        "presetsLabel": "快速选项",
+        "presets": {
+          "today": "今天",
+          "yesterday": "昨天",
+          "last7Days": "最近 7 天",
+          "last30Days": "最近 30 天"
+        }
+      },
+      "matchFilters": {
+        "label": "比对过滤条件:",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "范例：!is_live、duration >? 600、like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "中断比对过滤条件:",
+        "placeholder": "duration >? 3600",
+        "hint": "若某个项目未通过此过滤条件，就停止检查目前的链接。"
+      }
+    },
+    "playlistSelection": {
+      "title": "选择播放列表项",
+      "description": "选择要下载的项目:",
+      "selectionSummary": "已选择 {count} / {total} 个项目 | 已选择 {count} / {total} 个项目",
+      "selectionSummaryAll": "已选择全部项目 | 已选择全部 {count} 个项目",
+      "advancedButton": "高级",
+      "simpleButton": "重设",
+      "advancedTitle": "高级播放列表选择",
+      "advancedHint": "可选择多个项目、负数与多个范围。",
+      "advancedDescription": "目前选择",
+      "advancedEmpty": "尚未设置任何高级选择。",
+      "addSingle": "新增项目",
+      "addRange": "新增范围",
+      "applyFull": "下载所有项目",
+      "applySelection": "下载已选项目",
+      "useAdvanced": "使用高级选择",
+      "noMatches": "这个范围在播放列表中没有符合的项目。",
+      "row": {
+        "single": "单一",
+        "range": "范围"
+      },
+      "remove": "移除",
+      "fields": {
+        "advancedLabel": "高级:",
+        "index": "项目",
+        "indexPlaceholder": "1 或 -1",
+        "start": "开始",
+        "startPlaceholder": "1",
+        "end": "结束",
+        "endPlaceholder": "10",
+        "input": "项目"
+      },
+      "errors": {
+        "playlistIndex": "请输入不为 0 的整数。负数会从结尾开始计算。",
+        "playlistRangeBounds": "请同时设置开始与结束。负数会从结尾开始计算。"
+      }
+    },
+    "toasts": {
+      "saved": "输入过滤条件已存储！",
+      "error": "无法存储输入过滤条件。{error}"
+    }
+  }
+}
