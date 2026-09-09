@@ -1,0 +1,51 @@
+{
+  "tray": {
+    "quit": "Çıx",
+    "showOrHide": "Pəncərəni göstər/gizlət",
+    "addToQueue": "Mübadilə buferindən əlavə et",
+    "addAndDownload": "Mübadilə buferindən əlavə et və endir",
+    "downloadQueue": "Növbəni endir",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftD": "Ctrl + Shift + D",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftD": "Alt + Shift + D",
+      "altShiftEnter": "Alt + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Növbəyə əlavə edildi",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Növbə endirilir",
+      "body": "{n} element endirilir | {n} element endirilir"
+    },
+    "queueFinished": {
+      "title": "Növbənin endirilməsi tamamlandı",
+      "body": "{n} elementin endirilməsi tamamlandı | {n} elementin endirilməsi tamamlandı"
+    },
+    "videoFinished": {
+      "title": "Endirmə tamamlandı",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Pleylistin endirilməsi tamamlandı",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Endirməyə hazırdır",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Pleylist endirməyə hazırdır",
+      "body": "{title} | {title} ({n} element) | {title} ({n} element)"
+    },
+    "downloadFailed": {
+      "title": "Endirmə uğursuz oldu",
+      "body": "{title}\n{message}"
+    }
+  }
+}
