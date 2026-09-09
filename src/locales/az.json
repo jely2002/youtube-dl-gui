@@ -1,0 +1,1173 @@
+{
+  "common": {
+    "download": "Endir",
+    "save": "Yadda saxla",
+    "later": "Daha sonra",
+    "load": "Yüklə",
+    "install": "Quraşdır",
+    "percentage": "{percent}%",
+    "add": "Əlavə et",
+    "back": "Geri",
+    "continue": "Davam et",
+    "retry": "Yenidən cəhd et",
+    "enable": "Aktivləşdir",
+    "pleaseWait": "Zəhmət olmasa, gözləyin…",
+    "loading": "Yüklənir",
+    "emptySearch": "Nəticə tapılmadı.",
+    "parenthesis": "({content})",
+    "divide": "{left} / {right}",
+    "video": "video görüntüsü",
+    "unknown": "naməlum",
+    "confirm": "Təsdiqlə",
+    "best": "Ən yaxşı",
+    "resume": "Davam etdir",
+    "urlImport": {
+      "added": "Keçid növbəyə əlavə edildi. | {n} keçid növbəyə əlavə edildi.",
+      "partial": "Növbəyə {added} keçid əlavə edildi. {skipped} etibarsız qeyd keçirildi.",
+      "noneFound": "Daxil edilən mətndə/faylda etibarlı keçid tapılmadı.",
+      "readError": "Həmin faylı oxumaq mümkün olmadı."
+    }
+  },
+  "layout": {
+    "header": {
+      "placeholder": "Növbəyə əlavə etmək üçün video/pleylist keçidi daxil edin",
+      "watchClipboardPlaceholder": "Mübadilə buferi izlənir: köçürülən keçidlər növbəyə əlavə edilir",
+      "actions": {
+        "more": "Əlavə etmək üçün digər əməliyyatlar",
+        "watchClipboardStart": "Mübadilə buferini izlə",
+        "watchClipboardStop": "Mübadilə buferini izləməyi dayandır",
+        "importFile": "Keçidləri idxal et",
+        "inputFilters": "Süzgəclər"
+      },
+      "nav": {
+        "inputFilters": "Süzgəclər",
+        "settings": "Tətbiq parametrləri"
+      }
+    },
+    "footer": {
+      "progress": {
+        "downloading": "Növbə endirilir - {done} tamamlanıb, cəmi {total}.",
+        "completed": "Endirmə tamamlandı – {n} element endirildi. | Endirmə tamamlandı – {n} element endirildi.",
+        "ready": "Endirməyə hazırdır! {n} element növbədədir. | Endirməyə hazırdır! {n} element növbədədir."
+      },
+      "nav": {
+        "downloadLocation": "Yerlər",
+        "login": {
+          "screenReader": {
+            "on": "Giriş məlumatlarını dəyiş (hazırda daxil olunub)",
+            "off": "Giriş məlumatlarını dəyiş (hazırda daxil olunmayıb)"
+          },
+          "tooltip": {
+            "on": "Giriş məlumatlarını dəyiş",
+            "off": "Daxil ol"
+          }
+        },
+        "subtitles": {
+          "screenReader": {
+            "on": "Altyazıları dəyiş (hazırda aktivdir)",
+            "off": "Altyazıları dəyiş (hazırda deaktivdir)"
+          },
+          "tooltip": "Altyazılar"
+        }
+      },
+      "format": {
+        "trackSelect": {
+          "screenReader": "Bütün videolar üçün trek seç"
+        },
+        "formatSelect": {
+          "noFormats": "Format yoxdur",
+          "placeholder": "Format seç",
+          "screenReader": "Bütün videolar üçün format seç"
+        }
+      },
+      "queue": {
+        "empty": "Növbəni boşalt",
+        "resume": "Hamısını davam etdir",
+        "pause": "Hamısını fasiləyə al",
+        "clearSuccessful": "Uğurlu olanları təmizlə",
+        "clearErrored": "Xətalı olanları təmizlə",
+        "clearPending": "Gözləyənləri təmizlə",
+        "cancelDownloading": "Endirməni ləğv et",
+        "more": "Digər növbə əməliyyatları"
+      }
+    }
+  },
+  "auth": {
+    "title": "Kimlik doğrulaması",
+    "cookies": {
+      "legend": "Kukilər",
+      "legendBadge": "Tövsiyə olunur",
+      "legendLabel": "Kukilər faylındakı açıq giriş sessiyalarından istifadə edin və ya onları brauzerinizdən idxal edin.",
+      "file": {
+        "label": "Kukiləri cookies.txt faylından yüklə",
+        "hint": "Kukilərinizi fayla ixrac etmək üçün {link}",
+        "hintLink": "təlimata baxın."
+      },
+      "browser": {
+        "label": "Kukiləri brauzerdən avtomatik yüklə:",
+        "placeholder": "Kukiləri brauzerdən yükləmə",
+        "hint": "Bəzi brauzerlər kukilərin yüklənməsini dəstəkləməyə bilər. Baxın: {link}",
+        "hintLink": "uyğun brauzerlərin siyahısına."
+      }
+    },
+    "credentials": {
+      "title": "Qabaqcıl üsullar",
+      "description": "Əsas kimlik doğrulaması, daşıyıcı tokenlər, başlıqlar, video parolu və s. kimi üsullardan istifadə edin.",
+      "labels": {
+        "username": "İstifadəçi adı",
+        "password": "Parol",
+        "token": "Token",
+        "headers": "Başlıqlar"
+      },
+      "basicAuth": {
+        "legend": "Əsas kimlik doğrulaması",
+        "legendLabel": "Sadə kimlik doğrulamasından istifadə edən saytlar üçündür."
+      },
+      "videoPassword": {
+        "legend": "Video parolu",
+        "legendLabel": "Qorunan videolara giriş üçün parol daxil edin."
+      },
+      "bearerToken": {
+        "legend": "Daşıyıcı token",
+        "legendLabel": "Məxfi resurslara giriş üçün daşıyıcı token daxil edin."
+      },
+      "customHeaders": {
+        "legend": "Fərdi başlıqlar",
+        "legendBadge": "Qabaqcıl",
+        "legendLabel": "Hər sətirdə biri: FIELD:VALUE",
+        "placeholder": "X-Api-Key:…"
+      }
+    },
+    "init": {
+      "title": "Məxfi məlumat anbarı aktivləşdirilməyib",
+      "description": "Qabaqcıl kimlik doğrulaması üsullarından istifadə etmək üçün məxfi məlumat anbarını aktivləşdirmək lazımdır.",
+      "hint": "Məxfi məlumat anbarı sisteminizin açar dəstindən istifadə edir, bunun üçün parol tələb oluna bilər.",
+      "error": {
+        "title": "Məxfi məlumat anbarını aktivləşdirmək mümkün olmadı",
+        "description": "Məxfi məlumat anbarını aktivləşdirərkən xəta baş verdi, yenidən cəhd edin.",
+        "hint": "Xəta: {error}",
+        "unknown": "Naməlum xəta"
+      },
+      "toasts": {
+        "error": "Məxfi məlumat anbarını işə salmaq mümkün olmadı: {error}"
+      }
+    },
+    "toasts": {
+      "error": "Kimlik doğrulaması parametrlərini yadda saxlamaq mümkün olmadı. {error}",
+      "saved": "Kimlik doğrulaması parametrləri yadda saxlanıldı!"
+    }
+  },
+  "media": {
+    "view": {
+      "tabs": {
+        "metadata": "Metaməlumat",
+        "logs": "Jurnallar"
+      },
+      "thumbnailAlt": "Miniatür: {title}",
+      "metadata": {
+        "uploader": "Yükləyən:",
+        "extractor": "Çıxarıcı:",
+        "link": "Keçid:",
+        "chapters": "Fəsillər",
+        "description": "Təsvir"
+      },
+      "stats": {
+        "title": "Video statistikası",
+        "views": "Baxışlar",
+        "likes": "Bəyənmələr",
+        "dislikes": "Bəyənməmələr",
+        "comments": "Şərhlər",
+        "rating": "Qiymətləndirmə",
+        "duration": "Müddət"
+      },
+      "logs": {
+        "failure": "Uğursuzluq",
+        "errors": {
+          "count": "Xətalar ({count})",
+          "empty": "Xəta tapılmadı."
+        },
+        "warnings": {
+          "count": "Xəbərdarlıqlar ({count})",
+          "empty": "Xəbərdarlıq tapılmadı."
+        },
+        "skipped": {
+          "count": "Keçirilən elementlər ({count})",
+          "empty": "Süzgəclər heç bir elementi keçirməyib.",
+          "items": "{count} element | {count} element"
+        },
+        "all": {
+          "title": "Bütün jurnallar",
+          "empty": "Jurnal qeydi tapılmadı."
+        },
+        "toasts": {
+          "reported": "Xəta barədə məlumat göndərildi.",
+          "error": "Xəta barədə məlumat göndərmək mümkün olmadı."
+        }
+      }
+    },
+    "preferences": {
+      "badges": {
+        "override": "Əvəzlə"
+      },
+      "labels": {
+        "quality": "Format, kodek və trek seçimlərini təyin edin.",
+        "network": "Proksi, təqlid, çıxarıcı parametrlərini və sorğu başlıqlarını tənzimləyin. Bu endirmə üçün tətbiqin standart parametrlərini əvəz edir.",
+        "output": "Konteyner, çevirmə və fayl adı şablonlarını tənzimləyin. Bu endirmə üçün tətbiqin standart parametrlərini əvəz edir.",
+        "subtitles": "Bu endirmə üçün altyazıları seçin.",
+        "headersOverride": "Hər sətirdə biri: FIELD:VALUE. Bu endirmə üçün ümumi başlıqları əvəz edir."
+      },
+      "subtitles": {
+        "empty": "Bu endirmə üçün altyazı tapılmadı.",
+        "languages": {
+          "legend": "Mövcud dillər",
+          "hint": "Bu element üçün yalnız bu altyazılar endirilə bilər.",
+          "manual": "Müəllifin təqdim etdiyi",
+          "auto": "Avtomatik yaradılan",
+          "noneManual": "Müəllifin təqdim etdiyi altyazı tapılmadı.",
+          "noneAuto": "Avtomatik altyazı tapılmadı."
+        }
+      },
+      "hints": {
+        "format": "Video və ya səs keyfiyyətini seçin. Daha yüksək keyfiyyət adətən daha böyük fayllar və daha uzun endirmə müddəti deməkdir.",
+        "encodings": "Üstünlük verdiyiniz kodekləri seçin. Oynatma uyğunluğu və ya ilkin keyfiyyətin qorunması üçün faydalıdır.",
+        "tracks": "Mövcud olduqda dil və ya kanal variantlarını, məsələn, dublyajlı səsi seçin."
+      },
+      "tabs": {
+        "quality": "Keyfiyyət",
+        "subtitles": "Altyazılar",
+        "network": "Şəbəkə"
+      }
+    },
+    "steps": {
+      "fetch": {
+        "progress": "{percentage}% — {done} tamamlanıb, cəmi {total}",
+        "progressLabel": "Metaməlumat alınır…"
+      },
+      "configure": {
+        "format": {
+          "trackSelect": {
+            "screenReader": "Endiriləcək treki seç"
+          },
+          "formatSelect": {
+            "noFormats": "Format yoxdur",
+            "placeholder": "Format seç",
+            "screenReader": "Trekin formatını seç"
+          }
+        },
+        "encodings": {
+          "audioSelect": {
+            "noFormats": "Səs kodlaşdırması yoxdur",
+            "placeholder": "Səs kodeki",
+            "screenReader": "Səs kodlaşdırmasını seç"
+          },
+          "videoSelect": {
+            "noFormats": "Video kodlaşdırması yoxdur",
+            "placeholder": "Video kodeki",
+            "screenReader": "Video kodlaşdırmasını seç"
+          }
+        },
+        "tracks": {
+          "availableInResolutions": "Mövcud ayırdetmələr",
+          "unavailableForSelectedResolution": "Seçilmiş ayırdetmə üçün mövcud deyil",
+          "audioSelect": {
+            "noFormats": "Səs treki yoxdur",
+            "placeholder": "Səs treki",
+            "screenReader": "Səs trekini seç"
+          },
+          "videoSelect": {
+            "noFormats": "Video treki yoxdur",
+            "placeholder": "Video treki",
+            "screenReader": "Video trekini seç"
+          }
+        },
+        "metadata": {
+          "duration": "Müddət: {duration}",
+          "size": "Ölçü: ",
+          "sizeInfo": "Endiriləcək məlumatın həcmi.\nFaylın yekun ölçüsü deyil.",
+          "items": "Elementlər: {amount} {details}",
+          "failedCount": "({amount} uğursuz)",
+          "skippedCount": "({amount} keçirilib)",
+          "failedAndSkippedCount": "({failed} uğursuz, {skipped} keçirilib)"
+        },
+        "trackTypes": {
+          "both": "Video + səs",
+          "audio": "Səs",
+          "video": "Video görüntüsü"
+        }
+      },
+      "download": {
+        "progress": "Endirilir: {category}… — {percentage}%",
+        "progressList": "Endirilir… {percentage}% — {done} tamamlanıb, cəmi {total}",
+        "indeterminate": "{status}…",
+        "category": {
+          "video": "video görüntüsü",
+          "audio": "səs",
+          "subtitles": "altyazılar",
+          "thumbnail": "miniatür",
+          "metadata": "metaməlumat",
+          "other": "digər"
+        },
+        "status": {
+          "initializing": "İşə salınır",
+          "downloading": "Endirilir",
+          "merging": "Birləşdirilir",
+          "remuxing": "Konteyner dəyişdirilir",
+          "reencoding": "Yenidən kodlaşdırılır",
+          "finalizing": "Təmizlənir"
+        },
+        "metadata": {
+          "eta": "Təxmini qalan vaxt: {eta}",
+          "speed": "Sürət: {speed}"
+        }
+      },
+      "paused": {
+        "progress": "Endirmə fasiləyə alındı — {percentage}%",
+        "progressList": "Endirmə fasiləyə alındı — {percentage}% — {done} tamamlanıb, cəmi {total}",
+        "indeterminate": "Endirmə fasiləyə alındı",
+        "metadata": {
+          "eta": "Qalıb: {eta}",
+          "etaItems": "Qalıb: {n} element | Qalıb: {n} element"
+        }
+      },
+      "done": {
+        "complete": "Endirmə tamamlandı — 100%",
+        "showFolder": "Qovluqda göstər",
+        "open": "Faylı aç",
+        "openFirst": "İlk faylı aç",
+        "undeterminedLocation": "Bu element üçün endirmə yerini müəyyən etmək mümkün olmadı."
+      },
+      "error": {
+        "errorPrefix": "Xəta - {message}",
+        "report": "Xəta barədə bildir",
+        "showFull": "Jurnallara bax",
+        "signIn": "Daxil ol",
+        "filters": "Süzgəcləri dəyiş"
+      }
+    },
+    "card": {
+      "actions": {
+        "remove": "Sil",
+        "externalUrl": "Xarici keçidə keç",
+        "retry": "Endirməyə yenidən cəhd et",
+        "download": "Ayrı endir",
+        "preferences": "Endirmə seçimləri",
+        "pause": "Endirməni fasiləyə al",
+        "resume": "Endirməni davam etdir",
+        "metadata": "Metaməlumatı göstər"
+      },
+      "toasts": {
+        "retry": "Endirməyə yenidən cəhd edilir.",
+        "retryError": "Endirməyə yenidən cəhd etmək mümkün olmadı."
+      }
+    }
+  },
+  "subtitles": {
+    "title": "Altyazılar",
+    "defaults": {
+      "legend": "Standart altyazı parametrləri",
+      "hint": "Videonun altyazıları olduqda istifadə edilir."
+    },
+    "options": {
+      "enable": {
+        "legend": "Altyazı endirmələri",
+        "legendLabel": "Standart altyazı parametrlərini seçin.",
+        "label": "Altyazıları aktivləşdir",
+        "hint": "Mövcud olduqda altyazıları endir."
+      },
+      "autoGenerated": {
+        "label": "Avtomatik yaradılan altyazıları endir",
+        "hint": "Mövcud olduqda avtomatik altyazıları da endir."
+      },
+      "format": {
+        "legend": "Üstünlük verilən format",
+        "legendLabel": "Üstünlük verdiyiniz altyazı formatını seçin. Format mövcud deyilsə, növbəti ən yaxşı format istifadə ediləcək.",
+        "label": "Format"
+      },
+      "embed": {
+        "label": "Altyazı treki əlavə et:",
+        "hint": "Altyazıları video faylına əlavə edin, bu, mp4, mkv və webm formatlarında işləyir."
+      },
+      "languages": {
+        "legend": "Dillər",
+        "legendLabel": "Üstünlük verdiyiniz altyazı dillərini seçin.",
+        "downloadAll": "Bütün mövcud altyazıları endir.",
+        "search": "Dillər üzrə axtarış",
+        "searchPlaceholder": "Dil adına görə axtarış",
+        "noResult": "Uyğun dil tapılmadı: \"{query}\".",
+        "selected": "Seçilənlər:",
+        "none": "Heç biri",
+        "allSelected": "Bütün mövcud altyazılar"
+      }
+    },
+    "toasts": {
+      "saved": "Altyazı parametrləri yadda saxlanıldı!",
+      "error": "Altyazı parametrlərini yadda saxlamaq mümkün olmadı. {error}"
+    },
+    "formats": {
+      "srt": "SubRip altyazısı (.srt)",
+      "vtt": "WebVTT altyazısı (.vtt)",
+      "ass": "Advanced SubStation Alpha altyazısı (.ass)",
+      "ttml": "Timed Text Markup altyazısı (.ttml)",
+      "json3": "JSON altyazısı (.json)"
+    }
+  },
+  "location": {
+    "title": "Endirmə yeri",
+    "downloadDir": {
+      "label": "Endirmə yeri",
+      "hint": "Videoların endiriləcəyi yeri seçmək üçün xanaya klikləyin."
+    },
+    "directory": {
+      "legend": "Qruplaşdırma meyarı",
+      "legendLabel": "Endirmələrin qovluqlarda necə qruplaşdırılacağını seçin.",
+      "videoDir": {
+        "label": "Endirmə yeri:",
+        "hint": "Videoları endirərkən ümumi endirmə yerini əvəz edin."
+      },
+      "audioDir": {
+        "label": "Endirmə yeri:",
+        "hint": "Səsi endirərkən ümumi endirmə yerini əvəz edin."
+      },
+      "directoryPreset": {
+        "label": "Endirmələri bu meyara görə qruplaşdır:",
+        "exampleLabel": "Nəticə nümunəsi:",
+        "options": {
+          "none": "Alt qovluqlar olmadan",
+          "playlist": "Pleylist",
+          "channel": "Kanal",
+          "channelPlaylist": "Kanal → pleylist",
+          "yearMonth": "İl / ay",
+          "artistAlbum": "İfaçı → albom",
+          "custom": "Fərdi"
+        },
+        "examples": {
+          "playlist": "Pleylistim/",
+          "channel": "Kanalım/",
+          "channelPlaylist": "Kanalım/Pleylistim/",
+          "yearMonth": "2025/03/",
+          "artistAlbum": "İfaçı adı/Albom adı/"
+        }
+      },
+      "outputFormat": {
+        "label": "Qovluq formatı:"
+      }
+    },
+    "filename": {
+      "legend": "Fayl adı formatı",
+      "legendLabel": "Endirmələrin fayl adını seçin.",
+      "reversePlaylistNumbering": {
+        "label": "Pleylisti tərsinə nömrələ:",
+        "hint": "Pleylist elementlərini əvvəldən deyil, sondan nömrələyin."
+      },
+      "formatPreset": {
+        "label": "Fayl adı şablonu:",
+        "exampleLabel": "Nəticə nümunəsi:",
+        "options": {
+          "titleQuality": "Başlıq + keyfiyyət",
+          "titleOnly": "Yalnız başlıq",
+          "titleQualityPlaylist": "Pleylist + başlıq + keyfiyyət",
+          "custom": "Fərdi"
+        },
+        "examples": {
+          "video": {
+            "titleQuality": "Videom-(1080p30).mp4",
+            "titleOnly": "Videom.mp4",
+            "titleQualityPlaylist": "03-Videom-(1080p30).mkv"
+          },
+          "audio": {
+            "titleQuality": "Səsim-(320k).mp3",
+            "titleOnly": "Səsim.mp3",
+            "titleQualityPlaylist": "03-Səsim-(320k).mp3"
+          }
+        },
+        "restrictFilenames": {
+          "label": "Fayl adlarını məhdudlaşdır:",
+          "hint": "Fayl adlarında boşluqları alt xətlərlə əvəz edir və \"&\" kimi xüsusi simvolları silir."
+        }
+      },
+      "outputFormat": {
+        "label": "Fayl adı formatı:"
+      }
+    },
+    "toasts": {
+      "saved": "Yerlər yadda saxlanıldı!",
+      "error": "Yerləri yadda saxlamaq mümkün olmadı."
+    }
+  },
+  "inputFilters": {
+    "title": "Giriş süzgəcləri",
+    "filesize": {
+      "legend": "Fayl ölçüsü",
+      "hint": "Yalnız seçdiyiniz ölçüdən böyük və ya kiçik elementləri saxlayın."
+    },
+    "dates": {
+      "legend": "Yüklənmə tarixləri",
+      "hint": "Yalnız müəyyən tarixdə, ondan əvvəl və ya sonra yüklənmiş elementləri saxlayın."
+    },
+    "advanced": {
+      "legend": "Qabaqcıl süzgəclər",
+      "hint": "Bunlar qabaqcıl istifadə üçün birbaşa yt-dlp süzgəcləridir."
+    },
+    "fields": {
+      "minSize": {
+        "label": "Minimum fayl ölçüsü:"
+      },
+      "maxSize": {
+        "label": "Maksimum fayl ölçüsü:"
+      },
+      "size": {
+        "valuePlaceholder": "50",
+        "unitPlaceholder": "Vahid"
+      },
+      "date": {
+        "modeLabel": "Uyğunluq qaydası",
+        "clearMode": "Deaktiv",
+        "hint": "Tarix qaydasını seçin, sonra tarixi təyin edin.",
+        "mode": {
+          "exact": "Həmin tarixdə",
+          "before": "Həmin tarixdə və ya əvvəl",
+          "after": "Həmin tarixdə və ya sonra"
+        },
+        "activeLabel": {
+          "exact": "Bu tarixdə yüklənmiş videolar",
+          "before": "Bu tarixdə və ya əvvəl yüklənmiş videolar",
+          "after": "Bu tarixdə və ya sonra yüklənmiş videolar"
+        },
+        "presetsLabel": "Hazır seçimlər",
+        "presets": {
+          "today": "Bu gün",
+          "yesterday": "Dünən",
+          "last7Days": "Son 7 gün",
+          "last30Days": "Son 30 gün"
+        }
+      },
+      "matchFilters": {
+        "label": "Uyğunluq süzgəcləri:",
+        "placeholder": "!is_live & view_count >=? 10000",
+        "hint": "Nümunələr: !is_live, duration >? 600, like_count >=? 100"
+      },
+      "breakMatchFilters": {
+        "label": "Uyğunsuzluqda dayandırma süzgəcləri:",
+        "placeholder": "duration >? 3600",
+        "hint": "Element bu süzgəcə uyğun gəlmədikdə cari keçidin yoxlanmasını dayandır."
+      }
+    },
+    "playlistSelection": {
+      "title": "Pleylist elementlərini seç",
+      "description": "Endiriləcək elementləri seçin:",
+      "selectionSummary": "{count} element seçilib, cəmi {total} element | {count} element seçilib, cəmi {total} element",
+      "selectionSummaryAll": "Bütün elementlər seçilib | Bütün {count} element seçilib",
+      "advancedButton": "Qabaqcıl",
+      "simpleButton": "Sıfırla",
+      "advancedTitle": "Qabaqcıl pleylist seçimi",
+      "advancedHint": "Birdən çox element, mənfi ədədlər və bir neçə aralıq seçin.",
+      "advancedDescription": "Cari seçim",
+      "advancedEmpty": "Hələ qabaqcıl seçim təyin edilməyib.",
+      "addSingle": "Element əlavə et",
+      "addRange": "Aralıq əlavə et",
+      "applyFull": "Bütün elementləri endir",
+      "applySelection": "Seçilmiş elementləri endir",
+      "useAdvanced": "Qabaqcıl seçimdən istifadə et",
+      "noMatches": "Bu aralığa pleylistdə heç bir element uyğun gəlmir.",
+      "row": {
+        "single": "Tək",
+        "range": "Aralıq"
+      },
+      "remove": "Sil",
+      "fields": {
+        "advancedLabel": "Qabaqcıl:",
+        "index": "Element",
+        "indexPlaceholder": "1 və ya -1",
+        "start": "Başlanğıc",
+        "startPlaceholder": "1",
+        "end": "Son",
+        "endPlaceholder": "10",
+        "input": "Elementlər"
+      },
+      "errors": {
+        "playlistIndex": "0-dan fərqli tam ədəddən istifadə edin. Mənfi ədədlər sondan sayılır.",
+        "playlistRangeBounds": "Başlanğıcı və sonu təyin edin. Mənfi ədədlər sondan sayılır."
+      }
+    },
+    "toasts": {
+      "saved": "Giriş süzgəcləri yadda saxlanıldı!",
+      "error": "Giriş süzgəclərini yadda saxlamaq mümkün olmadı. {error}"
+    }
+  },
+  "settings": {
+    "title": "Parametrlər",
+    "reset": {
+      "label": "Sıfırla",
+      "confirm": "Sıfırlamaq üçün yenidən klikləyin"
+    },
+    "tabs": {
+      "downloads": "Endirmələr",
+      "app": "Tətbiq",
+      "network": "Şəbəkə",
+      "system": "Sistem",
+      "about": "Haqqında"
+    },
+    "performance": {
+      "legend": "Məhsuldarlıq",
+      "legendLabel": "İstifadə edilən sistem resurslarının miqdarını tənzimləyin.",
+      "maxConcurrency": {
+        "label": "Eyni vaxtda icra olunan işlərin maksimum sayı:"
+      },
+      "splitPlaylistThreshold": {
+        "label": "Bu halda pleylistləri ayrı videolara böl:",
+        "options": {
+          "never": "Heç vaxt bölmə",
+          "lessThan": "Sayı {number} videodan az olduqda"
+        }
+      },
+      "autoLoadSize": {
+        "label": "Videonun ölçüsünü avtomatik yüklə:"
+      }
+    },
+    "input": {
+      "legend": "Giriş",
+      "legendLabel": "OVD ilə endirməyə necə başlayacağınızı seçin.",
+      "autoFillClipboard": {
+        "label": "Köçürülmüş keçidləri avtomatik doldur:",
+        "hint": "Köçürdüyünüz keçidləri aşkarlayır ki, onları bir kliklə endirə biləsiniz."
+      },
+      "preferVideoInMixedLinks": {
+        "label": "Pleylist keçidlərində tək videoya üstünlük ver:",
+        "hint": "Keçid həm videonu, həm də pleylisti ehtiva etdikdə bütün pleylist əvəzinə yalnız videonu endir."
+      },
+      "globalShortcuts": {
+        "label": "Qısayolları aktivləşdir:",
+        "add_hint": "Videoları növbəyə bu qısayolla əlavə et:",
+        "download_hint": "Növbəni bu qısayolla endir:",
+        "instant_hint": "Bu qısayolla əlavə et və dərhal endir:"
+      },
+      "authentication": {
+        "label": "Məxfi videoları endirmək üçün daxil ol:",
+        "link": "Kimlik doğrulamasını tənzimlə"
+      }
+    },
+    "output": {
+      "legend": "Çıxış",
+      "legendLabel": "Hansı növ faylların endiriləcəyini tənzimləyin.",
+      "addThumbnail": {
+        "label": "Üz qabığı şəkli əlavə et:",
+        "hint": "Miniatürü fayla yerləşdir ki, media pleyerləri üz qabığını göstərə bilsin."
+      },
+      "saveThumbnail": {
+        "label": "Miniatür faylını yadda saxla:",
+        "hint": "Mövcud ən yaxşı miniatürü media faylının yanına endir."
+      },
+      "addMetadata": {
+        "label": "Başlıq & ifaçı məlumatı əlavə et:",
+        "hint": "Başlıq, yükləyən/ifaçı və təsvir kimi metaməlumatı faylda yadda saxla."
+      },
+      "preciseCuts": {
+        "label": "Dəqiq kəsim:",
+        "hint": "Yaxınlıqdakı əsas kadrlar əvəzinə dəqiq kadrlarda kəsir. Çox yavaşdır.\nYalnız adi kəsimlər səhv və ya təhrif olunmuş olduqda, yaxud qara/çatışmayan hissələr olduqda aktivləşdirin."
+      },
+      "partialDownload": {
+        "legend": "Qismən endirmə",
+        "hint": "Yalnız bəzi hissələri endirmək üçün vaxt nişanlarını və ya fəsilləri təyin edin.",
+        "use": "İstifadə et",
+        "useTimes": "Vaxt nişanları",
+        "useChapter": "Fəsillər",
+        "chapter": "Fəsil",
+        "startAt": "Başlanğıc vaxtı",
+        "stopAt": "Dayanma vaxtı",
+        "invalidHint": "Etibarsız vaxt nişanları nəzərə alınmayacaq.",
+        "allChapters": "Bütün fəsillər",
+        "errors": {
+          "invalid": "Etibarlı vaxt daxil edin.",
+          "beforeStart": "Dayanma vaxtı başlanğıc vaxtından sonra olmalıdır.",
+          "exceedsDuration": "Vaxt nişanı videonun müddətini aşa bilməz."
+        }
+      },
+      "location": {
+        "label": "Endirmə yeri & fayl adları:",
+        "link": "Endirmə yerlərini tənzimlə"
+      },
+      "subtitles": {
+        "label": "Altyazı əlavə et:",
+        "link": "Altyazıları tənzimlə"
+      },
+      "keepOriginalStreams": {
+        "label": "İlkin axınları saxla",
+        "hint": "Seçilmiş sonrakı emal addımı tələb etmədikcə konteyner çevirməsindən və yenidən kodlaşdırmadan çəkin."
+      },
+      "postprocess": {
+        "label": "Videonun sonrakı emalı:",
+        "hint": "Sonrakı emal endirmə tamamlandıqdan sonra icra olunur.",
+        "reencodeWarning": "Bu seçim yenidən kodlaşdırma aparacaq, bu, çox resurs tələb edir və uzun çəkə bilər.",
+        "keepOriginalStreamsConflict": "Bu seçim yenidən kodlaşdırma tələb edir. İstifadə etmək üçün ilkin axınları saxlama seçimini deaktiv edin.",
+        "mp42RequiresMp4": "Bu seçim mp4 çıxışı tələb edir.",
+        "options": {
+          "none": "Heç biri",
+          "fps30": "30 fps ilə yenidən kodlaşdır",
+          "mp42": "mp4 format nişanını mp42-yə təyin et",
+          "custom": "Fərdi"
+        }
+      },
+      "postprocessMode": {
+        "label": "Fərdi sonrakı emal rejimi:",
+        "hint": "Fərdi ffmpeg arqumentlərinin konteyner dəyişdirilərkən, yoxsa yenidən kodlaşdırılarkən icra olunacağını seçin.",
+        "options": {
+          "remux": "Konteyner dəyişdirilərkən icra et",
+          "reencode": "Yenidən kodlaşdırılarkən icra et"
+        }
+      },
+      "postprocessArgs": {
+        "label": "Qabaqcıl ffmpeg arqumentləri:",
+        "hint": "Yalnız təcrübəli istifadəçilər üçün. Arqumentləri boşluqlarla ayırın; dırnaq içindəki dəyərlər qorunur."
+      },
+      "tabs": {
+        "audio": {
+          "screenreader": "Səs parametrləri",
+          "label": "Səs",
+          "format": {
+            "label": "Səs formatı:",
+            "hint": "Üstünlük verdiyiniz səs formatını seçin.",
+            "options": {
+              "mp3": "MP3 (tövsiyə olunur)",
+              "m4a": "M4A",
+              "ogg": "OGG",
+              "aac": "AAC",
+              "opus": "Opus",
+              "wav": "WAV",
+              "flac": "FLAC"
+            }
+          },
+          "postprocess": {
+            "label": "Səsin sonrakı emalı:",
+            "options": {
+              "none": "Heç biri",
+              "custom": "Fərdi"
+            }
+          }
+        },
+        "video": {
+          "screenreader": "Video parametrləri",
+          "label": "Video görüntüsü",
+          "container": {
+            "label": "Video formatı:",
+            "hint": "Üstünlük verdiyiniz video konteynerini seçin.",
+            "options": {
+              "mp4": "MP4",
+              "mkv": "MKV"
+            }
+          }
+        }
+      }
+    },
+    "appearance": {
+      "legend": "Görünüş",
+      "legendLabel": "Tətbiqin görünüşünü və istifadə təcrübəsini tənzimləyin.",
+      "theme": {
+        "label": "Mövzu:",
+        "options": {
+          "system": "Sistem ({theme})",
+          "light": "Açıq",
+          "dark": "Tünd"
+        }
+      },
+      "language": {
+        "label": "Dil:",
+        "options": {
+          "system": "Sistem ({language})"
+        }
+      },
+      "expandedOptions": {
+        "label": "Əlavə seçim sahəsi:",
+        "hint": "Endirmədən əvvəl hansı əlavə seçim sahəsinin göstəriləcəyini seçin.",
+        "options": {
+          "none": "Heç biri",
+          "encodings": "Kodlaşdırmalar",
+          "tracks": "Treklər"
+        }
+      }
+    },
+    "network": {
+      "legend": "Şəbəkə",
+      "legendLabel": "Tətbiqin internetə necə qoşulacağını tənzimləyin.",
+      "enableProxy": {
+        "label": "Proksi vasitəsilə qoşul:"
+      },
+      "proxy": {
+        "label": "Proksi parametrləri:"
+      },
+      "impersonate": {
+        "label": "Təqlid:",
+        "hint": "Rəqəmsal izlə tanınmanın qarşısını almaq üçün müəyyən əməliyyat sistemini və ya brauzeri təqlid edin.",
+        "options": {
+          "none": "Təqlid etmə",
+          "any": "Təsadüfi müştərini təqlid et"
+        }
+      },
+      "extractorArgs": {
+        "label": "Çıxarıcı arqumentləri:",
+        "hint": "yt-dlp üçün çıxarıcı arqumentlərini fərdiləşdirin. Hər sətirdə bir arqument.",
+        "placeholder": "youtube:player_js_variant=main",
+        "flagWarning": "Yalnız dəyəri daxil edin. Tətbiq --extractor-args parametrini avtomatik əlavə edir."
+      }
+    },
+    "sponsorBlock": {
+      "legend": "SponsorBlock",
+      "legendLabel": "Videonun hissələrini silin və ya işarələyin.",
+      "removeParts": {
+        "label": "Silinəcək hissələr:",
+        "placeholder": "Videodan silmək üçün 1 və ya daha çox hissə seçin."
+      },
+      "markParts": {
+        "label": "İşarələnəcək hissələr:",
+        "placeholder": "Fəsil kimi işarələmək üçün 1 və ya daha çox hissə seçin."
+      },
+      "apiUrl": {
+        "label": "API ünvanı:"
+      },
+      "preciseCuts": {
+        "label": "Dəqiq kəsim:",
+        "hint": "SponsorBlock ilə silmələrdə və qismən endirmələrdə dəqiq kadrlarda kəsim edir. Çox yavaşdır.\nYalnız adi kəsimlər səhv və ya təhrif olunmuş olduqda, yaxud qara/çatışmayan hissələr olduqda aktivləşdirin."
+      },
+      "parts": {
+        "sponsor": {
+          "label": "Sponsorluq",
+          "description": "Müəllif və ya üçüncü tərəfin ödənişli məhsul və ya xidmət reklamı."
+        },
+        "selfpromo": {
+          "label": "Özünü tanıtma / ödənişsiz",
+          "description": "Müəllifin öz məhsul, xidmət və ya kanallarını tanıtması (ödənişsiz)."
+        },
+        "interaction": {
+          "label": "Qarşılıqlı əlaqə xatırlatması",
+          "description": "Bəyənmək/abunə olmaq/izləmək və ya müəlliflə əlaqə qurmaq üçün xatırlatmalar."
+        },
+        "intro": {
+          "label": "Giriş / fasilə",
+          "description": "Başlanğıcdakı giriş animasiyası, fasilə və ya məzmuna aid olmayan dayanma."
+        },
+        "outro": {
+          "label": "Sonluq / yekun kartlar / titrlər",
+          "description": "Sona yaxın yekun kartlar, titrlər və ya bağlanış hissəsi."
+        },
+        "hook": {
+          "label": "Maraq oyatma / salamlaşma",
+          "description": "Gələcək videonun səsləndirilmiş anonsları, salamlaşma və sağollaşmalar."
+        },
+        "music_offtopic": {
+          "label": "Musiqidən kənar hissə",
+          "description": "Musiqili videolardakı danışıq və ya diqqəti yayındıran hissələr."
+        },
+        "preview": {
+          "label": "Önbaxış / xülasə",
+          "description": "Gələcək məzmunun önbaxışı və ya əvvəlki hissələrin xülasəsi."
+        },
+        "filler": {
+          "label": "Doldurma / mövzudan yayınma",
+          "description": "Əsas məzmunu anlamaq üçün lazım olmayan mövzudan yayınmalar, zarafatlar və ya doldurma səhnələri."
+        },
+        "chapter": {
+          "label": "Fəsil",
+          "description": "Videonun fəslini/bölməsini işarələyir (fəsil əməliyyatı növü ilə istifadə olunur)."
+        }
+      }
+    },
+    "update": {
+      "legend": "Yeniləmələr",
+      "legendLabel": "Tətbiqin hansı hissələrinin avtomatik yenilənəcəyini seçin.",
+      "updateBinaries": {
+        "label": "Alətləri avtomatik yenilə:",
+        "hint": "OVD videoları endirmək üçün yt-dlp və ffmpeg kimi alətlərdən istifadə edir. Onları yenilənmiş saxlamaq üçün bunu aktivləşdirin."
+      },
+      "updateApp": {
+        "label": "Tətbiqi avtomatik yenilə:",
+        "hint": "Yeni versiya çıxan kimi yeni funksiyaları və xəta düzəlişlərini almaq üçün bunu aktivləşdirin."
+      }
+    },
+    "system": {
+      "legend": "Sistem",
+      "legendLabel": "Tətbiqin sistemlə necə inteqrasiya olunacağını tənzimləyin.",
+      "trayEnabled": {
+        "label": {
+          "mac": "Menyu sətrinin nişanını göstər",
+          "generic": "Sistem panelinin nişanını göstər"
+        },
+        "hint": {
+          "mac": "Sürətli giriş üçün menyu sətrində nişan göstərir.",
+          "generic": "Sürətli giriş üçün sistem panelində nişan göstərir."
+        }
+      },
+      "minimiseToTray": {
+        "label": "Bağlandıqda sistem panelinə kiçilt",
+        "hint": "Pəncərəni bağlamaq tətbiqdən çıxmaq əvəzinə onu sistem panelində gizlədir."
+      },
+      "autoStart": {
+        "label": "Giriş zamanı başlat",
+        "hint": "Daxil olduqda Open Video Downloader tətbiqini avtomatik başlat."
+      },
+      "autoStartMinimised": {
+        "label": {
+          "mac": "Giriş zamanı gizli başlat",
+          "windows": "Giriş zamanı sistem panelinə kiçildilmiş başlat",
+          "generic": "Giriş zamanı gizli başlat (tövsiyə olunmur)"
+        },
+        "hint": {
+          "mac": "Tətbiq giriş zamanı başladıqda pəncərə açmayacaq. Açmaq üçün menyu sətrindən və ya Dock nişanından istifadə edin.",
+          "windows": "Tətbiq giriş zamanı başladıqda pəncərə açmadan sistem panelində başlayacaq.",
+          "generic": "Tətbiq giriş zamanı başladıqda pəncərə açmayacaq."
+        }
+      }
+    },
+    "notifications": {
+      "legend": "Bildirişlər",
+      "legendLabel": "Bildirişlərin nə vaxt göndəriləcəyini tənzimləyin.",
+      "behavior": {
+        "label": "Bildirişləri göstər:",
+        "options": {
+          "always": "Həmişə",
+          "onBackground": "Arxa planda olduqda",
+          "never": "Heç vaxt"
+        },
+        "hint": "İpucu: tətbiqi qısayollarla istifadə edərkən bildirişlər faydalı ola bilər."
+      },
+      "disabled": {
+        "label": "Ayrı-ayrı bildirişləri aktivləşdir/deaktiv et",
+        "disabledScreenReader": "Bu seçim deaktivdir.",
+        "kinds": {
+          "queueAdded": "Növbəyə əlavə edildi",
+          "queueDownloading": "Növbə endirilir",
+          "queueFinished": "Növbə tamamlandı",
+          "videoFinished": "Video tamamlandı",
+          "playlistFinished": "Pleylist tamamlandı",
+          "downloadFailed": "Endirmə uğursuz oldu",
+          "videoReady": "Video hazırdır",
+          "playlistReady": "Pleylist hazırdır"
+        }
+      }
+    },
+    "toasts": {
+      "saved": "Parametrlər yadda saxlanıldı!",
+      "reset": "Parametrləri standart dəyərlərə qaytar."
+    }
+  },
+  "updater": {
+    "available": "Yeniləmə mövcuddur!",
+    "install": {
+      "title": "Yeniləməni quraşdır",
+      "subtitle": "Bu, tətbiqi yenidən başladacaq."
+    },
+    "downloading": "Yeniləmə endirilir…"
+  },
+  "install": {
+    "title": {
+      "installing": "Tələb olunan alətlər quraşdırılır…",
+      "failed": "Bəzi tələb olunan alətləri quraşdırmaq mümkün olmadı.",
+      "installed": "Tələb olunan alətlər quraşdırıldı."
+    },
+    "subtitle": {
+      "installing": "Hər şeyi hazırlayırıq.",
+      "failed": "Tətbiq gözlənildiyi kimi işləməyə bilər, bu barədə məlumat verin.",
+      "installed": "Endirməyə hazırdır!"
+    }
+  },
+  "components": {
+    "base": {
+      "emptyState": {
+        "title": "Növbəniz boşdur",
+        "subtitle": "Başlamaq üçün bir neçə video əlavə edin."
+      },
+      "dragState": {
+        "title": "Növbəyə əlavə etmək üçün buraxın",
+        "subtitle": "Videoları və ya keçidlər olan faylları sürükləyərək növbəyə əlavə edin."
+      },
+      "fileInput": {
+        "select": "Fayl seç",
+        "placeholder": "Fayl seçin…",
+        "invalid": "Etibarsız fayl.",
+        "clear": "Fayl seçimini təmizlə",
+        "recents": {
+          "clear": "Son faylları təmizlə",
+          "open": "Son seçimləri aç",
+          "empty": "Son seçim yoxdur"
+        }
+      },
+      "folderInput": {
+        "select": "Qovluq seç",
+        "placeholder": "Qovluq seçin…",
+        "invalid": "Etibarsız qovluq.",
+        "clear": "Qovluq seçimini təmizlə",
+        "recents": {
+          "clear": "Son qovluqları təmizlə",
+          "open": "Son seçimləri aç",
+          "empty": "Son seçim yoxdur"
+        }
+      },
+      "secretInput": {
+        "hide": "Gizlət",
+        "show": "Göstər",
+        "clear": "Təmizlə: {label}"
+      },
+      "toolCard": {
+        "failed": "Bu aləti quraşdırmaq mümkün olmadı. Ətraflı məlumat üçün genişləndirin."
+      }
+    }
+  },
+  "errors": {
+    "runner": {
+      "internal": {
+        "shortMessage": "Daxili xəta",
+        "message": "Bu elementi emal edərkən daxili xəta baş verdi."
+      },
+      "signInRequired": {
+        "shortMessage": "Giriş tələb olunur",
+        "message": "Bu məzmuna baxmaq üçün daxil olmalısınız."
+      },
+      "membersOnly": {
+        "shortMessage": "Yalnız üzvlər üçün",
+        "message": "Bu video yalnız kanal üzvləri üçün əlçatandır."
+      },
+      "geoBlocked": {
+        "shortMessage": "Bölgədə bloklanıb",
+        "message": "Bu məzmun bölgənizdə əlçatan deyil."
+      },
+      "accessForbidden403": {
+        "shortMessage": "Giriş qadağandır",
+        "message": "Bu resursa giriş icazəniz yoxdur (HTTP 403)."
+      },
+      "notFound404": {
+        "shortMessage": "Tapılmadı",
+        "message": "Tələb olunan video və ya pleylist tapılmadı (HTTP 404)."
+      },
+      "server5xx": {
+        "shortMessage": "Server xətası",
+        "message": "Serverdə müvəqqəti problem baş verdi. Daha sonra yenidən cəhd edin."
+      },
+      "rateLimited429": {
+        "shortMessage": "Sorğu tezliyi məhdudlaşdırılıb",
+        "message": "Həddindən artıq sorğu göndərildi. Zəhmət olmasa, gözləyin və yenidən cəhd edin."
+      },
+      "requestedFormatUnavailable": {
+        "shortMessage": "Format mövcud deyil",
+        "message": "Seçilmiş format bu video üçün mövcud deyil."
+      },
+      "unableToExtractInitialData": {
+        "shortMessage": "Məlumatın çıxarılması uğursuz oldu",
+        "message": "Tələb olunan ilkin video məlumatlarını çıxarmaq mümkün olmadı."
+      },
+      "unableToExtractIdOrInfo": {
+        "shortMessage": "Metaməlumat xətası",
+        "message": "Video və ya yükləyən barədə məlumatları çıxarmaq mümkün olmadı."
+      },
+      "nsigExtractionFailed": {
+        "shortMessage": "İmza xətası",
+        "message": "Video imzasını çıxarmaq və ya deşifrə etmək mümkün olmadı."
+      },
+      "embedOnly": {
+        "shortMessage": "Yalnız yerləşdirilmiş pleyerdə açılan video",
+        "message": "Bu videoya yalnız yerləşdirilmiş pleyer vasitəsilə baxmaq olar."
+      },
+      "urlUnsupported": {
+        "shortMessage": "Etibarsız keçid",
+        "message": "Təqdim olunan keçid dəstəklənmir və ya tanınmır."
+      },
+      "unknownUrlType": {
+        "shortMessage": "Naməlum keçid növü",
+        "message": "Təqdim olunan keçid dəstəklənməyən protokoldan istifadə edir."
+      },
+      "networkNameResolutionFailed": {
+        "shortMessage": "Şəbəkə xətası",
+        "message": "Server adını müəyyən etmək mümkün olmadı. İnternet bağlantınızı yoxlayın."
+      },
+      "unableToConnectToProxy": {
+        "shortMessage": "Proksi bağlantısı uğursuz oldu",
+        "message": "Proksiyə qoşulmaq mümkün olmadı. Proksi parametrlərinizi yoxlayın."
+      },
+      "signInRequiredForBotDetection": {
+        "shortMessage": "Giriş tələb olunur",
+        "message": "Bot olmadığınızı təsdiqləmək üçün daxil olun."
+      },
+      "playlistPrivateOrMissing": {
+        "shortMessage": "Pleylist əlçatan deyil",
+        "message": "Bu pleylist məxfidir və ya artıq mövcud deyil."
+      },
+      "videoNotFoundOrPrivate": {
+        "shortMessage": "Video əlçatan deyil",
+        "message": "Bu video silinib və ya məxfi edilib."
+      },
+      "channelUnavailable": {
+        "shortMessage": "Kanal əlçatan deyil",
+        "message": "Bu məzmunun yerləşdiyi kanal artıq əlçatan deyil."
+      },
+      "ffmpegNotFound": {
+        "shortMessage": "ffmpeg tapılmadı",
+        "message": "mp3 və ya mp4 formatına çevirmək üçün ffmpeg tələb olunur."
+      },
+      "ffmpegFailed": {
+        "shortMessage": "ffmpeg xətası",
+        "message": "FFmpeg emal zamanı xəta ilə qarşılaşdı."
+      },
+      "rejectedByFilter": {
+        "shortMessage": "Süzgəcdən keçmədi",
+        "message": "Bu element giriş süzgəcləriniz tərəfindən rədd edildi."
+      },
+      "cannotAllocateMemory": {
+        "shortMessage": "Yaddaş xətası",
+        "message": "Videonu emal edərkən FFmpeg üçün yaddaş çatmadı."
+      },
+      "permissionDenied": {
+        "shortMessage": "İcazə verilmədi",
+        "message": "Tətbiqin bu fayla və ya qovluğa giriş icazəsi yoxdur."
+      },
+      "noWritePermission": {
+        "shortMessage": "Yazmaq mümkün deyil",
+        "message": "Təyinat yoluna yazmaq mümkün deyil."
+      },
+      "windowsFileMissing": {
+        "shortMessage": "Fayl yoxdur",
+        "message": "İstinad edilən fayl tapılmadı (WinError 2)."
+      },
+      "blockedGeneric": {
+        "shortMessage": "Video bloklanıb",
+        "message": "Bu video bloklanıb və endirilə bilməz."
+      },
+      "copyrightClaimed": {
+        "shortMessage": "Müəllif hüquqlarına görə bloklanıb",
+        "message": "Video müəllif hüquqları iddiasına görə bloklanıb."
+      },
+      "notPremieredYet": {
+        "shortMessage": "Premyera hələ başlamayıb",
+        "message": "Premyerası başlayana qədər bu video əlçatan deyil."
+      },
+      "livestreamNotStarted": {
+        "shortMessage": "Canlı yayım gözlənilir",
+        "message": "Canlı yayım hələ başlamayıb. Daha sonra yenidən yoxlayın."
+      },
+      "sslVerifyFailed": {
+        "shortMessage": "SSL xətası",
+        "message": "Təhlükəsiz bağlantını doğrulamaq mümkün olmadı. Sertifikatlarınızı və ya tarixi/vaxtı yoxlayın."
+      },
+      "sponsorBlockUnreachable": {
+        "shortMessage": "SponsorBlock əlçatan deyil",
+        "message": "Hissə məlumatları üçün SponsorBlock API xidmətinə qoşulmaq mümkün olmadı."
+      },
+      "downloadRetryingFragment": {
+        "shortMessage": "Fraqmentə yenidən cəhd edilir",
+        "message": "Fraqmentin endirilməsi uğursuz oldu və avtomatik yenidən cəhd ediləcək."
+      },
+      "unknown": {
+        "shortMessage": "Naməlum xəta",
+        "message": "Bu elementi emal edərkən naməlum xəta baş verdi."
+      }
+    }
+  },
+  "about": {
+    "title": "Haqqında",
+    "credit": "Sevgi ilə ❤ jely2002 & töhfə verənlər tərəfindən hazırlanıb",
+    "poweredBy": "Açıq mənbə ilə işləyir:",
+    "viewLicenses": "Lisenziyalara bax",
+    "version": "Versiya: {version}",
+    "links": {
+      "github": "GitHub",
+      "wiki": "Viki",
+      "reportABug": "Xəta barədə bildir"
+    }
+  }
+}
