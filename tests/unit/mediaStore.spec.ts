@@ -6,7 +6,8 @@ import { useMediaGroupStore } from '../../src/stores/media/group';
 import { useMediaOptionsStore } from '../../src/stores/media/options';
 import { useMediaStateStore, MediaState } from '../../src/stores/media/state';
 import { useSettingsStore } from '../../src/stores/settings';
-import { defaultSettings } from '../../src/tauri/types/config';
+import { defaultSettings, type Settings } from '../../src/tauri/types/config';
+import { TrackType } from '../../src/tauri/types/media';
 import type { EntryItem, MediaAddPayload } from '../../src/tauri/types/media';
 import type { Group } from '../../src/tauri/types/group';
 
@@ -179,6 +180,66 @@ describe('media store', () => {
 
     expect(optionsStore.getOverrides('group-1')).toBeUndefined();
     expect(group.entries).toHaveLength(2);
+  });
+
+  function createDownloadablePlaylistGroup(groupId: string, total: number): Group {
+    const group = createPlaylistGroup(groupId, total);
+    group.isCombined = true;
+    group.playlistCount = total;
+    for (const index of [0, 1]) {
+      group.items[`item-${index}`] = {
+        id: `item-${index}`,
+        url: `https://example.com/playlist?v=${index + 1}`,
+        title: `Item ${index + 1}`,
+        audioCodecs: [],
+        videoCodecs: [],
+        audioTracks: [],
+        videoTracks: [],
+        formats: [],
+        filesize: 0,
+        playlistIndex: index,
+      };
+    }
+    return group;
+  }
+
+  function createSettingsWithReverseNumbering(): Settings {
+    // Replace the whole object so the shared defaultSettings module object is never mutated.
+    const settings = JSON.parse(JSON.stringify(defaultSettings)) as Settings;
+    settings.output.reversePlaylistNumbering = true;
+    return settings;
+  }
+
+  async function captureDownloadPlaylistIndices(groupId: string): Promise<unknown[]> {
+    let downloadArgs: Record<string, unknown> | undefined;
+    installTauriMock({
+      media_download: (_cmd, args) => {
+        downloadArgs = args as Record<string, unknown>;
+        return groupId;
+      },
+    });
+
+    await useMediaStore().downloadGroup(groupId, { trackType: TrackType.both });
+
+    const items = downloadArgs?.items as Array<{ templateContext: { values: Record<string, string> } }>;
+    return items.map(item => item.templateContext.values.playlist_index);
+  }
+
+  it('applies the global reverse playlist numbering setting without overrides', async () => {
+    useSettingsStore().settings = createSettingsWithReverseNumbering();
+
+    useMediaGroupStore().createGroup(createDownloadablePlaylistGroup('group-1', 5));
+
+    expect(await captureDownloadPlaylistIndices('group-1')).toEqual(['5', '4']);
+  });
+
+  it('lets a group override disable the global reverse playlist numbering setting', async () => {
+    useSettingsStore().settings = createSettingsWithReverseNumbering();
+
+    useMediaGroupStore().createGroup(createDownloadablePlaylistGroup('group-1', 5));
+    useMediaOptionsStore().setOverrides('group-1', { output: { reversePlaylistNumbering: false } });
+
+    expect(await captureDownloadPlaylistIndices('group-1')).toEqual(['1', '2']);
   });
 
   it('falls back to playlist selection when auto-expanding a skipped playlist fails', async () => {
