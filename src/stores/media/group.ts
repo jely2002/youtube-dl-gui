@@ -10,6 +10,11 @@ function codecId(codec: MediaCodec): string {
   return typeof codec === 'string' ? codec : codec.id;
 }
 
+// Entries without a URL of their own share the playlist URL and are told apart by their item.
+function entryKey(url: string, playlistItem: number | undefined): string {
+  return playlistItem == null ? url : `${url}#${playlistItem}`;
+}
+
 export const useMediaGroupStore = defineStore('media-group', () => {
   const groups = ref<Record<string, Group>>({});
   const groupOrder = ref<string[]>([]);
@@ -71,9 +76,9 @@ export const useMediaGroupStore = defineStore('media-group', () => {
 
     if (!entries) return result;
 
-    const entryByUrl = new Map<string, (typeof entries)[number]>();
+    const entryByKey = new Map<string, (typeof entries)[number]>();
     for (const entry of entries) {
-      entryByUrl.set(entry.videoUrl, entry);
+      entryByKey.set(entryKey(entry.videoUrl, entry.playlistItem), entry);
     }
 
     const orderedGroups: (Group | undefined)[] = new Array(entries.length);
@@ -82,7 +87,7 @@ export const useMediaGroupStore = defineStore('media-group', () => {
     for (const [itemKey, item] of Object.entries(group.items)) {
       if (item.entries) continue;
 
-      const entry = entryByUrl.get(item.url);
+      const entry = entryByKey.get(entryKey(item.url, item.playlistItem));
       const meta = omit(item, ['id', 'groupId', 'isLeader']);
 
       const newGroup: Group = {
@@ -140,7 +145,9 @@ export const useMediaGroupStore = defineStore('media-group', () => {
     const audioCodecMap = new Map<string, MediaCodec>();
     const videoCodecMap = new Map<string, MediaCodec>();
     for (const it of items) {
-      const entry = leader.entries?.find(entry => entry.videoUrl === it.url);
+      const entry = leader.entries?.find(
+        entry => entryKey(entry.videoUrl, entry.playlistItem) === entryKey(it.url, it.playlistItem),
+      );
       if (entry) it.playlistIndex = entry.index;
       for (const codec of it.audioCodecs ?? []) {
         const key = codecId(codec).trim().toLowerCase();

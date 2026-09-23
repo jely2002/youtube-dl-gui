@@ -42,6 +42,7 @@ pub struct YtdlpThumbnail {
 pub struct YtdlpEntry {
   pub url: Option<String>,
   pub webpage_url: Option<String>,
+  pub playlist_index: Option<i64>,
 }
 
 #[derive(Debug, Deserialize)]

@@ -84,6 +84,8 @@ pub enum TranscodePolicy {
 pub struct DownloadItem {
   pub id: String,
   pub url: String,
+  #[serde(default)]
+  pub playlist_item: Option<u64>,
   pub format: FormatOptions,
   #[serde(default)]
   pub subtitle_inventory: Option<SubtitleInventory>,

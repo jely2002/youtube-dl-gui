@@ -34,6 +34,7 @@ pub enum FetchRequest {
     group_id: String,
     id: String,
     url: String,
+    playlist_item: Option<u64>,
     format: FormatOptions,
   },
   SizePlaylist {
@@ -48,6 +49,7 @@ pub struct FetchEntry {
   pub group_id: String,
   pub id: String,
   pub url: String,
+  pub playlist_item: Option<u64>,
   pub total: usize,
   pub format: Option<FormatOptions>,
   pub overrides: Option<DownloadOverrides>,
@@ -92,6 +94,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
         group_id,
         id,
         url,
+        playlist_item: None,
         total: 1,
         format: None,
         overrides: *overrides,
@@ -113,6 +116,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
           group_id: group_id.clone(),
           id: Uuid::new_v4().to_string(),
           url: e.video_url,
+          playlist_item: e.playlist_item,
           total,
           format: None,
           overrides: *overrides.clone(),
@@ -123,12 +127,14 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
       group_id,
       id,
       url,
+      playlist_item,
       format,
     } => {
       vec![FetchEntry {
         group_id,
         id,
         url,
+        playlist_item,
         total: 1,
         format: Some(format),
         overrides: None,
@@ -147,6 +153,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
           group_id: group_id.clone(),
           id: Uuid::new_v4().to_string(),
           url: e.video_url,
+          playlist_item: e.playlist_item,
           total,
           format: Some(format.clone()),
           overrides: None,
@@ -165,6 +172,7 @@ async fn handle_fetch_entry(
     group_id,
     id,
     url,
+    playlist_item,
     total,
     format,
     overrides,
@@ -177,6 +185,7 @@ async fn handle_fetch_entry(
     &url,
     format.clone(),
     overrides.clone(),
+    playlist_item,
   )
   .await;
 
@@ -199,7 +208,8 @@ async fn handle_fetch_entry(
   };
 
   match result {
-    Some(ParsedMedia::Single(single)) => {
+    Some(ParsedMedia::Single(mut single)) => {
+      single.playlist_item = playlist_item;
       if let Some(format) = format {
         let payload = MediaAddWithFormatPayload {
           group_id: group_id.clone(),

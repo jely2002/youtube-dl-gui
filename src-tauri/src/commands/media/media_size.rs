@@ -9,6 +9,7 @@ pub fn media_size(
   url: String,
   id: String,
   group_id: String,
+  playlist_item: Option<u64>,
   format: FormatOptions,
   pipeline: State<'_, FetchSender>,
 ) -> Result<String, String> {
@@ -20,6 +21,7 @@ pub fn media_size(
       group_id: group_id.clone(),
       url,
       id,
+      playlist_item,
       format,
     }))
     .map_err(|e| e.to_string())?;

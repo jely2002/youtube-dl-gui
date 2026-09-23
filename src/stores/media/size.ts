@@ -124,11 +124,13 @@ export const useMediaSizeStore = defineStore('media-size', () => {
     groupId: string,
     id: string,
     format: DownloadOptions,
+    playlistItem?: number,
   ): Promise<void> {
     await invoke('media_size', {
       url,
       id,
       groupId,
+      playlistItem,
       format,
     });
   }

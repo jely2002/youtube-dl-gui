@@ -229,6 +229,17 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
+  /// Selects a single item of a playlist URL. Must be added after the input (filter) args,
+  /// since yt-dlp uses the last `--yes-playlist`/`--no-playlist` and `-I` it receives.
+  pub fn with_playlist_item(mut self, playlist_item: Option<u64>) -> Self {
+    if let Some(item) = playlist_item {
+      self
+        .args
+        .extend(["--yes-playlist".into(), "-I".into(), item.to_string()]);
+    }
+    self
+  }
+
   pub fn with_input_filter_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
     self.args.extend(build_input_filter_args(
       overrides.and_then(|value| value.input_filters.as_ref()),

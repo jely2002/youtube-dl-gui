@@ -49,7 +49,8 @@ pub async fn run_ytdlp_download(
     .with_sponsorblock_args(entry.overrides.as_ref())
     .with_format_args(&entry.format, entry.overrides.as_ref())
     .with_input_filter_args(entry.overrides.as_ref())
-    .with_input_args(entry.overrides.as_ref());
+    .with_input_args(entry.overrides.as_ref())
+    .with_playlist_item(entry.playlist_item);
   let output_args = match runner.output_args(&entry.format, entry.overrides.as_ref()) {
     Ok(args) => args,
     Err(err) => {

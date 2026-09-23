@@ -77,6 +77,7 @@ pub fn parse_single(info: YtdlpInfo, id: String) -> ParsedMedia {
     formats: media_formats,
     subtitle_inventory,
     chapters: process_chapters(info.chapters.as_deref()),
+    playlist_item: None,
   })
 }
 

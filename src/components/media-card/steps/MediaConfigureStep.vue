@@ -176,11 +176,13 @@ watch(size, (val) => {
 function loadSize() {
   if (!selectedOptions.value) return;
   isSizeLoading.value = true;
+  const item = group.items[Object.keys(group.items)[0]];
   void sizeStore.requestSize(
     group.url ?? '',
     group.id,
-    group.items[Object.keys(group.items)[0]].id,
+    item.id,
     selectedOptions.value,
+    item.playlistItem,
   );
 }
 

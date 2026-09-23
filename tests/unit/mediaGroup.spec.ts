@@ -134,6 +134,39 @@ describe('media group store', () => {
     expect(itemIdsInOrder).toEqual(['b', 'c']);
   });
 
+  it('matches entries that share the playlist URL by their playlist item', () => {
+    const store = useMediaGroupStore();
+    const postUrl = 'https://x.com/user/status/1';
+    const group: Group = {
+      id: 'g-post',
+      url: postUrl,
+      total: 2,
+      processed: 2,
+      errored: 0,
+      isCombined: false,
+      audioCodecs: [],
+      formats: [],
+      filesize: 0,
+      items: {
+        leader: {
+          ...createItem('leader', { url: postUrl }),
+          entries: [
+            { videoUrl: postUrl, index: 0, playlistItem: 1 },
+            { videoUrl: postUrl, index: 1, playlistItem: 2 },
+          ],
+        },
+        second: createItem('second', { url: postUrl, playlistItem: 2 }),
+        first: createItem('first', { url: postUrl, playlistItem: 1 }),
+      },
+    };
+
+    store.createGroup(group);
+    const result = store.splitGroup(group);
+
+    expect(result.map(g => Object.keys(g.items)[0])).toEqual(['first', 'second']);
+    expect(result.map(g => Object.values(g.items)[0].playlistIndex)).toEqual([0, 1]);
+  });
+
   it('puts items without matching entry at the end', () => {
     const store = useMediaGroupStore();
     const group: Group = {

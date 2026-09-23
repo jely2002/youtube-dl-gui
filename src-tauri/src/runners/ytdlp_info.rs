@@ -2,7 +2,7 @@ use crate::logging::LogStoreState;
 use crate::models::download::{DownloadOverrides, FormatOptions};
 use crate::models::{MediaDiagnosticPayload, MediaFatalPayload, ParsedMedia, TrackType};
 use crate::parsers::ytdlp_error::{DiagnosticMatcher, YtdlpErrorParser};
-use crate::parsers::ytdlp_info::parse_ytdlp_info;
+use crate::parsers::ytdlp_info::{parse_ytdlp_info, unwrap_selected_playlist_entry};
 use crate::runners::ytdlp_runner::YtdlpRunner;
 use std::borrow::Cow;
 use std::fmt;
@@ -36,6 +36,7 @@ pub async fn run_ytdlp_info_fetch(
   url: &str,
   format: Option<FormatOptions>,
   overrides: Option<DownloadOverrides>,
+  playlist_item: Option<u64>,
 ) -> Result<Option<ParsedMedia>, YtdlpInfoFetchError> {
   static RULES_JSON: &str = include_str!("../diagnostic_rules.json");
 
@@ -57,6 +58,7 @@ pub async fn run_ytdlp_info_fetch(
     .with_input_filter_args(overrides.as_ref())
     .with_auth_args(overrides.as_ref())
     .with_network_args(overrides.as_ref())
+    .with_playlist_item(playlist_item)
     .with_args(["-J", "--flat-playlist"])
     .with_url(url);
 
@@ -156,7 +158,10 @@ pub async fn run_ytdlp_info_fetch(
     return Err(YtdlpInfoFetchError::NonZeroExit(status_code));
   }
 
-  match parse_ytdlp_info(&stdout_text, id.clone()) {
+  let selected_entry = playlist_item.and_then(|_| unwrap_selected_playlist_entry(&stdout_text));
+  let json = selected_entry.as_deref().unwrap_or(&stdout_text);
+
+  match parse_ytdlp_info(json, id.clone()) {
     Ok(media) => Ok(Some(media)),
     Err(e) => {
       let _ = app.emit(

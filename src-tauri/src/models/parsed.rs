@@ -81,6 +81,9 @@ pub struct ParsedSingleVideo {
   pub subtitle_inventory: SubtitleInventory,
   pub chapters: Vec<Chapter>,
   pub filesize: Option<u64>,
+  /// See [`PlaylistEntry::playlist_item`].
+  #[serde(default, skip_serializing_if = "Option::is_none")]
+  pub playlist_item: Option<u64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -102,6 +105,10 @@ pub struct ParsedPlaylist {
 pub struct PlaylistEntry {
   pub video_url: String,
   pub index: usize,
+  /// 1-based item to select with `-I` when the entry has no URL of its own
+  /// (e.g. a post with several videos), in which case `video_url` is the playlist URL.
+  #[serde(default, skip_serializing_if = "Option::is_none")]
+  pub playlist_item: Option<u64>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

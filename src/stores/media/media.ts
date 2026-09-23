@@ -348,6 +348,7 @@ export const useMediaStore = defineStore('media', () => {
         items: itemsWithoutLeader.map(item => ({
           id: item.id,
           url: item.url,
+          playlistItem: item.playlistItem,
           format: resolvedOptions,
           subtitleInventory: item.subtitleInventory,
           overrides,

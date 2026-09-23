@@ -6,16 +6,25 @@ pub fn parse_playlist(info: YtdlpInfo, id: String) -> ParsedMedia {
 
   if let Some(items) = info.entries {
     for (idx, entry) in items.iter().enumerate() {
-      let url = if let Some(u) = &entry.url {
-        u.clone()
-      } else {
-        entry.webpage_url.clone().unwrap_or_default()
+      let (url, playlist_item) = match (&entry.url, &entry.webpage_url) {
+        (Some(url), _) => (url.clone(), None),
+        (None, Some(page)) if info.webpage_url.as_ref() != Some(page) => (page.clone(), None),
+        // The entry has no URL of its own (e.g. a post with several videos), so fetching
+        // its page would return the whole playlist again. Select it from the playlist URL.
+        _ => {
+          let item = entry
+            .playlist_index
+            .and_then(|index| u64::try_from(index).ok())
+            .unwrap_or(idx as u64 + 1);
+          (info.webpage_url.clone().unwrap_or_default(), Some(item))
+        }
       };
 
       if !url.is_empty() {
         entries.push(PlaylistEntry {
           video_url: url,
           index: idx,
+          playlist_item,
         });
       }
     }
