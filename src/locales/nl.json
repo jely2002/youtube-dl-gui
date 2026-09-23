@@ -697,6 +697,10 @@
       "proxy": {
         "label": "Proxyconfiguratie:"
       },
+      "noCheckCertificates": {
+        "label": "Certificaatcontrole overslaan:",
+        "hint": "Schakelt de controle van TLS-certificaten uit voor alle verbindingen zolang de proxy is ingeschakeld. Gebruik dit alleen als je HTTPS-proxy mislukt door een certificaatfout."
+      },
       "impersonate": {
         "label": "Imiteren:",
         "hint": "Doe je voor als een specifiek besturingssysteem of browser om fingerprinting te voorkomen.",

@@ -28,6 +28,7 @@ export interface AuthSettings {
 export interface NetworkSettings {
   enableProxy: boolean | null;
   proxy: string | null;
+  noCheckCertificates: boolean;
   impersonate: string;
   extractorArgs: string;
 }
@@ -182,6 +183,7 @@ export const defaultAuthSettings: AuthSettings = {
 export const defaultNetworkSettings: NetworkSettings = {
   enableProxy: false,
   proxy: null,
+  noCheckCertificates: false,
   impersonate: 'none',
   extractorArgs: '',
 };

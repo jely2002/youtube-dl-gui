@@ -697,6 +697,10 @@
       "proxy": {
         "label": "Vekil yapılandırması:"
       },
+      "noCheckCertificates": {
+        "label": "Sertifika doğrulamasını atla:",
+        "hint": "Vekil etkinken tüm bağlantılarda TLS sertifika doğrulamasını devre dışı bırakır. Yalnızca HTTPS vekiliniz bir sertifika hatasıyla başarısız oluyorsa kullanın."
+      },
       "impersonate": {
         "label": "Taklit:",
         "hint": "Parmak izinin alınmasını önlemek için belirli bir işletim sistemini veya tarayıcıyı taklit et.",

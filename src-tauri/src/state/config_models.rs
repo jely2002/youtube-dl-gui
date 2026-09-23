@@ -45,6 +45,7 @@ impl Default for AuthSettings {
 pub struct NetworkSettings {
   pub enable_proxy: Option<bool>,
   pub proxy: Option<String>,
+  pub no_check_certificates: bool,
   pub impersonate: String,
   pub extractor_args: String,
 }
@@ -54,6 +55,7 @@ impl Default for NetworkSettings {
     Self {
       enable_proxy: None,
       proxy: None,
+      no_check_certificates: false,
       impersonate: "none".into(),
       extractor_args: String::new(),
     }

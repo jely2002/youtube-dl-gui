@@ -697,6 +697,10 @@
       "proxy": {
         "label": "Proxy-Konfiguration:"
       },
+      "noCheckCertificates": {
+        "label": "Zertifikatsprüfung überspringen:",
+        "hint": "Deaktiviert die Prüfung von TLS-Zertifikaten für alle Verbindungen, solange der Proxy aktiv ist. Nur verwenden, wenn dein HTTPS-Proxy mit einem Zertifikatsfehler fehlschlägt."
+      },
       "impersonate": {
         "label": "Impersonation:",
         "hint": "Gib dich als bestimmtes Betriebssystem oder Browser aus, um Fingerprinting zu verhindern.",

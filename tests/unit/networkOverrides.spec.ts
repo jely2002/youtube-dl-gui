@@ -32,6 +32,7 @@ describe('network overrides', () => {
     expect(optionsStore.getOverrides(groupId)?.network).toEqual({
       enableProxy: true,
       proxy: 'socks5://127.0.0.1:1080/',
+      noCheckCertificates: false,
       impersonate: 'any',
     });
 
@@ -41,6 +42,39 @@ describe('network overrides', () => {
     await nextTick();
 
     expect(optionsStore.getOverrides(groupId)).toBeUndefined();
+  });
+
+  it('stores the certificate check override and only enables it with a proxy', async () => {
+    const groupId = 'group-certificates';
+    const settingsStore = useSettingsStore();
+    settingsStore.settings.network = structuredClone(defaultSettings.network);
+
+    const optionsStore = useMediaOptionsStore();
+    const wrapper = mount(TheNetworkPreferences, {
+      props: {
+        groupId,
+      },
+      global: {
+        plugins: [i18n],
+      },
+    });
+
+    const certificateToggle = wrapper.get('#override-no-check-certificates');
+    expect(certificateToggle.attributes('disabled')).toBeDefined();
+
+    await wrapper.get('#override-enable-proxy').setValue(true);
+    await wrapper.get('#override-proxy').setValue('https://proxy.example.com:3128');
+    await nextTick();
+    expect(certificateToggle.attributes('disabled')).toBeUndefined();
+
+    await certificateToggle.setValue(true);
+    await nextTick();
+
+    expect(optionsStore.getOverrides(groupId)?.network).toEqual({
+      enableProxy: true,
+      proxy: 'https://proxy.example.com:3128',
+      noCheckCertificates: true,
+    });
   });
 
   it('stores custom header overrides and trims empty lines', async () => {

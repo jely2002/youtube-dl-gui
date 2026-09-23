@@ -10,7 +10,9 @@ use crate::runners::ytdlp_args::{
 use crate::runners::ytdlp_process::{
   configure_command, kill_platform_process, platform_process_from_child, PlatformProcess,
 };
-use crate::state::config_models::{AuthSettings, Config, SponsorBlockSettings, SubtitleSettings};
+use crate::state::config_models::{
+  AuthSettings, Config, NetworkSettings, SponsorBlockSettings, SubtitleSettings,
+};
 use crate::state::preferences_models::Preferences;
 use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
@@ -90,31 +92,7 @@ impl<'a> YtdlpRunner<'a> {
       &self.cfg.network,
       overrides.and_then(|value| value.network.as_ref()),
     );
-    let proxy_enabled = network.enable_proxy.is_some_and(|enabled| enabled);
-    if proxy_enabled {
-      if let Some(proxy) = network.proxy.as_ref() {
-        self.args.push("--proxy".to_string());
-        self.args.push(proxy.clone());
-      }
-    }
-
-    match network.impersonate.as_str() {
-      "none" => {}
-      "any" => {
-        self.args.push("--impersonate".to_string());
-        self.args.push(String::new());
-      }
-      other => {
-        self.args.push("--impersonate".to_string());
-        self.args.push(other.to_string());
-      }
-    }
-
-    if let Some(extractor_args) = normalize_extractor_args(&network.extractor_args) {
-      self.args.push("--extractor-args".into());
-      self.args.push(extractor_args);
-    }
-
+    self.args.extend(build_network_args(&network));
     self
   }
 
@@ -525,6 +503,41 @@ fn build_subtitle_args(
   Some(args)
 }
 
+fn build_network_args(network: &NetworkSettings) -> Vec<String> {
+  let mut args = Vec::new();
+
+  let proxy_enabled = network.enable_proxy.is_some_and(|enabled| enabled);
+  if proxy_enabled {
+    if let Some(proxy) = network.proxy.as_ref() {
+      args.push("--proxy".to_string());
+      args.push(proxy.clone());
+      // Only relevant for HTTPS proxies whose certificate chain cannot be verified.
+      if network.no_check_certificates {
+        args.push("--no-check-certificates".to_string());
+      }
+    }
+  }
+
+  match network.impersonate.as_str() {
+    "none" => {}
+    "any" => {
+      args.push("--impersonate".to_string());
+      args.push(String::new());
+    }
+    other => {
+      args.push("--impersonate".to_string());
+      args.push(other.to_string());
+    }
+  }
+
+  if let Some(extractor_args) = normalize_extractor_args(&network.extractor_args) {
+    args.push("--extractor-args".into());
+    args.push(extractor_args);
+  }
+
+  args
+}
+
 fn normalize_extractor_args(value: &str) -> Option<String> {
   let normalized = value
     .lines()
@@ -864,10 +877,11 @@ fn subtitle_language_bases(languages: &[String]) -> Vec<String> {
 #[cfg(test)]
 mod tests {
   use super::{
-    build_sponsorblock_args, build_subtitle_args, normalize_extractor_args, summarize_args_for_log,
+    build_network_args, build_sponsorblock_args, build_subtitle_args, normalize_extractor_args,
+    summarize_args_for_log,
   };
   use crate::models::SubtitleInventory;
-  use crate::state::config_models::{SponsorBlockSettings, SubtitleSettings};
+  use crate::state::config_models::{NetworkSettings, SponsorBlockSettings, SubtitleSettings};
 
   fn inventory(manual: &[&str], automatic: &[&str]) -> SubtitleInventory {
     SubtitleInventory {
@@ -1093,6 +1107,40 @@ mod tests {
     .expect("args");
     assert_eq!(args[4], "--write-auto-subs");
     assert_eq!(args[8], "en,nl");
+  }
+
+  fn proxy_settings(enable_proxy: bool, no_check_certificates: bool) -> NetworkSettings {
+    NetworkSettings {
+      enable_proxy: Some(enable_proxy),
+      proxy: Some("https://proxy.example.com:3128".into()),
+      no_check_certificates,
+      ..Default::default()
+    }
+  }
+
+  #[test]
+  fn network_args_proxy_without_certificate_override() {
+    assert_eq!(
+      build_network_args(&proxy_settings(true, false)),
+      vec!["--proxy", "https://proxy.example.com:3128"]
+    );
+  }
+
+  #[test]
+  fn network_args_proxy_skips_certificate_check_when_enabled() {
+    assert_eq!(
+      build_network_args(&proxy_settings(true, true)),
+      vec![
+        "--proxy",
+        "https://proxy.example.com:3128",
+        "--no-check-certificates"
+      ]
+    );
+  }
+
+  #[test]
+  fn network_args_ignore_certificate_override_when_proxy_disabled() {
+    assert!(build_network_args(&proxy_settings(false, true)).is_empty());
   }
 
   #[test]

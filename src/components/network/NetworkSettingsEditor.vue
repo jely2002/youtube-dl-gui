@@ -27,6 +27,20 @@
     </div>
 
     <div class="mb-4 flex flex-col gap-1">
+      <label class="font-semibold" :for="noCheckCertificatesFieldId">
+        {{ t('settings.network.noCheckCertificates.label') }}
+      </label>
+      <input
+        :id="noCheckCertificatesFieldId"
+        type="checkbox"
+        v-model="networkState.noCheckCertificates"
+        class="toggle toggle-primary my-1"
+        :disabled="networkState.enableProxy !== true"
+      />
+      <span class="label whitespace-normal">{{ t('settings.network.noCheckCertificates.hint') }}</span>
+    </div>
+
+    <div class="mb-4 flex flex-col gap-1">
       <label class="font-semibold" :for="impersonateFieldId">
         {{ t('settings.network.impersonate.label') }}
       </label>
@@ -88,6 +102,8 @@ const { t } = useI18n();
 const impersonatePresets = computed(() => buildImpersonatePresets(t));
 const enableProxyFieldId = computed(() => idPrefix ? `${idPrefix}-enable-proxy` : 'enableProxy');
 const proxyFieldId = computed(() => idPrefix ? `${idPrefix}-proxy` : 'proxyUrl');
+const noCheckCertificatesFieldId = computed(() =>
+  idPrefix ? `${idPrefix}-no-check-certificates` : 'noCheckCertificates');
 const impersonateFieldId = computed(() => idPrefix ? `${idPrefix}-impersonate` : 'impersonate');
 const extractorArgsFieldId = computed(() => idPrefix ? `${idPrefix}-extractor-args` : 'extractorArgs');
 const showExtractorFlagWarning = computed(() =>

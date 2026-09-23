@@ -127,6 +127,7 @@ export type AuthOverrides = {
 export type NetworkOverrides = {
   enableProxy?: boolean;
   proxy?: string;
+  noCheckCertificates?: boolean;
   impersonate?: string;
   extractorArgs?: string;
 };

@@ -89,6 +89,7 @@ impl ApplyPatch<NetworkSettings> for NetworkOverrides {
     if let Some(proxy) = self.proxy.as_ref() {
       target.proxy = Some(proxy.clone());
     }
+    apply_copy_patch!(self, target, no_check_certificates);
     apply_clone_patch!(self, target, impersonate);
     apply_clone_patch!(self, target, extractor_args);
   }

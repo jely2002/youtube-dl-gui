@@ -794,6 +794,10 @@
       "proxy": {
         "label": "Configuración de proxy:"
       },
+      "noCheckCertificates": {
+        "label": "Omitir verificación de certificados:",
+        "hint": "Desactiva la verificación de certificados TLS en todas las conexiones mientras el proxy está activado. Úsalo solo si tu proxy HTTPS falla con un error de certificado."
+      },
       "impersonate": {
         "label": "Simulación de cliente:",
         "hint": "Simula un sistema operativo o navegador específico para evitar el rastreo de identidad digital.",

@@ -66,6 +66,7 @@ const syncFromStore = () => {
   networkState.value = {
     enableProxy: current?.network?.enableProxy ?? false,
     proxy: current?.network?.proxy ?? '',
+    noCheckCertificates: current?.network?.noCheckCertificates ?? false,
     impersonate: current?.network?.impersonate ?? 'none',
     extractorArgs: current?.network?.extractorArgs ?? '',
   };
@@ -84,6 +85,7 @@ watch([networkState, headersText], () => {
   const networkPayload = {
     enableProxy: networkState.value.enableProxy ?? false,
     proxy: trimmedProxy || undefined,
+    noCheckCertificates: networkState.value.noCheckCertificates ?? false,
     impersonate: networkState.value.impersonate !== 'none'
       ? networkState.value.impersonate
       : undefined,
@@ -92,6 +94,7 @@ watch([networkState, headersText], () => {
   const hasNetwork
     = (globalNetwork.enableProxy ?? false) !== (networkState.value.enableProxy ?? false)
       || (globalNetwork.proxy ?? '') !== trimmedProxy
+      || (globalNetwork.noCheckCertificates ?? false) !== (networkState.value.noCheckCertificates ?? false)
       || (globalNetwork.impersonate ?? 'none') !== networkState.value.impersonate
       || globalExtractorArgs !== extractorArgs;
   const hasAuth = headers.length > 0;

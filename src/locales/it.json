@@ -698,6 +698,10 @@
       "proxy": {
         "label": "Configurazione proxy:"
       },
+      "noCheckCertificates": {
+        "label": "Salta la verifica dei certificati:",
+        "hint": "Disattiva la verifica dei certificati TLS per tutte le connessioni mentre il proxy è attivo. Usala solo se il tuo proxy HTTPS non funziona a causa di un errore di certificato."
+      },
       "impersonate": {
         "label": "Simulazione:",
         "hint": "Per impedire il rilevamento delle firme simula un sistema operativo o un browser specifico.",

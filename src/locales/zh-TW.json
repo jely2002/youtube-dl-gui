@@ -697,6 +697,10 @@
       "proxy": {
         "label": "Proxy 設定:"
       },
+      "noCheckCertificates": {
+        "label": "略過憑證驗證:",
+        "hint": "啟用 Proxy 時，停用所有連線的 TLS 憑證驗證。僅在您的 HTTPS Proxy 因憑證錯誤而失敗時使用。"
+      },
       "impersonate": {
         "label": "模擬:",
         "hint": "模擬特定 OS 或瀏覽器，以避免裝置指紋辨識。",

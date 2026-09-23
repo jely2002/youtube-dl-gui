@@ -697,6 +697,10 @@
       "proxy": {
         "label": "Proxy-konfigurasjon:"
       },
+      "noCheckCertificates": {
+        "label": "Hopp over sertifikatkontroll:",
+        "hint": "Slår av kontroll av TLS-sertifikater for alle tilkoblinger mens proxyen er aktivert. Bruk dette bare hvis HTTPS-proxyen din feiler med en sertifikatfeil."
+      },
       "impersonate": {
         "label": "Impersonering:",
         "hint": "Impersoner et spesifikt OS eller nettleser for å forhindre fingeravtrykk.",

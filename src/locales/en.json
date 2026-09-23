@@ -794,6 +794,10 @@
       "proxy": {
         "label": "Proxy configuration:"
       },
+      "noCheckCertificates": {
+        "label": "Skip certificate verification:",
+        "hint": "Disables TLS certificate verification for all connections while the proxy is enabled. Only use this if your HTTPS proxy fails with a certificate error."
+      },
       "impersonate": {
         "label": "Impersonation:",
         "hint": "Impersonate a specific OS or browser, to prevent fingerprinting.",

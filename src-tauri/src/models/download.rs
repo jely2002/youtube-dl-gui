@@ -183,6 +183,7 @@ pub struct AuthOverrides {
 pub struct NetworkOverrides {
   pub enable_proxy: Option<bool>,
   pub proxy: Option<String>,
+  pub no_check_certificates: Option<bool>,
   pub impersonate: Option<String>,
   pub extractor_args: Option<String>,
 }
