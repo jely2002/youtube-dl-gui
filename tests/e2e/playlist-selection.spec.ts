@@ -40,3 +40,19 @@ test('it applies an advanced playlist selection', async ({ page }) => {
   await expect(cards).toHaveCount(1);
   await expect(page.getByText('Item 2')).toBeVisible();
 });
+
+test('it keeps the playlist action buttons inside the card', async ({ page }) => {
+  await openPlaylistSelection(page);
+
+  await page.getByRole('button', { name: 'Advanced' }).click();
+  await page.getByRole('button', { name: 'Add item' }).click();
+  await page.locator('input[id^="playlist-row-index-"]').fill('2');
+  await page.getByRole('button', { name: 'Use advanced selection' }).click();
+  await expect(page.getByRole('button', { name: 'Reset' })).toBeVisible();
+
+  const card = await page.locator('article.card').boundingBox();
+  const applyButton = await page.getByRole('button', { name: 'Download selected items' }).boundingBox();
+  expect(card).not.toBeNull();
+  expect(applyButton).not.toBeNull();
+  expect(applyButton!.y + applyButton!.height).toBeLessThanOrEqual(card!.y + card!.height);
+});

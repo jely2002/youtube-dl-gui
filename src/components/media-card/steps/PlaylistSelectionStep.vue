@@ -49,7 +49,8 @@
         <code class="ml-2 text-xs">{{ advancedSpec }}</code>
       </div>
 
-      <div class="mt-auto mb-1 flex flex-wrap gap-2">
+      <!-- Keep the actions on a single row: the card has a fixed height, so a wrapped row gets clipped. -->
+      <div class="mt-auto mb-1 flex min-w-0 gap-2">
         <base-button type="button" class="btn-soft" @click="openAdvanced">
           {{ t('inputFilters.playlistSelection.advancedButton') }}
         </base-button>
@@ -62,15 +63,18 @@
         >
           {{ t('inputFilters.playlistSelection.simpleButton') }}
         </base-button>
-        <base-button
-          type="button"
-          class="btn-primary"
-          :disabled="isApplying || !!validationError || (hasSelection && selectedEntries.length === 0)"
-          :loading="isApplying"
-          @click="applySelection"
-        >
-          {{ hasSelection ? t('inputFilters.playlistSelection.applySelection') : t('inputFilters.playlistSelection.applyFull') }}
-        </base-button>
+        <div class="min-w-0 flex-1">
+          <base-button
+            type="button"
+            class="btn-primary w-full"
+            :title="applyLabel"
+            :disabled="isApplying || !!validationError || (hasSelection && selectedEntries.length === 0)"
+            :loading="isApplying"
+            @click="applySelection"
+          >
+            <span class="min-w-0 truncate">{{ applyLabel }}</span>
+          </base-button>
+        </div>
       </div>
     </div>
 
@@ -168,6 +172,9 @@ const selection = computed<PlaylistSelection>(() => {
 const selectedEntries = computed(() => applyPlaylistSelectionToEntries(group.entries ?? [], selection.value));
 const hasSelection = computed(() => selection.value.rows.length > 0);
 const validationError = computed(() => hasAdvancedSelection.value ? null : simpleValidationError.value);
+const applyLabel = computed(() => hasSelection.value
+  ? t('inputFilters.playlistSelection.applySelection')
+  : t('inputFilters.playlistSelection.applyFull'));
 const selectionSummary = computed(() => {
   const total = group.entries?.length ?? 0;
   const count = hasSelection.value ? selectedEntries.value.length : total;
