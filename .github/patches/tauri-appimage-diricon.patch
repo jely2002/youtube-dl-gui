@@ -1,0 +1,17 @@
+diff --git a/crates/tauri-bundler/src/bundle/linux/appimage/sharun.rs b/crates/tauri-bundler/src/bundle/linux/appimage/sharun.rs
+index 6862e1f..1c0c37c 100644
+--- a/crates/tauri-bundler/src/bundle/linux/appimage/sharun.rs
++++ b/crates/tauri-bundler/src/bundle/linux/appimage/sharun.rs
+@@ -124,10 +124,8 @@ pub fn bundle_project(settings: &Settings) -> crate::Result<Vec<PathBuf>> {
+     app_dir_path.join(format!("{product_name}.png")),
+   )?;
+ 
+-  std::os::unix::fs::symlink(
+-    app_dir_path.join(format!("{product_name}.png")),
+-    app_dir_path.join(".DirIcon"),
+-  )?;
++  // Relative target so the link stays valid once the AppDir is packed into the AppImage.
++  std::os::unix::fs::symlink(format!("{product_name}.png"), app_dir_path.join(".DirIcon"))?;
+ 
+   let verbosity = match settings.log_level() {
+     log::Level::Error => "-q", // errors only

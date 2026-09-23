@@ -117,11 +117,19 @@ jobs:
       #
       # Pin to the last revision before the quick-sharun migration, which started
       # delegating bundling to a mutable external script downloaded at build time.
+      #
+      # That revision predates https://github.com/tauri-apps/tauri/pull/15596, so the
+      # .DirIcon symlink is patched to be relative (see .github/patches/).
       - name: Override tauri-cli (ubuntu only)
         if: matrix.platform == 'ubuntu-24.04' || matrix.platform == 'ubuntu-24.04-arm'
         shell: bash
         run: |
-          cargo install tauri-cli --git https://github.com/tauri-apps/tauri --rev b5573c1db2bb6118594b586a6aa51aeb37aa7d84 --locked --force
+          TAURI_SRC="$RUNNER_TEMP/tauri-src"
+          git init -q "$TAURI_SRC"
+          git -C "$TAURI_SRC" fetch -q --depth 1 https://github.com/tauri-apps/tauri b5573c1db2bb6118594b586a6aa51aeb37aa7d84
+          git -C "$TAURI_SRC" checkout -q FETCH_HEAD
+          git -C "$TAURI_SRC" apply "$GITHUB_WORKSPACE/.github/patches/tauri-appimage-diricon.patch"
+          cargo install tauri-cli --path "$TAURI_SRC/crates/tauri-cli" --locked --force
           echo "TAURI_BUNDLER_NEW_APPIMAGE_FORMAT=true" >> $GITHUB_ENV
 
       # TEMPORARY WORKAROUND:
