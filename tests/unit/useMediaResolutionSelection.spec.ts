@@ -42,6 +42,7 @@ describe('useMediaResolutionSelection', () => {
   ];
   const audioTracks: MediaTrack[] = [
     { id: 'lang:en|channels:2', label: 'English stereo', language: 'en', audioChannels: 2 },
+    { id: 'lang:es|channels:2', label: 'Spanish stereo', language: 'es', audioChannels: 2 },
   ];
 
   function createSelection(selectedOptions: DownloadOptions | undefined) {
@@ -93,6 +94,32 @@ describe('useMediaResolutionSelection', () => {
         label: 'English - 2ch',
         disabled: false,
       },
+      {
+        value: 'lang:es|channels:2',
+        label: 'Spanish - 2ch',
+        disabled: false,
+      },
+    ]);
+  });
+
+  it('keeps all audio tracks active and enabled even when a video resolution is selected', () => {
+    const { audioTrackOptions } = createSelection({
+      trackType: TrackType.both,
+      height: 720,
+      fps: 30,
+    });
+
+    expect(audioTrackOptions.value).toEqual([
+      {
+        value: 'lang:en|channels:2',
+        label: 'English - 2ch',
+        disabled: false,
+      },
+      {
+        value: 'lang:es|channels:2',
+        label: 'Spanish - 2ch',
+        disabled: false,
+      },
     ]);
   });
 
@@ -111,6 +138,31 @@ describe('useMediaResolutionSelection', () => {
       { value: 'mp4a.40.2', label: 'AAC LC' },
       { value: 'mp4a.40.5', label: 'HE-AAC v1' },
       { value: 'opus', label: 'Opus' },
+    ]);
+  });
+
+  it('shows bitrate hints on enabled audio tracks even when a video resolution is selected', () => {
+    const formatsWithAudioTrackIds: MediaFormat[] = [
+      { ...formats[0], audioTrackIds: ['lang:en|channels:2'] },
+      { ...formats[1], audioTrackIds: ['lang:en|channels:2', 'lang:es|channels:2'] },
+      formats[2],
+    ];
+
+    const { audioTrackOptions } = useMediaResolutionSelection({
+      formats: formatsWithAudioTrackIds,
+      audioCodecs,
+      videoCodecs: [],
+      audioTracks,
+      videoTracks: [],
+      selectedOptions: ref({ trackType: TrackType.both, height: 720, fps: 30 }),
+      approximate: false,
+      unavailableTrackSuffix: computed(() => 'Unavailable'),
+      availableTrackPrefix: computed(() => 'Available in'),
+    });
+
+    expect(audioTrackOptions.value).toEqual([
+      { value: 'lang:en|channels:2', label: 'English - 2ch (Available in 130kbps, 49kbps)', disabled: false },
+      { value: 'lang:es|channels:2', label: 'Spanish - 2ch (Available in 130kbps)', disabled: false },
     ]);
   });
 });

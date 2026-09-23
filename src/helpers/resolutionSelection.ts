@@ -82,6 +82,7 @@ export function buildTrackOptions(
   supportedTrackResolutions: Map<string, string[]> | undefined,
   unavailableSuffix: string,
   availableResolutionPrefix: string,
+  alwaysShowResolutionHint = false,
 ): SelectOption[] {
   const isUnrestricted = availableTrackIds === undefined;
   const availableIds = new Set((availableTrackIds ?? []).map(id => id.trim()).filter(Boolean));
@@ -93,12 +94,16 @@ export function buildTrackOptions(
     const baseLabel = formatTrackLabel(track);
     const available = isUnrestricted || availableIds.has(track.id);
     const supportedResolutions = supportedTrackResolutions?.get(track.id) ?? [];
-    const unavailableLabel = supportedResolutions.length
+    const resolutionHint = supportedResolutions.length
       ? `${availableResolutionPrefix} ${supportedResolutions.join(', ')}`
-      : unavailableSuffix;
+      : undefined;
+    const suffix = !available
+      ? (resolutionHint ?? unavailableSuffix)
+      : (alwaysShowResolutionHint ? resolutionHint : undefined);
+
     const option: SelectOption = {
       value: track.id,
-      label: available ? baseLabel : `${baseLabel} (${unavailableLabel})`,
+      label: suffix ? `${baseLabel} (${suffix})` : baseLabel,
       disabled: !available,
     };
 
@@ -107,7 +112,6 @@ export function buildTrackOptions(
       byId.set(track.id, { option, order: index, available });
       return;
     }
-
     if (!existing.available && available) {
       byId.set(track.id, { option, order: existing.order, available });
     }

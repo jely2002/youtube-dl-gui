@@ -54,10 +54,11 @@ export function useMediaResolutionSelection(params: UseMediaResolutionSelectionP
   const audioTrackOptions = computed(() =>
     buildTrackOptions(
       toValue(params.audioTracks),
-      selectedTrackIds.value?.audioTrackIds,
+      undefined,
       buildTrackResolutionLabels(toValue(params.formats), 'audioTrackIds'),
       toValue(params.unavailableTrackSuffix),
       toValue(params.availableTrackPrefix),
+      true,
     ),
   );
 
