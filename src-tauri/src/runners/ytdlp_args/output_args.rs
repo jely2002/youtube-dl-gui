@@ -149,7 +149,8 @@ fn audio_format_arg(format: AudioFormat) -> &'static str {
     AudioFormat::M4a => "m4a",
     AudioFormat::Opus => "opus",
     AudioFormat::Aac => "aac",
-    AudioFormat::Ogg => "ogg",
+    // yt-dlp has no "ogg" audio format; "vorbis" produces an .ogg file.
+    AudioFormat::Ogg => "vorbis",
     AudioFormat::Flac => "flac",
     AudioFormat::Wav => "wav",
   }

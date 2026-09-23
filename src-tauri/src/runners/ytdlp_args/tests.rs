@@ -432,7 +432,7 @@ fn audio_output_args_allow_reencode_ogg() {
     "--output-na-placeholder",
     "",
     "--audio-format",
-    "ogg",
+    "vorbis",
     "--audio-quality",
     "160k",
     "--embed-thumbnail",
