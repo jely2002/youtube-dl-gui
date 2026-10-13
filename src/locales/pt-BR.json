@@ -817,6 +817,10 @@
           "windows": "Quando o aplicativo inicia ao entrar, ele é iniciado na bandeja do sistema sem abrir uma janela.",
           "generic": "Quando o aplicativo inicia ao entrar, nenhuma janela é aberta."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Restaurar fila ao iniciar",
+        "hint": "A fila de mídia será restaurada automaticamente ao reabrir o app."
       }
     },
     "notifications": {

@@ -293,6 +293,7 @@ pub struct SystemConfig {
   pub auto_start_enabled: bool,
   pub auto_start_minimised: bool,
   pub close_behavior: CloseBehavior,
+  pub restore_queue_on_start: bool,
 }
 
 impl Default for SystemConfig {
@@ -304,6 +305,7 @@ impl Default for SystemConfig {
         auto_start_enabled: false,
         auto_start_minimised: false,
         close_behavior: CloseBehavior::Exit,
+        restore_queue_on_start: false,
       }
     }
 
@@ -314,6 +316,7 @@ impl Default for SystemConfig {
         auto_start_enabled: false,
         auto_start_minimised: false,
         close_behavior: CloseBehavior::Hide,
+        restore_queue_on_start: false,
       }
     }
 
@@ -324,6 +327,7 @@ impl Default for SystemConfig {
         auto_start_enabled: false,
         auto_start_minimised: false,
         close_behavior: CloseBehavior::Exit,
+        restore_queue_on_start: false,
       }
     }
   }

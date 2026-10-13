@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Group } from '../../tauri/types/group';
 import { MediaCodec, MediaFormat, MediaTrack } from '../../tauri/types/media';
 import { firstKey, omit } from '../../helpers/groups';
+import { getAllGroups } from './idb';
+import { MediaState, useMediaStateStore } from './state';
 
 function codecId(codec: MediaCodec): string {
   return typeof codec === 'string' ? codec : codec.id;
@@ -196,6 +198,24 @@ export const useMediaGroupStore = defineStore('media-group', () => {
     return [...formatMap.values()];
   }
 
+  async function loadPersistedGroups(): Promise<number> {
+    const stored = await getAllGroups() as Group[];
+    if (stored.length === 0) return 0;
+    prependGroups(stored);
+
+    // Initialize state for restored groups
+    const stateStore = useMediaStateStore();
+    for (const group of stored) {
+      console.log('[stored] group:', group);
+      const leader = findGroupLeader(group.id);
+      if (leader) {
+        stateStore.setState(leader.id, MediaState.configure);
+      }
+    }
+
+    return stored.length;
+  }
+
   return {
     groups,
     groupOrder,
@@ -212,5 +232,6 @@ export const useMediaGroupStore = defineStore('media-group', () => {
     splitGroup,
     consolidateGroup,
     getAllFormats,
+    loadPersistedGroups,
   };
 });

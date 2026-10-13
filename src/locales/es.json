@@ -914,6 +914,10 @@
           "windows": "Al iniciar sesión, la app se ejecutará en la bandeja del sistema sin abrir una ventana.",
           "generic": "Al iniciar sesión, la app se ejecutará de fondo sin abrir una ventana."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Restaurar cola al iniciar",
+        "hint": "La cola de medios se restaurará automáticamente al volver a abrir la app."
       }
     },
     "notifications": {
@@ -1104,9 +1108,9 @@
         "shortMessage": "Error de FFmpeg",
         "message": "FFmpeg encontró un error durante el procesamiento."
       },
-      "rejectedByFilter":{
+      "rejectedByFilter": {
         "shortMessage": "Excluido por filtro",
-        "message":"Este elemento fue rechazado por tus filtros de entrada."
+        "message": "Este elemento fue rechazado por tus filtros de entrada."
       },
       "cannotAllocateMemory": {
         "shortMessage": "Error de memoria",

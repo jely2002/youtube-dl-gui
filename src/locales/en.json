@@ -914,6 +914,10 @@
           "windows": "When the app starts at login, it will start in the system tray without opening a window.",
           "generic": "When the app starts at login, it won’t open a window."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Restore queue on startup",
+        "hint": "Media queue will be automatically restored on reopening the app."
       }
     },
     "notifications": {

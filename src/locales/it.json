@@ -818,6 +818,10 @@
           "windows": "Quando l’app si avvia all’accesso, viene avviata nella barra di sistema senza aprire una finestra.",
           "generic": "Quando l’app si avvia all’accesso, non viene aperta alcuna finestra."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Ripristina coda all'avvio",
+        "hint": "La coda multimediale verrà ripristinata automaticamente riaprendo l'app."
       }
     },
     "notifications": {

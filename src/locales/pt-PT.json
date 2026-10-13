@@ -789,6 +789,10 @@
           "windows": "Quando a aplicação iniciar com a sessão, ficará na área de notificação sem abrir nenhuma janela.",
           "generic": "Quando a aplicação iniciar com a sessão, não abrirá nenhuma janela."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Restaurar fila ao iniciar",
+        "hint": "A fila de mídia será automaticamente restaurada ao reabrir a aplicação."
       }
     },
     "notifications": {

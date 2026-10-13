@@ -817,6 +817,10 @@
           "windows": "Wenn die App beim Anmelden startet, wird sie im Systemtray gestartet, ohne ein Fenster zu öffnen.",
           "generic": "Wenn die App beim Anmelden startet, wird kein Fenster geöffnet."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Warteschlange beim Start wiederherstellen",
+        "hint": "Wiederherstellt die Warteschlange beim Start."
       }
     },
     "notifications": {

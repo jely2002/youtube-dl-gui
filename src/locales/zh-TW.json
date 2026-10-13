@@ -817,6 +817,10 @@
           "windows": "登入時啟動後會在系統匣中執行，不會開啟視窗。",
           "generic": "登入時啟動應用程式但不開啟視窗。"
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "登入時還原佇列",
+        "hint": "媒體佇列將在您再次開啟應用程式時自動還原。"
       }
     },
     "notifications": {
