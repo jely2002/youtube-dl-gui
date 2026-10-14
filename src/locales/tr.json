@@ -817,6 +817,10 @@
           "windows": "Uygulama oturum açıldığında pencere açmadan sistem tepsisinde başlayacaktır.",
           "generic": "Uygulama oturum açma sırasında başlatıldığında bir pencere açılmayacaktır."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Oturum açışında kuyruğu geri yükle",
+        "hint": "Medya kuyruğu, uygulamayı yeniden açtığınızda otomatik olarak geri yüklenecektir."
       }
     },
     "notifications": {

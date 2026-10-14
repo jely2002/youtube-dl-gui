@@ -16,6 +16,7 @@ import { NotificationKind } from '../../tauri/types/app';
 import { resolvePlaylistIndex } from '../../helpers/playlistNumbering';
 import { useWatchClipboardStore } from '../watchClipboard.ts';
 import { settingsToInputFilterOverride } from '../../helpers/inputFilters.ts';
+import { saveGroup, removeGroup } from './idb.ts';
 import {
   applyPlaylistSelectionToEntries,
   buildPlaylistItemsSpec,
@@ -72,12 +73,14 @@ export const useMediaStore = defineStore('media', () => {
       }
       for (const newGroup of newGroups) {
         stateStore.setGroupState(newGroup.id, MediaState.configure);
+        void saveGroup(newGroup.id, newGroup);
       }
     } else {
       groupStore.consolidateGroup(group);
       void notifyGroup(NotificationKind.PlaylistReady, group, {}, group.entries?.length ?? 1);
       stateStore.setGroupState(group.id, MediaState.configure);
       resolvePendingReadyGroup(group.id, [group.id]);
+      void saveGroup(group.id, group);
     }
   }
 
@@ -111,6 +114,7 @@ export const useMediaStore = defineStore('media', () => {
       } else {
         stateStore.setState(item.id, MediaState.playlistSelection);
       }
+      void saveGroup(groupId, group);
       return;
     }
 
@@ -146,6 +150,8 @@ export const useMediaStore = defineStore('media', () => {
       ? MediaState.fetchingList
       : MediaState.configure;
     stateStore.setState(item.id, next);
+
+    void saveGroup(groupId, group);
   }
 
   async function expandPlaylistGroup(groupId: string, selection: PlaylistSelection) {
@@ -234,6 +240,7 @@ export const useMediaStore = defineStore('media', () => {
       },
     };
     groupStore.createGroup(newGroup);
+    void saveGroup(groupId, newGroup);
 
     const inputFiltersOverride = settingsToInputFilterOverride(settingsStore.settings);
     if (inputFiltersOverride) {
@@ -454,6 +461,7 @@ export const useMediaStore = defineStore('media', () => {
     optionsStore.removeOptions(group.id);
     groupStore.cancelGroup(group.id);
     groupStore.deleteGroup(group.id);
+    void removeGroup(group.id);
   }
 
   function deleteAllGroups() {

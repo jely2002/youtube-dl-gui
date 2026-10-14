@@ -20,6 +20,7 @@ import { createSentry } from './sentry.ts';
 import { startWindowWatcher } from './tauri/window.ts';
 import { usePreferencesStore } from './stores/preferences.ts';
 import { useMediaStore } from './stores/media/media.ts';
+import { useMediaGroupStore } from './stores/media/group.ts';
 
 const pinia = createPinia();
 pinia.use(createSentryPiniaPlugin());
@@ -94,6 +95,14 @@ async function initStores(): Promise<void> {
 
     i18n.global.locale.value = currentLocale;
     document.documentElement.setAttribute('lang', currentLocale);
+
+    if (settings.system.restoreQueueOnStart) {
+      const groupStore = useMediaGroupStore();
+      const count = await groupStore.loadPersistedGroups();
+      if (count > 0) {
+        console.info(`Restored ${count} group(s) from persistent storage.`);
+      }
+    }
   } catch (e) {
     console.error(`Unable to load settings: ${e}`);
   }

@@ -817,6 +817,10 @@
           "windows": "Når appen starter ved pålogging, starter den i systemstatusfeltet uten å åpne et vindu.",
           "generic": "Når appen starter ved pålogging, åpnes ingen vindu."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Gjenopprett kø ved oppstart",
+        "hint": "Mediekøen vil automatisk bli gjenopprettet når appen åpnes igjen."
       }
     },
     "notifications": {

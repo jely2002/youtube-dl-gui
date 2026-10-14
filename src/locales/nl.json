@@ -817,6 +817,10 @@
           "windows": "Wanneer de app bij het aanmelden start, wordt deze in het systeemvak gestart zonder een venster te openen.",
           "generic": "Wanneer de app bij het aanmelden start, wordt er geen venster geopend."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Herstel wachtrij bij opstarten",
+        "hint": "De mediatheek wordt automatisch hersteld wanneer de app opnieuw wordt geopend."
       }
     },
     "notifications": {

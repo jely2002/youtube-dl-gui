@@ -817,6 +817,10 @@
           "windows": "Lorsque l’application démarre à la connexion, elle se lance dans la zone de notification sans ouvrir de fenêtre.",
           "generic": "Lorsque l’application démarre à la connexion, aucune fenêtre ne s’ouvre."
         }
+      },
+      "restoreQueueOnStart": {
+        "label": "Restaurer la file d’attente au démarrage",
+        "hint": "La file d’attente des médias sera automatiquement restaurée à la réouverture de l’application."
       }
     },
     "notifications": {

@@ -140,6 +140,7 @@ export interface SystemSettings {
   autoStartEnabled: boolean;
   autoStartMinimised: boolean;
   closeBehavior: CloseBehavior;
+  restoreQueueOnStart: boolean;
 }
 
 export enum NotificationBehavior {
@@ -271,6 +272,7 @@ export const defaultSystemSettings: SystemSettings = {
   autoStartEnabled: false,
   autoStartMinimised: false,
   closeBehavior: CloseBehavior.Exit,
+  restoreQueueOnStart: false,
 };
 
 export const defaultNotificationSettings: NotificationSettings = {

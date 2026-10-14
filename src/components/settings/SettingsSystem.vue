@@ -59,7 +59,19 @@
     />
     <p class="label" v-if="isMac">{{ t('settings.system.autoStartMinimised.hint.mac') }}</p>
     <p class="label" v-else-if="isWindows">{{ t('settings.system.autoStartMinimised.hint.windows') }}</p>
-    <p class="label" v-else>{{ t('settings.system.autoStartMinimised.hint.generic') }}</p>  </base-fieldset>
+    <p class="label" v-else>{{ t('settings.system.autoStartMinimised.hint.generic') }}</p>
+
+    <label class="font-semibold mt-2" for="restoreQueueOnStart">
+      {{ t('settings.system.restoreQueueOnStart.label') }}
+    </label>
+    <input
+        id="restoreQueueOnStart"
+        type="checkbox"
+        v-model="settings.system.restoreQueueOnStart"
+        class="toggle toggle-primary"
+    />
+    <p class="label">{{ t('settings.system.restoreQueueOnStart.hint') }}</p>
+  </base-fieldset>
 </template>
 
 <script setup lang="ts">
