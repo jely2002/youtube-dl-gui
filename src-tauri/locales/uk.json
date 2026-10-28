@@ -1,0 +1,51 @@
+{
+  "tray": {
+    "quit": "Вийти",
+    "showOrHide": "Показати/сховати вікно",
+    "addToQueue": "Додати з буфера обміну",
+    "addAndDownload": "Додати з буфера обміну й завантажити",
+    "downloadQueue": "Завантажити чергу",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftD": "Ctrl + Shift + D",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftD": "Alt + Shift + D",
+      "altShiftEnter": "Alt + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Додано до черги",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Завантаження черги",
+      "body": "Завантажується 1 елемент | Елементів завантажується: {n}"
+    },
+    "queueFinished": {
+      "title": "Чергу завершено",
+      "body": "Завантажено 1 елемент | Завантажено елементів: {n}"
+    },
+    "videoFinished": {
+      "title": "Завантаження завершено",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Плейлист завантажено",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Готово до завантаження",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Плейлист готовий до завантаження",
+      "body": "{title} | {title} (1 елемент) | {title} (елементів: {n})"
+    },
+    "downloadFailed": {
+      "title": "Помилка завантаження",
+      "body": "{title}\n{message}"
+    }
+  }
+}

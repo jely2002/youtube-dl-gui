@@ -11,6 +11,7 @@ import trRaw from './locales/tr.json';
 import ptPTRaw from './locales/pt-PT.json';
 import ptBRRaw from './locales/pt-BR.json';
 import zhTWRaw from './locales/zh-TW.json';
+import ukRaw from './locales/uk.json';
 import { detectBrowserLanguageCodes } from './helpers/subtitles/languages.ts';
 
 export const availableLocales = {
@@ -26,6 +27,7 @@ export const availableLocales = {
   'pt-PT': true,
   'pt-BR': true,
   'zh-TW': true,
+  'uk': true,
 } as const;
 
 type MessageSchema = typeof en;
@@ -42,6 +44,7 @@ const tr = trRaw as unknown as MessageSchema;
 const ptPT = ptPTRaw as unknown as MessageSchema;
 const ptBR = ptBRRaw as unknown as MessageSchema;
 const zhTW = zhTWRaw as unknown as MessageSchema;
+const uk = ukRaw as unknown as MessageSchema;
 
 const localeAliases: Record<string, Locale> = {
   'pt': 'pt-PT',
@@ -96,5 +99,6 @@ export const i18n = createI18n<[MessageSchema], Locale, false>({
     'pt-PT': ptPT,
     'pt-BR': ptBR,
     'zh-TW': zhTW,
+    uk,
   },
 });
