@@ -14,7 +14,6 @@ mod tray;
 mod window;
 
 use crate::binaries::binaries_manager::BinariesManager;
-use crate::binaries::binaries_state::BinariesState;
 use crate::commands::*;
 use crate::i18n::I18nManager;
 use crate::logging::LogStoreState;
@@ -136,7 +135,6 @@ pub fn run() {
       handle.manage(DownloadSender(download_dispatcher.sender()));
 
       // setup binaries
-      handle.manage(BinariesState::default());
       handle.manage(BinariesManager::new(handle));
 
       // set up stronghold
@@ -177,6 +175,7 @@ pub fn run() {
       preferences_set,
       binaries_check,
       binaries_ensure,
+      binaries_status,
       updater_check,
       updater_download,
       updater_install,
@@ -286,4 +285,16 @@ const fn tracing_levels() -> LevelFilter {
 #[cfg(not(debug_assertions))]
 fn tracing_levels() -> LevelFilter {
   LevelFilter::INFO
+}
+
+/// Headless CI entry point, unavailable in normal application builds.
+#[cfg(feature = "dependency-validation")]
+pub async fn validate_dependencies(
+  input: &std::path::Path,
+  root: &std::path::Path,
+  output: &std::path::Path,
+  expected_layout: &str,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+  paths::PathsManager::validate_layout(&root.join("app-data"), expected_layout)?;
+  binaries::validation::run(input, root, output).await
 }

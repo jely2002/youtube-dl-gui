@@ -366,6 +366,7 @@ pub struct Config {
   pub sponsor_block: SponsorBlockSettings,
   pub subtitles: SubtitleSettings,
   pub update: UpdateSettings,
+  pub dependencies: crate::binaries::resolver::DependencySettings,
   pub system: SystemConfig,
   pub notifications: NotificationConfig,
 }

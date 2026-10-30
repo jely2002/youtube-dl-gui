@@ -33,11 +33,7 @@ const checkUpdates = async () => {
   }
 };
 
-try {
-  void checkTools();
-} catch (e) {
-  console.error(e);
-}
+void checkTools().catch(console.error);
 
 try {
   void strongholdStore.loadStatus();

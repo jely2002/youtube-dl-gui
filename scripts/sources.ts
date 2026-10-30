@@ -1,3 +1,5 @@
+import { windowsArmBuild, type BuildRelease } from './ffmpeg-builds.ts';
+
 export interface BundleInfo {
   /** Keep the extracted directory rather than collapsing to a single file */
   keep_folder: boolean;
@@ -72,7 +74,13 @@ export async function fetchSources(): Promise<ToolSource[]> {
   console.log('[sources] Resolving tool sources');
   const ytRel = await latestRelease('yt-dlp', 'yt-dlp');
   const ffRel = await latestRelease('eugeneware', 'ffmpeg-static');
-  const ffBuildsRel = await latestRelease('yt-dlp', 'FFmpeg-Builds');
+  const buildsResponse = await fetch('https://api.github.com/repos/yt-dlp/FFmpeg-Builds/releases?per_page=20', {
+    headers: (process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN)
+      ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN}` }
+      : {},
+  });
+  if (!buildsResponse.ok) throw new Error(`failed to fetch FFmpeg builds: ${buildsResponse.status}`);
+  const ffArmBuild = windowsArmBuild(await buildsResponse.json() as BuildRelease[]);
   const denoRel = await latestRelease('denoland', 'deno');
   const apRel = await latestRelease('wez', 'atomicparsley');
 
@@ -147,8 +155,8 @@ export async function fetchSources(): Promise<ToolSource[]> {
         'linux-aarch64': { url: assetUrl(ffRel, 'ffmpeg-linux-arm64') },
         'windows-x86_64': { url: assetUrl(ffRel, 'ffmpeg-win32-x64') },
         'windows-aarch64': {
-          url: assetUrl(ffBuildsRel, 'ffmpeg-master-latest-winarm64-gpl.zip'),
-          entry: 'ffmpeg-master-latest-winarm64-gpl/bin/ffmpeg.exe',
+          url: ffArmBuild.url,
+          entry: `${ffArmBuild.directory}/bin/ffmpeg.exe`,
         },
         'darwin-x86_64': { url: assetUrl(ffRel, 'ffmpeg-darwin-x64') },
         'darwin-aarch64': { url: assetUrl(ffRel, 'ffmpeg-darwin-arm64') },
@@ -162,8 +170,8 @@ export async function fetchSources(): Promise<ToolSource[]> {
         'linux-aarch64': { url: assetUrl(ffRel, 'ffprobe-linux-arm64') },
         'windows-x86_64': { url: assetUrl(ffRel, 'ffprobe-win32-x64') },
         'windows-aarch64': {
-          url: assetUrl(ffBuildsRel, 'ffmpeg-master-latest-winarm64-gpl.zip'),
-          entry: 'ffmpeg-master-latest-winarm64-gpl/bin/ffprobe.exe',
+          url: ffArmBuild.url,
+          entry: `${ffArmBuild.directory}/bin/ffprobe.exe`,
         },
         'darwin-x86_64': { url: assetUrl(ffRel, 'ffprobe-darwin-x64') },
         'darwin-aarch64': { url: assetUrl(ffRel, 'ffprobe-darwin-arm64') },

@@ -101,7 +101,7 @@ pub async fn run_ytdlp_download(
     partial_download_duration_secs,
   );
 
-  let (mut rx, child) = match runner.spawn() {
+  let (mut rx, child) = match runner.spawn().await {
     Ok(result) => result,
     Err(err) => {
       let message = format!("Failed to spawn yt-dlp: {err}");

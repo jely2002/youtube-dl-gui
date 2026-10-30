@@ -13,6 +13,7 @@ export type BinariesMockData = {
 };
 
 export const binaryHandlers: Record<string, IPCHandler> = {
+  binaries_status: () => [],
   binaries_check: (): BinaryCheckPayload => {
     return { tools: window.E2E.binaries?.check || [] };
   },

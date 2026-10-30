@@ -1,3 +1,4 @@
+use fs_extra::dir::{move_dir, CopyOptions};
 use std::error::Error;
 use std::fmt;
 use std::io;
@@ -336,7 +337,10 @@ pub async fn extract_zip_bundle(
       let target = entry_abs_initial
         .parent()
         .map_or_else(|| final_dir.join(new_name), |p| p.join(new_name));
-      std::fs::rename(&entry_abs_initial, &target)?;
+      // Windows can deny renaming an executable onto itself.
+      if entry_abs_initial != target {
+        std::fs::rename(&entry_abs_initial, &target)?;
+      }
       target
     } else {
       entry_abs_initial
@@ -419,7 +423,10 @@ pub async fn extract_tar_bz2_bundle(
       let target = entry_abs_initial
         .parent()
         .map_or_else(|| final_dir.join(new_name), |p| p.join(new_name));
-      std::fs::rename(&entry_abs_initial, &target)?;
+      // Windows can deny renaming an executable onto itself.
+      if entry_abs_initial != target {
+        std::fs::rename(&entry_abs_initial, &target)?;
+      }
       target
     } else {
       entry_abs_initial
@@ -465,4 +472,107 @@ fn list_tree(root: &Path, max: usize) -> EntriesDisplay {
   let mut v = Vec::new();
   walk(&mut v, root, root, max);
   EntriesDisplay(v)
+}
+
+pub async fn hoist_bundle_contents_into_bin(
+  bundle_root: &Path,
+  canonical: &Path,
+) -> Result<(), Box<dyn Error + Send + Sync>> {
+  let bin_dir = canonical
+    .parent()
+    .ok_or("canonical has no parent directory")?
+    .to_path_buf();
+
+  tokio::fs::create_dir_all(&bin_dir).await?;
+
+  let src = bundle_root.to_path_buf();
+  let dest = bin_dir.clone();
+
+  tokio::task::spawn_blocking(move || {
+    let mut opts = CopyOptions::new();
+    opts.overwrite = true;
+    opts.copy_inside = false;
+    opts.content_only = true;
+    move_dir(&src, &dest, &opts)?;
+    Ok::<(), fs_extra::error::Error>(())
+  })
+  .await??;
+
+  let _ = tokio::fs::remove_dir_all(bundle_root).await;
+
+  Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use std::io::Write;
+
+  #[tokio::test]
+  async fn zip_bundle_preserves_runtime_when_entry_name_is_unchanged_or_renamed() {
+    for entry_name in ["yt-dlp.exe", "yt-dlp_arm64.exe"] {
+      let root = std::env::temp_dir().join(format!("ovd-zip-test-{}", uuid::Uuid::new_v4()));
+      std::fs::create_dir_all(&root).unwrap();
+      let archive = root.join("download.zip");
+      let mut zip = zip::ZipWriter::new(std::fs::File::create(&archive).unwrap());
+      let options = zip::write::SimpleFileOptions::default();
+      zip.start_file(entry_name, options).unwrap();
+      zip.write_all(b"executable").unwrap();
+      zip.start_file("_internal/runtime.dll", options).unwrap();
+      zip.write_all(b"runtime").unwrap();
+      zip.finish().unwrap();
+      let (bundle, entry) = extract_zip_bundle(
+        &archive,
+        &root,
+        Some("yt-dlp"),
+        Path::new(entry_name),
+        Some("yt-dlp.exe"),
+      )
+      .await
+      .unwrap();
+      assert_eq!(entry, bundle.join("yt-dlp.exe"));
+      hoist_bundle_contents_into_bin(&bundle, &root.join("yt-dlp.exe"))
+        .await
+        .unwrap();
+      assert_eq!(
+        std::fs::read(root.join("yt-dlp.exe")).unwrap(),
+        b"executable"
+      );
+      assert_eq!(
+        std::fs::read(root.join("_internal/runtime.dll")).unwrap(),
+        b"runtime"
+      );
+      std::fs::remove_dir_all(root).unwrap();
+    }
+  }
+
+  #[tokio::test]
+  async fn tar_bundle_accepts_an_unchanged_entry_name() {
+    let root = std::env::temp_dir().join(format!("ovd-tar-test-{}", uuid::Uuid::new_v4()));
+    std::fs::create_dir_all(&root).unwrap();
+    let archive = root.join("download.tar.bz2");
+    let encoder = bzip2::write::BzEncoder::new(
+      std::fs::File::create(&archive).unwrap(),
+      bzip2::Compression::default(),
+    );
+    let mut tar = tar::Builder::new(encoder);
+    let bytes = b"executable";
+    let mut header = tar::Header::new_gnu();
+    header.set_size(bytes.len() as u64);
+    header.set_mode(0o755);
+    header.set_cksum();
+    tar.append_data(&mut header, "yt-dlp", &bytes[..]).unwrap();
+    tar.into_inner().unwrap().finish().unwrap();
+    let (_, entry) = extract_tar_bz2_bundle(
+      &archive,
+      &root,
+      Some("bundle"),
+      Path::new("yt-dlp"),
+      Some("yt-dlp"),
+    )
+    .await
+    .unwrap();
+    assert_eq!(std::fs::read(entry).unwrap(), b"executable");
+    std::fs::remove_dir_all(root).unwrap();
+  }
 }

@@ -164,6 +164,7 @@ export interface Settings {
   sponsorBlock: SponsorBlockSettings;
   subtitles: SubtitleSettings;
   update: UpdateSettings;
+  dependencies: { paths: Record<string, string> };
   system: SystemSettings;
   notifications: NotificationSettings;
 }
@@ -302,6 +303,7 @@ export const defaultSettings: Settings = {
     formatPreference: [...defaultSubtitleSettings.formatPreference],
   },
   update: defaultUpdateSettings,
+  dependencies: { paths: {} },
   system: defaultSystemSettings,
   notifications: defaultNotificationSettings,
 };

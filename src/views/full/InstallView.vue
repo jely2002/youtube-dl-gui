@@ -6,7 +6,7 @@
           {{ t('common.pleaseWait') }}
         </template>
         <template v-else-if="!installPartialFail">
-          {{ t('common.parenthesis', { content: waitTime }) }} {{ t('common.continue') }} <arrow-right-icon class="w-4 h-4"/>
+          {{ t('common.continue') }} <arrow-right-icon class="w-4 h-4"/>
         </template>
         <template v-else>
           {{ t('common.continue') }} <arrow-right-icon class="w-4 h-4"/>
@@ -25,6 +25,13 @@
     </template>
   </base-sub-nav>
   <div class="flex flex-col gap-4 p-6">
+    <tool-card
+      v-for="dependency in foundDependencies"
+      :key="dependency.tool"
+      :name="dependency.tool"
+      :tool="{ percent: 100, total: 0, received: 0, version: dependency.version }"
+      :dependency="dependency"
+    />
     <tool-card v-for="[name, tool] in Object.entries(tools)" :key="name" :tool="tool" :name="name"/>
   </div>
 </template>
@@ -35,17 +42,14 @@ import { ArrowRightIcon } from '@heroicons/vue/24/solid';
 import { computed, onMounted, ref } from 'vue';
 import BaseSubNav from '../../components/base/BaseSubNav.vue';
 import BaseButton from '../../components/base/BaseButton.vue';
-import { useRouter } from 'vue-router';
 import ToolCard from '../../components/tool-card/ToolCard.vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const binariesStore = useBinariesStore();
-const router = useRouter();
-
 const tools = computed(() => binariesStore.tools);
+const foundDependencies = computed(() => binariesStore.dependencies.flatMap(report => report.active && !tools.value[report.tool] ? [report.active] : []));
 const isInstalling = ref(true);
-const waitTime = ref(5);
 const installPartialFail = ref(false);
 
 onMounted(async () => {
@@ -56,7 +60,6 @@ const ensureBinaries = async () => {
   try {
     await binariesStore.ensure();
     isInstalling.value = false;
-    startCountdown();
   } catch (e) {
     installPartialFail.value = true;
     console.error(e);
@@ -65,13 +68,4 @@ const ensureBinaries = async () => {
   }
 };
 
-const startCountdown = () => {
-  const ref = setInterval(() => {
-    waitTime.value = waitTime.value - 1;
-  }, 1000);
-  setTimeout(() => {
-    clearInterval(ref);
-    void router.push('/');
-  }, 5000);
-};
 </script>

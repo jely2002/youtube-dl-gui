@@ -1,0 +1,167 @@
+name: Dependency resolver
+run-name: Dependencies — ${{ github.ref_name }} @ ${{ github.sha }}
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['docs/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dependency-validation-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  native-tests:
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            platform: linux-x86_64
+            target: x86_64-unknown-linux-gnu
+            node: x64
+            bundles: deb
+          - os: ubuntu-24.04-arm
+            platform: linux-aarch64
+            target: aarch64-unknown-linux-gnu
+            node: arm64
+            bundles: deb
+          - os: windows-latest
+            platform: windows-x86_64
+            target: x86_64-pc-windows-msvc
+            node: x64
+            bundles: nsis
+          - os: windows-11-arm
+            platform: windows-aarch64
+            target: aarch64-pc-windows-msvc
+            node: arm64
+            bundles: nsis
+          - os: macos-15-intel
+            platform: darwin-x86_64
+            target: x86_64-apple-darwin
+            node: x64
+            bundles: app
+          - os: macos-latest
+            platform: darwin-aarch64
+            target: aarch64-apple-darwin
+            node: arm64
+            bundles: app
+    name: Native and application (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    env:
+      OVD_EXPECT_PLATFORM: ${{ matrix.platform }}
+      # Same source/target as release; CI disables LTO to keep six native builds practical.
+      CARGO_PROFILE_RELEASE_LTO: 'false'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+      CARGO_PROFILE_RELEASE_DEBUG: '0'
+      TAURI_SKIP_UPDATE_CHECK: '1'
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+          architecture: ${{ matrix.node }}
+          cache: npm
+      - uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9
+        with:
+          toolchain: 1.94.1-${{ matrix.target }}
+          components: clippy,rustfmt
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae
+        with:
+          workspaces: |
+            tests/dependency-resolver -> target
+            src-tauri -> target
+          key: native-validation-${{ matrix.platform }}
+      - name: Packaging evidence regression tests
+        run: node --test scripts/*.test.mjs
+      - name: Native fixtures and regression tests
+        run: cargo test --locked --manifest-path tests/dependency-resolver/Cargo.toml
+      - name: Clippy and formatting
+        shell: bash
+        run: |
+          cargo clippy --locked --manifest-path tests/dependency-resolver/Cargo.toml --all-targets -- -D warnings
+          cargo fmt --manifest-path tests/dependency-resolver/Cargo.toml --all -- --check
+      - name: Enable documented AtomicParsley translation on Apple Silicon
+        if: matrix.platform == 'darwin-aarch64'
+        run: sudo softwareupdate --install-rosetta --agree-to-license
+      - name: Verify signed manifest and download native assets
+        id: assets
+        continue-on-error: true
+        run: node scripts/prepare-validation-assets.mjs
+      - name: Exercise real dependency resolution and media processing
+        id: live
+        if: steps.assets.outcome == 'success'
+        continue-on-error: true
+        run: cargo run --locked --manifest-path tests/dependency-resolver/Cargo.toml --bin live-validation -- validation-assets/input.json "validation-work/harness ü" validation-results/native.json
+      - name: Install Linux desktop build dependencies
+        if: ${{ !cancelled() && runner.os == 'Linux' }}
+        uses: ./.github/actions/install-tauri-deps
+      - name: Install cargo-about for license resources
+        if: ${{ !cancelled() && matrix.platform != 'darwin-x86_64' }}
+        uses: taiki-e/install-action@0fde6d128a3d980ceac30be8c8b8739abd963b81
+        with:
+          tool: cargo-about@0.9.3
+      - name: Build Intel macOS cargo-about with its required CLI feature
+        if: ${{ !cancelled() && matrix.platform == 'darwin-x86_64' }}
+        run: cargo install cargo-about --version 0.9.3 --locked --features cli
+      - name: Verify license CLI is executable before building
+        id: license-cli
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          cargo about --version
+          cargo about generate --help
+      - name: Install frontend dependencies
+        id: frontend
+        if: ${{ !cancelled() }}
+        run: npm ci
+      - name: Prepare unsigned validation packaging
+        if: ${{ !cancelled() && steps.frontend.outcome == 'success' }}
+        run: node -e "require('fs').mkdirSync('licenses',{recursive:true});require('fs').writeFileSync('validation-build.json',JSON.stringify({bundle:{createUpdaterArtifacts:false,macOS:{signingIdentity:'-'}}}))"
+      - name: Build full native application and package
+        id: build
+        if: ${{ !cancelled() && steps.frontend.outcome == 'success' && steps.license-cli.outcome == 'success' }}
+        run: npm run tauri build -- --features dependency-validation --bundles ${{ matrix.bundles }} --config validation-build.json
+      - name: Execute compiled, portable, and packaged application diagnostics
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.assets.outcome == 'success' }}
+        run: node scripts/validate-native-package.mjs
+      - name: Prepare Windows portable files independently of dependency checks
+        if: ${{ !cancelled() && runner.os == 'Windows' && steps.build.outcome == 'success' }}
+        run: node scripts/prepare-portable.mjs
+      - name: Summarize complete and partial validation evidence
+        if: always()
+        run: node scripts/summarize-validation.mjs
+      - name: Enforce real dependency checks after collecting build evidence
+        if: ${{ always() && (steps.assets.outcome != 'success' || steps.live.outcome != 'success') }}
+        run: node -e "throw new Error('Real dependency checks failed; inspect the asset and native reports')"
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: validation-${{ matrix.platform }}
+          path: |
+            validation-results/*.json
+            validation-assets/downloads.json
+            validation-assets/manifest.json
+            validation-assets/manifest.sig
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Upload unsigned packages
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: packages-${{ matrix.platform }}
+          path: src-tauri/target/release/bundle/
+          retention-days: 7
+      - name: Upload Windows portable files (one ZIP)
+        if: ${{ !cancelled() && runner.os == 'Windows' && steps.build.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: OpenVideoDownloader-portable-${{ matrix.platform }}
+          path: portable-layout/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7

@@ -1,7 +1,7 @@
+use crate::binaries::binaries_manager::BinariesManager;
 use crate::models::download::{DownloadOverrides, FormatOptions, PlaylistMode};
 use crate::models::SubtitleInventory;
 use crate::models::TrackType;
-use crate::paths::PathsManager;
 use crate::runners::override_resolver::resolve_with_patch;
 use crate::runners::template_context::TemplateContext;
 use crate::runners::ytdlp_args::{
@@ -16,7 +16,6 @@ use crate::stronghold::stronghold_state::{AuthSecrets, StrongholdState};
 use crate::{SharedConfig, SharedPreferences};
 use std::collections::{HashMap, HashSet};
 use std::io::{BufReader, Read};
-use std::path::PathBuf;
 use std::process::{Command, ExitStatus, Stdio};
 use std::sync::Arc;
 use std::thread;
@@ -54,13 +53,10 @@ pub struct YtdlpRunner<'a> {
   cfg: Arc<Config>,
   prefs: Arc<Preferences>,
   args: Vec<String>,
-  bin_dir: PathBuf,
 }
 
 impl<'a> YtdlpRunner<'a> {
   pub fn new(app: &'a AppHandle) -> Self {
-    let paths_manager = app.state::<PathsManager>();
-    let bin_dir = paths_manager.bin_dir().clone();
     let args = vec!["--encoding".into(), "utf-8".into()];
     let cfg_handle = app.state::<SharedConfig>();
     let cfg = cfg_handle.load();
@@ -72,7 +68,6 @@ impl<'a> YtdlpRunner<'a> {
       cfg,
       prefs,
       args,
-      bin_dir,
     }
   }
 
@@ -280,7 +275,7 @@ impl<'a> YtdlpRunner<'a> {
   pub async fn output(self) -> Result<YtdlpOutput, String> {
     log_run_summary(&self.args);
     tracing::debug!("Running command: yt-dlp {}", self.args.join(" "));
-    let mut command = self.build_command();
+    let mut command = self.build_command().await?;
 
     configure_command(&mut command).map_err(|e| format!("yt-dlp spawn setup failed: {e}"))?;
 
@@ -298,10 +293,10 @@ impl<'a> YtdlpRunner<'a> {
     .map_err(|e| format!("yt-dlp task failed: {e}"))?
   }
 
-  pub fn spawn(self) -> Result<(UnboundedReceiver<YtdlpCommandEvent>, YtdlpChild), String> {
+  pub async fn spawn(self) -> Result<(UnboundedReceiver<YtdlpCommandEvent>, YtdlpChild), String> {
     log_run_summary(&self.args);
     tracing::debug!("Running command: yt-dlp {}", self.args.join(" "));
-    let mut command = self.build_command();
+    let mut command = self.build_command().await?;
     command
       .stdin(Stdio::piped())
       .stdout(Stdio::piped())
@@ -353,13 +348,10 @@ impl<'a> YtdlpRunner<'a> {
     Ok((rx, child))
   }
 
-  fn build_command(&self) -> Command {
-    let separator = if cfg!(windows) { ';' } else { ':' };
-    let path_env = std::env::var("PATH").unwrap_or_default();
-    let new_path = format!("{}{}{}", self.bin_dir.display(), separator, path_env);
-    let mut command = Command::new("yt-dlp");
-    command.args(&self.args).env("PATH", new_path);
-    command
+  async fn build_command(&self) -> Result<Command, String> {
+    let manager = self.app.state::<BinariesManager>();
+    let paths = manager.runtime_paths().await?;
+    Ok(paths.command(&self.args))
   }
 
   fn apply_auth_secrets(&mut self, s: AuthSecrets) {

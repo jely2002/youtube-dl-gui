@@ -15,6 +15,10 @@ edition = "2021"
 name = "open_video_downloader_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+[features]
+# Headless CI diagnostics; excluded from normal distribution builds.
+dependency-validation = []
+
 [build-dependencies]
 tauri-build = { version = "2", features = ["isolation"] }
 

@@ -47,7 +47,11 @@
           {{ tool.version }}
         </span>
       </section>
-      <p v-if="!hasError" class="mt-2">
+      <div v-if="dependency && !hasError" class="mt-2 min-w-0">
+        <p class="text-sm">{{ t('install.found.source.' + dependency.source) }}</p>
+        <p class="text-sm break-all">{{ dependency.path }}</p>
+      </div>
+      <p v-else-if="!hasError" class="mt-2">
         {{ t('common.divide', { left: formatBytes(tool.received), right: formatBytes(tool.total) }) }}
       </p>
       <details v-else class="collapse collapse-arrow bg-base-200 list-none">
@@ -63,7 +67,7 @@
 import { formatBytes } from '../../helpers/units';
 import { CheckIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 import { computed, PropType } from 'vue';
-import { BinaryProgress } from '../../tauri/types/binaries';
+import { BinaryProgress, ResolvedDependency } from '../../tauri/types/binaries';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -72,6 +76,10 @@ const { tool } = defineProps({
   name: {
     type: String,
     required: true,
+  },
+  dependency: {
+    type: Object as PropType<ResolvedDependency>,
+    default: undefined,
   },
   tool: {
     type: Object as PropType<BinaryProgress>,

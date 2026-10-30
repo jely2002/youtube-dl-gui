@@ -1,0 +1,2 @@
+# Rustfmt requires Unix newlines on every native CI target.
+*.rs text eol=lf

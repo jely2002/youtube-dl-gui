@@ -1,0 +1,48 @@
+use std::{env, io::{self, Write}, process, thread, time::Duration};
+// Fixed-size writable test data preserves PE/ELF/Mach-O layout. In particular,
+// appending an overlay would invalidate a Mach-O code-signature layout.
+#[used]
+static CONFIG: [u8; 512] = {
+  let mut bytes = [0; 512];
+  let marker = b"OVD_FIXTURE_CONFIG\n";
+  let mut i = 0;
+  while i < marker.len() { bytes[i] = marker[i]; i += 1; }
+  bytes
+};
+fn main() {
+  let data = std::hint::black_box(&CONFIG);
+  let text = String::from_utf8_lossy(&data[19..]);
+  let text = text.trim_end_matches('\0');
+  let fields: Vec<_> = text.lines().collect();
+  let tool = fields[0]; let version = fields[1]; let mode = fields[2]; let abi = fields[3];
+  let args: Vec<_> = env::args().skip(1).collect();
+  if args.iter().any(|a| a == "--dump-test") {
+    for arg in args { println!("ARG={arg}"); }
+    println!("PATH={}", env::var("PATH").unwrap_or_default());
+    return;
+  }
+  match mode {
+    "fail" => { eprintln!("missing shared library (fixture)"); process::exit(4); }
+    "hang" => { thread::sleep(Duration::from_secs(30)); }
+    "spam" => { let _ = io::stdout().write_all(&vec![b'x'; 1024*1024]); return; }
+    "wrong" => { println!("unrelated executable 9.9"); return; }
+    _ => {}
+  }
+  if args.iter().any(|a| a == "--help" || a == "full") {
+    if mode != "no-capability" { println!("yt-dlp --js-runtimes --ffmpeg-location --progress-template --impersonate --artwork -show_entries -of json"); }
+  } else if args.iter().any(|a| a == "-encoders") {
+    if mode != "no-capability" { println!(" A..... libmp3lame\n A..... aac\n V..... mjpeg"); }
+  } else if args.iter().any(|a| a == "-muxers") {
+    println!(" E mp4\n E mp3\n E matroska");
+  } else if args.first().is_some_and(|a| a == "run") {
+    println!("ovd-deno-ok");
+  } else {
+    match tool {
+      "yt-dlp" => println!("{version}"),
+      "ffmpeg" | "ffprobe" => println!("{tool} version {version}\nlibavformat    {abi}. 1.100 / {abi}. 1.100"),
+      "deno" => println!("deno {version}\nv8 13.0"),
+      "AtomicParsley" => println!("AtomicParsley version: {version}"),
+      _ => unreachable!()
+    }
+  }
+}

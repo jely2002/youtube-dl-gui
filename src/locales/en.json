@@ -946,6 +946,33 @@
     "toasts": {
       "saved": "Settings saved!",
       "reset": "Reset settings to defaults."
+    },
+    "dependencies": {
+      "legend": "Dependencies",
+      "hint": "Compatible system tools are used automatically. Missing tools are downloaded into application storage.",
+      "saveHint": "Optional executable paths take effect after saving. An invalid path stops that tool from running; clear it to restore automatic selection. Check again to refresh the active paths.",
+      "refresh": "Check again",
+      "automatic": "Automatic",
+      "browse": "Browse",
+      "locked": "This distribution uses locked, bundled dependencies.",
+      "status": {
+        "compatible": "Validated and usable",
+        "outdatedCompatible": "Older than the preferred download, but compatible",
+        "missing": "Missing",
+        "incompatible": "Incompatible; automatic fallback will be attempted",
+        "unableToExecute": "Unable to execute; automatic fallback will be attempted",
+        "configuredInvalid": "Configured path invalid; automatic fallback disabled",
+        "unavailable": "No managed download for this platform"
+      },
+      "source": {
+        "configured": "Configured",
+        "system": "System",
+        "bundled": "Bundled",
+        "managed": "Application managed"
+      },
+      "versionSource": "{version} · {source}",
+      "diagnostic": "{path}: {reason}",
+      "startupFailure": "Dependencies need attention: {tools}. Open Settings → System → Dependencies for paths and validation details."
     }
   },
   "updater": {
@@ -957,6 +984,17 @@
     "downloading": "Downloading update…"
   },
   "install": {
+    "found": {
+      "title": "Dependencies already found",
+      "source": {
+        "system": "Found on system",
+        "configured": "Found at configured path",
+        "managed": "Found in application storage",
+        "bundled": "Included with this application"
+      },
+      "hint": "These validated tools were found before installation. Missing tools are installed below.",
+      "empty": "No usable dependencies were found on this device."
+    },
     "title": {
       "installing": "Installing required tools…",
       "failed": "Failed to install some required tools.",

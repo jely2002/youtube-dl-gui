@@ -16,6 +16,42 @@ pub struct PathsManager {
 }
 
 impl PathsManager {
+  #[cfg(feature = "dependency-validation")]
+  pub fn validate_layout(app_data: &std::path::Path, expected: &str) -> Result<(), String> {
+    let exe_dir = Self::resolve_executable_path().ok_or("executable directory missing")?;
+    let (app_dir, portable, _) = Self::resolve_app_dir_with(
+      "com.jelleglebbeek.youtube-dl-gui",
+      app_data.to_path_buf(),
+      Some(exe_dir.clone()),
+      None,
+    );
+    let (bin_dir, bundled) =
+      Self::resolve_bin_dir_with(app_dir.clone(), Some(exe_dir.clone()), None);
+    let actual = if bundled {
+      "bundled"
+    } else if portable {
+      "portable"
+    } else {
+      "installed"
+    };
+    if actual != expected {
+      return Err(format!("expected {expected} layout, detected {actual}"));
+    }
+    let expected_bin = if bundled {
+      exe_dir.join("bin")
+    } else {
+      app_dir.join("bin")
+    };
+    if bin_dir != expected_bin {
+      return Err("incorrect managed binary directory".into());
+    }
+    println!(
+      "PASS: actual executable layout {actual}: {}",
+      bin_dir.display()
+    );
+    Ok(())
+  }
+
   pub fn new(app: &AppHandle) -> Self {
     let (app_dir, is_portable_app, is_snap_app) = Self::resolve_app_dir(app);
     let (bin_dir, is_microsoft_store_app) = Self::resolve_bin_dir(app_dir.clone());

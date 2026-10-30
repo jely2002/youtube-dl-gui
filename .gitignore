@@ -30,3 +30,9 @@ licenses/*
 # Tests
 test-results/
 coverage/
+# Generated native validation data and unsigned test packages
+/validation-assets/
+/validation-results/
+/validation-work/
+/validation-build.json
+/portable-layout/
