@@ -8,6 +8,7 @@ import deRaw from './locales/de.json';
 import nbRaw from './locales/nb.json';
 import ruRaw from './locales/ru.json';
 import trRaw from './locales/tr.json';
+import plRaw from './locales/pl.json';
 import ptPTRaw from './locales/pt-PT.json';
 import ptBRRaw from './locales/pt-BR.json';
 import zhTWRaw from './locales/zh-TW.json';
@@ -23,6 +24,7 @@ export const availableLocales = {
   'nb': true,
   'ru': true,
   'tr': true,
+  'pl': true,
   'pt-PT': true,
   'pt-BR': true,
   'zh-TW': true,
@@ -39,6 +41,7 @@ const de = deRaw as unknown as MessageSchema;
 const nb = nbRaw as unknown as MessageSchema;
 const ru = ruRaw as unknown as MessageSchema;
 const tr = trRaw as unknown as MessageSchema;
+const pl = plRaw as unknown as MessageSchema;
 const ptPT = ptPTRaw as unknown as MessageSchema;
 const ptBR = ptBRRaw as unknown as MessageSchema;
 const zhTW = zhTWRaw as unknown as MessageSchema;
@@ -93,6 +96,7 @@ export const i18n = createI18n<[MessageSchema], Locale, false>({
     nb,
     ru,
     tr,
+	pl,
     'pt-PT': ptPT,
     'pt-BR': ptBR,
     'zh-TW': zhTW,

@@ -1,0 +1,51 @@
+{
+  "tray": {
+    "quit": "Zakończ",
+    "showOrHide": "Pokaż/ukryj okno",
+    "addToQueue": "Dodaj ze schowka",
+    "addAndDownload": "Dodaj i pobierz ze schowka",
+    "downloadQueue": "Pobierz kolejkę",
+    "shortcuts": {
+      "ctrlShiftV": "Ctrl + Shift + V",
+      "ctrlShiftD": "Ctrl + Shift + D",
+      "ctrlShiftEnter": "Ctrl + Shift + Enter",
+      "altShiftV": "Alt + Shift + V",
+      "altShiftD": "Alt + Shift + D",
+      "altShiftEnter": "Alt + Shift + Enter"
+    }
+  },
+  "notifications": {
+    "queueAdded": {
+      "title": "Dodano do kolejki",
+      "body": "{title}"
+    },
+    "queueDownloading": {
+      "title": "Pobieranie kolejki",
+      "body": "Pobieranie {n} elementu | Pobieranie elementów: {n}"
+    },
+    "queueFinished": {
+      "title": "Kolejka ukończona",
+      "body": "Ukończono pobieranie {n} elementu | Ukończono pobieranie elementów: {n}"
+    },
+    "videoFinished": {
+      "title": "Pobieranie zakończone",
+      "body": "{title}"
+    },
+    "playlistFinished": {
+      "title": "Playlista ukończona",
+      "body": "{title}"
+    },
+    "videoReady": {
+      "title": "Gotowe do pobrania",
+      "body": "{title}"
+    },
+    "playlistReady": {
+      "title": "Playlista gotowa do pobrania",
+      "body": "{title} | {title} ({n} element) | {title} (elementy: {n})"
+    },
+    "downloadFailed": {
+      "title": "Pobieranie nieudane",
+      "body": "{title}\n{message}"
+    }
+  }
+}
