@@ -181,6 +181,7 @@ function loadSize() {
     group.id,
     group.items[Object.keys(group.items)[0]].id,
     selectedOptions.value,
+    optionsStore.getOverrides(group.id),
   );
 }
 

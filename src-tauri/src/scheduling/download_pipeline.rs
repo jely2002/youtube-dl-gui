@@ -92,7 +92,11 @@ pub fn setup_download_dispatcher(
       }
     },
     |tx, app: AppHandle, entry: DownloadEntry| async move {
-      tracing::info!("starting download id={} url={}", entry.id, entry.url);
+      tracing::info!(
+        "starting download id={} url={}",
+        entry.id,
+        DownloadOverrides::loggable_url(entry.overrides.as_ref(), &entry.url)
+      );
 
       if let Err(e) = run_ytdlp_download(app.clone(), entry.clone()).await {
         tracing::warn!(

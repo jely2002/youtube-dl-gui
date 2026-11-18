@@ -61,6 +61,12 @@ export default [
   }),
   ...vueI18n.configs['flat/recommended'],
   {
+    // The browser extension is plain modern JavaScript, loaded without a build step.
+    files: ['extension/**/*.js'],
+    languageOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+    rules: { 'no-unused-vars': 'error' },
+  },
+  {
     settings: {
       'vue-i18n': {
         localeDir: './src/locales/*.json',

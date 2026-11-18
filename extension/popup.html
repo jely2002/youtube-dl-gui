@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Open Video Downloader</title>
+    <style>
+      /* Tokens copied from the app's themes in src/app.css. */
+      :root {
+        color-scheme: light dark;
+        --base-100: oklch(99.4% 0 0);
+        --base-200: oklch(98% 0 0);
+        --base-300: oklch(95% 0 0);
+        --content: oklch(28% 0.02 260);
+        --primary: oklch(70% 0.16 150);
+        --primary-content: oklch(100% 0 0);
+        --neutral: oklch(92% 0.008 260);
+        --neutral-content: oklch(28% 0.02 260);
+        --warning: oklch(83% 0.18 83);
+        --warning-content: oklch(0% 0 0);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --base-100: oklch(26.84% 0.008 17.911);
+          --base-200: oklch(25.522% 0.007 17.911);
+          --base-300: oklch(19.203% 0.007 17.911);
+          --content: oklch(83.768% 0.001 17.911);
+          --primary: oklch(68.628% 0.185 148.958);
+          --neutral: oklch(30.698% 0.039 171.364);
+          --neutral-content: oklch(86.139% 0.007 171.364);
+        }
+      }
+      body { width: 380px; margin: 0; font: 13px system-ui, sans-serif; background: var(--base-200); color: var(--content); }
+      .panel body { width: auto; }
+      header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--base-300); }
+      header img { width: 24px; height: 24px; }
+      h1 { flex: 1; margin: 0; font-size: 14px; }
+      .panel #open-panel { display: none; }
+      main { padding: 10px; }
+      ul { list-style: none; margin: 0; padding: 0; }
+      li, #connect { margin-bottom: 8px; padding: 10px 12px; background: var(--base-100); border: 1px solid var(--base-300); border-radius: 1rem; }
+      .title { font-weight: 600; overflow-wrap: anywhere; }
+      .detail { display: block; margin: 2px 0 8px; opacity: 0.7; overflow-wrap: anywhere; }
+      .badge { display: table; margin: 4px 0 2px; padding: 1px 8px; border-radius: 1rem; background: var(--warning); color: var(--warning-content); font-size: 11px; }
+      .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+      button { padding: 5px 12px; border: 1px solid transparent; border-radius: 2rem; background: var(--neutral); color: var(--neutral-content); font: inherit; cursor: pointer; }
+      button.primary { background: var(--primary); color: var(--primary-content); font-weight: 600; }
+      button.quiet { padding: 2px 4px; background: none; color: inherit; opacity: 0.7; text-decoration: underline; }
+      button:focus-visible, input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+      #connect h2 { margin: 0 0 6px; font-size: 13px; }
+      #connect ol { margin: 0; padding-left: 18px; }
+      #connect ol li { margin: 0 0 8px; padding: 0; background: none; border: 0; border-radius: 0; }
+      #connect form { display: flex; gap: 6px; margin-top: 4px; }
+      input { flex: 1; min-width: 0; padding: 5px 10px; border: 1px solid var(--base-300); border-radius: 2rem; background: var(--base-200); color: inherit; font: inherit; }
+      #status, #hint { margin: 8px 4px 0; }
+      #status { min-height: 1.2em; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="icons/48.png" alt="">
+      <h1>Open Video Downloader</h1>
+      <button id="open-panel" type="button">Side panel</button>
+    </header>
+    <main>
+      <section id="connect" aria-labelledby="connect-heading" hidden>
+        <h2 id="connect-heading">Connect to the app</h2>
+        <p>This is needed once, so that only this browser can send to Open Video Downloader.</p>
+        <ol>
+          <li>Start Open Video Downloader, then <button id="request-key" class="primary" type="button">Connect</button></li>
+          <li>In the app, choose Allow. It copies a connection key, which stays on the clipboard for a minute and a half.</li>
+          <li>
+            <label for="key">Come back here (click this extension's icon again if this closed) and paste the key:</label>
+            <form id="use-key">
+              <input id="key" type="text" autocomplete="off" spellcheck="false">
+              <button type="submit">Finish</button>
+            </form>
+          </li>
+        </ol>
+      </section>
+      <ul id="sources"></ul>
+      <div id="hint" hidden>
+        <p>No video sources detected on this page yet. Start the video, or reload the page so it is watched from the start.</p>
+        <button id="reload" type="button">Reload page</button>
+      </div>
+      <p id="status" role="status"></p>
+      <button id="disconnect" class="quiet" type="button" hidden>Disconnect from the app</button>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

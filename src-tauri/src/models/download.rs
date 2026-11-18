@@ -1,6 +1,9 @@
 use crate::models::SubtitleInventory;
 use crate::runners::template_context::TemplateContext;
+use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
+use std::sync::LazyLock;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
@@ -108,6 +111,8 @@ pub struct FormatOptions {
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DownloadOverrides {
+  /// Title for a single item that has none of its own, such as a raw stream.
+  pub title: Option<String>,
   pub output: Option<OutputOverrides>,
   pub auth: Option<AuthOverrides>,
   pub network: Option<NetworkOverrides>,
@@ -175,7 +180,105 @@ pub struct AuthOverrides {
   pub password: Option<String>,
   pub video_password: Option<String>,
   pub bearer_token: Option<String>,
+  /// Replaces the headers from the app's settings.
   pub headers: Option<Vec<String>>,
+  /// Sent in addition to the headers above.
+  pub extra_headers: Option<Vec<String>>,
+}
+
+static URL_IN_TEXT: LazyLock<Regex> =
+  LazyLock::new(|| Regex::new(r#"https?://[^\s'"<>]+"#).expect("invalid regex"));
+
+/// An address without its sign-in (`user:pass@`) and without its query and fragment,
+/// where access tokens are.
+fn without_secrets(url: &str) -> Cow<'_, str> {
+  let end = url.find(['?', '#']).unwrap_or(url.len());
+  let bare = &url[..end];
+  let host_from = bare.find("://").map_or(0, |at| at + 3);
+  let host_to = bare[host_from..]
+    .find('/')
+    .map_or(bare.len(), |at| host_from + at);
+  match bare[host_from..host_to].rfind('@') {
+    Some(at) => Cow::Owned(format!(
+      "{}{}",
+      &bare[..host_from],
+      &bare[host_from + at + 1..]
+    )),
+    None => Cow::Borrowed(bare),
+  }
+}
+
+/// `%41` -> `A`, as yt-dlp does before it prints a name taken from an address.
+fn percent_decoded(text: &str) -> String {
+  let bytes = text.as_bytes();
+  let mut out = Vec::with_capacity(bytes.len());
+  let mut i = 0;
+  while i < bytes.len() {
+    let hex = bytes
+      .get(i + 1..i + 3)
+      .and_then(|h| std::str::from_utf8(h).ok());
+    match hex.and_then(|h| u8::from_str_radix(h, 16).ok()) {
+      Some(byte) if bytes[i] == b'%' => {
+        out.push(byte);
+        i += 3;
+      }
+      _ => {
+        out.push(bytes[i]);
+        i += 1;
+      }
+    }
+  }
+  String::from_utf8_lossy(&out).into_owned()
+}
+
+/// The name yt-dlp gives an address it has no extractor for, and prints in its messages:
+/// whatever follows the last `/`, up to the last `.`. It takes the query for part of the
+/// address, so a `/` or a `.` in the query puts a piece of it in the name.
+fn generic_id(url: &str) -> &str {
+  let tail = url.trim_end_matches('/').rsplit('/').next().unwrap_or("");
+  match tail.rfind('.') {
+    Some(dot) if dot > 0 => &tail[..dot],
+    _ => tail,
+  }
+}
+
+impl DownloadOverrides {
+  /// Whether this item carries its own sign-in. Its address then often has an access
+  /// token in it too, which must stay out of logs and error reports.
+  fn is_signed_in(overrides: Option<&Self>) -> bool {
+    overrides.is_some_and(|o| o.auth.is_some())
+  }
+
+  /// The address to write to logs and error reports.
+  pub fn loggable_url<'a>(overrides: Option<&Self>, url: &'a str) -> Cow<'a, str> {
+    if Self::is_signed_in(overrides) {
+      without_secrets(url)
+    } else {
+      Cow::Borrowed(url)
+    }
+  }
+
+  /// A line of yt-dlp output about the item at `url`, to keep or report. yt-dlp quotes
+  /// addresses in its messages, and names the item after the end of its address.
+  pub fn loggable_text<'a>(overrides: Option<&Self>, url: &str, text: &'a str) -> Cow<'a, str> {
+    if !Self::is_signed_in(overrides) {
+      return Cow::Borrowed(text);
+    }
+    let mut text = URL_IN_TEXT.replace_all(text, |found: &Captures| {
+      without_secrets(&found[0]).into_owned()
+    });
+    let name = generic_id(url);
+    let safe_name = generic_id(&without_secrets(url)).to_string();
+    // Only a name that took something from the query needs replacing.
+    if name != safe_name && name.len() >= 3 {
+      for printed in [percent_decoded(name), name.to_string()] {
+        if text.contains(&printed) {
+          text = Cow::Owned(text.replace(&printed, &safe_name));
+        }
+      }
+    }
+    text
+  }
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
@@ -237,7 +340,87 @@ pub struct InputFilterOptions {
 
 #[cfg(test)]
 mod tests {
-  use super::TranscodePolicy;
+  use super::{AuthOverrides, DownloadOverrides, TranscodePolicy};
+
+  #[test]
+  fn logs_leave_out_the_secrets_in_the_address_of_signed_in_items() {
+    let url = "https://user:pass@cdn.test/master.m3u8?token=secret#t=1";
+    let plain = DownloadOverrides::default();
+    let signed_in = DownloadOverrides {
+      auth: Some(AuthOverrides::default()),
+      ..DownloadOverrides::default()
+    };
+    // An ordinary link is logged as it always was.
+    assert_eq!(DownloadOverrides::loggable_url(None, url), url);
+    assert_eq!(DownloadOverrides::loggable_url(Some(&plain), url), url);
+    assert_eq!(
+      DownloadOverrides::loggable_url(Some(&signed_in), url),
+      "https://cdn.test/master.m3u8"
+    );
+    assert_eq!(
+      DownloadOverrides::loggable_url(Some(&signed_in), "https://cdn.test/a@b/c?x=1"),
+      "https://cdn.test/a@b/c"
+    );
+
+    // yt-dlp quotes the address in its messages.
+    let page = "https://a.test/page?token=secret#frag";
+    let line =
+      "ERROR: Unsupported URL: https://a.test/page?token=secret#frag (see 'http://b.test/x?k=1')";
+    assert_eq!(
+      DownloadOverrides::loggable_text(Some(&plain), page, line),
+      line
+    );
+    assert_eq!(
+      DownloadOverrides::loggable_text(Some(&signed_in), page, line),
+      "ERROR: Unsupported URL: https://a.test/page (see 'http://b.test/x')"
+    );
+    assert_eq!(
+      DownloadOverrides::loggable_text(Some(&signed_in), page, "[download] 50% of 10MiB"),
+      "[download] 50% of 10MiB"
+    );
+  }
+
+  #[test]
+  fn logs_leave_out_the_name_yt_dlp_takes_from_the_query() {
+    let signed_in = DownloadOverrides {
+      auth: Some(AuthOverrides::default()),
+      ..DownloadOverrides::default()
+    };
+    let text = |url: &str, line: &str| {
+      DownloadOverrides::loggable_text(Some(&signed_in), url, line).into_owned()
+    };
+
+    // A `/` in the query: yt-dlp names the item after what follows it.
+    let akamai = "https://cdn.test/hls/master.m3u8?hdnts=exp=1~acl=/*~hmac=SECRETHMAC";
+    assert_eq!(
+      text(akamai, "[generic] *~hmac=SECRETHMAC: Downloading webpage"),
+      "[generic] master: Downloading webpage"
+    );
+    // A `.` after the token: the name runs up to it.
+    let dotted = "https://cdn.test/hls/master.m3u8?token=SECRETTOKEN&e=17.5";
+    assert_eq!(
+      text(
+        dotted,
+        "ERROR: [generic] master.m3u8?token=SECRETTOKEN&e=17: Unable to download webpage"
+      ),
+      "ERROR: [generic] master: Unable to download webpage"
+    );
+    // Printed percent-decoded.
+    let encoded = "https://cdn.test/v.m3u8?sig=SECRET%2Fabc%20def.x";
+    assert_eq!(
+      text(
+        encoded,
+        "[generic] v.m3u8?sig=SECRET/abc def: Downloading webpage"
+      ),
+      "[generic] v: Downloading webpage"
+    );
+    // A name that has nothing of the query in it is left alone, wherever else it appears.
+    let plain = "https://cdn.test/hls/master.m3u8?token=SECRETTOKEN";
+    assert_eq!(
+      text(plain, "[generic] master: Downloading m3u8 master manifest"),
+      "[generic] master: Downloading m3u8 master manifest"
+    );
+  }
 
   #[test]
   fn transcode_policy_deserializes_legacy_remux_only_as_allow_reencode() {

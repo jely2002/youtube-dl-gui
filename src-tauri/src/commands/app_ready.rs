@@ -4,6 +4,9 @@ use tauri::{AppHandle, Manager, State};
 
 #[tauri::command]
 pub fn app_ready(app: AppHandle, cfg_handle: State<'_, SharedConfig>) {
+  // The frontend listens now, so links from the browser extension can be delivered.
+  crate::bridge::start(&app);
+
   let args: Vec<String> = args().collect();
   let is_autostart = args.contains(&"--auto-start".to_string());
   let cfg = cfg_handle.load();

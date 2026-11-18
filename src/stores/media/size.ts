@@ -4,6 +4,7 @@ import { sortFormats } from '../../helpers/formats';
 import { invoke } from '@tauri-apps/api/core';
 import {
   DownloadOptions,
+  DownloadOverrides,
   MediaAddPayload,
   MediaAddWithFormatPayload,
   TrackType,
@@ -124,12 +125,14 @@ export const useMediaSizeStore = defineStore('media-size', () => {
     groupId: string,
     id: string,
     format: DownloadOptions,
+    overrides?: DownloadOverrides,
   ): Promise<void> {
     await invoke('media_size', {
       url,
       id,
       groupId,
       format,
+      overrides,
     });
   }
 

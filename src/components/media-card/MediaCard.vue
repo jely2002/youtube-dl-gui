@@ -98,7 +98,10 @@ const retryGroup = (): void => {
     toastStore.showToast(t('media.card.toasts.retryError'), { style: 'error' });
     return;
   }
-  mediaStore.dispatchMediaInfoFetch(group.url)
+  // Keep the sign-in and title the item was added with, such as the cookies sent by the
+  // browser extension. Other overrides start over, as they always have on a retry.
+  const { auth, title } = optionsStore.getOverrides(group.id) ?? {};
+  mediaStore.dispatchMediaInfoFetch(group.url, false, false, auth || title ? { auth, title } : undefined)
     .then(() => {
       toastStore.showToast(t('media.card.toasts.retry'));
     })

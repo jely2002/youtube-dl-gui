@@ -40,6 +40,8 @@ apps:
     extensions: [gnome]
     plugs:
       - network
+      # Lets the app listen on 127.0.0.1 for the browser extension (src-tauri/src/bridge.rs).
+      - network-bind
       - network-status
       - home
       - unity7

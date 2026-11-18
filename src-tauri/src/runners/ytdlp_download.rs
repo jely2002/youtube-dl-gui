@@ -1,5 +1,5 @@
 use crate::logging::LogStoreState;
-use crate::models::download::DownloadSection;
+use crate::models::download::{DownloadOverrides, DownloadSection};
 use crate::models::{
   MediaDiagnosticPayload, MediaFatalPayload, MediaProgressComplete, ProgressEvent,
 };
@@ -49,7 +49,8 @@ pub async fn run_ytdlp_download(
     .with_sponsorblock_args(entry.overrides.as_ref())
     .with_format_args(&entry.format, entry.overrides.as_ref())
     .with_input_filter_args(entry.overrides.as_ref())
-    .with_input_args(entry.overrides.as_ref());
+    .with_input_args(entry.overrides.as_ref())
+    .with_title_args(entry.overrides.as_ref());
   let output_args = match runner.output_args(&entry.format, entry.overrides.as_ref()) {
     Ok(args) => args,
     Err(err) => {
@@ -132,12 +133,16 @@ pub async fn run_ytdlp_download(
         match event {
           YtdlpCommandEvent::Stdout(line) => {
             let line_str = String::from_utf8_lossy(&line);
+            let line_str =
+              DownloadOverrides::loggable_text(entry.overrides.as_ref(), &entry.url, &line_str);
             store_log_line(&line_str, &entry, log_state, &app);
             parse_progress_line(&line_str, &mut progress_parser, &app);
             parse_error_line(&line_str, &error_parser, &app);
           }
           YtdlpCommandEvent::Stderr(line) => {
             let line_str = String::from_utf8_lossy(&line);
+            let line_str =
+              DownloadOverrides::loggable_text(entry.overrides.as_ref(), &entry.url, &line_str);
             store_log_line(&line_str, &entry, log_state, &app);
             parse_progress_line(&line_str, &mut progress_parser, &app);
             parse_error_line(&line_str, &error_parser, &app);

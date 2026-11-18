@@ -8,6 +8,7 @@ on:
       - 'public/**'
       - 'src/**'
       - 'src-isolation/**'
+      - 'extension/**'
       - 'tests/**'
       - 'index.html'
       - 'package.json'
@@ -22,6 +23,7 @@ on:
       - 'public/**'
       - 'src/**'
       - 'src-isolation/**'
+      - 'extension/**'
       - 'tests/**'
       - 'index.html'
       - 'package.json'
@@ -71,6 +73,7 @@ jobs:
         run: |
           npm ci
           npm run test:unit
+          npm run test:extension
 
       - name: Upload unit coverage to Codecov
         if: ${{ env.CODECOV_TOKEN != '' }}

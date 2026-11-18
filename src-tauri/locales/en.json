@@ -47,5 +47,13 @@
       "title": "Download failed",
       "body": "{title}\n{message}"
     }
+  },
+  "bridge": {
+    "pair": {
+      "title": "Connect the browser extension?",
+      "message": "The Open Video Downloader browser extension is asking to connect.\n\nOnly allow this if you just clicked Connect in the extension. A connection key will be copied to the clipboard; paste it into the extension to finish.",
+      "allow": "Allow",
+      "deny": "Don't allow"
+    }
   }
 }

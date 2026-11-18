@@ -35,11 +35,13 @@ pub enum FetchRequest {
     id: String,
     url: String,
     format: FormatOptions,
+    overrides: Box<Option<DownloadOverrides>>,
   },
   SizePlaylist {
     group_id: String,
     playlist: ParsedPlaylist,
     format: FormatOptions,
+    overrides: Box<Option<DownloadOverrides>>,
   },
 }
 
@@ -124,6 +126,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
       id,
       url,
       format,
+      overrides,
     } => {
       vec![FetchEntry {
         group_id,
@@ -131,13 +134,14 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
         url,
         total: 1,
         format: Some(format),
-        overrides: None,
+        overrides: *overrides,
       }]
     }
     FetchRequest::SizePlaylist {
       group_id,
       playlist,
       format,
+      overrides,
     } => {
       let total = playlist.entries.len();
       playlist
@@ -149,7 +153,7 @@ fn expand_fetch_request(req: FetchRequest) -> Vec<FetchEntry> {
           url: e.video_url,
           total,
           format: Some(format.clone()),
-          overrides: None,
+          overrides: *overrides.clone(),
         })
         .collect()
     }
@@ -186,7 +190,7 @@ async fn handle_fetch_entry(
       tracing::warn!(
         fetch_id = %id,
         group_id = %group_id,
-        url = %url,
+        url = %DownloadOverrides::loggable_url(overrides.as_ref(), &url),
         error = %e,
         "run_ytdlp_info_fetch failed"
       );
@@ -234,6 +238,7 @@ async fn handle_fetch_entry(
           group_id: group_id.clone(),
           playlist: pl,
           format,
+          overrides: Box::new(overrides),
         }));
       } else {
         let payload = MediaAddPayload {
@@ -272,4 +277,44 @@ fn should_report_to_sentry(err: &YtdlpInfoFetchError) -> bool {
       | YtdlpInfoFetchError::RunnerFailed(_)
       | YtdlpInfoFetchError::ParseFailed(_)
   )
+}
+
+#[cfg(test)]
+mod tests {
+  use super::{expand_fetch_request, FetchRequest};
+  use crate::models::download::{AuthOverrides, DownloadOverrides, FormatOptions};
+  use crate::models::TrackType;
+
+  #[test]
+  fn size_lookup_keeps_the_items_overrides() {
+    let overrides = DownloadOverrides {
+      auth: Some(AuthOverrides {
+        cookie_file: Some("/tmp/cookies.txt".into()),
+        ..AuthOverrides::default()
+      }),
+      ..DownloadOverrides::default()
+    };
+    let entries = expand_fetch_request(FetchRequest::Size {
+      group_id: "group".into(),
+      id: "id".into(),
+      url: "https://example.com/master.m3u8".into(),
+      format: FormatOptions {
+        track_type: TrackType::Both,
+        abr: None,
+        height: None,
+        fps: None,
+        audio_encoding: None,
+        video_encoding: None,
+        audio_track: None,
+        video_track: None,
+      },
+      overrides: Box::new(Some(overrides)),
+    });
+
+    let auth = entries[0].overrides.as_ref().and_then(|o| o.auth.as_ref());
+    assert_eq!(
+      auth.and_then(|a| a.cookie_file.as_deref()),
+      Some("/tmp/cookies.txt")
+    );
+  }
 }

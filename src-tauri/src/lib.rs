@@ -1,4 +1,5 @@
 mod binaries;
+mod bridge;
 mod commands;
 mod i18n;
 mod logging;
@@ -191,16 +192,19 @@ pub fn run() {
     .build(tauri::generate_context!())
     .expect("error while running tauri application");
 
-  app.run(|_app_handle, _event| {
+  app.run(|app_handle, event| {
+    if let tauri::RunEvent::Exit = event {
+      bridge::remove_cookie_files(app_handle);
+    }
     #[cfg(target_os = "macos")]
     {
       if let tauri::RunEvent::Reopen {
         has_visible_windows,
         ..
-      } = _event
+      } = event
       {
         if !has_visible_windows {
-          reopen_window(_app_handle);
+          reopen_window(app_handle);
         }
       }
     }
