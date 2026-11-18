@@ -1,4 +1,4 @@
-use crate::models::download::{DownloadOverrides, FormatOptions, PlaylistMode};
+use crate::models::download::{AuthOverrides, DownloadOverrides, FormatOptions, PlaylistMode};
 use crate::models::SubtitleInventory;
 use crate::models::TrackType;
 use crate::paths::PathsManager;
@@ -142,6 +142,16 @@ impl<'a> YtdlpRunner<'a> {
     let effective_auth_secrets = resolve_with_patch(&effective_auth_secrets, auth_overrides);
     self.apply_auth_secrets(effective_auth_secrets);
 
+    self.args.extend(extra_header_args(auth_overrides));
+
+    self
+  }
+
+  /// Gives the item the title from its overrides, for a source that has none of its own.
+  pub fn with_title_args(mut self, overrides: Option<&DownloadOverrides>) -> Self {
+    if let Some(title) = overrides.and_then(|value| value.title.as_ref()) {
+      self.args.extend(title_args(title));
+    }
     self
   }
 
@@ -427,6 +437,30 @@ fn summarize_args_for_log(args: &[String]) -> RunLogSummary {
 
 fn url_args(url: &str) -> [String; 2] {
   ["--".into(), url.into()]
+}
+
+/// Headers sent on top of the ones from the settings. They come after those, so that
+/// for a header given twice yt-dlp keeps this one.
+fn extra_header_args(auth_overrides: Option<&AuthOverrides>) -> Vec<String> {
+  auth_overrides
+    .and_then(|value| value.extra_headers.as_ref())
+    .into_iter()
+    .flatten()
+    .flat_map(|header| ["--add-header".to_string(), header.clone()])
+    .collect()
+}
+
+/// Has yt-dlp replace whatever title it found. Setting the title there, rather than
+/// writing it into the output template, lets yt-dlp clean it for the file name and
+/// use it for the embedded metadata too.
+fn title_args(title: &str) -> [String; 4] {
+  [
+    "--replace-in-metadata".into(),
+    "title".into(),
+    "(?s)^.*$".into(),
+    // The replacement is a regex template, where a backslash starts a group reference.
+    title.replace('\\', "\\\\"),
+  ]
 }
 
 fn log_run_summary(args: &[String]) {
@@ -884,6 +918,40 @@ mod tests {
     assert_eq!(
       super::url_args("https://a.test/v"),
       ["--", "https://a.test/v"]
+    );
+  }
+
+  #[test]
+  fn extra_headers_are_added_one_argument_pair_each() {
+    use crate::models::download::AuthOverrides;
+
+    let auth = AuthOverrides {
+      extra_headers: Some(vec!["Referer: https://a.test/".into(), "X-A: 1".into()]),
+      ..AuthOverrides::default()
+    };
+    assert_eq!(
+      super::extra_header_args(Some(&auth)),
+      [
+        "--add-header",
+        "Referer: https://a.test/",
+        "--add-header",
+        "X-A: 1"
+      ]
+    );
+    assert!(super::extra_header_args(Some(&AuthOverrides::default())).is_empty());
+    assert!(super::extra_header_args(None).is_empty());
+  }
+
+  #[test]
+  fn title_args_replace_the_whole_title_literally() {
+    assert_eq!(
+      super::title_args(r"C:\clips\1 & \g<0>"),
+      [
+        "--replace-in-metadata",
+        "title",
+        "(?s)^.*$",
+        r"C:\\clips\\1 & \\g<0>"
+      ]
     );
   }
 

@@ -10,6 +10,7 @@ Before committing changes, run the following commands:
 ### JavaScript/TypeScript
 - `npm run lint:fix` to apply ESLint fixes and formatting.
 - `npm run test:unit` to run unit tests.
+- `npm run test:extension` to run the browser extension's unit tests.
 - `npm run test:e2e` to run end-to-end tests.
 - `npm run build` to ensure the app builds.
 

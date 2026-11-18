@@ -57,6 +57,7 @@ pub async fn run_ytdlp_info_fetch(
     .with_input_filter_args(overrides.as_ref())
     .with_auth_args(overrides.as_ref())
     .with_network_args(overrides.as_ref())
+    .with_title_args(overrides.as_ref())
     .with_args(["-J", "--flat-playlist"])
     .with_url(url);
 
@@ -95,7 +96,9 @@ pub async fn run_ytdlp_info_fetch(
   };
 
   let stdout_text = String::from_utf8_lossy(&output.stdout);
-  let stderr_text = String::from_utf8_lossy(&output.stderr);
+  let stderr_raw = String::from_utf8_lossy(&output.stderr);
+  // This text goes to the log, the diagnostics and error reports.
+  let stderr_text = DownloadOverrides::loggable_text(overrides.as_ref(), url, &stderr_raw);
 
   let log_state = app.state::<LogStoreState>();
 

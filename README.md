@@ -20,6 +20,7 @@ It provides an easy-to-use interface around [yt-dlp](https://github.com/yt-dlp/y
 - **Automatic updates:** both the app and yt-dlp are kept up to date automatically.
 - **Light and dark mode:** adapts to your system theme with clear progress and error handling.
 - **Shortcuts:** queue and download videos using shortcuts, stay up-to-date on progress with notifications.
+- **Browser extension:** send videos from Chrome, with the cookies and headers they need. See [extension/README.md](./extension/README.md).
 
 ## Download
 

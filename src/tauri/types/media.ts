@@ -64,6 +64,8 @@ export type MediaCodecInfo = {
 export type MediaCodec = string | MediaCodecInfo;
 
 export type DownloadOverrides = {
+  /** Title for a single item that has none of its own, such as a raw stream. */
+  title?: string;
   output?: OutputOverrides;
   auth?: AuthOverrides;
   network?: NetworkOverrides;
@@ -121,7 +123,10 @@ export type AuthOverrides = {
   password?: string;
   videoPassword?: string;
   bearerToken?: string;
+  /** Replaces the headers from the app's settings. */
   headers?: string[];
+  /** Sent in addition to the headers above. */
+  extraHeaders?: string[];
 };
 
 export type NetworkOverrides = {

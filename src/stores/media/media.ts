@@ -89,6 +89,13 @@ export const useMediaStore = defineStore('media', () => {
     if (!group) throw new Error('Orphaned media item found.');
 
     if (item.entries) {
+      // A title override names one item; it must not rename every entry of a playlist.
+      const overrides = optionsStore.getOverrides(groupId);
+      if (overrides?.title) {
+        const { title: _title, ...rest } = overrides;
+        void _title;
+        optionsStore.setOverrides(groupId, rest);
+      }
       const existingId = Object.keys(group.items)[0];
       if (existingId && existingId !== item.id) {
         delete group.items[existingId];
@@ -199,6 +206,7 @@ export const useMediaStore = defineStore('media', () => {
     url: string,
     fromShortcut: boolean = false,
     skipPlaylistSelection: boolean = false,
+    overrides?: DownloadOverrides,
   ) {
     const id = uuidv4();
     const groupId = uuidv4();
@@ -219,6 +227,8 @@ export const useMediaStore = defineStore('media', () => {
       filesize: 0,
       fromShortcut,
       skipPlaylistSelection,
+      // Shown while the details are fetched; yt-dlp then reports the same title.
+      title: overrides?.title,
       items: {
         [id]: {
           id,
@@ -236,8 +246,11 @@ export const useMediaStore = defineStore('media', () => {
     groupStore.createGroup(newGroup);
 
     const inputFiltersOverride = settingsToInputFilterOverride(settingsStore.settings);
-    if (inputFiltersOverride) {
-      optionsStore.setOverrides(groupId, { inputFilters: inputFiltersOverride });
+    if (inputFiltersOverride || overrides) {
+      optionsStore.setOverrides(groupId, {
+        ...overrides,
+        ...(inputFiltersOverride && { inputFilters: inputFiltersOverride }),
+      });
     }
 
     await invoke('media_info', {
@@ -282,17 +295,18 @@ export const useMediaStore = defineStore('media', () => {
     return optionsStore.getOptions(groupId) ?? optionsStore.getGlobalOptions() ?? { trackType: TrackType.both };
   }
 
-  async function addAndDownload(url: string, fromShortcut: boolean = false) {
-    await addUrlBatchAndDownload([url], fromShortcut, true);
+  async function addAndDownload(url: string, fromShortcut: boolean = false, overrides?: DownloadOverrides) {
+    await addUrlBatchAndDownload([url], fromShortcut, true, overrides);
   }
 
   async function addUrlBatch(
     urls: string[],
     fromShortcut: boolean = false,
     skipPlaylistSelection: boolean = false,
+    overrides?: DownloadOverrides,
   ): Promise<string[]> {
     return await Promise.all(
-      urls.map(url => dispatchMediaInfoFetch(url, fromShortcut, skipPlaylistSelection)),
+      urls.map(url => dispatchMediaInfoFetch(url, fromShortcut, skipPlaylistSelection, overrides)),
     );
   }
 
@@ -300,8 +314,9 @@ export const useMediaStore = defineStore('media', () => {
     urls: string[],
     fromShortcut: boolean = false,
     skipPlaylistSelection: boolean = false,
+    overrides?: DownloadOverrides,
   ): Promise<string[]> {
-    const initialGroupIds = await addUrlBatch(urls, fromShortcut, skipPlaylistSelection);
+    const initialGroupIds = await addUrlBatch(urls, fromShortcut, skipPlaylistSelection, overrides);
     const readyGroupIds = [...new Set(
       (await Promise.all(initialGroupIds.map(groupId => waitForGroupReady(groupId)))).flat(),
     )];

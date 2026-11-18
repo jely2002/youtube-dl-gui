@@ -16,13 +16,13 @@ import { invoke } from '@tauri-apps/api/core';
 import { strongholdHandlers } from '../tests/utils/mocks/strongholdHandlers';
 import { getDefaultLocale, i18n, type Locale } from './i18n';
 import { createSentryPiniaPlugin } from '@sentry/vue';
-import { createSentry } from './sentry.ts';
+import { createSentry, withoutCredentials } from './sentry.ts';
 import { startWindowWatcher } from './tauri/window.ts';
 import { usePreferencesStore } from './stores/preferences.ts';
 import { useMediaStore } from './stores/media/media.ts';
 
 const pinia = createPinia();
-pinia.use(createSentryPiniaPlugin());
+pinia.use(createSentryPiniaPlugin({ stateTransformer: withoutCredentials }));
 const app = createApp(App);
 
 if (import.meta.env.DEV) {

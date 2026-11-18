@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "Open Video Downloader Companion",
+  "version": "0.1.0",
+  "description": "Finds video sources on the current page and sends them, with the cookies and headers they need, to Open Video Downloader.",
+  "minimum_chrome_version": "120",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3lVBl3yu+KFGVr5CrP6U05ppVogTfRQr4RL5y7LWU007CAnqA+0K6AtD4gO/hZOPjGdpS5/lqd1hzu8UUDUGGN+H6kdEuMqcEy1cLknwVNzJyuCbzoWv+49oR4ZSwhPQcFbPIMbJMZlAv0+3UcicIti6R0Bv+IuvicU5i7sNt1v7UKA7shy+PT0Sh1Pqnlj+NKpXYTbayX7U9Ta1q8Chjv2AqdkEkx7bparKU+tdtQmMADIIR4kZs7xOVQJTo5TDMr/uEPpyYZo/VyfTSl0+FjGzOGniSSEpXhQt86XVYDaLCJr4uHMUCAZgYF+pD1DuMwXMPGsN+UbujLu9UmT9NQIDAQAB",
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "permissions": [
+    "webRequest",
+    "webNavigation",
+    "cookies",
+    "storage",
+    "contextMenus",
+    "sidePanel",
+    "notifications"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Send video to Open Video Downloader",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "popup.html?panel"
+  },
+  "commands": {
+    "send-best": {
+      "description": "Send the best detected video (or the page) to Open Video Downloader",
+      "suggested_key": {
+        "default": "Alt+Shift+O"
+      }
+    }
+  }
+}
