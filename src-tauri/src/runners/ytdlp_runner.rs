@@ -272,8 +272,10 @@ impl<'a> YtdlpRunner<'a> {
     self
   }
 
+  /// Must come last: everything after `--` is an address, never an option. Addresses
+  /// also come from playlists and feeds, where anyone can write `--some-option`.
   pub fn with_url(mut self, url: &str) -> Self {
-    self.args.push(url.into());
+    self.args.extend(url_args(url));
     self
   }
 
@@ -421,6 +423,10 @@ fn summarize_args_for_log(args: &[String]) -> RunLogSummary {
         || arg.starts_with("--add-header=")
     }),
   }
+}
+
+fn url_args(url: &str) -> [String; 2] {
+  ["--".into(), url.into()]
 }
 
 fn log_run_summary(args: &[String]) {
@@ -868,6 +874,18 @@ mod tests {
   };
   use crate::models::SubtitleInventory;
   use crate::state::config_models::{SponsorBlockSettings, SubtitleSettings};
+
+  #[test]
+  fn an_address_can_never_be_read_as_an_option() {
+    assert_eq!(
+      super::url_args("--exec=rm -rf ~"),
+      ["--", "--exec=rm -rf ~"]
+    );
+    assert_eq!(
+      super::url_args("https://a.test/v"),
+      ["--", "https://a.test/v"]
+    );
+  }
 
   fn inventory(manual: &[&str], automatic: &[&str]) -> SubtitleInventory {
     SubtitleInventory {
